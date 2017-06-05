@@ -210,7 +210,7 @@ protected:
    /**
     * \f$\clubsuit\f$ Seems to be use as working variables. To be completed. Erwan
     */
-   BMat m_sta, m_wSI, m_vSI;
+   BMat m_sta;
 
    /**
     * When the flag <tt>m_ip[i]</tt> is `true`, the \f$i\f$-th diagonal

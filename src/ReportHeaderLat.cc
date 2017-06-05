@@ -102,7 +102,7 @@ void ReportHeaderLat::printHeader ()
       m_writer->writeString ("Combined MRG:");
       m_writer->newLine ();
       m_writer->writeString ("   m = ");
-      m_writer->writeMScal (m_lattice->getM ());
+      m_writer->writeMScal (m_lattice->getModulo());
       m_writer->newLine ();
       m_writer->writeString ("   k = ");
       m_writer->writeInt (m_lattice->getOrder ());

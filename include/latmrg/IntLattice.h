@@ -22,19 +22,32 @@ public:
 
    /**
     * \copydoc LatticeTester::IntLattice::IntLattice(const IntLattice&)
+    * Erwan
     */
    IntLattice (const IntLattice & Lat);
 
+   /**
+    * Init the matrix
+    */
+   void init ();
 
    /**
     * Return the order of the matrix
     */
-   int GetOrder() const { return m_order; }
+   int getOrder() const { return m_order; }
 
    /**
     * Increment the dimension of the element of the lattice
     */
-   void IncrementDimension ();
+   void incrementDimension ();
+
+   /**
+    * Computes the logarithm of the normalization factor
+    * (<tt>m_lgVolDual2</tt>) in all dimensions \f$\le\f$ `MaxDim` for
+    * the lattice. `lgm2` is the logarithm in base 2 of \f$m^2\f$.
+    */
+   void calcLgVolDual2 (double lgm2);
+
 
    /**
     * Destructor.
@@ -67,6 +80,26 @@ protected:
     * The maximum Dimension for the test
     */
    //int m_maxDim;
+
+   /*
+    * Represente sur dual along the diagonal?? ERWAN
+    */
+   double *m_lgVolDual2;
+
+   /**
+    * The logarithm \f$\log_2 (m^2)\f$.
+    */
+   double m_lgm2;
+
+   /**
+    * Use to save the dual basis and the basis in some works.
+    */
+   BMat m_wSI, m_vSI;
+
+   /**
+    * Working Variables use in MRGLattice.h
+    */
+   MScal m_t1, m_t2, m_t3;
 
 };
 

@@ -291,15 +291,13 @@ void MRGLattice::incDimBasis()
    const int dim = getDim();
    //m_basis.setDim(dim);
    //m_w.setDim(dim);
-   
-   MScal tmp1, tmp2, tmp3; // Working Variables
 
    for (int i = 0; i < dim; i++) {
       clear (m_vSI[0][i]);
       for (int j = 0; j < m_order; j++) {
-         conv (tmp1, m_basis[i][dim - j - 2]);
-         tmp1 = tmp1 * m_aCoef[j];
-         m_vSI[0][i] = m_vSI[0][i] + tmp1;
+         conv (m_t1, m_basis[i][dim - j - 2]);
+         m_t1 = m_t1 * m_aCoef[j];
+         m_vSI[0][i] = m_vSI[0][i] + m_t1;
       }
       Modulo (m_vSI[0][i], m_modulo, m_vSI[0][i]);
       m_basis[i][dim-1] = m_vSI[0][i];
@@ -315,13 +313,13 @@ void MRGLattice::incDimBasis()
 
    for (int j = 0; j < dim-1; j++) {
       /*
-      clear (tmp1);
+      clear (m_t1);
       for (int i = 0; i < dim; i++) {
-         tmp2 = m_dualbasis[i][j];
-         tmp2 *= m_vSI[0][i];
-         tmp1 -= tmp2;
+         m_t2 = m_dualbasis[i][j];
+         m_t2 *= m_vSI[0][i];
+         m_t1 -= m_t2;
       }
-      Quotient (tmp1, m_modulo, tmp1);
+      Quotient (m_t1, m_modulo, m_t1);
        Not recompute the element a_i,j
        */
       m_dualbasis[dim-1][j] = m_basis[j][dim-1];
@@ -344,7 +342,7 @@ void MRGLattice::buildLaBasis (int d) {
       MyExit (1, "MRGLattice::buildLaBasis:   k > ORDERMAX");
    initStates();
    int IMax = m_lac.getSize();
-   
+
    MVect b;
    b.SetLength(m_order);
    Invert(m_aCoef, b, m_order);
@@ -405,7 +403,7 @@ void MRGLattice::incDimLaBasis(int IMax)
 {
    const int dim = getDim();
    IncrementDimension();
-   MScal tmp1; // Work variable
+   MScal m_t1; // Work variable
 
    if (dim >= IMax) {
  /*     cout << " Dimension of the basis is too big:\n";
@@ -423,8 +421,8 @@ void MRGLattice::incDimLaBasis(int IMax)
       for (int i1 = 0; i1 < dim; i1++) {
          ProdScal (m_vSI[0], m_wSI[i1], dim, m_wSI[i1][0]);
          Quotient (m_wSI[i1][0], m_modulo, m_wSI[i1][0]);
-         tmp1 = m_wSI[i1][0] * m_vSI[i1][dim];
-         m_vSI[i][0] += tmp1;
+         m_t1 = m_wSI[i1][0] * m_vSI[i1][dim];
+         m_vSI[i][0] += m_t1;
       }
       Modulo (m_vSI[i][0], m_modulo, m_vSI[i][0]);
       m_basis[i][dim] = m_vSI[i][0];
@@ -440,9 +438,9 @@ void MRGLattice::incDimLaBasis(int IMax)
    for (int j = 0; j < dim; j++) {
       clear (m_wSI[0][j]);
       for (int i = 0; i < dim; i++) {
-         tmp1 = m_dualbasis[i][j];
-         tmp1 *= m_vSI[i][0];
-         m_wSI[0][j] += tmp1;
+         m_t1 = m_dualbasis[i][j];
+         m_t1 *= m_vSI[i][0];
+         m_wSI[0][j] += m_t1;
       }
       if (m_wSI[0][j] != 0)
          m_wSI[0][j] = -m_wSI[0][j];
@@ -450,10 +448,10 @@ void MRGLattice::incDimLaBasis(int IMax)
       m_dualbasis[dim][j] = m_wSI[0][j];
    }
 
-   Quotient (m_modulo, m_vSI[dim][dim], tmp1);
-   m_dualbasis[dim][dim] = tmp1;
+   Quotient (m_modulo, m_vSI[dim][dim], m_t1);
+   m_dualbasis[dim][dim] = m_t1;
 
-   setDim(dim);
+   //setDim(dim);
    setNegativeNorm();
    setDualNegativeNorm();
 }
@@ -470,19 +468,18 @@ void MRGLattice::initStates ()
 {
    int maxDim = getDim();
    //clear (m_t2);
-   MScal tmp2, tmp1;
 
    if (m_latType == RECURRENT) {
       // check if a_k is relatively prime to m --> m_t1 = 1
-      tmp1 = GCD (m_aCoef[m_order], m_modulo);
-      tmp1 = abs(tmp1);
-      set9 (tmp2);
+      m_t1 = GCD (m_aCoef[m_order], m_modulo);
+      m_t1 = abs(m_t1);
+      set9 (m_t2);
    }
 
-   if (m_latType == FULL || m_latType == PRIMEPOWER || (tmp1 == tmp2)) {
+   if (m_latType == FULL || m_latType == PRIMEPOWER || (m_t1 == m_t2)) {
       // m_sta is set to identity matrix
-      for (int i = 1; i <= m_order; i++) {
-         for (int j = 1; j <= m_order; j++) {
+      for (int i = 0; i < m_order; i++) {
+         for (int j = 0; j < m_order; j++) {
             if (i != j)
                clear (m_sta[i][j]);
             else
@@ -490,26 +487,31 @@ void MRGLattice::initStates ()
          }
          m_ip[i] = true;
       }
-      calcLgVolDual2 (m_lgm2);
+      double temp;
+      conv(temp, m_modulo);
+      double lgm2 = 2.0 * Lg (temp);
+      calcLgVolDual2 (lgm2);
 
    } else {
       if (m_latType == ORBIT) {
 MyExit (1, "case ORBIT is not finished");
 
          MVect InSta;
-         InSta.SetLength (1 + m_order);
+         MScal inStatmp;
+         InSta.SetLength (m_order);
          clear (m_sta[0][m_order]);
-         for (int i = 1; i <= m_order; i++) {
-            InSta[0] = m_aCoef[i] * InSta[m_order + 1 - i];
-            m_sta[0][m_order] += InSta[0];
+         for (int i = 0; i < m_order; i++) {
+            inStatmp = m_aCoef[i] * InSta[m_order - i - 1];
+            m_sta[0][m_order-1] += inStatmp;
          }
+
          m_sta[0][m_order] -= InSta[m_order];
          for (int i = 1; i < m_order; i++)
-            m_sta[0][i] = InSta[i + 1] - InSta[i];
+            m_sta[0][i] = InSta[i] - InSta[i - 1];
          InSta.kill();
 
       } else if (m_latType == RECURRENT) {
-         PolyPE::setM (m_m);
+         PolyPE::setM (m_modulo);
 /* Je crois que la version sunos devait fonctionner correctement.
  * Je crois qu'Ajmal a créé des bugs dans la version mcs, qui se sont propagés
  * à mcs2, xds98, ..., c++. Je n'ai pas réussi à trouver l'erreur: les
@@ -550,11 +552,11 @@ MyExit (1, "case ORBIT is not finished");
                // ********* ATTENTION: MulMod (a, b, c, d) est très différent
                // pour les types long et ZZ (voir ZZ.txt). C'est pourquoi on
                // utilise MulMod (a, b, c) même s'il est plus lent. *********
-               m_xi[m_order - j - 1] = MulMod (m_xi[m_order], m_aCoef[j], m_m);
+               m_xi[m_order - j - 1] = MulMod (m_xi[m_order], m_aCoef[j], m_modulo);
                m_xi[m_order - j] += m_xi[m_order - j - 1];
             }
             // Coeff. constant.
-            m_xi[0] = MulMod (m_xi[m_order], m_aCoef[m_order], m_m);
+            m_xi[0] = MulMod (m_xi[m_order], m_aCoef[m_order], m_modulo);
             m_sta[0][i] = m_xi[m_order - 1];
          }
       }
@@ -576,7 +578,7 @@ MyExit (1, "case ORBIT is not finished");
             m_t1 = m_aCoef[i] * m_sta[m_order - i + 1][0];
             m_sta[0][m_order] += m_t1;
          }
-         Modulo(m_sta[0][m_order], m_m, m_sta[0][m_order]);
+         Modulo(m_sta[0][m_order], m_modulo, m_sta[0][m_order]);
          // On memorise l'etat suivant.
          for (int i = 1; i < m_order; i++)
             swap (m_sta[i][0], m_sta[i + 1][0]);
@@ -590,7 +592,7 @@ MyExit (1, "case ORBIT is not finished");
       // Calcul de lgVolDual2
       double x;
       if (m_ip[1]) {
-         conv(x, m_m / m_sta[1][1]);
+         conv(x, m_modulo / m_sta[1][1]);
          m_lgVolDual2[1] = 2.0 * Lg (x);
       } else
          m_lgVolDual2[1] = 0.0;
@@ -598,7 +600,7 @@ MyExit (1, "case ORBIT is not finished");
       int rmax = min(m_order, maxDim);
       for (int r = 2; r <= rmax; r++) {
          if (m_ip[r]) {
-            conv(x, m_m / m_sta[r][r]);
+            conv(x, m_modulo / m_sta[r][r]);
             m_lgVolDual2[r] = m_lgVolDual2[r-1] + 2.0 * Lg (x);
          } else
             m_lgVolDual2[r] = m_lgVolDual2[r - 1];
@@ -622,13 +624,13 @@ void MRGLattice::insertion (BMat & sta)
  */
 {
    for (int j = 1; j <= m_order; j++) {
-      Modulo (sta[0][j], m_m, sta[0][j]);
+      Modulo (sta[0][j], m_modulo, sta[0][j]);
       if (!IsZero (sta[0][j])) {
          if (!m_ip[j]) {
-            Euclide (sta[0][j], m_m, m_t1, m_t2, m_t3, m_t4, sta[j][j]);
+            Euclide (sta[0][j], m_modulo, m_t1, m_t2, m_t3, m_t4, sta[j][j]);
             for (int i = j + 1; i <= m_order; i++) {
                sta[j][i] = m_t1 * sta[0][i];
-               Modulo (sta[j][i], m_m, sta[j][i]);
+               Modulo (sta[j][i], m_modulo, sta[j][i]);
             }
             m_ip[j] = true;
             return;
@@ -642,7 +644,7 @@ void MRGLattice::insertion (BMat & sta)
                m_t7 = m_t3 * sta[j][i];
                m_t8 = m_t4 * sta[0][i];
                sta[j][i] = m_t5 + m_t6;
-               Modulo (sta[j][i], m_m, sta[j][i]);
+               Modulo (sta[j][i], m_modulo, sta[j][i]);
                sta[0][i] = m_t7 + m_t8;
             }
          }
@@ -663,9 +665,9 @@ void MRGLattice::lemme2 (BMat & sta)
 {
    for (int i = 1; i <= m_order; i++) {
       if (m_ip[i]) {
-         Quotient (m_m, sta[i][i], m_t1);
+         Quotient (m_modulo, sta[i][i], m_t1);
          m_t1 = abs (m_t1);
-         if (m_t1 < m_m) {
+         if (m_t1 < m_modulo) {
             for (int j = 1; j < i; j++)
                sta[0][j] = sta[i][j];
             clear (sta[0][i]);
