@@ -287,7 +287,7 @@ void MRGLattice::incDimBasis()
 {
 // trace( "=================================AVANT incDimBasis", -10);
 
-   IncrementDimension();
+   incrementDimension();
    const int dim = getDim();
    //m_basis.setDim(dim);
    //m_w.setDim(dim);
@@ -402,7 +402,7 @@ void MRGLattice::buildLaBasis (int d) {
 void MRGLattice::incDimLaBasis(int IMax)
 {
    const int dim = getDim();
-   IncrementDimension();
+   incrementDimension();
    MScal m_t1; // Work variable
 
    if (dim >= IMax) {

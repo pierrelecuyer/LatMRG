@@ -23,9 +23,9 @@ LatTestSpectral::LatTestSpectral (const Normalizer * normal,
 {
    m_criter = SPECTRAL;
    m_normalizer = normal;
-   int dim = lat->getMaxDim();
-   m_boundL2.SetLength (1 + dim);
-   m_S2toL2 = new double[1 + dim];
+   int dim = lat->getDim();
+   m_boundL2.SetLength (dim);
+   m_S2toL2 = new double[dim];
    SetZero (m_S2toL2, dim);
 }
 

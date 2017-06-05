@@ -112,14 +112,14 @@ void ReportHeaderLat::printHeader ()
          m_writer->writeString ("      a_");
          m_writer->writeInt (i);
          m_writer->writeString (" = ");
-         m_writer->writeMScal (m_lattice->getCoef ()[i]);
+         //m_writer->writeMScal (m_lattice->getCoef ()[i]);
          m_writer->newLine ();
       }
       m_writer->writeString ("   rho = ");
-      m_writer->writeMScal (m_lattice->getRho ());
+      //m_writer->writeMScal (m_lattice->getRho ());
       m_writer->newLine ();
       m_writer->writeString ("   lossRho = ");
-      m_writer->writeMScal (m_lattice->getLossRho ());
+      //m_writer->writeMScal (m_lattice->getLossRho ());
       m_writer->newLine ();
    }
 

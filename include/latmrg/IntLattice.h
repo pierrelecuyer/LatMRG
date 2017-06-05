@@ -48,6 +48,11 @@ public:
     */
    void calcLgVolDual2 (double lgm2);
 
+   /**
+    * Get the log
+    */
+   double getLgVolDual2 (int i) const { return m_lgVolDual2[i]; }
+
 
    /**
     * Destructor.
