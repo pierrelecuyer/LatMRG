@@ -58,17 +58,17 @@ MRGLattice::MRGLattice(const MRGLattice &lat):
    m_latType = lat.m_latType;
    m_lacunaryFlag = lat.m_lacunaryFlag;
 
-   m_ip = new bool[m_order + 1];
-   m_xi.SetLength (m_order + 1);
-   m_aCoef.SetLength (m_order + 1);
-   m_sta.SetDims (m_order + 1, m_order + 1);
+   m_ip = new bool[m_order];
+   m_xi.SetLength (m_order);
+   m_aCoef.SetLength (m_order);
+   m_sta.SetDims (m_order, m_order);
 
    int dim = getDim();
    int rmax = max(m_order, dim);
-   m_wSI.SetDims (rmax + 1, dim + 1);
+   m_wSI.SetDims (rmax, dim);
 
    int i;
-   for (i = 0; i <= m_order; i++)
+   for (i = 0; i < m_order; i++)
       m_aCoef[i] = lat.m_aCoef[i];
 /*
    for (i = 0; i <= m_order; i++)
@@ -102,9 +102,9 @@ MRGLattice & MRGLattice::operator= (const MRGLattice & lat)
    m_ip = lat.m_ip;
    //m_shift = lat.m_shift;
    return *this;
-   MyExit (1, " MRGLattice::operator= n'est pas terminé   " );
+   //MyExit (1, " MRGLattice::operator= n'est pas terminé   " );
    //copy (lat);
-   return *this;
+   //return *this;
 }
 
 
@@ -119,7 +119,7 @@ MRGLattice::MRGLattice(const MScal & m, const MVect & a, int maxDim, int k,
    m_ip = new bool[1];
    init();
 
-   for (int i = 1; i <= m_order; i++)
+   for (int i = 0; i < m_order; i++)
       m_aCoef[i] = a[i];
 }
 
@@ -134,7 +134,7 @@ MRGLattice::MRGLattice(const MScal & m, const MVect & a, int maxDim, int k,
    m_lacunaryFlag = true;
    init();
 
-   for (int i = 1; i <= m_order; i++)
+   for (int i = 0; i < m_order; i++)
       m_aCoef[i] = a[i];
 }
 
@@ -143,18 +143,18 @@ MRGLattice::MRGLattice(const MScal & m, const MVect & a, int maxDim, int k,
 void MRGLattice::init()
 {
    kill();
-   IntLattice::init();
-   m_xi.SetLength(m_order + 1);
-   m_aCoef.SetLength(m_order + 1);
+   IntLatticeBasis::initVecNorm();
+   m_xi.SetLength(m_order);
+   m_aCoef.SetLength(m_order);
    if (m_order > ORDERMAX) {
       m_ip = new bool[1];
       m_sta.SetDims(1, 1);
    } else {
-      m_ip = new bool[m_order + 1];
-      m_sta.SetDims(m_order + 1, m_order + 1);
+      m_ip = new bool[m_order];
+      m_sta.SetDims(m_order, m_order);
    }
-   int rmax = max(m_order, getMaxDim());
-   m_wSI.SetDims(rmax + 1, getMaxDim() + 1);
+   int rmax = max(m_order, getDim());
+   m_wSI.SetDims(rmax, getDim());
 
    if (m_latType == ORBIT)
       initOrbit();
@@ -241,26 +241,26 @@ void MRGLattice::buildNaBasis (int d)
       dk = m_order;
 
    int i, j;
-   for (i = 1; i <= dk; i++) {
+   for (i = 0; i < dk; i++) {
       if (m_ip[i]) {
-         for (j = 1; j <= dk; j++)
-            m_v[i][j] = m_sta[i][j];
+         for (j = 0; j < dk; j++)
+            m_basis[i][j] = m_sta[i][j];
 
       } else {
-         for (j = 1; j <= dk; j++) {
+         for (j = 0; j < dk; j++) {
             if (i != j)
-               m_v[i][j] = 0;
+               m_basis[i][j] = 0;
             else
-               m_v[i][j] = m_m;
+               m_basis[i][j] = m_modulo;
          }
       }
    }
 
-   CalcDual<BMat>(m_v, m_w, dk, m_m);
+   CalcDual<BMat>(m_basis, m_dualbasis, dk, m_modulo);
 
    setDim(dk);
    if (d > m_order) {
-      for (i = m_order + 1; i <= d; i++)
+      for (i = m_order + 1; i < d; i++)
          incDimBasis ();
    }
  // trace( "=================================APRES buildNaBasis", -10);
@@ -272,7 +272,7 @@ void MRGLattice::buildNaBasis (int d)
 void MRGLattice::incDim()
 {
    if (m_lacunaryFlag) {
-      incDimLaBasis (getMaxDim());
+      incDimLaBasis (getDim());
    } else {
       incDimBasis ();
    }
@@ -287,43 +287,48 @@ void MRGLattice::incDimBasis()
 {
 // trace( "=================================AVANT incDimBasis", -10);
 
-
-   const int dim = getDim() + 1;
-   m_basis.setDim(dim);
+   IncrementDimension();
+   const int dim = getDim();
+   //m_basis.setDim(dim);
    //m_w.setDim(dim);
+   
+   MScal tmp1, tmp2, tmp3; // Working Variables
 
-   for (int i = 1; i < dim; i++) {
+   for (int i = 0; i < dim; i++) {
       clear (m_vSI[0][i]);
-      for (int j = 1; j <= m_order; j++) {
-         conv (m_t1, m_v[i][dim - j]);
-         m_t1 = m_t1 * m_aCoef[j];
-         m_vSI[0][i] = m_vSI[0][i] + m_t1;
+      for (int j = 0; j < m_order; j++) {
+         conv (tmp1, m_basis[i][dim - j - 2]);
+         tmp1 = tmp1 * m_aCoef[j];
+         m_vSI[0][i] = m_vSI[0][i] + tmp1;
       }
-      Modulo (m_vSI[0][i], m_m, m_vSI[0][i]);
-      m_v[i][dim] = m_vSI[0][i];
+      Modulo (m_vSI[0][i], m_modulo, m_vSI[0][i]);
+      m_basis[i][dim-1] = m_vSI[0][i];
    }
 
-   for (int i = 1; i < dim; i++)
-      m_v[dim][i] = 0;
-   m_v[dim][dim] = m_m;
+   for (int i = 0; i < dim; i++)
+      m_basis[dim-1][i] = 0;
+   m_basis[dim-1][dim-1] = m_modulo;
 
-   for (int i = 1; i < dim; i++)
-      m_w[i][dim] = 0;
-   m_w[dim][dim] = 1;
+   for (int i = 0; i < dim-1; i++)
+      m_dualbasis[i][dim-1] = 0;
+   m_dualbasis[dim-1][dim-1] = 1;
 
-   for (int j = 1; j < dim; j++) {
-      clear (m_t1);
-      for (int i = 1; i < dim; i++) {
-         m_t2 = m_w[i][j];
-         m_t2 *= m_vSI[0][i];
-         m_t1 -= m_t2;
+   for (int j = 0; j < dim-1; j++) {
+      /*
+      clear (tmp1);
+      for (int i = 0; i < dim; i++) {
+         tmp2 = m_dualbasis[i][j];
+         tmp2 *= m_vSI[0][i];
+         tmp1 -= tmp2;
       }
-      Quotient (m_t1, m_m, m_t1);
-      m_w[dim][j] = m_t1;
+      Quotient (tmp1, m_modulo, tmp1);
+       Not recompute the element a_i,j
+       */
+      m_dualbasis[dim-1][j] = m_basis[j][dim-1];
    }
 
-   m_basis.setNegativeNorm(true);
-   m_w.setNegativeNorm(true);
+   setNegativeNorm();
+   setDualNegativeNorm();
 /*
  if (!checkDuality ())
       MyExit (1, "BUG");
@@ -339,19 +344,19 @@ void MRGLattice::buildLaBasis (int d) {
       MyExit (1, "MRGLattice::buildLaBasis:   k > ORDERMAX");
    initStates();
    int IMax = m_lac.getSize();
-
+   
    MVect b;
-   b.SetLength(m_order + 1);
+   b.SetLength(m_order);
    Invert(m_aCoef, b, m_order);
 
    // b is the characteristic polynomial
-   PolyPE::setM (m_m);
+   PolyPE::setM (m_modulo);
    PolyPE::setF(b);
    PolyPE pol;
    int ord = 0;
 
    // Construction d'un systeme generateur modulo m.
-   for (int k = 1; k <= IMax; k++) {
+   for (int k = 0; k < IMax; k++) {
       // pour chaque indice lacunaire
       conv (m_e, m_lac[k]);
 
@@ -375,16 +380,16 @@ void MRGLattice::buildLaBasis (int d) {
    conditions de l'article \cite{rLEC94e} [sec. 3, conditions sur V_i >= i])
    et de plein rang (on remplace les lignes = 0 par lignes avec m sur la
    diagonale). */
-   Triangularization<BMat>(m_wSI, m_vSI, ord, IMax, m_m);
-   CalcDual<BMat>(m_vSI, m_wSI, IMax, m_m);
+   Triangularization<BMat>(m_wSI, m_vSI, ord, IMax, m_modulo);
+   CalcDual<BMat>(m_vSI, m_wSI, IMax, m_modulo);
 
    // Construire la base de dimension 1
-   m_v[1][1] = m_vSI[1][1];
-   m_w[1][1] = m_wSI[1][1];
+   m_basis[0][0] = m_vSI[0][0];
+   m_dualbasis[0][0] = m_wSI[0][0];
    setDim(1);
 
-   m_basis.setNegativeNorm(true);
-   m_w.setNegativeNorm(true);
+   setNegativeNorm();
+   setDualNegativeNorm();
 
    for (int i = 2; i <= d; i++)
       incDimLaBasis (IMax);
@@ -399,6 +404,8 @@ void MRGLattice::buildLaBasis (int d) {
 void MRGLattice::incDimLaBasis(int IMax)
 {
    const int dim = getDim();
+   IncrementDimension();
+   MScal tmp1; // Work variable
 
    if (dim >= IMax) {
  /*     cout << " Dimension of the basis is too big:\n";
@@ -407,48 +414,48 @@ void MRGLattice::incDimLaBasis(int IMax)
       MyExit(0, " Dimension of the basis is too big:\nDim > Number of lacunary indices.");
    }
 
-   for (int i = 1; i <= dim; i++) {
+   for (int i = 0; i < dim; i++) {
       // v[i] -> VSI[0].
-      for (int j = 1; j <= dim; j++)
-         m_vSI[0][j] = m_v[i][j];
+      for (int j = 0; j < dim; j++)
+         m_vSI[0][j] = m_basis[i][j];
       clear (m_vSI[i][0]);
 
-      for (int i1 = 1; i1 <= dim; i1++) {
+      for (int i1 = 0; i1 < dim; i1++) {
          ProdScal (m_vSI[0], m_wSI[i1], dim, m_wSI[i1][0]);
-         Quotient (m_wSI[i1][0], m_m, m_wSI[i1][0]);
-         m_t1 = m_wSI[i1][0] * m_vSI[i1][dim + 1];
-         m_vSI[i][0] += m_t1;
+         Quotient (m_wSI[i1][0], m_modulo, m_wSI[i1][0]);
+         tmp1 = m_wSI[i1][0] * m_vSI[i1][dim];
+         m_vSI[i][0] += tmp1;
       }
-      Modulo (m_vSI[i][0], m_m, m_vSI[i][0]);
-      m_v[i][dim + 1] = m_vSI[i][0];
+      Modulo (m_vSI[i][0], m_modulo, m_vSI[i][0]);
+      m_basis[i][dim] = m_vSI[i][0];
    }
 
-   for (int j = 1; j <= dim; j++)
-      m_v[dim + 1][j] = 0;
-   m_v[dim + 1][dim + 1] = m_vSI[dim + 1][dim + 1];
+   for (int j = 0; j < dim; j++)
+      m_basis[dim][j] = 0;
+   m_basis[dim][dim] = m_vSI[dim][dim];
 
-   for (int i = 1; i <= dim; i++)
-      m_w[i][dim + 1] = 0;
+   for (int i = 0; i < dim; i++)
+      m_dualbasis[i][dim] = 0;
 
-   for (int j = 1; j <= dim; j++) {
+   for (int j = 0; j < dim; j++) {
       clear (m_wSI[0][j]);
-      for (int i = 1; i <= dim; i++) {
-         m_t1 = m_w[i][j];
-         m_t1 *= m_vSI[i][0];
-         m_wSI[0][j] += m_t1;
+      for (int i = 0; i < dim; i++) {
+         tmp1 = m_dualbasis[i][j];
+         tmp1 *= m_vSI[i][0];
+         m_wSI[0][j] += tmp1;
       }
       if (m_wSI[0][j] != 0)
          m_wSI[0][j] = -m_wSI[0][j];
-      Quotient (m_wSI[0][j], m_vSI[dim + 1][dim + 1], m_wSI[0][j]);
-      m_w[dim + 1][j] = m_wSI[0][j];
+      Quotient (m_wSI[0][j], m_vSI[dim][dim], m_wSI[0][j]);
+      m_dualbasis[dim][j] = m_wSI[0][j];
    }
 
-   Quotient (m_m, m_vSI[dim + 1][dim + 1], m_t1);
-   m_w[dim + 1][dim + 1] = m_t1;
+   Quotient (m_modulo, m_vSI[dim][dim], tmp1);
+   m_dualbasis[dim][dim] = tmp1;
 
-   setDim(dim + 1);
-   m_basis.setNegativeNorm(true);
-   m_w.setNegativeNorm(true);
+   setDim(dim);
+   setNegativeNorm();
+   setDualNegativeNorm();
 }
 
 
@@ -461,17 +468,18 @@ void MRGLattice::initStates ()
  * groupe d'états considérés.
  */
 {
-   int maxDim = getMaxDim();
-   clear (m_t2);
+   int maxDim = getDim();
+   //clear (m_t2);
+   MScal tmp2, tmp1;
 
    if (m_latType == RECURRENT) {
       // check if a_k is relatively prime to m --> m_t1 = 1
-      m_t1 = GCD (m_aCoef[m_order], m_m);
-      m_t1 = abs(m_t1);
-      set9 (m_t2);
+      tmp1 = GCD (m_aCoef[m_order], m_modulo);
+      tmp1 = abs(tmp1);
+      set9 (tmp2);
    }
 
-   if (m_latType == FULL || m_latType == PRIMEPOWER || (m_t1 == m_t2)) {
+   if (m_latType == FULL || m_latType == PRIMEPOWER || (tmp1 == tmp2)) {
       // m_sta is set to identity matrix
       for (int i = 1; i <= m_order; i++) {
          for (int j = 1; j <= m_order; j++) {

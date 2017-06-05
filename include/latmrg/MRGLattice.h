@@ -208,9 +208,9 @@ protected:
      */
 
    /**
-    * \f$\clubsuit\f$ To be completed. Erwan
+    * \f$\clubsuit\f$ Seems to be use as working variables. To be completed. Erwan
     */
-   BMat m_sta, m_wSI;
+   BMat m_sta, m_wSI, m_vSI;
 
    /**
     * When the flag <tt>m_ip[i]</tt> is `true`, the \f$i\f$-th diagonal
