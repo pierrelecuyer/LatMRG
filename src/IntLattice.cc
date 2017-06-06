@@ -101,6 +101,7 @@ void IntLattice::incrementDimension ()
    setDim(dim+1);
 }
 
+//=========================================================================
 
 void IntLattice::calcLgVolDual2 (double lgm2)
 {
@@ -114,6 +115,18 @@ void IntLattice::calcLgVolDual2 (double lgm2)
    // I am not sure which is the fix and which is the bug.
    for (int r = rmax; r < dim; r++)
       m_lgVolDual2[r] = m_lgVolDual2[r - 1];
+}
+
+//=========================================================================
+
+void IntLattice::dualize ()
+{
+   BMat tmp;
+      tmp = m_basis;
+      m_basis = m_dualbasis;
+      m_dualbasis = tmp;
+      setNegativeNorm ();
+      setDualNegativeNorm ();
 }
 
 

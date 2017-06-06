@@ -203,13 +203,13 @@ protected:
    /**
     * Dispatches a `baseUpdate` signal to all observers.
     */
-   void dispatchBaseUpdate (LatticeTester::Basis &);
+   void dispatchBaseUpdate (BMat &);
 
    /**
     * Dispatches a `baseUpdate(V, i)` signal to all observers. Only base
     * vector \f$i\f$ will be sent.
     */
-   void dispatchBaseUpdate (LatticeTester::Basis & V, int i);
+   void dispatchBaseUpdate (BMat & V, int i);
 
    /**
     * Dispatches a `resultUpdate` signal to all observers.

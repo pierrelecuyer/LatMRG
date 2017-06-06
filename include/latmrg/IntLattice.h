@@ -7,9 +7,7 @@ namespace LatMRG {
 
 /**
  * \copydoc LatticeTester::IntLattice
- * Beside, it contains the order k of the genrator.
- * In fact, the basis has a particular form which need
- * the order k.
+ * Beside, it contains fonction use in LatMRG
  */
 class IntLattice : public LatticeTester::IntLatticeBasis {
 public:
@@ -49,10 +47,14 @@ public:
    void calcLgVolDual2 (double lgm2);
 
    /**
-    * Get the log
+    * Gives the log of m^(2*i) if i < order, else gives the log of m^(2*i)
     */
    double getLgVolDual2 (int i) const { return m_lgVolDual2[i]; }
 
+   /**
+    * Exchange the primal basis and the dual basis.
+    */
+   void dualize ();
 
    /**
     * Destructor.

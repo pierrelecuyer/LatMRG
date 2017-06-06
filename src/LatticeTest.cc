@@ -114,7 +114,7 @@ void LatticeTest::setMaxNodesBB (long maxNodesBB)
 
 //===========================================================================
 
-void LatticeTest::dispatchBaseUpdate(Basis & basis)
+void LatticeTest::dispatchBaseUpdate(BMat & basis)
 {
    ob_list::const_iterator it;
    LatticeTestObserver *ob;
@@ -126,7 +126,7 @@ void LatticeTest::dispatchBaseUpdate(Basis & basis)
 }
 
 
-void LatticeTest::dispatchBaseUpdate(Basis & basis, int i)
+void LatticeTest::dispatchBaseUpdate(BMat & basis, int i)
 {
    ob_list::const_iterator it;
    LatticeTestObserver *ob;

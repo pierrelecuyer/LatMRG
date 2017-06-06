@@ -55,14 +55,14 @@ void ReportLat::printTable()
    m_writer->writeTable(m_results, "llllllllll");
 }
 
-void ReportLat::baseUpdate(Base & base)
+void ReportLat::baseUpdate(BMat & base)
 {
-   m_writer->writeString (base.toString());
+   m_writer->writeString (base);
 }
 
-void ReportLat::baseUpdate(Base & base, int i)
+void ReportLat::baseUpdate(BMat & base, int i)
 {
-   m_writer->writeString (base.toString(i));
+   m_writer->writeString (base);
 }
 
 void ReportLat::resultUpdate(double results[], int n)

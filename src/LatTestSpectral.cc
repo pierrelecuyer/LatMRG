@@ -79,6 +79,9 @@ void LatTestSpectral::setLowerBoundL2 (double S2)
 void LatTestSpectral::setLowerBoundL2 (double S2, const double* weights)
 {
    int i;
+   NScal m2;
+   conv(m2, m_lat->getModulo());
+   m2 = m2 * m2;
    if (S2 <= 0.0) {
       for (i = m_fromDim; i <= m_toDim; i++)
          m_boundL2[i] = 0;
@@ -90,7 +93,7 @@ void LatTestSpectral::setLowerBoundL2 (double S2, const double* weights)
          // On a multiplié les coordonnées du primal par m pour calculer
          // uniquement avec des entiers: meilleure précision.
          for (i = m_fromDim; i <= m_toDim; i++)
-            conv(m_boundL2[i], m_lat->getM2 ()*S2*m_S2toL2[i]);
+            conv(m_boundL2[i],m2 * S2 * m_S2toL2[i]);
 
       } else {
          for (i = m_fromDim; i <= m_toDim; i++)
@@ -105,7 +108,7 @@ void LatTestSpectral::setLowerBoundL2 (double S2, const double* weights)
             m_boundL2[i] = m_boundL2[i]*m_boundL2[i];
             // On a multiplié les coordonnées du primal par m pour calculer
             // uniquement avec des entiers: meilleure précision.
-            m_boundL2[i] = m_boundL2[i]*m_lat->getM2 ();
+            m_boundL2[i] = m_boundL2[i] * m2;
          }
 
       } else {
@@ -155,12 +158,12 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
    }
 
    double mr;
-   conv (mr, m_lat->getM ());
+   conv (mr, m_lat->getModulo ());
    double temp;
    NScal te;
    double lgvv1 = 0.0;
    while (m_lat->getDim () < fromDim)
-      m_lat->incDim ();
+      m_lat->incrementDimension ();
 
    if (m_S2toL2[fromDim] <= 0.0)
       initLowerBoundL2 (fromDim, toDim);
@@ -174,11 +177,14 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
       if (red.shortestVector (m_lat->getNorm ())) {
          // Calcul de D2. Pour Norm # L2NORM, suppose que VV est a jour.
          if (m_lat->getNorm () == L2NORM) {
-            m_lat->getPrimalBasis ().updateScalL2Norm (1);
-            conv (temp, m_lat->getPrimalBasis ().getVecNorm (1));
+            m_lat->updateScalL2Norm (0);
+            conv (temp, m_lat->getVecNorm (0));
             if (!m_dualF) {
                conv(te, temp);
-               te = te / m_lat->getM2 ();
+               NScal m2;
+               conv(m2, m_lat->getModulo ());
+               m2 = m2*m2;
+               te = te / m2;
                conv(temp, te);
             }
 
@@ -190,9 +196,9 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
          if (3 == m_detailF) {
             if (m_dualF) {
                dispatchBaseUpdate (m_lat->getDualBasis());
-               dispatchBaseUpdate (m_lat->getPrimalBasis());
+               dispatchBaseUpdate (m_lat->getBasis());
             } else {
-               dispatchBaseUpdate (m_lat->getPrimalBasis());
+               dispatchBaseUpdate (m_lat->getBasis());
                dispatchBaseUpdate (m_lat->getDualBasis());
             }
          }
@@ -251,7 +257,7 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
 
       if (dim == toDim)
          break;
-      m_lat->incDim ();
+      m_lat->incrementDimension ();
    }
 
    return true;
@@ -295,9 +301,9 @@ void LatTestSpectral::prepAndDisp (int dim)
    double results[N];
 
    if (2 == m_detailF)
-      dispatchBaseUpdate (m_lat->getPrimalBasis());
+      dispatchBaseUpdate (m_lat->getBasis());
    else if (1 == m_detailF)
-      dispatchBaseUpdate (m_lat->getPrimalBasis(), 1);
+      dispatchBaseUpdate (m_lat->getBasis(), 0);
 
    if (m_lat->getNorm () == L2NORM) {
       results[0] = sqrt (m_merit.getMerit (dim));    // L_t
