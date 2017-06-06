@@ -25,6 +25,11 @@ public:
    IntLattice (const IntLattice & Lat);
 
    /**
+    * Destructor.
+    */
+   virtual ~IntLattice ();
+
+   /**
     * Init the matrix
     */
    void init ();
@@ -57,9 +62,12 @@ public:
    void dualize ();
 
    /**
-    * Destructor.
+    * This function is called to fix the normalization constants to get
+    * the normalized merit from the shortest distance in the lattice. If
+    * `dualF` is `true`, the normalization constant is reset for the dual
+    * lattice, otherwise it is reset for the primal lattice.
     */
-   virtual ~IntLattice ();
+   void fixLatticeNormalization (bool dualF);
 
 #ifdef WITH_NTL
    /**

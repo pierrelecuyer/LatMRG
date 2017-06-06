@@ -129,6 +129,20 @@ void IntLattice::dualize ()
       setDualNegativeNorm ();
 }
 
+//=========================================================================
+
+void IntLattice::fixLatticeNormalization(bool dualF)
+{
+   // Normalization factor: dual to primal : M^(k/dim) -> 1/M^(k/dim)
+   if (( dualF && m_lgVolDual2[1] < 0.0) ||
+       (!dualF && m_lgVolDual2[1] > 0.0)) {
+      for (int i = 1; i <= getDim(); i++)
+         m_lgVolDual2[i] = -m_lgVolDual2[i];
+   }
+//   for (int i = 1; i <= getMaxDim(); i++)
+//      cout << " fix  " << m_lgVolDual2[i] << endl;
+}
+
 
 
 }

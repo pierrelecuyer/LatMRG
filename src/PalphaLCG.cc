@@ -7,7 +7,7 @@
 extern "C" {
 #include "unif01.h"
 #include "ulcg.h"
-#include "num.h"
+#include <num.h> // ERWAN Previous #include "num.h"
 }
 
 #include <cassert>
@@ -206,7 +206,7 @@ void PalphaLCG::calcPalpha2PerNonMax (int minDim, int maxDim, double P2[])
 
    Puis[0] = 1;
    for (s = 1; s <= maxDim; ++s) {
-      Puis[s] = num_MultModL (Puis[s - 1], A, 0, M); // = A^s mod M
+      Puis[s] = num_MultModL (Puis[s - 1], A, 0, M); // = A^s mod M 
       Ind[s] = 0;
    }
 
@@ -337,7 +337,7 @@ double PalphaLCG::calcPalpha4PerNonMax (int dim)
    Fac[0] = DeuxPi4 * Fac[0] * Fac[0] / 3.0;
    double Reste = 1.0 + Fac[0] / 30.0;
    for (i = 1; i < dim; ++i) {
-      VectTemp[i] = Vect[i] = num_MultModL (Vect[i - 1], A, 0, M);
+      //VectTemp[i] = Vect[i] = num_MultModL (Vect[i - 1], A, 0, M);
       Fac[i] = m_Beta[i + 1] * m_Beta[i + 1];
       Fac[i] = DeuxPi4 * Fac[i] * Fac[i] / 3.0;
       Reste = Reste * (1.0 + Fac[i] / 30.0);

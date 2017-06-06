@@ -33,7 +33,7 @@ bool LatTestBeyer::test (int fromDim, int toDim, double minVal[])
 
    resetFromDim (m_lat->getOrder (), fromDim);
    while (m_lat->getDim () < fromDim)
-      m_lat->incDim ();
+      m_lat->incrementDimension ();
 
    m_lat->dualize ();
    red.preRedDieter (0);
@@ -45,13 +45,13 @@ bool LatTestBeyer::test (int fromDim, int toDim, double minVal[])
       bool success = red.reductMinkowski (0);
       int dim = m_lat->getDim ();
       if (success) {
-         m_lat->getPrimalBasis ().updateScalL2Norm (1);
-         m_lat->getPrimalBasis ().updateScalL2Norm (dim);
+         m_lat->updateScalL2Norm (0);
+         m_lat->updateScalL2Norm (dim-1);
 
          double x1, x2;        // si VV[1] et VV[dim] sont tres
          // grands, il faudrait envisager de changer x1 et x2 en xdouble.
-         conv (x1, m_lat->getPrimalBasis ().getVecNorm (1));
-         conv (x2, m_lat->getPrimalBasis ().getVecNorm (dim));
+         conv (x1, m_lat->getVecNorm (0));
+         conv (x2, m_lat->getVecNorm (dim-1));
          m_merit[dim] = x1 / x2;
 
          // Si on sait deja que ce gen. ne pourra etre retenu,
@@ -73,7 +73,7 @@ bool LatTestBeyer::test (int fromDim, int toDim, double minVal[])
 
       if (dim == toDim)
          break;
-      m_lat->incDim ();
+      m_lat->incrementDimension();
    }
 
    return true;
