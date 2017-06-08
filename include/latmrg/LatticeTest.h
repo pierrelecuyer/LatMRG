@@ -3,7 +3,7 @@
 #include "latticetester/Types.h"
 #include "latticetester/Util.h"
 #include "latticetester/Const.h"
-#include "latticetester/Basis.h"
+#include "latticetester/IntLatticeBasis.h"
 #include "latmrg/IntLattice.h"
 #include "latmrg/Merit.h"
 #include "latmrg/Subject.h"

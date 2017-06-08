@@ -1,6 +1,7 @@
 #ifndef LATMRG__INTLATTICE_H
 #define LATMRG__INTLATTICE_H
 #include "latticetester/IntLatticeBasis.h"
+#include "latticetester/Coordinates.h"
 #include "latmrg/MRGComponent.h"
 
 namespace LatMRG {
@@ -68,6 +69,21 @@ public:
     * lattice, otherwise it is reset for the primal lattice.
     */
    void fixLatticeNormalization (bool dualF);
+
+
+   /**
+    * Builds the basis (and dual basis) of the projection `proj` for this
+    * lattice. The result is placed in the `lattice` lattice. The basis is
+    * triangularized to form a proper basis.
+    */
+   void buildProjection (IntLattice* lattice, const LatticeTester::Coordinates & proj);
+
+   /**
+    * Builds the basis for the lattice in dimension `d`.
+    * This fonction is implemented in subclasses
+    */
+   virtual void buildBasis (int d);
+
 
 #ifdef WITH_NTL
    /**

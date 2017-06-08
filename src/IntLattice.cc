@@ -143,6 +143,46 @@ void IntLattice::fixLatticeNormalization(bool dualF)
 //      cout << " fix  " << m_lgVolDual2[i] << endl;
 }
 
+//=========================================================================
+
+void IntLattice::buildProjection (IntLattice* lattice, const Coordinates & proj)
+{
+   const int dim = getDim ();
+//  cout << "      ESPION_2\n";  getPrimalBasis ().write();
+   int i = 0;
+   for (Coordinates::const_iterator iter = proj.begin();
+        iter != proj.end(); ++iter) {
+      for (int j = 0; j < dim; j++)
+         lattice->m_dualbasis(j,i) = m_basis(j, *iter);
+      ++i;
+   }
+
+   lattice->setDim (static_cast<int>(proj.size()));
+   lattice->m_order = m_order;
+
+   Triangularization<BMat> (lattice->m_dualbasis, lattice->m_basis, dim, static_cast<int>(proj.size()), m_modulo);
+// lattice->trace("\nESPION_4");
+/* cout << "  ***** build 2\n";
+lattice->getPrimalBasis ().setNegativeNorm (true);
+lattice->getPrimalBasis ().updateScalL2Norm (1,proj.size());
+lattice->getPrimalBasis ().write();*/
+   CalcDual<BMat> (lattice->m_basis, lattice->m_dualbasis, static_cast<int>(proj.size()), m_modulo);
+/*
+cout << "  ***** build 3\n";
+lattice->getDualBasis ().setNegativeNorm (true);
+lattice->getDualBasis ().updateScalL2Norm (1,proj.size());
+lattice->getDualBasis ().write();
+*/
+   lattice->setNegativeNorm ();
+   lattice->setNegativeNorm ();
+}
+
+void IntLattice::buildBasis (int d)
+{
+   MyExit(1, " buildBasis does nothing");
+   d++;  // eliminates compiler warning
+}
+
 
 
 }

@@ -54,7 +54,7 @@ public:
    /**
     * Increases the dimension of the basis by 1.
     */
-   void incDim() { incDimBasis (getMaxDim()); }
+   void incDim() { incDimBasis (getDim()); }
 
    /**
     * Returns the \f$j\f$-th lacunary index.

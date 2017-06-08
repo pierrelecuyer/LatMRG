@@ -1,6 +1,6 @@
 #ifndef	LATTICETESTOBSERVER_H
 #define LATTICETESTOBSERVER_H
-#include "latticetester/Basis.h"
+#include "latticetester/IntLatticeBasis.h"
 #include <string>
 
 

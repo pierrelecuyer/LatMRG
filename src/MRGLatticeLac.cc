@@ -21,7 +21,7 @@ namespace LatMRG
 //===========================================================================
 
 MRGLatticeLac::MRGLatticeLac (const MRGLatticeLac & lat): MRGLattice::
-      MRGLattice (lat.m_m, lat.m_aCoef, lat.getMaxDim (), lat.getOrder (),
+      MRGLattice (lat.m_modulo, lat.m_aCoef, lat.getDim (), lat.getOrder (),
                   lat.m_latType, lat.getNorm ()), m_lac (lat.m_lac)
 {
    m_lacunaryFlag = true;
@@ -36,7 +36,7 @@ MRGLatticeLac & MRGLatticeLac::operator= (const MRGLatticeLac & lat)
    if (this == &lat)
       return * this;
    MyExit (1, " MRGLatticeLac::operator= n'est pas terminé   ");
-   copy (lat);
+   copyBasis (lat);
    return *this;
 }
 
@@ -96,7 +96,7 @@ void MRGLatticeLac::buildBasis (int d)
    Invert (m_aCoef, b, m_order);
 
    // b is the characteristic polynomial
-   PolyPE::setM (m_m);
+   PolyPE::setM (m_modulo);
    PolyPE::setF (b);
    PolyPE pol;
 
@@ -124,17 +124,17 @@ void MRGLatticeLac::buildBasis (int d)
       Triangularization qui pourrait nécessiter un appel pour chaque ligne,
       mais qui sauverait beaucoup de mémoire.
       Il n'est pas certain que cela en vaille la peine. */
-   Triangularization <BMat> (m_wSI, m_vSI, ord, IMax, m_m);
-   CalcDual <BMat> (m_vSI, m_wSI, IMax, m_m);
+   Triangularization <BMat> (m_wSI, m_vSI, ord, IMax, m_modulo);
+   CalcDual <BMat> (m_vSI, m_wSI, IMax, m_modulo);
 
    // Construire la base de dimension 1
-   m_v[1][1] = m_vSI[1][1];
-   m_w[1][1] = m_wSI[1][1];
+   m_basis[0][0] = m_vSI[0][0];
+   m_dualbasis[0][0] = m_wSI[0][0];
    setDim (1);
 
-   m_v.setNegativeNorm (true);
-   m_w.setNegativeNorm (true);
-   for (int i = 2; i <= d; i++)
+   setNegativeNorm ();
+   setDualNegativeNorm ();
+   for (int i = 1; i < d; i++)
       incDimBasis (IMax);
 
    // for debugging
@@ -146,6 +146,7 @@ void MRGLatticeLac::buildBasis (int d)
 
 void MRGLatticeLac::incDimBasis (int IMax)
 {
+   incrementDimension();
    const int dim = getDim ();
 
    if (dim >= IMax) {
@@ -153,19 +154,19 @@ void MRGLatticeLac::incDimBasis (int IMax)
     "Dimension of the basis is too big:\nDim > Number of lacunary indices.");
    }
 
-   for (int i = 1; i <= dim; i++) {
+   for (int i = 0; i < dim; i++) {
       // v[i] -> VSI[0].
-      for (int j = 1; j <= dim; j++)
-         m_vSI[0][j] = m_v[i][j];
+      for (int j = 0; j < dim; j++)
+         m_vSI[0][j] = m_basis[i][j];
       clear (m_vSI[i][0]);
 
-      for (int i1 = 1; i1 <= dim; i1++) {
+      for (int i1 = 0; i1 < dim; i1++) {
          ProdScal (m_vSI[0], m_wSI[i1], dim, m_wSI[i1][0]);
-         Quotient (m_wSI[i1][0], m_m, m_wSI[i1][0]);
+         Quotient (m_wSI[i1][0], m_modulo, m_wSI[i1][0]);
          m_t1 = m_wSI[i1][0] * m_vSI[i1][dim + 1];
          m_vSI[i][0] += m_t1;
       }
-      Modulo (m_vSI[i][0], m_m, m_vSI[i][0]);
+      Modulo (m_vSI[i][0], m_modulo, m_vSI[i][0]);
       m_v[i][dim + 1] = m_vSI[i][0];
    }
 

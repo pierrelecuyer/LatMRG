@@ -172,7 +172,7 @@ int TestProjections::calcNumProjections (bool stationary, bool forceLast)
 
    if (!stationary) {
       for (int order = 2; order <= m_d; order++) {
-         int maxCoord = min (m_td[order], m_master->getMaxDim ());
+         int maxCoord = min (m_td[order], m_master->getDim ());
          if (maxCoord <= order)
             continue;
          for (ProjIteratorSuccCoords projit(2, maxCoord, order, order, stationary, forceLast); projit; ++projit)
@@ -183,7 +183,7 @@ int TestProjections::calcNumProjections (bool stationary, bool forceLast)
    // test for non-successive coordinates
    // loop over projection orders
    for (int order = 2; order <= m_d; order++) {
-      int maxCoord = min (m_td[order], m_master->getMaxDim ());
+      int maxCoord = min (m_td[order], m_master->getDim ());
       if (maxCoord <= order)
          continue;
       for (ProjIteratorNonSuccCoords projit(1, maxCoord, order, order, stationary, forceLast); projit; ++projit)
@@ -271,7 +271,7 @@ double TestProjections::run (bool stationary, bool forceLast, double minVal[], c
       // loop over projection orders
       for (int order = 2; order <= m_d; order++) {
 
-         int maxCoord = min (m_td[order], m_master->getMaxDim ());
+         int maxCoord = min (m_td[order], m_master->getDim ());
          // if maxCoord < order, there are no projections to consider
          // if maxCoord == order, the merit has already been computed above
          if (maxCoord <= order)
@@ -292,7 +292,7 @@ double TestProjections::run (bool stationary, bool forceLast, double minVal[], c
    // loop over projection orders
    for (int order = 2; order <= m_d; order++) {
 
-      int maxCoord = min (m_td[order], m_master->getMaxDim ());
+      int maxCoord = min (m_td[order], m_master->getDim ());
       // if maxCoord <= order, there are no projections with non-successive indices to consider
       if (maxCoord <= order)
          continue;
@@ -320,7 +320,7 @@ double TestProjections::run (ProjIterator& projit, double minVal[], const Weight
 
    while (projit) {
       int dim = (int)projit->size();
-      int maxCoord = min (m_td[dim], m_master->getMaxDim ());
+      int maxCoord = min (m_td[dim], m_master->getDim ());
       if (maxCoord <= dim) // if equal, already computed
          continue;
 

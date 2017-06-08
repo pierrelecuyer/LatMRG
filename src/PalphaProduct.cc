@@ -2,7 +2,7 @@
 #include "latticetester/Num.h"
 
 extern "C" {
-#include "num.h"
+#include <num.h>
 }
 
 #include <cmath>
