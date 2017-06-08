@@ -162,7 +162,18 @@ void WriterRes::writeTable (Table & data, const string pos)
 
    int k, offset;
 
-   string sub_data[t][nb_sub_lig];
+
+
+   //string sub_data[t][nb_sub_lig];
+   // this is not compiling with old versions of clang
+
+   string **sub_data = new string* [t];
+   for (int i = 0; i < t; ++i)
+      sub_data[i] = new string [nb_sub_lig];
+   // better could be : string *sub_data = new string [t * nb_sub_lig]
+
+
+
    // On décompose les chaines en sous chaines
 
    for (int i = 0; i < t; i++) {
@@ -237,6 +248,12 @@ void WriterRes::writeTable (Table & data, const string pos)
       }
       *m_stream << endl;
    }
+
+   // deleting pointers
+   for (int i = 0; i < t; ++i)
+      delete [] sub_data[i];
+   delete [] sub_data;
+
 }
 
 //=========================================================================
