@@ -22,14 +22,12 @@
 #include <sstream>
 #include <iomanip>
 #include <time.h>
+#include <num.h>
 
 #include "latticetester/Util.h"
-#include "latticetester/Basis.h"
 #include "latticetester/Const.h"
 #include "latticetester/Types.h"
 #include "latticetester/IntFactor.h"
-#include "latticetester/IntLattice.h"
-#include "latticetester/Rank1Lattice.h"
 #include "latticetester/IntLatticeBasis.h"
 #include "latticetester/Reducer.h"
 #include "latticetester/Types.h"

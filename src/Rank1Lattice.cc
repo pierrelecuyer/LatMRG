@@ -37,7 +37,7 @@ Rank1Lattice::~Rank1Lattice()
 void Rank1Lattice::init()
 {
    IntLattice::init();
-   for (int r = 1; r < getMaxDim(); r++)
+   for (int r = 1; r < getDim(); r++)
       m_lgVolDual2[r] = m_lgVolDual2[r - 1];
 }
 
@@ -50,8 +50,8 @@ Rank1Lattice & Rank1Lattice::operator= (const Rank1Lattice & lat)
       return * this;
    copy (lat);
    init ();
-   int maxDim = lat.getMaxDim ();
-   m_a.resize (1 + maxDim);
+   int dim = lat.getDim ();
+   m_a.resize (dim);
    m_a = lat.m_a;
    return *this;
 }
@@ -60,13 +60,13 @@ Rank1Lattice & Rank1Lattice::operator= (const Rank1Lattice & lat)
 //=========================================================================
 
 Rank1Lattice::Rank1Lattice (const Rank1Lattice & lat):
-      IntLattice::IntLatticeBasis (lat.m_m, lat.getOrder (),
-                              lat.getMaxDim (), lat.getNorm ())
+      IntLattice::IntLattice (lat.m_modulo, lat.getOrder (),
+                              lat.getDim (), lat.getNorm ())
 {
    // MyExit (1, "Rank1Lattice:: constructeur n'est pas terminé " );
    init ();
-   int maxDim = lat.getMaxDim ();
-   m_a.resize (1 + maxDim);
+   int maxDim = lat.getDim ();
+   m_a.resize (maxDim);
    m_a = lat.m_a;
 }
 
@@ -75,7 +75,7 @@ Rank1Lattice::Rank1Lattice (const Rank1Lattice & lat):
 
 std::string Rank1Lattice::toStringCoef ()const
 {
-   return toString (m_a, 1, getMaxDim ());
+   return toString (m_a, 1, getDim ());
 }
 
 
@@ -85,8 +85,8 @@ void Rank1Lattice::incDim ()
 {
    // kill();
    buildBasis (1 + getDim ());
-   m_v.setNegativeNorm (true);
-   m_w.setNegativeNorm (true);
+   setNegativeNorm ();
+   setDualNegativeNorm ();
 }
 
 
@@ -115,12 +115,12 @@ void Rank1Lattice::buildBasis (int d)
 
    // if a[0] != 1, the basis must be triangularized
    if (m_basis (0, 0) != 1) {
-      Triangularization < Base > (m_basis, m_dualbasis, d, d, m_m);
+      Triangularization < BMat > (m_basis, m_dualbasis, d, d, m_modulo);
       dualize ();
    }
-   CalcDual < Base > (m_v, m_w, d, m_m);
-   m_v.setNegativeNorm (true);
-   m_w.setNegativeNorm (true);
+   CalcDual < BMat > (m_basis, m_dualbasis, d, m_modulo);
+   setNegativeNorm ();
+   setDualNegativeNorm (true);
 }
 
 //===========================================================================

@@ -57,12 +57,14 @@ void ReportLat::printTable()
 
 void ReportLat::baseUpdate(BMat & base)
 {
-   m_writer->writeString (base);
+   //m_writer->writeString (base);
+   //FIX ME
 }
 
 void ReportLat::baseUpdate(BMat & base, int i)
 {
-   m_writer->writeString (base);
+   //m_writer->writeString (base);
+   //FIX ME
 }
 
 void ReportLat::resultUpdate(double results[], int n)

@@ -206,7 +206,7 @@ void PalphaLCG::calcPalpha2PerNonMax (int minDim, int maxDim, double P2[])
 
    Puis[0] = 1;
    for (s = 1; s <= maxDim; ++s) {
-      Puis[s] = num_MultModL (Puis[s - 1], A, 0, M); // = A^s mod M 
+      Puis[s] = num_MultModL (Puis[s - 1], A, 0, M); // = A^s mod M
       Ind[s] = 0;
    }
 

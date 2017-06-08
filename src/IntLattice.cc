@@ -1,5 +1,11 @@
 #include "latmrg/IntLattice.h"
 #include "latticetester/Util.h"
+#include "latticetester/NormaBestLat.h"
+#include "latticetester/NormaLaminated.h"
+#include "latticetester/NormaRogers.h"
+#include "latticetester/NormaMinkL1.h"
+#include "latticetester/NormaMinkowski.h"
+#include "latticetester/NormaPalpha.h"
 
 #ifdef WITH_NTL
 #include "NTL/quad_float.h"
@@ -87,11 +93,15 @@ void IntLattice::incrementDimension ()
    m_dualbasis.resize(dim+1, dim+1);
    m_vecNorm.resize(dim+1);
    m_dualvecNorm.resize(dim+1);
+   m_vSI.resize(dim+1, dim+1);
+   m_wSI.resize(dim+1, dim+1);
 
    for(int i = 0; i < dim; i++){
       for(int j = 0; j < dim; j++){
          m_basis(i,j) = lattmp.m_basis(i,j);
          m_dualbasis(i,j) = lattmp.m_dualbasis(i,j);
+         m_vSI(i,j) = lattmp.m_vSI(i,j);
+         m_wSI(i,j) = lattmp.m_wSI(i,j);
       }
       m_vecNorm(i) = lattmp.m_vecNorm(i);
       m_dualvecNorm(i) = lattmp.m_dualvecNorm(i);
@@ -134,9 +144,9 @@ void IntLattice::dualize ()
 void IntLattice::fixLatticeNormalization(bool dualF)
 {
    // Normalization factor: dual to primal : M^(k/dim) -> 1/M^(k/dim)
-   if (( dualF && m_lgVolDual2[1] < 0.0) ||
-       (!dualF && m_lgVolDual2[1] > 0.0)) {
-      for (int i = 1; i <= getDim(); i++)
+   if (( dualF && m_lgVolDual2[0] < 0.0) ||
+       (!dualF && m_lgVolDual2[0] > 0.0)) {
+      for (int i = 0; i < getDim(); i++)
          m_lgVolDual2[i] = -m_lgVolDual2[i];
    }
 //   for (int i = 1; i <= getMaxDim(); i++)
@@ -181,6 +191,56 @@ void IntLattice::buildBasis (int d)
 {
    MyExit(1, " buildBasis does nothing");
    d++;  // eliminates compiler warning
+}
+
+//=========================================================================
+
+void IntLattice::copy (const IntLattice & lat)
+{
+   m_order = lat.getOrder();
+   m_modulo = lat.m_modulo;
+   //m_m2 = lat.m_m2;
+   m_basis = lat.m_basis;
+   m_dualbasis = lat.m_dualbasis;
+   init ();
+   for (int i = 0; i < lat.getDim (); i++)
+      m_xx[i] = lat.getXX(i);
+}
+
+//=========================================================================
+
+Normalizer * IntLattice::getNormalizer (NormaType norma, int alpha)
+{
+   int dim = getDim();
+   Normalizer *normal;
+
+   switch (norma) {
+   case BESTLAT:
+      normal = new NormaBestLat (m_modulo, m_order, dim);
+      break;
+   case LAMINATED:
+      normal = new NormaLaminated (m_modulo, m_order, dim);
+      break;
+   case ROGERS:
+      normal = new NormaRogers (m_modulo, m_order, dim);
+      break;
+   case MINKL1:
+      normal = new NormaMinkL1 (m_modulo, m_order, dim);
+      break;
+   case MINKOWSKI:
+      normal = new NormaMinkowski (m_modulo, m_order, dim);
+      break;
+   case NORMA_GENERIC:
+      normal = new Normalizer (m_modulo, m_order, dim, "Norma_generic");
+      break;
+   case PALPHA_N:
+      normal = new NormaPalpha (m_modulo, alpha, dim);
+      break;
+   default:
+      cout << "normalizer:   no such case";
+      exit (2);
+   }
+   return normal;
 }
 
 

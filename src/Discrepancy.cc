@@ -4,7 +4,7 @@
 #include "NTL/ZZ.h"
 
 extern "C" {
-#include "num.h"
+#include <num.h>
 }
 
 #include <cfloat>

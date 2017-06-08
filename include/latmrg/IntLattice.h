@@ -1,29 +1,38 @@
 #ifndef LATMRG__INTLATTICE_H
 #define LATMRG__INTLATTICE_H
 #include "latticetester/IntLatticeBasis.h"
-#include "latticetester/Coordinates.h"
+#include "latticetester/CoordinateSets.h"
+#include "latticetester/Normalizer.h"
+#include "latticetester/Lacunary.h"
+#include "latticetester/Const.h"
+#include "latticetester/Types.h"
 #include "latmrg/MRGComponent.h"
 
 namespace LatMRG {
 
 /**
- * \copydoc LatticeTester::IntLattice
+ * \copydoc LatticeTester::IntLatticeBasis
  * Beside, it contains fonction use in LatMRG
  */
 class IntLattice : public LatticeTester::IntLatticeBasis {
 public:
 
    /**
-    * \copydoc LatticeTester::IntLattice::IntLattice(const MScal&, int, int, NormType)
+    * \copydoc LatticeTester::IntLatticeBasis::IntLatticeBasis(const MScal&, int, int, NormType)
     */
    IntLattice (MScal modulo, int k, int maxDim, LatticeTester::NormType norm = LatticeTester::L2NORM);
 
 
    /**
-    * \copydoc LatticeTester::IntLattice::IntLattice(const IntLattice&)
+    * \copydoc LatticeTester::IntLatticeBasis::IntLatticeBasis(const IntLattice&)
     * Erwan
     */
    IntLattice (const IntLattice & Lat);
+
+   /**
+    * Same as assignment operator above.
+    */
+   void copy (const IntLattice & lattice);
 
    /**
     * Destructor.
@@ -83,6 +92,21 @@ public:
     * This fonction is implemented in subclasses
     */
    virtual void buildBasis (int d);
+
+   /**
+    * Creates and returns the normalizer corresponding to criterion
+    * `norma`. In the case of the \f$P_{\alpha}\f$ test, the argument
+    * `alpha` = \f$\alpha\f$. In all other cases, it is unused.
+    */
+   LatticeTester::Normalizer * getNormalizer (LatticeTester::NormaType norma, int alpha);
+
+   /**
+    * Does nothing is this base class.
+    */
+   virtual void setLac (const LatticeTester::Lacunary &) {
+          LatticeTester::MyExit(1, "IntLattice.setLac is empty"); }
+
+
 
 
 #ifdef WITH_NTL

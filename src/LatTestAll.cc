@@ -208,7 +208,7 @@ int LatTestAll::doTest (const char *infile)
       normal->setNorm (config.norm);
    } else if (config.criter == PALPHA &&
               (config.calcPalpha == NORMPAL || config.calcPalpha == BAL)) {
-      normal = new NormaPalpha (lattice->getM (), config.alpha, toDim);
+      normal = new NormaPalpha (lattice->getModulo(), config.alpha, toDim);
    }
 
    if (!memLacF && config.lacunary) {
@@ -276,7 +276,7 @@ int LatTestAll::doTest (const char *infile)
          footer.setLatticeTest (&beyerTest);
          report.printTable ();
          report.printFooter ();
-         rw->writeString ((lattice->getDualBasis ()).toString ());
+         rw->writeString (lattice->toStringDualBasis ());
       }
       break;
 

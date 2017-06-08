@@ -1,6 +1,6 @@
 #include "latmrg/LatTestPalpha.h"
 #include "latmrg/LatticeTest.h"
-#include "latmrg/PalphaLCG.h"
+//#include "latmrg/PalphaLCG.h"
 #include "latmrg/MRGComponent.h"
 #include "latmrg/IntLattice.h"
 #include "latticetester/IntFactor.h"
@@ -108,11 +108,11 @@ bool LatTestPalpha::test (int fromDim, int toDim, double minVal[])
       cout << endl;
    }
 
-   PalphaLCG palpha (*m_config);
+   //PalphaLCG palpha (*m_config);
    const int alpha = m_config->alpha;
    double x;
    int dim;
-
+/*
    if (m_config->calcPalpha == PAL || m_config->calcPalpha == NORMPAL) {
 
       // SI LE MODULO EST PREMIER  // Si periode maximale
@@ -188,7 +188,7 @@ bool LatTestPalpha::test (int fromDim, int toDim, double minVal[])
       }
 
    }
-
+*/
    return true;
 }
 

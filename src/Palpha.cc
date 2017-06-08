@@ -2,7 +2,7 @@
 #include "latmrg/Palpha.h"
 
 extern "C" {
-#include "num.h"
+#include <num.h>
 }
 
 //!#define DEBUG
