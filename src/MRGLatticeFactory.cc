@@ -21,7 +21,12 @@ MRGLattice *MRGLatticeFactory::fromCombMRG (MRGComponent ** comp, int J,
 {
    MScal _m;
    int _k = 1;
-   MScal _n[J];
+
+   MVect _n;
+   _n.resize(J);
+   //MScal _n[J];
+   //PW_TODO : voir si cela fonctionne correctement
+   
    MScal d, e, f, g;
 
    conv (_m, 1);
