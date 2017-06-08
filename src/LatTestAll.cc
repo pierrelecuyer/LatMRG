@@ -143,7 +143,7 @@ int LatTestAll::doTest (const char *infile)
    fname.clear ();
 
    LatConfig config;
-   paramRdr.read (config); //EB Rentre les paramètres du MRG dans l'objet LatConfig config
+   paramRdr.read (config);
    //   config.write();
 
    Writer* rw = createWriter (infile, config.outputType);

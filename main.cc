@@ -24,14 +24,7 @@
 #include <time.h>
 #include <num.h>
 
-#include "latticetester/Util.h"
-#include "latticetester/Const.h"
-#include "latticetester/Types.h"
-#include "latticetester/IntFactor.h"
-#include "latticetester/IntLatticeBasis.h"
-#include "latticetester/Reducer.h"
-#include "latticetester/Types.h"
-
+#include "latmrg/IntLattice.h"
 #include <NTL/tools.h>
 #include <NTL/ctools.h>
 #include <NTL/ZZ.h>
@@ -44,13 +37,13 @@
 #include <NTL/matrix.h>
 #include <NTL/LLL.h>
 
+#include "latmrg/LatTestAll.h"
+
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/progress.hpp>
 
-#ifdef WITH_R
-#include <RInside.h>
-#endif
+
 
 #include "SimpleMRG.h"
 
@@ -61,6 +54,11 @@ using namespace LatticeTester;
 
 int main (int argc, char *argv[])
 {
+   
+   
+   LatMRG::IntLattice *lattice = 0;
+   
+   
    
    cout << "Hello World" << endl;
 
