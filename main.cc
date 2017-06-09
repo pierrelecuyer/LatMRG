@@ -1,6 +1,6 @@
 //
 //  main.cpp
-//  Lattice Tester
+//  LatMRG
 //
 //  Created by Erwan Bourceret on 18/04/2017.
 //  Copyright © 2017 DIRO. All rights reserved.
