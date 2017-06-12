@@ -162,8 +162,10 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
    double temp;
    NScal te;
    double lgvv1 = 0.0;
+   cout << "dimension1 : " << m_lat->getDim() << endl;
    while (m_lat->getDim () < fromDim)
       m_lat->incrementDimension ();
+   cout << "dimension2 : " << m_lat->getDim() << endl;
 
    if (m_S2toL2[fromDim] <= 0.0)
       initLowerBoundL2 (fromDim, toDim);

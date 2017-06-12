@@ -221,6 +221,7 @@ int LatTestAll::doTest (const char *infile)
    switch (config.criter) {
    case SPECTRAL: {
          LatTestSpectral spectralTest (normal, lattice);
+         cout << "dim to build : " << fromDim << endl;
          lattice->buildBasis (fromDim - 1);
          spectralTest.attach (&report);
          report.printHeader ();

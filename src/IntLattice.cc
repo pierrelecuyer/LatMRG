@@ -143,11 +143,12 @@ void IntLattice::calcLgVolDual2 (double lgm2)
 void IntLattice::dualize ()
 {
    BMat tmp;
-      tmp = m_basis;
-      m_basis = m_dualbasis;
-      m_dualbasis = tmp;
-      setNegativeNorm ();
-      setDualNegativeNorm ();
+   tmp.resize(m_dim, m_dim);
+   tmp = m_basis;
+   m_basis = m_dualbasis;
+   m_dualbasis = tmp;
+   setNegativeNorm ();
+   setDualNegativeNorm ();
 }
 
 //=========================================================================
