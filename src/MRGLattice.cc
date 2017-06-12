@@ -119,6 +119,7 @@ MRGLattice::MRGLattice(const MScal & m, const MVect & a, int maxDim, int k,
    m_ip = new bool[1];
    init();
 
+
    for (int i = 0; i < m_order; i++)
       m_aCoef[i] = a[i];
 }
@@ -143,7 +144,7 @@ MRGLattice::MRGLattice(const MScal & m, const MVect & a, int maxDim, int k,
 void MRGLattice::init()
 {
    kill();
-   IntLatticeBasis::initVecNorm();
+   IntLattice::init();
    m_xi.SetLength(m_order);
    m_aCoef.SetLength(m_order);
    if (m_order > ORDERMAX) {
