@@ -8,10 +8,12 @@ authors: Hicham Wahbi
 */
 
 #include "latticetester/Types.h"
-#include "latmrg/ParamReaderLat.h"
-#include "latmrg/MRGComponentFactory.h"
 #include "latticetester/Util.h"
 #include "latticetester/Const.h"
+#include "latmrg/Const.h"
+#include "latmrg/ParamReaderLat.h"
+#include "latmrg/MRGComponentFactory.h"
+
 
 #include <iostream>
 #include <fstream>

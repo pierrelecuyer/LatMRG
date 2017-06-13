@@ -2,6 +2,7 @@
 #define MRGLATTICEFACTORY_H
 #include "latticetester/Const.h"
 #include "latticetester/Types.h"
+#include "latmrg/Const.h"
 #include "latmrg/MRGLattice.h"
 #include "latmrg/MRGComponent.h"
 
@@ -24,8 +25,7 @@ public:
  * described in \cite rLEC96b&thinsp;.
  */
 static MRGLattice * fromCombMRG (MRGComponent **comp, int J, int maxDim,
-                                    BVect * Lac, LatticeTester::LatticeType lat,
-                                    LatticeTester::NormType norm);
+                                 BVect * Lac, LatticeType lat, LatticeTester::NormType norm);
 
    /**
     * Creates a `MRGLattice` from a multiply-with-carry (MWC) recurrence,
@@ -50,14 +50,14 @@ static MRGLattice * fromCombMRG (MRGComponent **comp, int J, int maxDim,
     * \f$m\f$.
     */
    static MRGLattice * fromMWC (const MVect & a, const MScal & b, int maxDim,
-                                int k, BVect *Lac, LatticeTester::LatticeType lat,
+                                int k, BVect *Lac, LatticeType lat,
                                 LatticeTester::NormType norm);
 
    /**
     * Same as above, but with no lacunary indices.
     */
    static MRGLattice * fromMWC (const MVect & a, const MScal & b, int maxDim,
-                                int k, LatticeTester::LatticeType lat,
+                                int k, LatticeType lat,
                                 LatticeTester::NormType norm);
 };
 

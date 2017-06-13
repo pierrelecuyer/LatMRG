@@ -3,6 +3,7 @@
 #include "latticetester/Types.h"
 #include "latticetester/Const.h"
 #include "latticetester/Lacunary.h"
+#include "latmrg/Const.h"
 #include "latmrg/MRGLattice.h"
 
 
@@ -25,7 +26,7 @@ public:
     * *lacunary indices* `lac`.
     */
    MRGLatticeLac (const MScal & m, const MVect & A, int maxDim, int k,
-                     BVect & lac, LatticeTester::LatticeType latt,
+                     BVect & lac, LatticeType latt,
                      LatticeTester::NormType norm = LatticeTester::L2NORM);
 
    /**

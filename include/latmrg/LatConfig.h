@@ -2,6 +2,7 @@
 #define LATCONFIG_H
 #include "latticetester/Types.h"
 #include "latticetester/Const.h"
+#include "latmrg/Const.h"
 #include "latmrg/MRGComponent.h"
 
 
@@ -64,7 +65,7 @@ public:
     * The array of generator types for each MRG component. See module
     * `Const` for more details.
     */
-   LatticeTester::GenType *genType;
+   GenType *genType;
 
    /**
     * The array of MRG components which describe the combined generator.
@@ -164,7 +165,7 @@ public:
     * Indicates the type of lattice used in the test. See `Const` for a
     * definition of the possible lattice types.
     */
-   LatticeTester::LatticeType latType;
+   LatticeType latType;
 
    /**
     * This flag is set `true` if the test is applied for lacunary indices.
@@ -226,7 +227,7 @@ public:
     * File format used to store the results. See `Const` for a definition
     * of the possible output types.
     */
-   LatticeTester::OutputType outputType;
+   OutputType outputType;
 };
 
 }

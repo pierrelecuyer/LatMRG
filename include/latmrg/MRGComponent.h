@@ -2,6 +2,7 @@
 #define	MRGCOMPONENT_H
 #include "latticetester/Types.h"
 #include "latticetester/Const.h"
+#include "latmrg/Const.h"
 #include "IntFactorization.h"
 #include "Modulus.h"
 #include <string>
@@ -45,16 +46,16 @@ MRGComponent (const MScal & m, const MVect & a, int k);
     * \f$r\f$ is assumed to be prime. Similar considerations apply to
     * `decom1` and `filem1` with respect to \f$m-1\f$.
     */
-   MRGComponent (const MScal & m, int k, LatticeTester::DecompType decom1,
-                 const char *filem1,     LatticeTester::DecompType decor,
+   MRGComponent (const MScal & m, int k, DecompType decom1,
+                 const char *filem1, DecompType decor,
                  const char *filer);
 
    /**
     * Constructor similar to the above, except that the modulus of
     * congruence \f$m\f$ is inside the object `modul`.
     */
-   MRGComponent (Modulus & modul, int k, LatticeTester::DecompType decom1,
-                 const char *filem1,     LatticeTester::DecompType decor,
+   MRGComponent (Modulus & modul, int k, DecompType decom1,
+                 const char *filem1, DecompType decor,
                  const char *filer);
 
    /**
@@ -164,8 +165,8 @@ private:
 /**
  * Does the same as the constructor above with similar arguments.
  */
-void init (const MScal & m, int k, LatticeTester::DecompType decom1,
-              const char *filem1,     LatticeTester::DecompType decor,
+void init (const MScal & m, int k, DecompType decom1,
+              const char *filem1, DecompType decor,
               const char *filer);
 };
 

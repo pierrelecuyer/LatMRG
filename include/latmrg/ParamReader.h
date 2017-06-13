@@ -4,6 +4,7 @@
 #include "latticetester/Types.h"
 #include "latticetester/Util.h"
 #include "latticetester/Const.h"
+#include "latmrg/Const.h"
 #include "latmrg/MRGComponent.h"
 #include <string>
 #include <vector>
@@ -102,7 +103,7 @@ ParamReader();
     * Reads a `GenType` from the <tt>pos</tt>-th token of the
     * <tt>ln</tt>-th line into `field`.
     */
-   void readGenType (LatticeTester::GenType & field, unsigned int ln,
+   void readGenType (GenType & field, unsigned int ln,
                      unsigned int pos);
 
    /**
@@ -208,14 +209,14 @@ ParamReader();
     * Reads the decomposition type from the <tt>pos</tt>-th token of the
     * <tt>ln</tt>-th line into `field`.
     */
-   void readDecompType (LatticeTester::DecompType & field, unsigned int line,
+   void readDecompType (DecompType & field, unsigned int line,
                         unsigned int pos);
 
    /**
     * Reads a lattice type from the <tt>pos</tt>-th token of the
     * <tt>ln</tt>-th line into `field`.
     */
-   void readLatticeType (LatticeTester::LatticeType & field, unsigned int ln,
+   void readLatticeType (LatticeType & field, unsigned int ln,
                          unsigned int pos);
 
    /**
@@ -234,7 +235,7 @@ ParamReader();
     * \f$c=0\f$. Checks also that the order \f$k=1\f$. If these conditions
     * are not satisfied, stops the program.
     */
-   bool checkPrimePower (LatticeTester::LatticeType lat, long e, long c, int k);
+   bool checkPrimePower (LatticeType lat, long e, long c, int k);
 
    /**
     * Reads the fields, starting at the <tt>ln</tt>-th line, for a
@@ -258,27 +259,27 @@ ParamReader();
     */
    void readLacunary (int k, int fromDim, int toDim, unsigned int & ln,
                       bool & lacunary, int & lacGroupSize, NTL::ZZ & lacSpacing,
-                      BVect & Lac, LatticeTester::GenType genType);
+                      BVect & Lac, GenType genType);
 
    /**
     * Reads an output form from the <tt>pos</tt>-th token of the
     * <tt>ln</tt>-th line into `field`.
     */
-   void readOutputType (LatticeTester::OutputType & field, unsigned int ln,
+   void readOutputType (OutputType & field, unsigned int ln,
                         unsigned int pos);
 
    /**
     * Reads an implementation condition from the <tt>pos</tt>-th token of
     * the <tt>ln</tt>-th line into `field`.
     */
-   void readImplemCond (LatticeTester::ImplemCond & field, unsigned int ln,
+   void readImplemCond (ImplemCond & field, unsigned int ln,
                         unsigned int pos);
 
    /**
     * Reads a search method from the <tt>pos</tt>-th token of the
     * <tt>ln</tt>-th line into `field`.
     */
-   void readSearchMethod (LatticeTester::SearchMethod & field, unsigned int ln,
+   void readSearchMethod (SearchMethod & field, unsigned int ln,
                           unsigned int pos);
 
    /**

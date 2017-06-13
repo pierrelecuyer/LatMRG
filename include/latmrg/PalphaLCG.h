@@ -140,7 +140,7 @@ PalphaLCG (const LatConfig & config);
 private:
 
    LatticeTester::CalcType m_calcType;
-   LatticeTester::GenType m_genType;             // Generator type
+   GenType m_genType;             // Generator type
    int m_m;                       // Modulus of congruence
    bool m_prime;                  // true if m_m is prime
    int m_a;                       // Multiplier

@@ -7,25 +7,26 @@
 #include "latticetester/Const.h"
 #include "Modulus.h"
 #include "latticetester/Util.h"
+#include "latmrg/Const.h"
 
 
 namespace LatMRG {
 
 struct Component {
-   LatticeTester::GenType genType;        // Generator type: MRG, MWC
+   GenType genType;        // Generator type: MRG, MWC
    Modulus modulus;        // Modulus m
    int k;                  // Generator order
    bool PerMax;            // True if maximal period is required, else false
-   LatticeTester::ImplemCond implemCond;
+   ImplemCond implemCond;
    int NumBits;
    int HighestBit;
    int ncoef;
    int *Icoef;
-   LatticeTester::DecompType F1;
+   DecompType F1;
    std::string file1;
-   LatticeTester::DecompType F2;
+   DecompType F2;
    std::string file2;
-   LatticeTester::SearchMethod searchMethod;
+   SearchMethod searchMethod;
    int numReg, H, Hk;
    MVect b, c;             // intervals where to search the coefs
    bool ApproxTotGen;
@@ -63,7 +64,7 @@ public:
    double* minMerit;
    double* maxMerit; // C values
    int* numGen; // C values
-LatticeTester::CriterionType criter;
+   LatticeTester::CriterionType criter;
    LatticeTester::NormaType normaType;
 
 /**
@@ -86,7 +87,7 @@ LatticeTester::CriterionType criter;
     */
    int *td;
 int getMaxDim() { return td[1]; }
-   LatticeTester::LatticeType latType;
+   LatticeType latType;
 
 /**
  * If this flag is `true`, the test is to be applied on the dual lattice. If
@@ -110,7 +111,7 @@ bool dualF;
    long maxNodesBB;
    double duration;
    long seed;  // seed of the random number generator
-   LatticeTester::OutputType outputType;
+   OutputType outputType;
 };
 
 }

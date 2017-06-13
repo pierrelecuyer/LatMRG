@@ -1,6 +1,7 @@
 #include "latcommon/Types.h"
 #include "latcommon/Const.h"
 #include "latcommon/Util.h"
+#include "latmrg/Const.h"
 #include "latmrg/MRGComponent.h"
 #include "latmrg/ParamReader.h"
 
@@ -9,7 +10,7 @@
 using namespace NTL;
 using namespace std;
 using namespace LatMRG;
-using namespace LatCommon;
+using namespace LatticeTester;
 
 
 

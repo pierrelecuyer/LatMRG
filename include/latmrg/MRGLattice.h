@@ -3,6 +3,7 @@
 #include "latticetester/Types.h"
 #include "latticetester/Const.h"
 #include "latticetester/Lacunary.h"
+#include "latmrg/Const.h"
 #include "latmrg/IntLattice.h"
 #include "latmrg/MRGComponent.h"
 #include <string>
@@ -33,16 +34,14 @@ public:
  * `maxDim`. The norm to be used for the basis vectors is `norm`.
  */
 MRGLattice (const MScal & m, const MVect & a, int maxDim, int k,
-               LatticeTester::LatticeType latt,
-               LatticeTester::NormType norm = LatticeTester::L2NORM);
+               LatticeType latt, LatticeTester::NormType norm = LatticeTester::L2NORM);
 
    /**
     * As in the constructor above but the basis is built for the lacunary
     * indices `lac`.
     */
    MRGLattice (const MScal & m, const MVect & a, int maxDim, int k, BVect & lac,
-               LatticeTester::LatticeType latt,
-               LatticeTester::NormType norm = LatticeTester::L2NORM);
+               LatticeType latt, LatticeTester::NormType norm = LatticeTester::L2NORM);
 
    /**
     * Copy constructor. The maximal dimension of the created basis is set
@@ -182,7 +181,7 @@ protected:
    /**
     * Indicates which lattice or sublattice is analyzed.
     */
-   LatticeTester::LatticeType m_latType;
+   LatticeType m_latType;
 
    /**
     * Is `true` in the case of lacunary indices, `false` otherwise.

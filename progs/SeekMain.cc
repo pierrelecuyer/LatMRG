@@ -7,6 +7,7 @@
 #include "latcommon/Const.h"
 #include "latmrg/Chrono.h"
 
+#include "latmrg/Const.h"
 #include "latmrg/SeekConfig.h"
 #include "latmrg/ParamReaderSeek.h"
 #include "latmrg/IntPrimitivity.h"
@@ -36,7 +37,7 @@
 using namespace std;
 // using namespace NTL;
 using namespace LatMRG;
-using namespace LatCommon;
+using namespace LatticeTester;
 
 
 namespace

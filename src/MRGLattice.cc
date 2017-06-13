@@ -1,7 +1,9 @@
 #include "latmrg/MRGLattice.h"
 #include "latmrg/MRGComponent.h"
-#include "latticetester/Util.h"
 #include "latmrg/PolyPE.h"
+
+#include "latticetester/Util.h"
+#include "latticetester/Const.h"
 
 #include <sstream>
 #include <iostream>

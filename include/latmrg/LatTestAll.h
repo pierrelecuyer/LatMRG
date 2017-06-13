@@ -2,6 +2,7 @@
 #define LATTESTALL_H
 #include "Writer.h"
 #include "LatConfig.h"
+#include "latmrg/Const.h"
 
 
 namespace LatMRG {
@@ -42,7 +43,7 @@ private:
     * Returns a `Writer` created from the input file `infile` and the given
     * `OutputType`.
     */
-   Writer* createWriter (const char *infile, LatticeTester::OutputType ot);
+   Writer* createWriter (const char *infile, OutputType ot);
 };
 
 }
