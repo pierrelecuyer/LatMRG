@@ -588,7 +588,6 @@ MyExit (1, "case ORBIT is not finished");
          // On memorise l'etat suivant.
          for (int i = 0; i < m_order-1; i++)
             swap (m_sta[i][0], m_sta[i + 1][0]);
-
          m_sta[m_order-1][0] = statmp[m_order-1];
          insertion (statmp);
       }
