@@ -78,11 +78,7 @@ int main (int argc, char *argv[])
 
       status |= testall.doTest ("/Users/Erwan1/projects/github/LatMRG/latZZDD_test1");
    }
-<<<<<<< HEAD
-
-=======
-   /*
->>>>>>> 1005d07f80c3ec8d4fb0e051baa8b48e914407df
+/*
    BMat A;
    A.resize(2, 2);
    A(0,0) = 1;
