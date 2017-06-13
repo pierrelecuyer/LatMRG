@@ -24,9 +24,7 @@ LatTestSpectral::LatTestSpectral (const Normalizer * normal,
    m_criter = SPECTRAL;
    m_normalizer = normal;
    int dim = lat->getDim();
-   m_boundL2.SetLength (dim);
-   m_S2toL2 = new double[dim];
-   SetZero (m_S2toL2, dim);
+
 }
 
 
@@ -44,25 +42,25 @@ LatTestSpectral::~LatTestSpectral ()
 void LatTestSpectral::initLowerBoundL2 (int dim1, int dim2)
 {
    if (m_lat->getNorm () == L2NORM) {
-      for (int i = dim1; i <= dim2; i++) {
+      for (int i = dim1; i < dim2; i++) {
          m_S2toL2[i] = m_normalizer->getGamma (i);
          m_S2toL2[i] *= exp2 (m_lat->getLgVolDual2 (i) / i);
       }
 
    } else if (m_lat->getNorm () == L1NORM) {
       if (m_dualF) {
-         for (int i = dim1; i <= dim2; i++)
+         for (int i = dim1; i < dim2; i++)
             m_S2toL2[i] = trunc(exp2 ((m_lat->getLgVolDual2 (i) / 2.0
                           + m_normalizer->getGamma(i)) / i));
       } else {
          // Je ne suis pas sûr que ce soit correct pour le primal
-         for (int i = dim1; i <= dim2; i++)
+         for (int i = dim1; i < dim2; i++)
             m_S2toL2[i] = exp2 ((m_lat->getLgVolDual2 (i) / 2.0
                           + m_normalizer->getGamma(i)) / i);
       }
 
    } else {
-      for (int i = dim1; i <= dim2; i++) {
+      for (int i = dim1; i < dim2; i++) {
          m_S2toL2[i] = 1.0;
       }
    }
@@ -92,17 +90,17 @@ void LatTestSpectral::setLowerBoundL2 (double S2, const double* weights)
       if (!m_dualF) {
          // On a multiplié les coordonnées du primal par m pour calculer
          // uniquement avec des entiers: meilleure précision.
-         for (i = m_fromDim; i <= m_toDim; i++)
+         for (i = m_fromDim; i < m_toDim; i++)
             conv(m_boundL2[i],m2 * S2 * m_S2toL2[i]);
 
       } else {
-         for (i = m_fromDim; i <= m_toDim; i++)
+         for (i = m_fromDim; i < m_toDim; i++)
             conv(m_boundL2[i], S2*m_S2toL2[i]);
       }
 
    } else {
       if (!m_dualF) {
-         for (i = m_fromDim; i <= m_toDim; i++) {
+         for (i = m_fromDim; i < m_toDim; i++) {
             conv(m_boundL2[i], S2*m_S2toL2[i]);
             // In Reducer, we compare the square length of vectors
             m_boundL2[i] = m_boundL2[i]*m_boundL2[i];
@@ -112,7 +110,7 @@ void LatTestSpectral::setLowerBoundL2 (double S2, const double* weights)
          }
 
       } else {
-         for (i = m_fromDim; i <= m_toDim; i++) {
+         for (i = m_fromDim; i < m_toDim; i++) {
             conv(m_boundL2[i], S2*m_S2toL2[i]);
             // In Reducer, we compare the square length of vectors
             m_boundL2[i] = m_boundL2[i]*m_boundL2[i];
@@ -126,7 +124,7 @@ void LatTestSpectral::setLowerBoundL2 (double S2, const double* weights)
    // ordering of the scaled values is preserved.
    // FIXME: should it be the squared weight for L1NORM?
    if (weights) {
-      for (i = m_fromDim; i <= m_toDim; i++)
+      for (i = m_fromDim; i < m_toDim; i++)
          m_boundL2[i] *= weights[i];
    }
 }
@@ -144,13 +142,12 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[])
 // weights == 0 means unit weight for all projections
 bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const double* weights)
 {
-   init ();
+
 
    m_fromDim = fromDim;
    m_toDim = toDim;
+   init ();
    resetFromDim (m_lat->getOrder (), fromDim);
-
-   Reducer red (*m_lat);
    if (m_normalizer->getNorm () != m_lat->getNorm ()) {
       cout << "SpectralTest: conflict between NormType and Normalizer" <<
       endl;
@@ -162,8 +159,11 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
    double temp;
    NScal te;
    double lgvv1 = 0.0;
-   while (m_lat->getDim () < fromDim)
-      m_lat->incrementDimension ();
+   m_lat->write();
+   while (m_lat->getDim () < fromDim){
+      m_lat->incDim ();
+   }
+   Reducer red (*m_lat);
 
    if (m_S2toL2[fromDim] <= 0.0)
       initLowerBoundL2 (fromDim, toDim);
@@ -175,10 +175,13 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
          m_lat->dualize ();
       int dim = m_lat->getDim ();
       if (red.shortestVector (m_lat->getNorm ())) {
+
          // Calcul de D2. Pour Norm # L2NORM, suppose que VV est a jour.
          if (m_lat->getNorm () == L2NORM) {
+
             m_lat->updateScalL2Norm (0);
             conv (temp, m_lat->getVecNorm (0));
+            cout << "Longeur du vec min : " << temp << endl;
             if (!m_dualF) {
                conv(te, temp);
                NScal m2;
@@ -194,6 +197,7 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
                temp = temp / mr;
          }
          if (3 == m_detailF) {
+
             if (m_dualF) {
                dispatchBaseUpdate (m_lat->getDualBasis());
                dispatchBaseUpdate (m_lat->getBasis());
@@ -207,57 +211,60 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
          // their merit by the weight of the projection
          double weight = weights ? weights[dim] : 1.0;
 
-         m_merit.getMerit (dim) = temp / weight;
+         m_merit.getMerit (dim-1) = temp / weight;
 
          if (dim <= Normalizer::MAX_DIM) { // Calcul de S2.
             if (m_lat->getNorm () == L2NORM) {
                // Calcul du log(base 2) de ||V1||^2.
                lgvv1 = Lg (temp);
-               if ((m_S2toL2[dim] <= 0.0) || (0 != std::isinf(m_S2toL2[dim]))) {
-                   m_merit[dim] = exp2(lgvv1 - m_lat->getLgVolDual2 (dim)/dim)
-                                  / m_normalizer->getGamma (dim);
+               if ((m_S2toL2[dim-1] <= 0.0) || (0 != std::isinf(m_S2toL2[dim-1]))) {
+                   m_merit[dim-1] = exp2(lgvv1 - m_lat->getLgVolDual2 (dim-1)/dim)
+                                  / m_normalizer->getGamma (dim-1);
                } else {
-                  m_merit[dim] = temp / m_S2toL2[dim];
+                  m_merit[dim-1] = temp / m_S2toL2[dim-1];
                }
 
             } else if (m_lat->getNorm () == L1NORM) {
-               if ((m_S2toL2[dim] <= 0.0) || (std::isinf(m_S2toL2[dim]))) {
-                  double tmp = exp2 ((m_lat->getLgVolDual2 (dim) / 2.0
-                               + m_normalizer->getGamma(dim)) / dim);
+               if ((m_S2toL2[dim-1] <= 0.0) || (std::isinf(m_S2toL2[dim-1]))) {
+                  double tmp = exp2 ((m_lat->getLgVolDual2 (dim-1) / 2.0
+                               + m_normalizer->getGamma(dim-1)) / dim-1);
                   // Je ne suis pas sûr que c'est correct pour le primal
-                  m_merit[dim] = temp / trunc(tmp);
+                  m_merit[dim-1] = temp / trunc(tmp);
                } else {
-                  m_merit[dim] = temp / m_S2toL2[dim];
+                  m_merit[dim-1] = temp / m_S2toL2[dim-1];
                }
 
             } else
-               m_merit[dim] = temp;
+               m_merit[dim-1] = temp;
 
-            m_merit[dim] /= weight;
+            m_merit[dim-1] /= weight;
 
             // Si on sait deja que ce gen. ne pourra etre retenu,
             // on le rejette tout de suite et on arrete le test.
-            if ((m_maxAllDimFlag && m_merit[dim] < minVal[toDim])
-                  || m_merit[dim] < minVal[dim]) {
+            if ((m_maxAllDimFlag && m_merit[dim-1] < minVal[toDim-1])
+                  || m_merit[dim-1] < minVal[dim-1]) {
            //    m_merit[dim] = 0.0;
                return false;
             }
          }
          else
-            m_merit[dim] /= weight;
+            m_merit[dim-1] /= weight;
 
          prepAndDisp (dim);
+
          if (m_dualF)
             m_lat->dualize ();
 
       } else {
-         m_merit[dim] = -1.0;
+         m_merit[dim-1] = -1.0;
          return false;
       }
 
+
       if (dim == toDim)
          break;
-      m_lat->incrementDimension ();
+      m_lat->incDim ();
+      red = Reducer(*m_lat);
    }
 
    return true;
@@ -268,6 +275,10 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
 
 void LatTestSpectral::init ()
 {
+
+   m_boundL2.SetLength (m_toDim);
+   m_S2toL2 = new double[m_toDim];
+   SetZero (m_S2toL2, m_toDim);
    const int N = 3;
    string header[N];
    if (m_lat->getNorm () == L2NORM) {
@@ -289,6 +300,8 @@ void LatTestSpectral::init ()
       header[2] = "Cumul CPU t(sec)";
       dispatchTestInit ("SPECTRAL", header, N);
    }
+
+
    timer.init ();
 }
 

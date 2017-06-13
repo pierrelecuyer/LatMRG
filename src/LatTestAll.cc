@@ -158,31 +158,35 @@ int LatTestAll::doTest (const char *infile)
    // bases
    // memLacF = false; // Lacunary with all lines-columns of bases
 
-   if (config.J > 1) {
+   if (config.J > 1) { //Several MRG
       lattice = MRGLatticeFactory::fromCombMRG (config.comp, config.J,
                 toDim, 0, config.latType, config.norm);
 
    } else {
       if (config.latType == PRIMEPOWER) {
-         config.comp[0]->module.reduceM (config.comp[0]->a[1]);
+         config.comp[0]->module.reduceM (config.comp[0]->a[0]);
          if (memLacF && config.lacunary)
             lattice = new MRGLatticeLac (config.comp[0]->module.mRed,
                config.comp[0]->a, toDim, config.comp[0]->k, config.Lac,
                                          config.latType, config.norm);
-         else
+         else{
             lattice = new MRGLattice (config.comp[0]->module.mRed,
                config.comp[0]->a, toDim, config.comp[0]->k,
                                       config.latType, config.norm);
 
+         }
+
       } else if (config.genType[0] == MRG || config.genType[0] == LCG) {
-         if (memLacF && config.lacunary)
+         if (memLacF && config.lacunary){
             lattice = new MRGLatticeLac (config.comp[0]->module.mRed,
                 config.comp[0]->a, toDim, config.comp[0]->k, config.Lac,
                 config.latType, config.norm);
-         else
+         }
+         else{
             lattice = new MRGLattice (config.comp[0]->module.mRed,
                 config.comp[0]->a, toDim, config.comp[0]->k,
                 config.latType, config.norm);
+         }
 
       } else if (config.genType[0] == KOROBOV) {
          lattice = new KorobovLattice (config.comp[0]->getM (),
@@ -216,10 +220,12 @@ int LatTestAll::doTest (const char *infile)
       lattice->setLac (*plac);
    }
 
+
    switch (config.criter) {
    case SPECTRAL: {
          LatTestSpectral spectralTest (normal, lattice);
          lattice->buildBasis (fromDim - 1);
+
          spectralTest.attach (&report);
          report.printHeader ();
          spectralTest.setDualFlag (config.dualF);

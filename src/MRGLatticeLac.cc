@@ -146,57 +146,7 @@ void MRGLatticeLac::buildBasis (int d)
 
 void MRGLatticeLac::incDimBasis (int IMax)
 {
-   incrementDimension();
-   const int dim = getDim (); // new dimension (dim++)
-
-   if (dim >= IMax) {
-      MyExit (0,
-    "Dimension of the basis is too big:\nDim > Number of lacunary indices.");
-   }
-
-   for (int i = 0; i < dim-1; i++) {
-      // v[i] -> VSI[0].
-      for (int j = 0; j < dim-1; j++)
-         m_vSI[0][j] = m_basis[i][j];
-      clear (m_vSI[i][0]);
-
-      for (int i1 = 0; i1 < dim-1; i1++) {
-         ProdScal (m_vSI[0], m_wSI[i1], dim, m_wSI[i1][0]);
-         Quotient (m_wSI[i1][0], m_modulo, m_wSI[i1][0]);
-         m_t1 = m_wSI[i1][0] * m_vSI[i1][dim - 1];
-         m_vSI[i][0] += m_t1;
-      }
-      Modulo (m_vSI[i][0], m_modulo, m_vSI[i][0]);
-      m_basis[i][dim-1] = m_vSI[i][0];
-   }
-
-   for (int j = 0; j < dim-1; j++)
-      m_basis[dim - 1][j] = 0;
-   m_basis[dim -1][dim - 1] = m_vSI[dim -1][dim - 1];
-
-   for (int i = 0; i < dim-1; i++)
-      m_dualbasis[i][dim - 1] = 0;
-
-   for (int j = 0; j < dim-1; j++) {
-      clear (m_wSI[0][j]);
-      for (int i = 0; i < dim-1; i++) {
-         m_t1 = m_dualbasis[i][j];
-         m_t1 *= m_vSI[i][0];
-         m_wSI[0][j] += m_t1;
-      }
-      if (m_wSI[0][j] != 0)
-         m_wSI[0][j] = -m_wSI[0][j];
-      Quotient (m_wSI[0][j], m_vSI[dim - 1][dim - 1], m_wSI[0][j]);
-      m_dualbasis[dim - 1][j] = m_wSI[0][j];
-   }
-
-   Quotient (m_modulo, m_vSI[dim - 1][dim - 1], m_t1);
-   m_dualbasis[dim - 1][dim - 1] = m_t1;
-
-   //setDim (dim + 1);
-   setNegativeNorm ();
-   setDualNegativeNorm ();
-//    trace("ESPION_3", dim);
+   MRGLattice::incDimLaBasis(IMax);
 }
 
 
