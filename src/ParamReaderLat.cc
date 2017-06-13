@@ -67,8 +67,8 @@ void ParamReaderLat::read (LatConfig & config)
    config.setJ (config.J);
 
    MScal m;
-   long m1, m2, m3;
-   int k;
+   long m1(0), m2(0), m3(0);
+   int k(0);
    MVect a;
    int maxOrder = 0;
    string coefkind (" ");  // = NOCOND, EQUAL, NONZERO

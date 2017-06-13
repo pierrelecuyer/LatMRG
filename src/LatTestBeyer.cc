@@ -33,7 +33,7 @@ bool LatTestBeyer::test (int fromDim, int toDim, double minVal[])
 
    resetFromDim (m_lat->getOrder (), fromDim);
    while (m_lat->getDim () < fromDim)
-      m_lat->incrementDimension ();
+      m_lat->incDim ();
 
    m_lat->dualize ();
    red.preRedDieter (0);
@@ -73,7 +73,7 @@ bool LatTestBeyer::test (int fromDim, int toDim, double minVal[])
 
       if (dim == toDim)
          break;
-      m_lat->incrementDimension();
+      m_lat->incDim();
    }
 
    return true;

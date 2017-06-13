@@ -173,6 +173,7 @@ int LatTestAll::doTest (const char *infile)
             lattice = new MRGLattice (config.comp[0]->module.mRed,
                config.comp[0]->a, toDim, config.comp[0]->k,
                                       config.latType, config.norm);
+
          }
 
       } else if (config.genType[0] == MRG || config.genType[0] == LCG) {
@@ -181,10 +182,11 @@ int LatTestAll::doTest (const char *infile)
                 config.comp[0]->a, toDim, config.comp[0]->k, config.Lac,
                 config.latType, config.norm);
          }
-         else
+         else{
             lattice = new MRGLattice (config.comp[0]->module.mRed,
                 config.comp[0]->a, toDim, config.comp[0]->k,
                 config.latType, config.norm);
+         }
 
       } else if (config.genType[0] == KOROBOV) {
          lattice = new KorobovLattice (config.comp[0]->getM (),
@@ -202,9 +204,9 @@ int LatTestAll::doTest (const char *infile)
 
    double minVal[1 + toDim];
    SetZero (minVal, toDim);
-   
+
    Normalizer *normal = 0;
-   
+
    if (config.criter == SPECTRAL) {
       normal = lattice->getNormalizer (config.norma, 0);
       normal->setNorm (config.norm);
@@ -218,11 +220,12 @@ int LatTestAll::doTest (const char *infile)
       lattice->setLac (*plac);
    }
 
+
    switch (config.criter) {
    case SPECTRAL: {
          LatTestSpectral spectralTest (normal, lattice);
-         cout << "dim to build : " << fromDim << endl;
          lattice->buildBasis (fromDim - 1);
+
          spectralTest.attach (&report);
          report.printHeader ();
          spectralTest.setDualFlag (config.dualF);

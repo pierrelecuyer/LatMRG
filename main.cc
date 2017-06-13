@@ -79,6 +79,29 @@ int main (int argc, char *argv[])
       status |= testall.doTest ("/Users/Erwan1/projects/github/LatMRG/latZZDD_test1");
    }
    
+   BMat A;
+   A.resize(2, 2);
+   A(0,0) = 1;
+   A(1,0) = 0;
+   A(0,1) = 33;
+   A(1,1) = 89;
+   
+   BMat B;
+   B.resize(2, 2);
+   B(0,0) = 0;
+   B(1,0) = 0;
+   B(0,1) = 0;
+   B(1,1) = 0;
+   
+   MScal m(89);
+   
+   CalcDual(A, B, 2, m);
+   
+   cout << "A : " << endl;
+   cout << A << endl;
+   cout << "\n \n B : " << endl;
+   cout << B << endl;
+   
    
    
    cout << "Hello World" << endl;

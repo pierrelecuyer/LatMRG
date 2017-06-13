@@ -145,7 +145,7 @@ void KorobovLattice::incDimSlow()
 void KorobovLattice::incDim()
 {
    MScal tmp1, tmp2, tmp3; MVect vectmp1;// working variables
-   incrementDimension(); //Increment the dimenson of the lattice by 1
+   IntLattice::incDim(); //Increment the dimenson of the lattice by 1
    const int dim = getDim(); //New dimension
    
    vectmp1.resize(dim);

@@ -41,9 +41,9 @@ IntLattice::IntLattice ( MScal modulo, int k, int maxDim, NormType norm ):
 IntLattice::IntLattice (const IntLattice & Lat):
    IntLatticeBasis(Lat)
 {
-   m_dualbasis.resize(m_dim,m_dim);
+   //m_dualbasis.resize(m_dim,m_dim);
    m_withDual = true;
-   m_dualvecNorm.resize(m_dim);
+   //m_dualvecNorm.resize(m_dim);
    setDualNegativeNorm();
    m_order = Lat.m_order;
    init ();
@@ -96,7 +96,7 @@ IntLattice::~IntLattice ()
 
 //=========================================================================
 
-void IntLattice::incrementDimension ()
+void IntLattice::incDim ()
 {
    IntLattice lattmp(*this);
    int dim = getDim();
@@ -142,8 +142,8 @@ void IntLattice::calcLgVolDual2 (double lgm2)
 
 void IntLattice::dualize ()
 {
-   BMat tmp;
-   tmp.resize(m_dim, m_dim);
+   BMat tmp(m_dim, m_dim);
+
    tmp = m_basis;
    m_basis = m_dualbasis;
    m_dualbasis = tmp;
