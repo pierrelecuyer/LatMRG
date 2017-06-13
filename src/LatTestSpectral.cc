@@ -162,7 +162,6 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
    m_lat->write();
    while (m_lat->getDim () < fromDim){
       m_lat->incDim ();
-      m_lat->write();
    }
    Reducer red (*m_lat);
 
