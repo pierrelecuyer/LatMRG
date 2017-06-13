@@ -24,13 +24,16 @@ namespace LatMRG
 
 IntLattice::IntLattice ( MScal modulo, int k, int maxDim, NormType norm ):
    IntLatticeBasis(maxDim, norm)
-   {
-      m_dim = maxDim;
-      m_withDual = true;
-      m_modulo = modulo;
-      m_order = k;
-      init ();
-   }
+{
+   m_dim = maxDim;
+   m_withDual = true;
+   m_modulo = modulo;
+   m_order = k;
+   init ();
+   m_dualbasis.resize(m_dim,m_dim);
+   m_dualvecNorm.resize(m_dim);
+   setDualNegativeNorm();
+}
 
 //=========================================================================
 
