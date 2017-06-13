@@ -159,10 +159,10 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
    double temp;
    NScal te;
    double lgvv1 = 0.0;
-   m_lat->write();
    while (m_lat->getDim () < fromDim){
       m_lat->incDim ();
    }
+
    Reducer red (*m_lat);
 
    if (m_S2toL2[fromDim] <= 0.0)
@@ -176,12 +176,12 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
       int dim = m_lat->getDim ();
       if (red.shortestVector (m_lat->getNorm ())) {
 
+
          // Calcul de D2. Pour Norm # L2NORM, suppose que VV est a jour.
          if (m_lat->getNorm () == L2NORM) {
 
             m_lat->updateScalL2Norm (0);
             conv (temp, m_lat->getVecNorm (0));
-            cout << "Longeur du vec min : " << temp << endl;
             if (!m_dualF) {
                conv(te, temp);
                NScal m2;
@@ -196,6 +196,7 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
             if (!m_dualF)
                temp = temp / mr;
          }
+         //cout << "temp vaut : " << temp << endl;
          if (3 == m_detailF) {
 
             if (m_dualF) {
@@ -218,10 +219,12 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
                // Calcul du log(base 2) de ||V1||^2.
                lgvv1 = Lg (temp);
                if ((m_S2toL2[dim-1] <= 0.0) || (0 != std::isinf(m_S2toL2[dim-1]))) {
-                   m_merit[dim-1] = exp2(lgvv1 - m_lat->getLgVolDual2 (dim-1)/dim)
+                  m_merit[dim-1] = exp2(lgvv1 - m_lat->getLgVolDual2 (dim-1)/dim)
                                   / m_normalizer->getGamma (dim-1);
+                  //cout << "ESPION1" << endl;
                } else {
                   m_merit[dim-1] = temp / m_S2toL2[dim-1];
+                  //cout << "ESPION2" << endl;
                }
 
             } else if (m_lat->getNorm () == L1NORM) {
@@ -239,6 +242,8 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
 
             m_merit[dim-1] /= weight;
 
+            //cout << "la figure de merite vaut : " << m_merit[dim-1] << endl;
+
             // Si on sait deja que ce gen. ne pourra etre retenu,
             // on le rejette tout de suite et on arrete le test.
             if ((m_maxAllDimFlag && m_merit[dim-1] < minVal[toDim-1])
@@ -251,6 +256,7 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
             m_merit[dim-1] /= weight;
 
          prepAndDisp (dim);
+         //cout << "la figure de merite vaut ensuite : " << m_merit[dim-1] << endl;
 
          if (m_dualF)
             m_lat->dualize ();
@@ -319,15 +325,15 @@ void LatTestSpectral::prepAndDisp (int dim)
       dispatchBaseUpdate (m_lat->getBasis(), 0);
 
    if (m_lat->getNorm () == L2NORM) {
-      results[0] = sqrt (m_merit.getMerit (dim));    // L_t
+      results[0] = sqrt (m_merit.getMerit (dim-1));    // L_t
       if (m_invertF)
          results[0] = 1.0 / results[0];   // d_t = 1/L_t
-      results[1] = sqrt (m_merit[dim]);
+      results[1] = sqrt (m_merit[dim-1]);
       results[2] = timer.val (Chrono::SEC);
       dispatchResultUpdate (results, N);
 
    } else {   // L1NORM
-      results[0] = m_merit.getMerit (dim);
+      results[0] = m_merit.getMerit (dim-1);
       if (m_invertF)
          results[0] = 1.0 / results[0];   // d_t = 1/N_t
 
@@ -346,7 +352,7 @@ void LatTestSpectral::prepAndDisp (int dim)
       results[1] = y;
 #endif
 
-      results[1] = m_merit[dim];
+      results[1] = m_merit[dim-1];
       results[2] = timer.val (Chrono::SEC);
       dispatchResultUpdate (results, N);
    }

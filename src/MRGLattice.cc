@@ -296,7 +296,7 @@ void MRGLattice::incDimBasis()
    const int dim = getDim();
    //m_basis.setDim(dim);
    //m_w.setDim(dim);
-   write();
+   //write();
 
    for (int i = 0; i < dim; i++) {
       clear (m_vSI[0][i]);
@@ -308,8 +308,6 @@ void MRGLattice::incDimBasis()
       Modulo (m_vSI[0][i], m_modulo, m_vSI[0][i]);
       m_basis[i][dim-1] = m_vSI[0][i];
    }
-   cout << "ESPION4" << endl;
-   write();
 
    for (int i = 0; i < dim; i++)
       m_basis[dim-1][i] = 0;
@@ -330,9 +328,6 @@ void MRGLattice::incDimBasis()
       Quotient (m_t1, m_modulo, m_t1);
       m_dualbasis[dim-1][j] = m_t1;
    }
-
-   cout << "ESPION5" << endl;
-   write();
 
    setNegativeNorm();
    setDualNegativeNorm();

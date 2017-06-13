@@ -52,7 +52,7 @@ public:
    /**
     * Increment the dimension of the element of the lattice
     */
-   void incDim ();
+   virtual void incDim ();
 
    /**
     * Computes the logarithm of the normalization factor
