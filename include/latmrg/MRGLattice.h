@@ -2,7 +2,7 @@
 #define MRGLATTICE_H
 #include "latticetester/Types.h"
 #include "latticetester/Const.h"
-#include "latticetester/Lacunary.h"
+#include "latmrg/Lacunary.h"
 #include "latmrg/Const.h"
 #include "latmrg/IntLattice.h"
 #include "latmrg/MRGComponent.h"
@@ -90,7 +90,7 @@ MRGLattice (const MScal & m, const MVect & a, int maxDim, int k,
    /**
     * Sets the lacunary indices for this lattice to `lat`.
     */
-   virtual void setLac (const LatticeTester::Lacunary & lat);
+   virtual void setLac (const Lacunary & lat);
 
    /**
     * \name Sets and gets the values of <tt>m_rho</tt> and <tt>m_lossRho</tt>.
@@ -192,7 +192,7 @@ protected:
     * Contains the lacunary indices when `LacunaryFlag` is `true`,
     * otherwise is undefined.
     */
-   LatticeTester::Lacunary m_lac;
+   Lacunary m_lac;
 
 
    /**

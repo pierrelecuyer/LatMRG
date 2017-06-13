@@ -3,7 +3,7 @@
 #include "latticetester/IntLatticeBasis.h"
 #include "latticetester/CoordinateSets.h"
 #include "latticetester/Normalizer.h"
-#include "latticetester/Lacunary.h"
+#include "latmrg/Lacunary.h"
 #include "latticetester/Const.h"
 #include "latticetester/Types.h"
 #include "latmrg/MRGComponent.h"
@@ -103,7 +103,7 @@ public:
    /**
     * Does nothing is this base class.
     */
-   virtual void setLac (const LatticeTester::Lacunary &) {
+   virtual void setLac (const Lacunary &) {
           LatticeTester::MyExit(1, "IntLattice.setLac is empty"); }
 
 

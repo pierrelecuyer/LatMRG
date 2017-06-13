@@ -2,7 +2,7 @@
 #define MRGLATTICELAC_H
 #include "latticetester/Types.h"
 #include "latticetester/Const.h"
-#include "latticetester/Lacunary.h"
+#include "latmrg/Lacunary.h"
 #include "latmrg/Const.h"
 #include "latmrg/MRGLattice.h"
 
@@ -65,7 +65,7 @@ public:
    /**
     * Sets the lacunary indices for this lattice to `lat`.
     */
-   void setLac (const LatticeTester::Lacunary & lat);
+   void setLac (const Lacunary & lat);
 
 protected:
 
@@ -79,7 +79,7 @@ protected:
    /**
     * The lacunary indices.
     */
-    LatticeTester::Lacunary m_lac;
+    Lacunary m_lac;
 };
 
 }
