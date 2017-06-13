@@ -44,19 +44,19 @@ void LatTestSpectral::initLowerBoundL2 (int dim1, int dim2)
    if (m_lat->getNorm () == L2NORM) {
       for (int i = dim1; i < dim2; i++) {
          m_S2toL2[i] = m_normalizer->getGamma (i);
-         m_S2toL2[i] *= exp2 (m_lat->getLgVolDual2 (i) / i);
+         m_S2toL2[i] *= exp2 (m_lat->getLgVolDual2 (i) / (i+1));
       }
 
    } else if (m_lat->getNorm () == L1NORM) {
       if (m_dualF) {
          for (int i = dim1; i < dim2; i++)
             m_S2toL2[i] = trunc(exp2 ((m_lat->getLgVolDual2 (i) / 2.0
-                          + m_normalizer->getGamma(i)) / i));
+                          + m_normalizer->getGamma(i)) / (i+1)));
       } else {
          // Je ne suis pas sûr que ce soit correct pour le primal
          for (int i = dim1; i < dim2; i++)
             m_S2toL2[i] = exp2 ((m_lat->getLgVolDual2 (i) / 2.0
-                          + m_normalizer->getGamma(i)) / i);
+                          + m_normalizer->getGamma(i)) / (i+1));
       }
 
    } else {
@@ -210,7 +210,7 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
          // weight factor:
          // require a higher merit for more important projections by dividing
          // their merit by the weight of the projection
-         double weight = weights ? weights[dim] : 1.0;
+         double weight = weights ? weights[dim-1] : 1.0;
 
          m_merit.getMerit (dim-1) = temp / weight;
 
@@ -221,10 +221,8 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
                if ((m_S2toL2[dim-1] <= 0.0) || (0 != std::isinf(m_S2toL2[dim-1]))) {
                   m_merit[dim-1] = exp2(lgvv1 - m_lat->getLgVolDual2 (dim-1)/dim)
                                   / m_normalizer->getGamma (dim-1);
-                  //cout << "ESPION1" << endl;
                } else {
                   m_merit[dim-1] = temp / m_S2toL2[dim-1];
-                  //cout << "ESPION2" << endl;
                }
 
             } else if (m_lat->getNorm () == L1NORM) {

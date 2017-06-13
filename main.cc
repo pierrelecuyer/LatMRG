@@ -76,7 +76,7 @@ int main (int argc, char *argv[])
       dataname.append(".dat");
       stat(dataname.c_str(), &buf);
 
-      status |= testall.doTest ("/Users/Erwan1/projects/github/LatMRG/latZZDD_test1");
+      status |= testall.doTest ("/Users/Erwan1/projects/github/LatMRG/latZZDD_test2");
    }
 
    /*

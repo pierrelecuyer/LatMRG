@@ -29,11 +29,12 @@ bool LatTestBeyer::test (int fromDim, int toDim, double minVal[])
 
    m_fromDim = fromDim;
    m_toDim = toDim;
-   Reducer red (*m_lat);
+   
 
    resetFromDim (m_lat->getOrder (), fromDim);
    while (m_lat->getDim () < fromDim)
       m_lat->incDim ();
+   Reducer red (*m_lat);
 
    m_lat->dualize ();
    red.preRedDieter (0);
@@ -74,6 +75,7 @@ bool LatTestBeyer::test (int fromDim, int toDim, double minVal[])
       if (dim == toDim)
          break;
       m_lat->incDim();
+      red = Reducer(*m_lat);
    }
 
    return true;
