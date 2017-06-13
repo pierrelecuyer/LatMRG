@@ -78,7 +78,7 @@ int main (int argc, char *argv[])
       
       status |= testall.doTest ("/Users/Erwan1/projects/github/LatMRG/latZZDD_test1");
    }
-   
+   /*
    BMat A;
    A.resize(2, 2);
    A(0,0) = 1;
@@ -105,7 +105,8 @@ int main (int argc, char *argv[])
    
    
    cout << "Hello World" << endl;
-
+    */
+   
    return 0;
 }
 
