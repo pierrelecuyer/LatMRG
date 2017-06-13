@@ -23,6 +23,8 @@
 #include <iomanip>
 #include <time.h>
 #include <num.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include "latmrg/IntLattice.h"
 #include <NTL/tools.h>
@@ -38,6 +40,12 @@
 #include <NTL/LLL.h>
 
 #include "latmrg/LatTestAll.h"
+#include "latmrg/MRGLattice.h"
+#include "latmrg/LatTestAll.h"
+
+
+#include "latticetester/Types.h"
+#include "latticetester/Util.h"
 
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/io.hpp>
@@ -50,6 +58,7 @@
 using namespace std;
 using namespace NTL;
 using namespace LatticeTester;
+
 
 
 int main (int argc, char *argv[])
@@ -96,5 +105,7 @@ int main (int argc, char *argv[])
 
 
    cout << "Hello World" << endl;
+
+   return 0;
 }
 
