@@ -95,7 +95,7 @@ double Merit::getST (int fromDim, int T, int & dimWorst)
 {
    double min = 1.0e100;
    m_dimWorst = -1;
-   for (int i = fromDim; i < T; i++) {
+   for (int i = fromDim; i <= T; i++) {
       if (m_normVal[i] < min) {
          min = m_normVal[i];
          m_dimWorst = i;

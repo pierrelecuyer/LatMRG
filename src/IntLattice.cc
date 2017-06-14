@@ -58,9 +58,9 @@ void IntLattice::init ()
    double temp;
    conv (temp, m_modulo);
 
-   m_lgVolDual2 = new double[dim];
+   m_lgVolDual2 = new double[dim+1];
    m_lgm2 = 2.0 * Lg (temp);
-   m_lgVolDual2[0] = m_lgm2;
+   m_lgVolDual2[1] = m_lgm2;
    m_vSI.resize(dim, dim);
    m_wSI.resize(dim, dim);
 
@@ -133,7 +133,7 @@ void IntLattice::calcLgVolDual2 (double lgm2)
       m_lgVolDual2[r] = m_lgVolDual2[r - 1] + lgm2;
    // WARNING [David]: one version had `m_order` instead of `rmax`.
    // I am not sure which is the fix and which is the bug.
-   for (int r = rmax; r < dim; r++)
+   for (int r = rmax + 1; r <= dim; r++)
       m_lgVolDual2[r] = m_lgVolDual2[r - 1];
 }
 
@@ -155,8 +155,8 @@ void IntLattice::dualize ()
 void IntLattice::fixLatticeNormalization(bool dualF)
 {
    // Normalization factor: dual to primal : M^(k/dim) -> 1/M^(k/dim)
-   if (( dualF && m_lgVolDual2[0] < 0.0) ||
-       (!dualF && m_lgVolDual2[0] > 0.0)) {
+   if (( dualF && m_lgVolDual2[1] < 0.0) ||
+       (!dualF && m_lgVolDual2[1] > 0.0)) {
       for (int i = 0; i < getDim(); i++)
          m_lgVolDual2[i] = -m_lgVolDual2[i];
    }

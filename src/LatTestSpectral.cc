@@ -326,7 +326,9 @@ void LatTestSpectral::prepAndDisp (int dim)
       results[0] = sqrt (m_merit.getMerit (dim));    // L_t
       if (m_invertF)
          results[0] = 1.0 / results[0];   // d_t = 1/L_t
+      cout << "result 1 : " << m_merit[dim] << endl;
       results[1] = sqrt (m_merit[dim]);
+
       results[2] = timer.val (Chrono::SEC);
       dispatchResultUpdate (results, N);
 

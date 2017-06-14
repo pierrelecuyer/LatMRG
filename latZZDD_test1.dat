@@ -1,4 +1,4 @@
-SPECTRAL  BestLat		LatticeInfo
+BEYER  BestLat		LatticeInfo
 L2NORM				Norm
 FALSE				ReadGenFile
 1				J  (Nb. of components)
@@ -14,5 +14,5 @@ FULL			LatticeType
 1 1				LaGroupSizes   Spacings
 10000000				MaxNodesBB
 true				If true, the inverse of the length of the shortest vector will be printed in the results, otherwise the length itself is printed.
-3				details
+1				details
 terminal	 		ResultForm
