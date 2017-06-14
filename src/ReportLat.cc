@@ -55,15 +55,16 @@ void ReportLat::printTable()
    m_writer->writeTable(m_results, "llllllllll");
 }
 
-void ReportLat::baseUpdate(BMat & base)
+void ReportLat::latUpdate(IntLattice & lat)
 {
-   //m_writer->writeString (base);
+   m_writer->writeString (lat.toStringBasis());
+   m_writer->writeString (lat.toStringDualBasis());
    //FIX ME
 }
 
-void ReportLat::baseUpdate(BMat & base, int i)
+void ReportLat::latUpdate(IntLattice & lat, int i)
 {
-   //m_writer->writeString (base);
+   m_writer->writeString (lat.toStringBasis());
    //FIX ME
 }
 

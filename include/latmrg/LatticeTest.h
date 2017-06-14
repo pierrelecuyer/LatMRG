@@ -203,13 +203,13 @@ protected:
    /**
     * Dispatches a `baseUpdate` signal to all observers.
     */
-   void dispatchBaseUpdate (BMat &);
+   void dispatchLatUpdate (IntLattice &);
 
    /**
     * Dispatches a `baseUpdate(V, i)` signal to all observers. Only base
     * vector \f$i\f$ will be sent.
     */
-   void dispatchBaseUpdate (BMat & V, int i);
+   void dispatchLatUpdate (IntLattice & lat, int i);
 
    /**
     * Dispatches a `resultUpdate` signal to all observers.

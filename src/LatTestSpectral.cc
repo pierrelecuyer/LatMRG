@@ -176,7 +176,6 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
       int dim = m_lat->getDim ();
       if (red.shortestVector (m_lat->getNorm ())) {
 
-
          // Calcul de D2. Pour Norm # L2NORM, suppose que VV est a jour.
          if (m_lat->getNorm () == L2NORM) {
 
@@ -198,14 +197,14 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
          }
          //cout << "temp vaut : " << temp << endl;
          if (3 == m_detailF) {
-
-            if (m_dualF) {
+            dispatchLatUpdate(*m_lat);
+            /*if (m_dualF) {
                dispatchBaseUpdate (m_lat->getDualBasis());
                dispatchBaseUpdate (m_lat->getBasis());
             } else {
                dispatchBaseUpdate (m_lat->getBasis());
                dispatchBaseUpdate (m_lat->getDualBasis());
-            }
+            }*/
          }
          // weight factor:
          // require a higher merit for more important projections by dividing
@@ -318,9 +317,9 @@ void LatTestSpectral::prepAndDisp (int dim)
    double results[N];
 
    if (2 == m_detailF)
-      dispatchBaseUpdate (m_lat->getBasis());
+      dispatchLatUpdate (*m_lat);
    else if (1 == m_detailF)
-      dispatchBaseUpdate (m_lat->getBasis(), 0);
+      dispatchLatUpdate (*m_lat, 0);
 
    if (m_lat->getNorm () == L2NORM) {
       results[0] = sqrt (m_merit.getMerit (dim-1));    // L_t

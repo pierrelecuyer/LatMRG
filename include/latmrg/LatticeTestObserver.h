@@ -1,6 +1,7 @@
 #ifndef	LATTICETESTOBSERVER_H
 #define LATTICETESTOBSERVER_H
-#include "latticetester/IntLatticeBasis.h"
+//#include "latticetester/IntLatticeBasis.h"
+#include "latmrg/IntLattice.h"
 #include <string>
 
 
@@ -23,13 +24,13 @@ virtual ~LatticeTestObserver() {}
     * Called when the base is incremented in a lattice test. `base` is a
     * copy of the base used in the test.
     */
-   virtual void baseUpdate (BMat & base) = 0;
+   virtual void latUpdate (IntLattice & lat) = 0;
 
    /**
     * Called when the base is incremented in a lattice test. `V[i]` is a
     * copy of basis vector \f$i\f$ used in the test.
     */
-   virtual void baseUpdate (BMat & V, int i) = 0;
+   virtual void latUpdate (IntLattice & lat, int i) = 0;
 
    /**
     * Called when new results have been calculated for one dimension. The
