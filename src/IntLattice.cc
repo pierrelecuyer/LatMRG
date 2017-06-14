@@ -128,8 +128,8 @@ void IntLattice::calcLgVolDual2 (double lgm2)
    int dim = getDim();
    int rmax = min(m_order, dim);
 
-   m_lgVolDual2[0] = lgm2;
-   for (int r = 1; r < rmax; r++)
+   m_lgVolDual2[1] = lgm2;
+   for (int r = 2; r <= rmax; r++)
       m_lgVolDual2[r] = m_lgVolDual2[r - 1] + lgm2;
    // WARNING [David]: one version had `m_order` instead of `rmax`.
    // I am not sure which is the fix and which is the bug.

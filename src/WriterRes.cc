@@ -210,7 +210,6 @@ void WriterRes::writeTable (Table & data, const string pos)
 
    int length;
    char align;
-
    for (int i = 0; i < nb_sub_lig; i++) {
       for (int j = 0; j < t; j++) {
 

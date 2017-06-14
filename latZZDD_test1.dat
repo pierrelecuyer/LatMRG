@@ -1,14 +1,14 @@
 SPECTRAL  BestLat		LatticeInfo
-L1NORM				Norm
+L2NORM				Norm
 FALSE				ReadGenFile
 1				J  (Nb. of components)
 MRG				Gener. type
 2 6 25			m  (modulus)
 1				k  (order)
 NoCond
-33				a  (multiplier)
+33  			a  (multiplier)
 1
-4 15				MinDim    MaxDim
+4 10				MinDim    MaxDim
 true				Dual
 FULL			LatticeType
 1 1				LaGroupSizes   Spacings
