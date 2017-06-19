@@ -3,10 +3,10 @@ L2NORM				Norm
 FALSE				ReadGenFile
 1				J  (Nb. of components)
 MRG				Gener. type
-2 6 25			m  (modulus)
+2 20 0			m  (modulus)
 1				k  (order)
 NoCond
-33  			a  (multiplier)
+33435			a  (multiplier)
 1
 4 10				MinDim    MaxDim
 true				Dual
@@ -14,5 +14,5 @@ FULL			LatticeType
 1 1				LaGroupSizes   Spacings
 10000000				MaxNodesBB
 true				If true, the inverse of the length of the shortest vector will be printed in the results, otherwise the length itself is printed.
-1				details
+3				details
 terminal	 		ResultForm

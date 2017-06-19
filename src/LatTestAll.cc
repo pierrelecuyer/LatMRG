@@ -278,6 +278,7 @@ int LatTestAll::doTest (const char *infile)
          beyerTest.setDualFlag (config.dualF);
          beyerTest.setMaxAllDimFlag (true);
          beyerTest.setMaxNodesBB (config.maxNodesBB);
+         beyerTest.setDetailFlag (config.detailF);
          beyerTest.test (fromDim, toDim, minVal);
          footer.setLatticeTest (&beyerTest);
          report.printTable ();

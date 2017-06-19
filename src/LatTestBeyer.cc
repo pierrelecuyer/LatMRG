@@ -29,7 +29,7 @@ bool LatTestBeyer::test (int fromDim, int toDim, double minVal[])
 
    m_fromDim = fromDim;
    m_toDim = toDim;
-   
+
 
    resetFromDim (m_lat->getOrder (), fromDim);
    while (m_lat->getDim () < fromDim)
@@ -61,6 +61,9 @@ bool LatTestBeyer::test (int fromDim, int toDim, double minVal[])
              || (m_merit[dim] < minVal[dim])) {
             m_merit[dim] = 0.0;
             return false;
+         }
+         if (3 == m_detailF) {
+            dispatchLatUpdate(*m_lat);
          }
 
          prepAndDisp (dim);
