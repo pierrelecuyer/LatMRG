@@ -171,11 +171,14 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
    setLowerBoundL2 (minVal[toDim], weights);   // same S2 for all dim
    red.setBoundL2 (m_boundL2, fromDim, toDim);
 
+
+
    while (true) {
       if (m_dualF)
          m_lat->dualize ();
       int dim = m_lat->getDim ();
       if (red.shortestVector (m_lat->getNorm ())) {
+
 
          // Calcul de D2. Pour Norm # L2NORM, suppose que VV est a jour.
          if (m_lat->getNorm () == L2NORM) {
@@ -326,7 +329,6 @@ void LatTestSpectral::prepAndDisp (int dim)
       results[0] = sqrt (m_merit.getMerit (dim));    // L_t
       if (m_invertF)
          results[0] = 1.0 / results[0];   // d_t = 1/L_t
-      cout << "result 1 : " << m_merit[dim] << endl;
       results[1] = sqrt (m_merit[dim]);
 
       results[2] = timer.val (Chrono::SEC);

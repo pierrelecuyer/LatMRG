@@ -283,7 +283,7 @@ int LatTestAll::doTest (const char *infile)
          footer.setLatticeTest (&beyerTest);
          report.printTable ();
          report.printFooter ();
-         rw->writeString (lattice->toStringDualBasis ());
+         //rw->writeString (lattice->toStringDualBasis ());
       }
       break;
 
