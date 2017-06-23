@@ -1,1 +1,5 @@
 doc/
+latmrg.xcodeproj/
+main.dSYM/
+main.cc
+latZZDD_test1.dat
