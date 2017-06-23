@@ -225,27 +225,34 @@ Normalizer * IntLattice::getNormalizer (NormaType norma, int alpha)
    int dim = getDim();
    Normalizer *normal;
 
+   //PW_TODO : voir si calculs pas trop sales avec m^k
+   // ajouter n en member de je ne sais pas quelle classe
+   // verifier que power marche avec boost sans NTL
+
+   BScal n;
+   n = power(m_order, conv<long>(m_modulo)) ; // on travaille dans le dual à chaque fois ?
+
    switch (norma) {
    case BESTLAT:
-      normal = new NormaBestLat (m_modulo, m_order, dim);
+      normal = new NormaBestLat (n, dim);
       break;
    case LAMINATED:
-      normal = new NormaLaminated (m_modulo, m_order, dim);
+      normal = new NormaLaminated (n, dim);
       break;
    case ROGERS:
-      normal = new NormaRogers (m_modulo, m_order, dim);
+      normal = new NormaRogers (n, dim);
       break;
    case MINKL1:
-      normal = new NormaMinkL1 (m_modulo, m_order, dim);
+      normal = new NormaMinkL1 (n, dim);
       break;
    case MINKOWSKI:
-      normal = new NormaMinkowski (m_modulo, m_order, dim);
+      normal = new NormaMinkowski (n, dim);
       break;
    case NORMA_GENERIC:
-      normal = new Normalizer (m_modulo, m_order, dim, "Norma_generic");
+      normal = new Normalizer (n, dim, "Norma_generic");
       break;
    case PALPHA_N:
-      normal = new NormaPalpha (m_modulo, alpha, dim);
+      normal = new NormaPalpha (n, alpha, dim);
       break;
    default:
       cout << "normalizer:   no such case";
