@@ -57,7 +57,7 @@ bool Lacunary::calcIndicesStreams (int s, int w, int & minDim,
    }
 
    BScal t1;
-   power2 (t1, (long) w);
+   LatticeTester::power2 (t1, (long) w);
    BScal t;
    t = 0;
    int i = 1;
