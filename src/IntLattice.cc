@@ -225,27 +225,31 @@ Normalizer * IntLattice::getNormalizer (NormaType norma, int alpha)
    int dim = getDim();
    Normalizer *normal;
 
+   RScal logDensity;
+   logDensity = m_order * log(m_modulo); // on travaille dans le dual à chaque fois ?
+
    switch (norma) {
    case BESTLAT:
-      normal = new NormaBestLat (m_modulo, m_order, dim);
+      normal = new NormaBestLat (logDensity, dim);
       break;
    case LAMINATED:
-      normal = new NormaLaminated (m_modulo, m_order, dim);
+      normal = new NormaLaminated (logDensity, dim);
       break;
    case ROGERS:
-      normal = new NormaRogers (m_modulo, m_order, dim);
+      normal = new NormaRogers (logDensity, dim);
       break;
    case MINKL1:
-      normal = new NormaMinkL1 (m_modulo, m_order, dim);
+      normal = new NormaMinkL1 (logDensity, dim);
       break;
    case MINKOWSKI:
-      normal = new NormaMinkowski (m_modulo, m_order, dim);
+      normal = new NormaMinkowski (logDensity, dim);
       break;
    case NORMA_GENERIC:
-      normal = new Normalizer (m_modulo, m_order, dim, "Norma_generic");
+      normal = new Normalizer (logDensity, dim, "Norma_generic");
       break;
    case PALPHA_N:
       normal = new NormaPalpha (m_modulo, alpha, dim);
+      //PW_TODO : c'est bien ça ?
       break;
    default:
       cout << "normalizer:   no such case";
