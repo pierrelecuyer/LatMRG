@@ -3,8 +3,8 @@
 #include "latmrg/Rank1Lattice.h"
 #include "latticetester/NormaBestLat.h"
 
-//!#define DEBUG
-#undef DEBUG
+//#define DEBUG
+//#undef DEBUG
 
 #include <cmath>
 #include <sstream>

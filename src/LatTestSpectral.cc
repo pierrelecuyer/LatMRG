@@ -143,8 +143,6 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[])
 // weights == 0 means unit weight for all projections
 bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const double* weights)
 {
-
-
    m_fromDim = fromDim;
    m_toDim = toDim;
    init ();
@@ -167,19 +165,17 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
    Reducer red (*m_lat);
 
    if (m_S2toL2[fromDim] <= 0.0)
-      initLowerBoundL2 (fromDim, toDim);
+   initLowerBoundL2 (fromDim, toDim);
    setLowerBoundL2 (minVal[toDim], weights);   // same S2 for all dim
    red.setBoundL2 (m_boundL2, fromDim, toDim);
 
-
-
    while (true) {
+
       if (m_dualF)
          m_lat->dualize ();
       int dim = m_lat->getDim ();
+
       if (red.shortestVector (m_lat->getNorm ())) {
-
-
          // Calcul de D2. Pour Norm # L2NORM, suppose que VV est a jour.
          if (m_lat->getNorm () == L2NORM) {
 
@@ -221,6 +217,7 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
             if (m_lat->getNorm () == L2NORM) {
                // Calcul du log(base 2) de ||V1||^2.
                lgvv1 = Lg (temp);
+
                if ((m_S2toL2[dim] <= 0.0) || (0 != std::isinf(m_S2toL2[dim]))) {
                   m_merit[dim] = exp2(lgvv1 - m_lat->getLgVolDual2 (dim)/dim)
                                   / m_normalizer->getGamma (dim);
@@ -266,7 +263,6 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
          m_merit[dim] = -1.0;
          return false;
       }
-
 
       if (dim == toDim)
          break;
