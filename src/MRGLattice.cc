@@ -235,7 +235,7 @@ void MRGLattice::buildBasis (int d)
 
 void MRGLattice::buildNaBasis (int d)
 // La base est construite en dimension d.
-{
+{ 
  // trace( "=====================================AVANT buildNaBasis", -10);
    initStates();
 
@@ -528,6 +528,8 @@ MyExit (1, "case ORBIT is not finished");
  * Voir la déf du m effectif comparé au vrai m dans LATIO. Je soupçonne
  * que cela pourrait être l'origine des erreurs.
  */
+
+//PW_TODO voir ces merdes
 
  MyExit (1, "case RECURRENT ne fonctionne pas");
          printf("ESPION_RECURRENT\n");
