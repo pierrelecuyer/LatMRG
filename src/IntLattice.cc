@@ -226,7 +226,9 @@ Normalizer * IntLattice::getNormalizer (NormaType norma, int alpha)
    Normalizer *normal;
 
    RScal logDensity;
-   logDensity = m_order * log(m_modulo); // on travaille dans le dual à chaque fois ?
+   logDensity = m_order * log(m_modulo); 
+   // PW_TODO
+   // on travaille dans le dual à chaque fois ?
 
    switch (norma) {
    case BESTLAT:
