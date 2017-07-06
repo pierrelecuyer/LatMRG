@@ -219,7 +219,7 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
          if (dim <= Normalizer::MAX_DIM) { // Calcul de S2.
             if (m_lat->getNorm () == L2NORM) {
 
-               /* YO
+               /* PW_TODO : ancienne normalisation
                // Calcul du log(base 2) de ||V1||^2.
                lgvv1 = Lg (temp);
 
@@ -231,20 +231,15 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
                }
                */
 
-               
+               /* PW_TODO
                cout << "Dimension = " << dim;
-               /*
                cout << ".  m_S2toL2[dim] = " << m_S2toL2[dim];
                cout << ".  shortestVector = " << temp;
                cout << ".  Normalizer = " << m_normalizer->getPreComputedBound(dim);
-               */
-
                cout << ".  getPreComputedBound = " << m_normalizer->getPreComputedBound(dim);
                cout << ".  getBound = " << m_normalizer->getBound(dim);
-
                cout << "." << endl;
-
-
+               */
 
                m_merit[dim] = temp / m_normalizer->getPreComputedBound(dim);
 
