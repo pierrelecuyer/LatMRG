@@ -177,6 +177,13 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
          m_lat->dualize ();
       int dim = m_lat->getDim ();
 
+      cout << "\nLatTestSpectral::test" << endl;
+      cout << "Primal = \n" << m_lat->getBasis() << endl;
+      cout << "Dual = \n" << m_lat->getDualBasis() << endl;
+
+      // pre-reduction step before BB with default parameters
+      red.redBKZ();
+
       if (red.shortestVector (m_lat->getNorm ())) {
 
          // Calcul de D2. Pour Norm # L2NORM, suppose que VV est a jour.
@@ -241,7 +248,10 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
                cout << "." << endl;
                */
 
-               m_merit[dim] = temp / m_normalizer->getPreComputedBound(dim);
+               double normalizer2 = m_normalizer->getPreComputedBound(dim);
+               normalizer2 *= normalizer2;
+
+               m_merit[dim] = temp / normalizer2;
 
             } else if (m_lat->getNorm () == L1NORM) {
                if ((m_S2toL2[dim] <= 0.0) || (std::isinf(m_S2toL2[dim]))) {
