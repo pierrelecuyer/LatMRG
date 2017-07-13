@@ -63,19 +63,29 @@ using namespace LatticeTester;
 
 int main (int argc, char *argv[])
 {
-   struct stat buf;    // properties of a file or directory
+   // Erwan
+   //string testLocation = "/Users/Erwan1/projects/github/LatMRG";
+   //string testLocation = "/Users/Erwan1/projects/github/LatMRG/latZZDD_test1";
+   //string testLocation = "latZZDD_test1";
+   
+   // Paul
+   //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles";
+   string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/latZZDD_test1";
+   
+   struct stat buf; //properties of a file or directory
    LatMRG::LatTestAll testall;
    int status = 0;
 
-   stat("latZZDD_test1", &buf);
-   if (0 != S_ISDIR(buf.st_mode))         // directory
-      status |= testall.doTestDir ("latZZDD_test1");
-   else {
-      string dataname("latZZDD_test1");
+   stat(testLocation.c_str(), &buf);
+   
+   if (0 != S_ISDIR(buf.st_mode)) //directory
+      status |= testall.doTestDir (testLocation.c_str());
+   else { //file
+      string dataname(testLocation.c_str());
       dataname.append(".dat");
       stat(dataname.c_str(), &buf);
 
-      status |= testall.doTest ("/Users/Erwan1/projects/github/LatMRG/latZZDD_test1");
+      status |= testall.doTest (testLocation.c_str());
    }
 
    /*
