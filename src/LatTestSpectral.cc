@@ -164,10 +164,12 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
 
    Reducer red (*m_lat);
 
+   // YO
    if (m_S2toL2[fromDim] <= 0.0)
    initLowerBoundL2 (fromDim, toDim);
    setLowerBoundL2 (minVal[toDim], weights);   // same S2 for all dim
    red.setBoundL2 (m_boundL2, fromDim, toDim);
+   
 
    while (true) {
 
@@ -175,7 +177,18 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
          m_lat->dualize ();
       int dim = m_lat->getDim ();
 
+      //PW_TODO
+      /*
+      cout << "\nLatTestSpectral::test" << endl;
+      cout << "Primal = \n" << m_lat->getBasis() << endl;
+      cout << "Dual = \n" << m_lat->getDualBasis() << endl;
+      */
+
+      // pre-reduction step before BB with default parameters
+      red.redBKZ();
+
       if (red.shortestVector (m_lat->getNorm ())) {
+
          // Calcul de D2. Pour Norm # L2NORM, suppose que VV est a jour.
          if (m_lat->getNorm () == L2NORM) {
 
@@ -215,6 +228,8 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
 
          if (dim <= Normalizer::MAX_DIM) { // Calcul de S2.
             if (m_lat->getNorm () == L2NORM) {
+
+               /* PW_TODO : ancienne normalisation
                // Calcul du log(base 2) de ||V1||^2.
                lgvv1 = Lg (temp);
 
@@ -224,6 +239,22 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
                } else {
                   m_merit[dim] = temp / m_S2toL2[dim];
                }
+               */
+
+               /* PW_TODO
+               cout << "Dimension = " << dim;
+               cout << ".  m_S2toL2[dim] = " << m_S2toL2[dim];
+               cout << ".  shortestVector = " << temp;
+               cout << ".  Normalizer = " << m_normalizer->getPreComputedBound(dim);
+               cout << ".  getPreComputedBound = " << m_normalizer->getPreComputedBound(dim);
+               cout << ".  getBound = " << m_normalizer->getBound(dim);
+               cout << "." << endl;
+               */
+
+               double normalizer2 = m_normalizer->getPreComputedBound(dim);
+               normalizer2 *= normalizer2;
+
+               m_merit[dim] = temp / normalizer2;
 
             } else if (m_lat->getNorm () == L1NORM) {
                if ((m_S2toL2[dim] <= 0.0) || (std::isinf(m_S2toL2[dim]))) {
