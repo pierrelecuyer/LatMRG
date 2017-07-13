@@ -177,9 +177,12 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
          m_lat->dualize ();
       int dim = m_lat->getDim ();
 
+      //PW_TODO
+      /*
       cout << "\nLatTestSpectral::test" << endl;
       cout << "Primal = \n" << m_lat->getBasis() << endl;
       cout << "Dual = \n" << m_lat->getDualBasis() << endl;
+      */
 
       // pre-reduction step before BB with default parameters
       red.redBKZ();
