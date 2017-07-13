@@ -78,11 +78,13 @@ void IntLattice::kill ()
    m_lgVolDual2 = 0;
    m_vSI.clear();
 
+#ifdef WITH_NTL
    if (!comp.empty()) {
       for (int s = 0; s < (int) comp.size(); s++)
          delete comp[s];
       comp.clear();
    }
+#endif
 }
 
 
@@ -226,7 +228,7 @@ Normalizer * IntLattice::getNormalizer (NormaType norma, int alpha)
    Normalizer *normal;
 
    RScal logDensity;
-   logDensity = m_order * log(m_modulo); 
+   logDensity = m_order * log(m_modulo);
    // PW_TODO
    // on travaille dans le dual à chaque fois ?
 
