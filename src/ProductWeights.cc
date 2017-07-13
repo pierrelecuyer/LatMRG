@@ -16,7 +16,7 @@
 // limitations under the License.
 
 #include "latmrg/ProductWeights.h"
-#include "latmrg/Util.h"
+#include "latticetester/Util.h"
 #include <sstream>
 
 #include <boost/lexical_cast.hpp>
@@ -63,7 +63,7 @@ Weight ProductWeights::getWeight (const Coordinates & projection) const
 
 void ProductWeights::format(std::ostream& os) const
 {
-   using LatMRG::operator<<;
+   using LatticeTester::operator<<;
    os << "ProductWeights(" << m_weights << ", default=" << m_defaultWeight << ")";
 }
 

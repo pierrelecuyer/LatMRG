@@ -8,7 +8,7 @@
 #include "latmrg/Merit.h"
 #include "latmrg/Subject.h"
 #include "latmrg/LatticeTestObserver.h"
-#include "latticetester/Weights.h"
+#include "latmrg/Weights.h"
 #include "latmrg/Chrono.h"
 #include <string>
 #include <list>

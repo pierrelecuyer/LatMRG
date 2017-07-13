@@ -1,6 +1,6 @@
 #ifndef PROJECTION_MERIT_H
 #define PROJECTION_MERIT_H
-#include "latticetester/Coordinates.h"
+#include "latmrg/Coordinates.h"
 #include <string>
 #include <vector>
 
@@ -41,7 +41,7 @@ ProjectionMerit() {}
     * `projection`, including `projection[0]`.
     */
    virtual double compute (const std::vector<long>& a, int n,
-                           const LatticeTester::Coordinates& projection) const = 0;
+                           const Coordinates& projection) const = 0;
 };
 
 }

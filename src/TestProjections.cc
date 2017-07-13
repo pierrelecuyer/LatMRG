@@ -3,13 +3,13 @@
 #include "latticetester/Util.h"
 #include "latmrg/Writer.h"
 #include "latmrg/WriterRes.h"
-#include "latticetester/UniformWeights.h"
+#include "latmrg/UniformWeights.h"
 #include "latmrg/ProjIteratorSuccCoords.h"
 #include "latmrg/ProjIteratorNonSuccCoords.h"
 
 #include <cstring>
 #include <sstream>
-#include "latticetester/CoordinateSets.h"
+#include "latmrg/CoordinateSets.h"
 
 using namespace std;
 using namespace LatticeTester;
@@ -20,13 +20,13 @@ namespace
 const char* espaceM = " \t\t   ";
 const char* espaceG = "                                                   ";
 
-const LatticeTester::UniformWeights unitWeights(1.0);
+const LatMRG::UniformWeights unitWeights(1.0);
 
-const string formatIndices (const Coordinates & ens)
+const string formatIndices (const LatMRG::Coordinates & ens)
 {
    ostringstream os;
    os << "  ";
-   Coordinates::const_iterator it = ens.begin ();
+   LatMRG::Coordinates::const_iterator it = ens.begin ();
    os << *it;
    ++it;
    while (it != ens.end ()) {

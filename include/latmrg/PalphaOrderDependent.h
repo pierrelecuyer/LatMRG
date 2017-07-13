@@ -1,7 +1,7 @@
 #ifndef PALPHA_ORDER_DEPENDENT_H
 #define PALPHA_ORDER_DEPENDENT_H
 #include "Discrepancy.h"
-#include "latticetester/OrderDependentWeights.h"
+#include "latmrg/OrderDependentWeights.h"
 
 
 namespace LatMRG {
@@ -58,7 +58,7 @@ public:
     * Constructors.
     */
    PalphaOrderDependent (int alpha, long n, bool prime,
-                            const LatticeTester::OrderDependentWeights & weights, int d);
+                            const OrderDependentWeights & weights, int d);
 
    /**
     * Similar to the above constructor, except that the dimension of

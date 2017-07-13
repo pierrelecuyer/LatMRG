@@ -42,7 +42,7 @@ Weight PODWeights::getWeight (const Coordinates& projection) const
 
 void PODWeights::format(std::ostream& os) const
 {
-   using LatMRG::operator<<;
+   using LatticeTester::operator<<;
    os << "PODWeights(" << m_orderDependentWeights << ", " << m_productWeights << ")";
 }
 

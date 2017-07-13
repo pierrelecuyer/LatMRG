@@ -15,10 +15,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "latticetester/Util.h"
 #include "latmrg/ProjectionDependentWeights.h"
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <sstream>
 
 #ifdef WITH_XML
 #include <boost/lexical_cast.hpp>
@@ -92,7 +94,7 @@ const ProjectionDependentWeights::WeightsMap& ProjectionDependentWeights::getWei
 
 void ProjectionDependentWeights::format(ostream& os) const
 {
-   using LatMRG::operator<<;
+   using LatticeTester::operator<<;
    os << "ProjectionDependentWeights(" << m_weights << ")";
 #if 0
    // line by line

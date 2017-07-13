@@ -16,6 +16,8 @@
 // limitations under the License.
 
 #include "latmrg/OrderDependentWeights.h"
+#include "latmrg/Weights.h"
+
 #include <sstream>
 
 #include <boost/lexical_cast.hpp>
@@ -52,7 +54,7 @@ Weight OrderDependentWeights::getWeight (const Coordinates& projection) const
 
 void OrderDependentWeights::format(std::ostream& os) const
 {
-   using LatMRG::operator<<;
+   using LatticeTester::operator<<;
    os << "OrderDependentWeights(" << m_weights << ", default=" << m_defaultWeight << ")";
 }
 

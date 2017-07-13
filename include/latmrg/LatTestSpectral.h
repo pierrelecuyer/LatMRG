@@ -1,10 +1,10 @@
 #ifndef LATTESTSPECTRAL_H
 #define LATTESTSPECTRAL_H
 #include "latmrg/IntLattice.h"
+#include "latmrg/Weights.h"
 #include "LatticeTest.h"
 #include "latticetester/Reducer.h"
 #include "latticetester/Normalizer.h"
-#include "latticetester/Weights.h"
 #include "latticetester/Const.h"
 
 

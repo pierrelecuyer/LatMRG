@@ -3,7 +3,7 @@
 #include "latmrg/FigureOfMerit.h"
 #include "latmrg/ProjectionMerit.h"
 #include "latmrg/ProjIterator.h"
-#include "latticetester/Weights.h"
+#include "latmrg/Weights.h"
 #include <vector>
 
 
@@ -27,7 +27,7 @@ public:
  * merit is created where only projections that include the last coordinate
  * are considered (this allows for faster CBC searches).
  */
-AverageCaseMerit (const ProjectionMerit & merit, const LatticeTester::Weights & weights,
+AverageCaseMerit (const ProjectionMerit & merit, const LatMRG::Weights & weights,
                      bool alwaysLastCoord = false);
 
    /**
@@ -51,7 +51,7 @@ virtual double compute (const std::vector<long>& a, int n,
 protected:
 
    const ProjectionMerit & m_merit;
-   const LatticeTester::Weights & m_weights;
+   const LatMRG::Weights & m_weights;
    const bool m_alwaysLastCoord;
 };
 
