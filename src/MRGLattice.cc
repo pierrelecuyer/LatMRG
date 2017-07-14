@@ -96,8 +96,6 @@ MRGLattice & MRGLattice::operator= (const MRGLattice & lat)
 {
    if (this == &lat)
       return *this;
-   if (this == &lat)
-      return *this;
    m_dim = lat.m_dim;
    copyBasis(lat);
    m_order = lat.m_order;
