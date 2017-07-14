@@ -1,8 +1,8 @@
 #ifndef LATMRG__INTLATTICE_H
 #define LATMRG__INTLATTICE_H
 #include "latticetester/IntLatticeBasis.h"
-#include "latticetester/CoordinateSets.h"
 #include "latticetester/Normalizer.h"
+#include "latmrg/CoordinateSets.h"
 #include "latmrg/Lacunary.h"
 #include "latticetester/Const.h"
 #include "latticetester/Types.h"
@@ -85,7 +85,7 @@ public:
     * lattice. The result is placed in the `lattice` lattice. The basis is
     * triangularized to form a proper basis.
     */
-   void buildProjection (IntLattice* lattice, const LatticeTester::Coordinates & proj);
+   void buildProjection (IntLattice* lattice, const Coordinates & proj);
 
    /**
     * Builds the basis for the lattice in dimension `d`.
@@ -128,7 +128,7 @@ public:
 protected:
 
    /**
-    * \copydoc LatticeTester::IntLattice::kill()
+    * \copydoc IntLattice::kill()
     */
    virtual void kill ();
 

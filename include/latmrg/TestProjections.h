@@ -2,9 +2,9 @@
 #define TESTPROJECTIONS_H
 #include "latmrg/IntLattice.h"
 #include "LatticeTest.h"
-#include "latticetester/Weights.h"
+#include "latmrg/Weights.h"
 #include "ProjIterator.h"
-#include "latticetester/CoordinateSets.h"
+#include "latmrg/CoordinateSets.h"
 #include "Writer.h"
 
 
@@ -213,7 +213,7 @@ public:
     * `indices` = \f$[1, 4]\f$, then a 2-dimensional basis is built using
     * coordinates 1 and 4 of the master basis.
     */
-   void build (const LatticeTester::Coordinates & proj);
+   void build (const Coordinates & proj);
 
    /**
     * Calculates the \f$M_{t_1, …, t_d}\f$ merit by running all the tests
@@ -232,7 +232,7 @@ public:
     * As method `run` above, but with the weights `weights`.
     */
    double run (bool stationary, bool last, double minVal[],
-               const LatticeTester::Weights & weights);
+               const Weights & weights);
 
    /**
     * Calculates the number of projections, given the parameters of this
@@ -257,7 +257,7 @@ protected:
     * Run only for projections given by the iterator `projit`.
     */
    double run (ProjIterator & projit, double minVal[],
-                  const LatticeTester::Weights & weights);
+                  const Weights & weights);
 
    /**
     * Lattice on which the \f$M_{t_1, …, t_d}\f$ merit will be calculated.

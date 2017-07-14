@@ -3,7 +3,7 @@
 #include "latmrg/Rank1Lattice.h"
 #include "latmrg/LatTestSpectral.h"
 #include "latmrg/TestProjections.h"
-#include "latticetester/UniformWeights.h"
+#include "latmrg/UniformWeights.h"
 #include "latticetester/Util.h"
 
 #include <stdexcept>
@@ -16,7 +16,7 @@ using namespace LatticeTester;
 namespace LatMRG
 {
 
-const LatticeTester::UniformWeights unitWeights(1.0);
+const UniformWeights unitWeights(1.0);
 
 //===========================================================================
 

@@ -3,7 +3,7 @@
 #include "FigureOfMerit.h"
 #include "ProjectionMerit.h"
 #include "ProjIterator.h"
-#include "latticetester/Weights.h"
+#include "latmrg/Weights.h"
 #include <vector>
 
 
@@ -27,7 +27,7 @@ public:
     * merit is created only for projections that include the last coordinate
     * (this allows for faster CBC searches).
     */
-   WorstCaseMerit (const ProjectionMerit & merit, const LatticeTester::Weights & weights,
+   WorstCaseMerit (const ProjectionMerit & merit, const Weights & weights,
                       bool alwaysLastCoord = false);
 
    /**
@@ -51,7 +51,7 @@ public:
    protected:
 
    const ProjectionMerit& m_merit;
-   const LatticeTester::Weights& m_weights;
+   const Weights& m_weights;
    const bool m_alwaysLastCoord;
 };
 

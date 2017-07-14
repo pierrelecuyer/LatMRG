@@ -1,7 +1,7 @@
 #ifndef SPECTRALMERIT_CLASSIC_H
 #define SPECTRALMERIT_CLASSIC_H
 #include "FigureOfMerit.h"
-#include "latticetester/Weights.h"
+#include "latmrg/Weights.h"
 #include "latticetester/Normalizer.h"
 #include <string>
 
@@ -72,7 +72,7 @@ SpectralMeritClassic (long n, int dim);
     * which makes it more likely that a lattice will be rejected because
     * of this projection.
     */
-   void setWeights (const LatticeTester::Weights* weights);
+   void setWeights (const Weights* weights);
 
    /**
     * After the length of the shortest vector in the dual is computed, it
@@ -108,7 +108,7 @@ protected:
    long m_n;                      // n
    int m_dim;                     // Dimension of lattice
 
-   const LatticeTester::Weights* m_weights;
+   const Weights* m_weights;
    LatticeTester::Normalizer* m_normalizer;
    int* m_coordLimits;
 

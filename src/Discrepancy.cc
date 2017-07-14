@@ -155,9 +155,9 @@ void Discrepancy::setWeights (double gam[], int d)
 
 void Discrepancy::setWeights (const ProductWeights & gamma)
 {
-   m_Gamma[0] = gamma.getWeight(LatticeTester::Coordinates());
+   m_Gamma[0] = gamma.getWeight(Coordinates());
    for (int i = 1; i <= m_dim; i++) {
-      LatticeTester::Coordinates proj;
+      Coordinates proj;
       proj.insert(i);
       m_Gamma[i] = gamma.getWeight(proj);
    }
@@ -168,7 +168,7 @@ void Discrepancy::setWeights (const ProductWeights & gamma)
 
 void Discrepancy::setWeights (const OrderDependentWeights & gamma)
 {
-   LatticeTester::Coordinates proj;
+   Coordinates proj;
    m_Gamma[0] = gamma.getWeight(proj);
    for (int i = 1; i <= m_dim; i++) {
       proj.insert(i);

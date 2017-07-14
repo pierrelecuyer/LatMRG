@@ -1,7 +1,7 @@
 #ifndef PALPHA_PRODUCT_H
 #define PALPHA_PRODUCT_H
 #include "Discrepancy.h"
-#include "latticetester/ProductWeights.h"
+#include "latmrg/ProductWeights.h"
 
 
 namespace LatMRG {
@@ -83,7 +83,7 @@ public:
  * \f$\beta_0\f$ is set to 1 for now.
  */
 PalphaProduct (int alpha, long n, bool prime,
-                  const LatticeTester::ProductWeights & weights, int s);
+                  const ProductWeights & weights, int s);
 
    /**
     * Destructor.

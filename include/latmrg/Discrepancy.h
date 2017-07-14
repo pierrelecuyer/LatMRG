@@ -1,8 +1,8 @@
 #ifndef DISCREPANCY_H
 #define DISCREPANCY_H
 #include "FigureOfMerit.h"
-#include "latticetester/ProductWeights.h"
-#include "latticetester/OrderDependentWeights.h"
+#include "latmrg/ProductWeights.h"
+#include "latmrg/OrderDependentWeights.h"
 #include <string>
 
 
@@ -33,8 +33,8 @@ public:
     * (<tt>false</tt>).
     */
    Discrepancy (long n, bool prime, double gamma[], int d);
-   Discrepancy (long n, bool prime, const LatticeTester::ProductWeights & gamma, int d);
-   Discrepancy (long n, bool prime, const LatticeTester::OrderDependentWeights & gamma, int d);
+   Discrepancy (long n, bool prime, const ProductWeights & gamma, int d);
+   Discrepancy (long n, bool prime, const OrderDependentWeights & gamma, int d);
    /**
     * @}
     */
@@ -56,8 +56,8 @@ public:
     * now \f$r > 1\f$.
     */
    Discrepancy (long n, long r, bool prime, double gamma[], int d);
-   Discrepancy (long n, long r, bool prime, const LatticeTester::ProductWeights & gamma, int d);
-   Discrepancy (long n, long r, bool prime, const LatticeTester::OrderDependentWeights & gamma,
+   Discrepancy (long n, long r, bool prime, const ProductWeights & gamma, int d);
+   Discrepancy (long n, long r, bool prime, const OrderDependentWeights & gamma,
                    int d);
    /**
     * @}
@@ -129,8 +129,8 @@ protected:
     * \f$\gamma_{\emptyset}=1\f$, corresponding to the empty set.
     */
    void setWeights (double gamma[], int d);
-   void setWeights (const LatticeTester::ProductWeights & gamma);
-   void setWeights (const LatticeTester::OrderDependentWeights & gamma);
+   void setWeights (const ProductWeights & gamma);
+   void setWeights (const OrderDependentWeights & gamma);
    /**
     * @}
     */
