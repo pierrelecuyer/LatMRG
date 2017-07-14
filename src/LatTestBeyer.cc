@@ -25,11 +25,9 @@ LatTestBeyer::LatTestBeyer (LatMRG::IntLattice * lat): LatticeTest (lat)
 
 bool LatTestBeyer::test (int fromDim, int toDim, double minVal[])
 {
-   init ();
-
    m_fromDim = fromDim;
    m_toDim = toDim;
-
+   init ();
 
    resetFromDim (m_lat->getOrder (), fromDim);
    while (m_lat->getDim () < fromDim)
@@ -89,6 +87,7 @@ bool LatTestBeyer::test (int fromDim, int toDim, double minVal[])
 
 void LatTestBeyer::init ()
 {
+   m_merit.setDim(m_toDim);
    const int N = 2;
    string header[N];
    header[0] = "q_t";

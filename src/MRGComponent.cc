@@ -110,6 +110,7 @@ void MRGComponent::init (const MScal & m0, int k0, DecompType decom1,
    else if (decom1 == DECOMP_WRITE) {
       ifm1.factorize();
       ofstream fout(filem1);
+
       fout << ifm1.toString();
    }
    ifm1.calcInvFactors();

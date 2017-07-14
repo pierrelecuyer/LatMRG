@@ -83,18 +83,6 @@ enum LatticeType { FULL, RECURRENT, ORBIT, PRIMEPOWER };
  */
 enum DecompType { DECOMP, DECOMP_WRITE, DECOMP_READ, DECOMP_PRIME };
 
-/**
- * Indicates in which form and where the results will be sent.
- * \anchor REF__Const_co_output
- *
- * `TERMINAL`: the results will appear only on the terminal screen.<br>
- * `RES`: the results will be in plain text format and sent to a file with
- * extension "<tt>.res</tt>".<br>
- * `TEX`: the results will be in LaTeX format and sent to a file with extension
- * "<tt>.tex</tt>".<br>
- * `GEN`: the results will be sent to a file with extension "<tt>.gen</tt>".
- */
-enum OutputType { TERMINAL, RES, TEX, GEN };
 
 /**
  * Indicates which type of conditions are imposed on the coefficients
@@ -137,7 +125,6 @@ enum SearchMethod { EXHAUST, RANDOM };
 std::string toStringGen (GenType);
 std::string toStringLattice (LatticeType);
 std::string toStringDecomp (DecompType);
-std::string toStringOutput (OutputType);
 std::string toStringImplemCond (ImplemCond);
 std::string toStringSearchMethod (SearchMethod);
 

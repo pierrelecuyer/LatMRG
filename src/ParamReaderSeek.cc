@@ -52,14 +52,14 @@ void ParamReaderSeek::read (SeekConfig & config)
    unsigned int lnu;
    int s;
 
-   readCriterionType (config.criter, ++ln, 1);
+   readCriterionType (config.criter, ++ln, 0);
    if (config.criter == SPECTRAL)
-      readNormaType (config.normaType, ln, 2);
+      readNormaType (config.normaType, ln, 1);
 
-   readBool (config.readGenFile, ++ln, 1);
+   readBool (config.readGenFile, ++ln, 0);
    if (config.readGenFile)
-      readString (config.fileName, ln, 2);
-   readInt (config.J, ++ln, 1);
+      readString (config.fileName, ln, 1);
+   readInt (config.J, ++ln, 0);
 
    config.Ms = new MScal[config.J];
    config.Ks = new int[config.J];
@@ -68,42 +68,42 @@ void ParamReaderSeek::read (SeekConfig & config)
    int maxOrder = 0;
    Component comp;
    for (int i = 0; i < config.J; i++) {
-      readGenType (comp.genType, ++ln, 1);
+      readGenType (comp.genType, ++ln, 0);
       readNumber3 (comp.modulus.m, comp.modulus.b, comp.modulus.e,
-                   comp.modulus.c, ++ln, 1);
+                   comp.modulus.c, ++ln, 0);
       if (0 == comp.modulus.e)
          comp.modulus.init (comp.modulus.m);
       else
          comp.modulus.init (comp.modulus.b, comp.modulus.e, comp.modulus.c);
       config.Ms[i] = comp.modulus.m;
 
-      readInt (comp.k, ++ln, 1);
+      readInt (comp.k, ++ln, 0);
       if (maxOrder < comp.k)
          maxOrder = comp.k;
       config.Ks[i] = comp.k;
-      readBool (comp.PerMax, ++ln, 1);
+      readBool (comp.PerMax, ++ln, 0);
 
-      readDecompType (comp.F1, ++ln, 1);
+      readDecompType (comp.F1, ++ln, 0);
       if (comp.F1 == DECOMP_WRITE || comp.F1 == DECOMP_READ) {
          comp.file1.reserve (MAX_WORD_SIZE);
-         readString (comp.file1, ln, 2);
+         readString (comp.file1, ln, 1);
       }
-      readDecompType (comp.F2, ++ln, 1);
+      readDecompType (comp.F2, ++ln, 0);
       if (comp.F2 == DECOMP_WRITE || comp.F2 == DECOMP_READ) {
          comp.file2.reserve (MAX_WORD_SIZE);
-         readString (comp.file2, ln, 2);
+         readString (comp.file2, ln, 1);
       }
 
-      readImplemCond (comp.implemCond, ++ln, 1);
+      readImplemCond (comp.implemCond, ++ln, 0);
       if (POWER_TWO == comp.implemCond) {
-         readInt (comp.NumBits, ln, 2);
-         readInt (comp.HighestBit, ln, 3);
+         readInt (comp.NumBits, ln, 1);
+         readInt (comp.HighestBit, ln, 2);
       } else if (EQUAL_COEF == comp.implemCond ||
                  ZERO_COEF == comp.implemCond) {
-         readInt (comp.ncoef, ln, 2);
+         readInt (comp.ncoef, ln, 1);
          comp.Icoef = new int[1 + comp.ncoef];
          for (s = 1; s < comp.ncoef; s++)
-            readInt (comp.Icoef[s], ln, 2 + s);
+            readInt (comp.Icoef[s], ln, 1 + s);
          comp.Icoef[0] = 0;
          comp.Icoef[comp.ncoef] = comp.k;
       }
@@ -148,41 +148,41 @@ void ParamReaderSeek::read (SeekConfig & config)
             comp.c[i] = comp.HighestBit;
          }
       }
-      readSearchMethod (comp.searchMethod, ++ln, 1);
+      readSearchMethod (comp.searchMethod, ++ln, 0);
       if (RANDOM == comp.searchMethod) {
-         readInt (comp.numReg, ln, 2);
-         readInt (comp.H, ln, 3);
-         readInt (comp.Hk, ln, 4);
+         readInt (comp.numReg, ln, 1);
+
+         readInt (comp.H, ln, 2);
+         readInt (comp.Hk, ln, 3);
       } else
          comp.numReg = 1;
 
       config.compon.push_back (comp);
    }
 
-   readInt (config.C, ++ln, 1);
-   readDoubleVect (config.minMerit, ++ln, 1, config.C, 0);
-   readDoubleVect (config.maxMerit, ++ln, 1, config.C, 0);
-   readIntVect (config.numGen, ++ln, 1, config.C, 0);
-
-   readInt (config.d, ++ln, 1);
+   readInt (config.C, ++ln, 0);
+   readDoubleVect (config.minMerit, ++ln, 0, config.C, 0);
+   readDoubleVect (config.maxMerit, ++ln, 0, config.C, 0);
+   readIntVect (config.numGen, ++ln, 0, config.C, 0);
+   readInt (config.d, ++ln, 0);
    if (config.d < 1)
       MyExit (1, "ParamReaderSeek:   config.d < 1");
    config.td = new int[1 + config.d];
-   readIntVect (config.td, ++ln, 1, 1 + config.d, 0);
+   readIntVect (config.td, ++ln, 0, 1 + config.d, 0);
    if (config.td[0] <= maxOrder)
       config.td[0] = maxOrder + 1;
 
-   readBool (config.dualF, ++ln, 1);
-   readLatticeType (config.latType, ++ln, 1);
+   readBool (config.dualF, ++ln, 0);
+   readLatticeType (config.latType, ++ln, 0);
 
-   readInt (config.lacGroupSize, ++ln, 1);
-   readInt (config.lacSpacing, ln, 2);
-   readLong (config.maxNodesBB, ++ln, 1);
+   readInt (config.lacGroupSize, ++ln, 0);
+   readInt (config.lacSpacing, ln, 1);
+   readLong (config.maxNodesBB, ++ln, 0);
 
    double tem;
-   readDouble (tem, ++ln, 1);
+   readDouble (tem, ++ln, 0);
    char c;
-   readChar (c, ln, 2);
+   readChar (c, ln, 1);
    switch (c) {
    case 's':
       config.duration = tem;
@@ -201,9 +201,9 @@ void ParamReaderSeek::read (SeekConfig & config)
       cout << "***** reading duration:  IMPOSSIBLE CASE";
    }
 
-   readLong (config.seed, ++ln, 1); // seed of the generator
+   readLong (config.seed, ++ln, 0); // seed of the generator
 //   readLong (config.s2, ln, 2);
-   readOutputType (config.outputType, ++ln, 1);
+   readOutputType (config.outputType, ++ln, 0);
 }
 
 }

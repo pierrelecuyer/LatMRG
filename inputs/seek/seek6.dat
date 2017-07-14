@@ -1,0 +1,22 @@
+ Spectral  Laminated               Merit criterion
+ FALSE                           Read generators from file
+ 1                               J
+  MRG                             Gener. type
+  32749  1 0                      Modulo m
+  1                               Order k
+  TRUE                            Maximal period
+  FALSE                           Implem. condition
+  Decomp                          Factors of m-1
+  DecompWrite seek15r.fac         Factors of r
+  7500                               b1
+  7550                           c1
+  Exhaust                         Search method: exhaustive search
+ 1 2 3                           NbCat  Dim(0)  Dim(1)
+ 0.0  1.0                        Min and max merit values
+ 2                               Nb of retained generators
+ Full                            Lattice type (analyzed)
+ 1  1                            Lacunary ind. group sizes,  spacing
+ 1000000                         Max nb of nodes in each BB
+ 0.1 h                            Time limit: 0.1 hour
+ 12345 98765                     S1 S2 : seeds for random number generator
+ RES                             Results File

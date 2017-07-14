@@ -25,7 +25,6 @@ LatTestSpectral::LatTestSpectral (const Normalizer * normal,
    m_normalizer = normal;
    int dim = lat->getDim();
 
-
 }
 
 
@@ -143,6 +142,7 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[])
 // weights == 0 means unit weight for all projections
 bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const double* weights)
 {
+   m_merit.setDim(toDim);
    m_fromDim = fromDim;
    m_toDim = toDim;
    init ();
@@ -169,7 +169,7 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
    initLowerBoundL2 (fromDim, toDim);
    setLowerBoundL2 (minVal[toDim], weights);   // same S2 for all dim
    red.setBoundL2 (m_boundL2, fromDim, toDim);
-   
+
 
    while (true) {
 
@@ -298,6 +298,7 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
       if (dim == toDim)
          break;
       m_lat->incDim ();
+
       red = Reducer(*m_lat);
    }
 
@@ -309,7 +310,7 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
 
 void LatTestSpectral::init ()
 {
-
+   m_merit.setDim(m_toDim);
    m_boundL2.SetLength (m_toDim+1);
    m_S2toL2 = new double[m_toDim+1];
    SetZero (m_S2toL2, m_toDim+1);

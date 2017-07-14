@@ -102,10 +102,9 @@ class Merit {
 public:
 
 /**
- * Constructor. This object may contain figures of merit for dimensions up to
- * `maxDim`.
+ * Constructor.
  */
-Merit (int maxDim);
+Merit ();
 
    /**
     * Copy Constructor.
@@ -153,6 +152,12 @@ Merit (int maxDim);
      }
 
    /**
+    * Set dimention of attributes. Merit may contain figures of
+    * merit for dimensions up to `maxDim`.
+    */
+   void setDim (int maxDim);
+
+   /**
     * Sets the value of the merit to \f$x\f$ for all dimensions.
     */
    void set (double x);
@@ -198,6 +203,7 @@ Merit (int maxDim);
     * otherwise, the lengths are returned.
     */
    std::string toString (int from, int T, bool rac, bool invert) const;
+
 private:
 
 /**

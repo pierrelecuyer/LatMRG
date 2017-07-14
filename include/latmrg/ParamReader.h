@@ -265,7 +265,7 @@ ParamReader();
     * Reads an output form from the <tt>pos</tt>-th token of the
     * <tt>ln</tt>-th line into `field`.
     */
-   void readOutputType (OutputType & field, unsigned int ln,
+   void readOutputType (LatticeTester::OutputType & field, unsigned int ln,
                         unsigned int pos);
 
    /**

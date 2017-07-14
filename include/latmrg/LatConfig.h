@@ -227,7 +227,7 @@ public:
     * File format used to store the results. See `Const` for a definition
     * of the possible output types.
     */
-   OutputType outputType;
+   LatticeTester::OutputType outputType;
 };
 
 }

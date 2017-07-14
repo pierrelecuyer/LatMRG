@@ -39,23 +39,23 @@ void read (ParamReader & reader, ParamType & par)
 {
    reader.getLines ();
    int ln = 0;
-   reader.readGenType (par.typ, ++ln, 1);
+   reader.readGenType (par.typ, ++ln, 0);
    long b, e, c;
-   reader.readNumber3 (par.m, b, e, c, ++ln, 1);
-   reader.readInt (par.k, ++ln, 1);
-   reader.readDecompType (par.decom1, ++ln, 1);
+   reader.readNumber3 (par.m, b, e, c, ++ln, 0);
+   reader.readInt (par.k, ++ln, 0);
+   reader.readDecompType (par.decom1, ++ln, 0);
    if (par.decom1 == DECOMP_WRITE || par.decom1 == DECOMP_READ) {
       par.filem1.reserve (MAX_CHARS);
-      reader.readString (par.filem1, ln, 2);
+      reader.readString (par.filem1, ln, 1);
    }
-   reader.readDecompType (par.decor, ++ln, 1);
+   reader.readDecompType (par.decor, ++ln, 0);
    if (par.decor == DECOMP_WRITE || par.decor == DECOMP_READ) {
       par.filer.reserve (MAX_CHARS);
-      reader.readString (par.filer, ln, 2);
+      reader.readString (par.filer, ln, 1);
    }
    par.a.SetLength (1 + par.k);
    for (int i = 1; i <= par.k; i++)
-      reader.readMScal(par.a[i], ++ln, 1);
+      reader.readMScal(par.a[i], ++ln, 0);
    par.a[0] = 0;
 }
 

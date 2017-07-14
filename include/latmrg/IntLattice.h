@@ -106,6 +106,12 @@ public:
    virtual void setLac (const Lacunary &) {
           LatticeTester::MyExit(1, "IntLattice.setLac is empty"); }
 
+   /**
+    * Returns the vector of multipliers (or coefficients) \f$A\f$ as a
+    * string.
+    */
+   virtual std::string toStringCoef() const;
+
 
 
 

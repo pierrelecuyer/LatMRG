@@ -154,10 +154,10 @@ public:
    std::string toString () const;
 private:
 
-/**
- * The number whose "prime" factor decomposition is kept in this object.
- */
-MScal m_number;
+   /**
+    * The number whose "prime" factor decomposition is kept in this object.
+    */
+   MScal m_number;
 
    /**
     * The status of this number, i.e. whether it is prime, composite, ...

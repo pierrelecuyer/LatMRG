@@ -21,6 +21,7 @@ namespace LatMRG
 
 void LatTestPalpha::init ()
 {
+   m_merit.setDim(m_toDim);
    const int N = 3;
    string header[N];
    if (m_config->calcPalpha == NORMPAL) {

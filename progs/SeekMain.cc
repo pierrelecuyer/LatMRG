@@ -562,7 +562,6 @@ void CompareMerit ()
          delete lat;
          delete latTest;
       }
-      // printPool (" ESPION_4");
    }
 }
 

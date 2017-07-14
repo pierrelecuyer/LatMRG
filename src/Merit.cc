@@ -13,13 +13,10 @@ using namespace LatticeTester;
 namespace LatMRG
 {
 
-Merit::Merit (int maxDim)
+Merit::Merit ()
 {
-   m_val.reserve(1 + maxDim);
-   m_normVal.reserve(1 + maxDim);
    m_worstMerit = DBL_MAX;   // Arbitrary large value
    m_dimWorst = 0;
-   set (-1.0);
 }
 
 
@@ -41,7 +38,6 @@ Merit::Merit (const Merit & mer) :
    }
    */
 }
-
 
 //=========================================================================
 
@@ -86,6 +82,15 @@ Merit & Merit::operator= (const Merit & mer)
       */
    }
    return *this;
+}
+
+//=======================================================================
+
+void Merit::setDim (int maxDim)
+{
+   m_val.reserve(1 + maxDim);
+   m_normVal.reserve(1 + maxDim);
+   set (-1.0);
 }
 
 

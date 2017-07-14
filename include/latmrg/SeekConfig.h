@@ -111,7 +111,7 @@ bool dualF;
    long maxNodesBB;
    double duration;
    long seed;  // seed of the random number generator
-   OutputType outputType;
+   LatticeTester::OutputType outputType;
 };
 
 }

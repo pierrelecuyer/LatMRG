@@ -1,0 +1,24 @@
+Spectral  Laminated	Lattice Info
+L2NORM			Norm
+FALSE
+2
+MRG			Gener. type
+32749			m (modulus) 2^32
+2			k (order)
+NoCond
+180 -175		multipliers
+MRG			Gener. type
+32363			m (modulus)
+1			k (order)
+NoCond
+157			a21
+1
+3   20			MinDim MaxDim
+true			Dual
+full			Lattice Type
+1   1			Lacunary
+1000000			MaxNodesBB
+false	
+0                           details
+terminal Res			ResultForm
+

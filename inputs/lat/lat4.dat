@@ -1,0 +1,18 @@
+Spectral Rogers		LatticeInfo
+L2NORM			Norm
+FALSE			ReadGenFile
+1			J  (Nb. of components) 
+MRG			Gener. type
+1021			m  (modulus) 
+1			k  (order) 
+NoCond
+331			a  (multiplier) 
+1
+2  16			MinDim   MaxDim
+true			Dual
+Full			LatticeType
+1  1			LaGroupSizes   Spacings
+10000000		MaxNodesBB
+true false			VerifyBB
+0                           details
+terminal Res			ResultForm

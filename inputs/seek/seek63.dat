@@ -1,0 +1,34 @@
+ Spectral  Laminated             Merit criterion
+ FALSE                           Read generators from file
+ 1                               J
+  MRG                             Gener. type
+  2  63 -711                      Modulo m
+  5                               Order k
+  TRUE                            Maximal period
+  Read  seek63.fac                Factors of m-1 in file
+  Prime                           Factors of r
+  AppFact NonZero 2 1                Implem. condition
+  1                               b_1
+  2   63 -712                    c_1
+  0 
+  0 
+  0 
+  0 
+  0 
+  0 
+  -2  63 -712
+  -1
+  Random 10000 100 100              Search method: random search
+ 1                               NbCat
+ 0.0                             Min merit values
+ 1.0                             Max merit values
+ 2                               Nb of retained generators
+ 1                               d
+ 6 12                              t_1,...,t_d
+ true                            Dual lattice
+ Full                            Lattice type (analyzed)
+ 1  1                            Lacunary ind. group sizes,  spacing
+ 10000000                         Max nb of nodes in each BB
+ 1 m                             Time limit:
+ 12345 98711                     S1 S2 : seeds for random number generator
+ RES                             Output in File

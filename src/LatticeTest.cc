@@ -28,7 +28,7 @@ using namespace LatticeTester;
 namespace LatMRG
 {
 
-LatticeTest::LatticeTest (LatMRG::IntLattice * lat): m_merit(lat->getDim())
+LatticeTest::LatticeTest (LatMRG::IntLattice * lat): m_merit()
 {
    m_lat = lat;
    m_dualF = true;

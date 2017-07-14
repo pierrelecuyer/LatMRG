@@ -1,0 +1,23 @@
+Spectral  Laminated		LatticeInfo
+L2NORM				Norm
+FALSE				ReadGenFile
+2				J  (Nb. of components) 
+MRG				Gener. type
+4294967087			m  (modulus) 
+3				k  (order) 
+NoCond
+0 1403580    -810728 
+MRG				Gener. type
+4294944443			m  (modulus) 
+3				k  (order) 
+NoCond
+527612	 0  -1370589 
+3
+4  40	10	10		MinDim	  MaxDim
+true				Dual
+Recurrent Full			LatticeType
+1 1				LaGroupSizes   Spacings
+20000000			MaxNodesBB
+true
+0			    details
+terminal Res				ResultForm

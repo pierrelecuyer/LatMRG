@@ -1,0 +1,17 @@
+   Spectral BestLat   	Lattice Info
+L2NORM			Norm
+FALSE
+1
+MRG			Gener. type
+2147483647	      m (modulus) 
+1			k (order)
+ NoCond
+742938285 			a (multiplier)
+1
+2   30			MinDim MaxDim
+true			Dual
+full recurrent			Lattice Type
+1 1			Lacunary
+10000000			MaxNodesBB
+true
+terminal res			ResultForm

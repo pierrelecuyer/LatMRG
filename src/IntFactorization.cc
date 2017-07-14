@@ -91,17 +91,19 @@ void IntFactorization::addFactor (const MScal & x, int mult,
 void IntFactorization::read (const char *name) throw (std::invalid_argument)
 {
    std::ifstream in (name);
+
    if (!in) {
       std::string str("IntFactorization::read:   Unable to open input file  ");
       str += name;
       throw std::invalid_argument(str);
    }
+   std::string tampon;
 
-   in >> m_number;   // read the m_number
    in.ignore (100, '\n'); // drop rest of line
 
    int vsize = 0;
-   std::string tampon;
+
+
 
    while (in >> tampon) {
       MScal x;
@@ -114,8 +116,8 @@ void IntFactorization::read (const char *name) throw (std::invalid_argument)
       conv (x, f);
       in >> k;
       in >> c;
-
       switch (c) {
+
       case 'P':
          stat = PRIME;
          break;
@@ -134,7 +136,7 @@ void IntFactorization::read (const char *name) throw (std::invalid_argument)
    }
 
    //unique ();
-   assert (true == checkProduct ());
+   assert (checkProduct ());
 
    m_invFactorList.reserve (vsize);
 }
@@ -229,10 +231,10 @@ void IntFactorization::factorize ()
    S += filename;
    // factorize and set output to filename
    std::system (S.c_str ());
-
    // Now read the result file and extract the prime factors from the
    // lines PRIME FACTOR xxx
    std::ifstream in (filename);
+
    if (!(in.is_open())) {
       std::cerr << "Error:   cannot open file   filename\n";
       exit(8);
@@ -269,6 +271,7 @@ void IntFactorization::factorize ()
          Error ("MIRACL error in IntFactorization::factorize:   Number too big");
       }
    }
+
    unique ();
    remove (filename);
 #endif
