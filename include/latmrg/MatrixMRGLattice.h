@@ -1,0 +1,224 @@
+#ifndef MATRIXMRGLATTICE_H
+#define MATRIXMRGLATTICE_H
+#include "latticetester/Types.h"
+#include "latticetester/Const.h"
+#include "latmrg/Lacunary.h"
+#include "latmrg/Const.h"
+#include "latmrg/IntLattice.h"
+#include <string>
+
+
+namespace LatMRG {
+
+/**
+ * This class implements lattice basis built from M-MRG (matrix multiple recursive 
+ * linear congruential generators). One must first call the constructor with a
+ * given congruence modulus \f$m\f$, a given generator matrix for the 
+ * recurrence, and a maximal dimension for the basis. One must then build the
+ * lattice basis associated to the generator matrix for a given dimension.
+ * Each MMRG is defined by a generator matrix \f$A\f$. This MMRG satisfies 
+ * the recurrence
+ * \f[
+ *   X_n = A X_{n-1} \mod m.
+ * \f]
+ */
+class MMRGLattice: public LatMRG::IntLattice {
+public:
+
+   /**
+    * Constructor with modulus of congruence \f$m\f$, generator matrix \f$A\f$, dimension 
+    * of generator matrix \f$r\f$, maximal dimension `MaxDim`, and lattice type
+    * `Latt`. Vectors and (square) matrices of the basis have maximal dimension
+    * `maxDim`, and the indices of vectors and matrices vary from dimension 0 to
+    * `maxDim`-1. The norm to be used for the basis vectors is `norm`.
+    */
+   MMRGLattice (const MScal & m, const MMat & A, int maxDim, int r,
+                 LatticeType latt, LatticeTester::NormType norm = LatticeTester::L2NORM);
+
+   /**
+    * As in the constructor above but the basis is built for the lacunary
+    * indices `lac`.
+    */
+  //PW_TODO à faire plus tard
+  // MRGLattice (const MScal & m, const MVect & a, int maxDim, int k, BVect & lac,
+  //             LatticeType latt, LatticeTester::NormType norm = LatticeTester::L2NORM);
+
+   /**
+    * Copy constructor. The maximal dimension of the created basis is set
+    * equal to <tt>Lat</tt>’s current dimension.
+    */
+   MMRGLattice (const MMRGLattice & Lat);
+
+   /**
+    * Assigns `Lat` to this object. The maximal dimension of this basis is
+    * set equal to <tt>Lat</tt>’s current dimension.
+    */
+   MMRGLattice & operator= (const MMRGLattice & Lat);
+
+   /**
+    * Destructor.
+    */
+   ~MMRGLattice();
+
+   /**
+    * Cleans and releases memory used by this object.
+    */
+   void kill();
+
+   /**
+    * Builds the basis in dimension \f$d\f$.
+    */
+   virtual void buildBasis (int d);
+
+   /**
+    * Increments the dimension of the basis by 1 by calling either
+    * `incDimBasis` or `incDimLaBasis`.
+    */
+   virtual void incDim();
+
+   /**
+    * Returns `true` for the case of lacunary indices, returns `false` for
+    * non-lacunary indices.
+    */
+   bool isLacunary() const { return m_lacunaryFlag; }
+
+   /**
+    * Returns the \f$j\f$-th lacunary index.
+    */
+   BScal & getLac (int j);
+
+   /**
+    * Sets the lacunary indices for this lattice to `lat`.
+    */
+   virtual void setLac (const Lacunary & lat);
+
+   /**
+    * \name Sets and gets the values of <tt>m_rho</tt> and <tt>m_lossRho</tt>.
+    *
+    * @{
+    */
+   MScal getRho() const { return m_rho; }
+   MScal getLossRho() const { return m_lossRho; }
+   void setRho (const MScal & val) { m_rho = val; }
+   void setLossRho (const MScal & val) { m_lossRho = val; }
+   /*
+    * @}
+    */
+
+   /**
+    * Returns a non-mutable copy of the generator matrix of the MMRG
+    */
+   const MMat & getGeneratorMatrix() const { return m_A; }
+
+   /**
+    * Returns the generator matrix \f$A\f$ as a string.
+    */
+   std::string toStringGeneratorMatrix() const;
+
+protected:
+
+   /**
+    * Initializes a square matrix of order \f$k\f$. This initial matrix contains
+    * a system of generators for the given group of states.
+    */
+   void initStates ();
+
+   /**
+    * Initializes some of the local variables.
+    */
+   void init();
+
+   /**
+    * Initializes this object when the lattice type is `ORBIT`.
+    */
+   void initOrbit();
+   void insertion (BVect & Sta);
+   void lemme2 (BVect & Sta);
+
+   /**
+    * For debugging purposes.
+    */
+   void trace (char* msg, int d);
+
+   /**
+    * Increments the basis by 1 in case of non-lacunary indices.
+    */
+   virtual void incDimBasis ();
+
+   /**
+    * Increments the basis by 1 in case of lacunary indices.
+    */
+   void incDimLaBasis (int);
+
+   /**
+    * Builds the basis of the MMRG recurrence in case of non-lacunary
+    * indices.
+    */
+   void buildNaBasis (int d);
+
+   /**
+    * Builds the basis of the MMRG recurrence in case of lacunary indices.
+    */
+   void buildLaBasis (int d);
+
+   /**
+    * \name Used for the calculation of a combined MRG.
+    *
+    * @{
+    */
+   MScal m_lossRho;
+   MScal m_rho;
+   /**
+    * @}
+    */
+
+   /**
+    * The generator matrix of the recurrence.
+    */
+   MMat m_A;
+
+   /**
+    * Indicates which lattice or sublattice is analyzed.
+    */
+   LatticeType m_latType;
+
+   /**
+    * Is `true` in the case of lacunary indices, `false` otherwise.
+    */
+   bool m_lacunaryFlag;
+
+   /**
+    * Contains the lacunary indices when `LacunaryFlag` is `true`,
+    * otherwise is undefined.
+    */
+   Lacunary m_lac;
+
+
+   /**
+    * Work variables.
+    *
+    * @{
+    */
+    MScal m_t4, m_t5, m_t6, m_t7, m_t8, m_e;
+    MVect m_xi;
+    /**
+     * @}
+     */
+
+   /**
+    * \f$\clubsuit\f$ Seems to be use as working variables. To be completed. Erwan
+    */
+   BMat m_sta;
+
+   /**
+    * When the flag <tt>m_ip[i]</tt> is `true`, the \f$i\f$-th diagonal
+    * element of matrix <tt>m_sta</tt> is non-zero (modulo \f$m\f$) and
+    * divides \f$m\f$. Otherwise (when <tt>m_ip[i]</tt> is
+    * <tt>false</tt>), the \f$i\f$-th line of matrix <tt>m_sta</tt> is
+    * identically 0.
+    */
+   bool *m_ip;
+};
+
+}
+#endif
