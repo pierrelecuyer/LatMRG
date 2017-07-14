@@ -33,7 +33,7 @@ public:
     * `maxDim`-1. The norm to be used for the basis vectors is `norm`.
     */
    MMRGLattice (const MScal & m, const MMat & A, int maxDim, int r,
-                 LatticeType latt, LatticeTester::NormType norm = LatticeTester::L2NORM);
+                 LatticeType lat, LatticeTester::NormType norm = LatticeTester::L2NORM);
 
    /**
     * As in the constructor above but the basis is built for the lacunary
@@ -50,12 +50,6 @@ public:
    MMRGLattice (const MMRGLattice & Lat);
 
    /**
-    * Assigns `Lat` to this object. The maximal dimension of this basis is
-    * set equal to <tt>Lat</tt>’s current dimension.
-    */
-   MMRGLattice & operator= (const MMRGLattice & Lat);
-
-   /**
     * Destructor.
     */
    ~MMRGLattice();
@@ -64,6 +58,27 @@ public:
     * Cleans and releases memory used by this object.
     */
    void kill();
+
+   /**
+    * Assigns `Lat` to this object. The maximal dimension of this basis is
+    * set equal to <tt>Lat</tt>’s current dimension.
+    */
+   MMRGLattice & operator= (const MMRGLattice & Lat);
+
+   /**
+    * Returns the \f$j\f$-th lacunary index.
+    */
+   BScal & getLac (int j);
+
+   /**
+    * Sets the lacunary indices for this lattice to `lat`.
+    */
+   virtual void setLac (const Lacunary & lat);
+
+   /**
+    * Returns the generator matrix \f$A\f$ as a string.
+    */
+   std::string toStringGeneratorMatrix() const;
 
    /**
     * Builds the basis in dimension \f$d\f$.
@@ -83,72 +98,16 @@ public:
    bool isLacunary() const { return m_lacunaryFlag; }
 
    /**
-    * Returns the \f$j\f$-th lacunary index.
-    */
-   BScal & getLac (int j);
-
-   /**
-    * Sets the lacunary indices for this lattice to `lat`.
-    */
-   virtual void setLac (const Lacunary & lat);
-
-   /**
-    * \name Sets and gets the values of <tt>m_rho</tt> and <tt>m_lossRho</tt>.
-    *
-    * @{
-    */
-   MScal getRho() const { return m_rho; }
-   MScal getLossRho() const { return m_lossRho; }
-   void setRho (const MScal & val) { m_rho = val; }
-   void setLossRho (const MScal & val) { m_lossRho = val; }
-   /*
-    * @}
-    */
-
-   /**
     * Returns a non-mutable copy of the generator matrix of the MMRG
     */
    const MMat & getGeneratorMatrix() const { return m_A; }
 
-   /**
-    * Returns the generator matrix \f$A\f$ as a string.
-    */
-   std::string toStringGeneratorMatrix() const;
-
 protected:
-
-   /**
-    * Initializes a square matrix of order \f$k\f$. This initial matrix contains
-    * a system of generators for the given group of states.
-    */
-   void initStates ();
 
    /**
     * Initializes some of the local variables.
     */
    void init();
-
-   /**
-    * Initializes this object when the lattice type is `ORBIT`.
-    */
-   void initOrbit();
-   void insertion (BVect & Sta);
-   void lemme2 (BVect & Sta);
-
-   /**
-    * For debugging purposes.
-    */
-   void trace (char* msg, int d);
-
-   /**
-    * Increments the basis by 1 in case of non-lacunary indices.
-    */
-   virtual void incrementDimBasis ();
-
-   /**
-    * Increments the basis by 1 in case of lacunary indices.
-    */
-   void incrementDimLacunaryBasis (int);
 
    /**
     * Builds the basis of the MMRG recurrence in case of non-lacunary
@@ -162,15 +121,15 @@ protected:
    void buildLacunaryBasis (int d);
 
    /**
-    * \name Used for the calculation of a combined MRG.
-    *
-    * @{
-    */
-   MScal m_lossRho;
-   MScal m_rho;
+    * Increments the basis by 1 in case of non-lacunary indices.
+    */ 
+   //PW_TODO c'était virtual avant : normal ?
+   void incrementDimBasis ();
+
    /**
-    * @}
+    * Increments the basis by 1 in case of lacunary indices.
     */
+   void incrementDimLacunaryBasis (int);
 
    /**
     * The generator matrix of the recurrence.
@@ -192,6 +151,8 @@ protected:
     * otherwise is undefined.
     */
    Lacunary m_lac;
+
+
 
 
    /**
