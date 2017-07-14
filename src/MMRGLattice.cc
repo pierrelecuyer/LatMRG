@@ -78,8 +78,6 @@ MMRGLattice & MMRGLattice::operator= (const MMRGLattice & lat)
 {
    if (this == &lat)
       return *this;
-   if (this == &lat)
-      return *this;
    m_dim = lat.m_dim;
    copyBasis(lat);
    m_order = lat.m_order;
@@ -94,43 +92,54 @@ MMRGLattice & MMRGLattice::operator= (const MMRGLattice & lat)
 
 //===========================================================================
 
-MRGLattice::MRGLattice(const MScal & m, const MVect & a, int maxDim, int k,
+MMRGLattice::MMRGLattice(const MScal & m, const MMat & A, int maxDim, int r,
                        LatticeType lat, NormType norm):
-      IntLattice::IntLattice(m, k, maxDim, norm)
+      IntLattice::IntLattice(m, r, maxDim, norm)
 {
    m_latType = lat;
    m_lacunaryFlag = false;
    m_ip = new bool[1];
    init();
 
-
-   for (int i = 0; i < m_order; i++)
-      m_aCoef[i] = a[i];
+   /*
+   for (int i = 0; i < m_order; i++) {
+      for (int j = 0; j < m_order; j++)
+         m_A[i][j] = A[i][j];
+   }
+   */
+   // PW_TODO : plus simple ?
+   m_A = A;
 }
 
 
 //===========================================================================
 
-MRGLattice::MRGLattice(const MScal & m, const MVect & a, int maxDim, int k,
-                       BVect & I, LatticeType lat, NormType norm):
-      IntLattice::IntLattice (m, k, maxDim, norm), m_lac(I, maxDim), m_ip(0)
+MMRGLattice::MMRGLattice(const MScal & m, const MMat & A, int maxDim, int r,
+                       BVect & lac, LatticeType lat, NormType norm):
+      IntLattice::IntLattice (m, r, maxDim, norm), m_lac(lac, maxDim), m_ip(0)
 {
    m_latType = lat;
    m_lacunaryFlag = true;
    init();
 
-   for (int i = 0; i < m_order; i++)
-      m_aCoef[i] = a[i];
+   /*
+   for (int i = 0; i < m_order; i++) {
+      for (int j = 0; j < m_order; j++)
+         m_A[i][j] = A[i][j];
+   }
+   */
+   // PW_TODO : plus simple ?
+   m_A = A;
 }
 
 //===========================================================================
 
-void MRGLattice::init()
+void MMRGLattice::init()
 {
    kill();
    IntLattice::init();
    m_xi.SetLength(m_order);
-   m_aCoef.SetLength(m_order);
+   m_A.SetDims(m_order, m_order);
    if (m_order > ORDERMAX) {
       m_ip = new bool[1];
       m_sta.SetDims(1, 1);
@@ -147,7 +156,7 @@ void MRGLattice::init()
 
 //============================================================================
 
-MRGLattice::~MRGLattice ()
+MMRGLattice::~MMRGLattice ()
 {
    kill();
 }
@@ -155,14 +164,18 @@ MRGLattice::~MRGLattice ()
 
 //============================================================================
 
-void MRGLattice::kill()
+void MMRGLattice::kill()
 {
    IntLattice::kill();
    if (0 != m_ip)
       delete[] m_ip;
    m_ip = 0;
    m_xi.kill();
-   m_aCoef.kill();
+
+   // PW_TODO : methode kill fonctionne sur une matrice ?
+   //m_aCoef.kill();
+   m_A.kill();
+
    m_sta.kill();
    m_wSI.kill();
 }
@@ -170,17 +183,17 @@ void MRGLattice::kill()
 
 //=========================================================================
 
-BScal & MRGLattice::getLac (int j)
+BScal & MMRGLattice::getLac (int j)
 {
    if (isLacunary() && j <= m_lac.getSize() && j > 0)
       return m_lac.getLac(j);
-   throw std::out_of_range("MRGLattice::getLac");
+   throw std::out_of_range("MMRGLattice::getLac");
 }
 
 
 //===========================================================================
 
-void MRGLattice::setLac(const Lacunary & lac)
+void MMRGLattice::setLac(const Lacunary & lac)
 {
    m_lac = lac;
    m_lacunaryFlag = true;
@@ -189,38 +202,42 @@ void MRGLattice::setLac(const Lacunary & lac)
 
 //===========================================================================
 
-string MRGLattice::toStringCoef () const
+//PW_TODO merdasse à tester
+
+string MMRGLattice::toStringGeneratorMatrix () const
 {
    std::ostringstream out;
    out << "[ ";
-   for (int i = 1; i <= m_order; i++)
-      out << m_aCoef[i] << "  ";
-   out << "]";
+   for (int i = 0; i < m_order; i++) {
+      out << "[ ";
+      for (int j = 0; j < (m_order-1); j++) {
+         out << m_A[i][j] << " ";
+      }
+      out << m_A[i][m_order-1] << "]" << endl;
+   }
+   out << "]" << endl;
+
    return out.str ();
 }
 
 
 //===========================================================================
 
-void MRGLattice::buildBasis (int d)
+void MMRGLattice::buildBasis (int d)
 {
-   if (m_lacunaryFlag) {
-      buildLaBasis(d);
-   } else {
-      buildNaBasis(d);
-   }
-
+   if (m_lacunaryFlag)
+      buildLacunaryBasis(d);
+   else
+      buildNonLacunaryBasis(d);
 }
 
 
 //===========================================================================
 
-void MRGLattice::buildNaBasis (int d)
+void MMRGLattice::buildNonLacunaryBasis (int d)
 // La base est construite en dimension d.
 { 
- // trace( "=====================================AVANT buildNaBasis", -10);
    initStates();
-
 
    int dk = d;
    if (dk > m_order)
@@ -247,33 +264,27 @@ void MRGLattice::buildNaBasis (int d)
    setDim(dk);
    if (d > m_order) {
       for (i = m_order + 1; i < d; i++)
-         incDimBasis ();
+         incrementDimBasis ();
    }
-
- // trace( "=================================APRES buildNaBasis", -10);
 }
 
 
 //===========================================================================
 
-void MRGLattice::incDim()
+void MMRGLattice::incrementDim()
 {
-   if (m_lacunaryFlag) {
-      incDimLaBasis (getDim());
-   } else {
-      incDimBasis ();
-   }
-//   write (1);
+   if (m_lacunaryFlag)
+      incrementDimLacunaryBasis (getDim());
+   else
+      incrementDimBasis ();
 }
 
 
 //===========================================================================
 
-void MRGLattice::incDimBasis()
-// x_n = (a_1 x_{n-1} + a_2 x_{n-2} +...+ a_k x_{n-k}) mod m. On a Dim >= Order.
+void MMRGLattice::incrementDimBasis()
+// X_n = A X_{n-1} mod m. On a Dim >= Order.
 {
-// trace( "=================================AVANT incDimBasis", -10);
-
    IntLattice::incDim();
    const int dim = getDim();
    //m_basis.setDim(dim);
@@ -284,7 +295,7 @@ void MRGLattice::incDimBasis()
       clear (m_vSI[0][i]);
       for (int j = 0; j < m_order; j++) {
          conv (m_t1, m_basis[i][dim - j - 2]);
-         m_t1 = m_t1 * m_aCoef[j];
+         //m_t1 = m_t1 * m_aCoef[j];
          m_vSI[0][i] = m_vSI[0][i] + m_t1;
       }
       Modulo (m_vSI[0][i], m_modulo, m_vSI[0][i]);
@@ -313,17 +324,16 @@ void MRGLattice::incDimBasis()
 
    setNegativeNorm();
    setDualNegativeNorm();
-/*
- if (!checkDuality ())
+
+   if (!checkDuality ())
       MyExit (1, "BUG");
-      */
- // trace("=================================APRES incDimBasis", -10);
 }
 
 
 //===========================================================================
 
-void MRGLattice::buildLaBasis (int d) {
+void MMRGLattice::buildLacunaryBasis (int d) 
+{
    if (m_order > ORDERMAX)
       MyExit (1, "MRGLattice::buildLaBasis:   k > ORDERMAX");
    initStates();
@@ -331,7 +341,7 @@ void MRGLattice::buildLaBasis (int d) {
 
    MVect b;
    b.SetLength(m_order);
-   Invert(m_aCoef, b, m_order);
+   //Invert(m_aCoef, b, m_order);
 
    // b is the characteristic polynomial
    PolyPE::setM (m_modulo);
@@ -376,16 +386,13 @@ void MRGLattice::buildLaBasis (int d) {
    setDualNegativeNorm();
 
    for (int i = 2; i <= d; i++)
-      incDimLaBasis (IMax);
-
-   // for debugging
-   // trace("ESPION_1", 1);
+      incrementDimLacunaryBasis (IMax);
 }
 
 
 //===========================================================================
 
-void MRGLattice::incDimLaBasis(int IMax)
+void MMRGLattice::incrementDimLacunaryBasis(int IMax)
 {
    IntLattice::incDim();
    const int dim = getDim (); // new dimension (dim++)
@@ -442,7 +449,7 @@ void MRGLattice::incDimLaBasis(int IMax)
 
 //===========================================================================
 
-void MRGLattice::initStates ()
+void MMRGLattice::initStates ()
 /*
  * Initialise la matrice carrée Sta. La matrice Sta est d'ordre égal à
  * l'ordre du générateur. Elle contient un système de générateurs pour le
@@ -456,7 +463,7 @@ void MRGLattice::initStates ()
 
    if (m_latType == RECURRENT) {
       // check if a_k is relatively prime to m --> m_t1 = 1
-      m_t1 = GCD (m_aCoef[m_order], m_modulo);
+      //m_t1 = GCD (m_aCoef[m_order], m_modulo);
       m_t1 = abs(m_t1);
       set9 (m_t2);
    }
@@ -486,7 +493,7 @@ MyExit (1, "case ORBIT is not finished");
          InSta.SetLength (m_order);
          clear (statmp[m_order-1]);
          for (int i = 0; i < m_order; i++) {
-            InSta[0] = m_aCoef[i] * InSta[m_order - i - 1];
+            //InSta[0] = m_aCoef[i] * InSta[m_order - i - 1];
             statmp[m_order-1] += InSta[0];
          }
 
@@ -517,7 +524,7 @@ MyExit (1, "case ORBIT is not finished");
          printf("ESPION_RECURRENT\n");
          MVect b;
          b.SetLength(m_order + 1);
-         CopyVect (m_aCoef, b, m_order);
+         //CopyVect (m_aCoef, b, m_order);
          PolyPE::reverse (b, m_order, 2);
          // b is the characteristic polynomial
          PolyPE::setF(b);
@@ -539,11 +546,11 @@ MyExit (1, "case ORBIT is not finished");
                // ********* ATTENTION: MulMod (a, b, c, d) est très différent
                // pour les types long et ZZ (voir ZZ.txt). C'est pourquoi on
                // utilise MulMod (a, b, c) même s'il est plus lent. *********
-               m_xi[m_order - j - 1] = MulMod (m_xi[m_order], m_aCoef[j], m_modulo);
+               //m_xi[m_order - j - 1] = MulMod (m_xi[m_order], m_aCoef[j], m_modulo);
                m_xi[m_order - j] += m_xi[m_order - j - 1];
             }
             // Coeff. constant.
-            m_xi[0] = MulMod (m_xi[m_order], m_aCoef[m_order], m_modulo);
+            //m_xi[0] = MulMod (m_xi[m_order], m_aCoef[m_order], m_modulo);
             statmp[i] = m_xi[m_order - 1];
          }
       }
@@ -562,7 +569,7 @@ MyExit (1, "case ORBIT is not finished");
             statmp[j] = m_sta[j + 1][0];
          clear (statmp[m_order-1]);
          for (int i = 0; i < m_order; i++) {
-            m_t1 = m_aCoef[i] * m_sta[m_order - i + 1][0];
+            //m_t1 = m_aCoef[i] * m_sta[m_order - i + 1][0];
             statmp[m_order-1] += m_t1;
          }
          Modulo(statmp[m_order-1], m_modulo, statmp[m_order-1]);
@@ -600,7 +607,7 @@ MyExit (1, "case ORBIT is not finished");
 
 //===========================================================================
 
-void MRGLattice::insertion (BVect & statmp)
+void MMRGLattice::insertion (BVect & statmp)
 /*
  * Cette procedure insere le vecteur Sta[0] dans la matrice triangulaire
  * Sta. Si IP[i] = TRUE, l'entree diagonale sur la i-ieme ligne de Sta est
@@ -641,7 +648,7 @@ void MRGLattice::insertion (BVect & statmp)
 
 //===========================================================================
 
-void MRGLattice::lemme2 (BVect & statmp)
+void MMRGLattice::lemme2 (BVect & statmp)
 /*
  * Cette procedure suppose que la matrice Sta est triangulaire. Si
  * IP[i] = TRUE, l'entree diagonale sur la i-ieme ligne de Sta est
@@ -668,7 +675,7 @@ void MRGLattice::lemme2 (BVect & statmp)
 
 //===========================================================================
 
-void MRGLattice::initOrbit()
+void MMRGLattice::initOrbit()
 {
    MyExit (1, "MRGLattice::initOrbit n\'est pas terminée.");
 

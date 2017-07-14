@@ -1,5 +1,5 @@
-#ifndef MATRIXMRGLATTICE_H
-#define MATRIXMRGLATTICE_H
+#ifndef MMRGLATTICE_H
+#define MMRGLATTICE_H
 #include "latticetester/Types.h"
 #include "latticetester/Const.h"
 #include "latmrg/Lacunary.h"
@@ -40,8 +40,8 @@ public:
     * indices `lac`.
     */
   //PW_TODO à faire plus tard
-  // MRGLattice (const MScal & m, const MVect & a, int maxDim, int k, BVect & lac,
-  //             LatticeType latt, LatticeTester::NormType norm = LatticeTester::L2NORM);
+  MMRGLattice (const MScal & m, const MMat & A, int maxDim, int r, BVect & lac,
+               LatticeType lat, LatticeTester::NormType norm = LatticeTester::L2NORM);
 
    /**
     * Copy constructor. The maximal dimension of the created basis is set
@@ -74,7 +74,7 @@ public:
     * Increments the dimension of the basis by 1 by calling either
     * `incDimBasis` or `incDimLaBasis`.
     */
-   virtual void incDim();
+   virtual void incrementDim();
 
    /**
     * Returns `true` for the case of lacunary indices, returns `false` for
@@ -143,23 +143,23 @@ protected:
    /**
     * Increments the basis by 1 in case of non-lacunary indices.
     */
-   virtual void incDimBasis ();
+   virtual void incrementDimBasis ();
 
    /**
     * Increments the basis by 1 in case of lacunary indices.
     */
-   void incDimLaBasis (int);
+   void incrementDimLacunaryBasis (int);
 
    /**
     * Builds the basis of the MMRG recurrence in case of non-lacunary
     * indices.
     */
-   void buildNaBasis (int d);
+   void buildNonLacunaryBasis (int d);
 
    /**
     * Builds the basis of the MMRG recurrence in case of lacunary indices.
     */
-   void buildLaBasis (int d);
+   void buildLacunaryBasis (int d);
 
    /**
     * \name Used for the calculation of a combined MRG.
