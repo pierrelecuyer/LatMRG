@@ -16,6 +16,7 @@
 #include "latmrg/MRGLatticeFactory.h"
 #include "latmrg/MRGLattice.h"
 #include "latmrg/MRGLatticeLac.h"
+#include "latmrg/MMRGLattice.h"
 #include "latmrg/LatTestAll.h"
 #include "latmrg/LatTestBeyer.h"
 #include "latmrg/LatTestSpectral.h"
@@ -195,6 +196,13 @@ int LatTestAll::doTest (const char *infile)
          stationary = false;
          lattice = new Rank1Lattice (config.comp[0]->getM (),
             config.comp[0]->a, config.comp[0]->k, config.norm);
+      
+
+      } else if (config.genType[0] == MMRG) {
+         lattice = new MMRGLattice (config.comp[0]->getM (),
+            config.comp[0]->a, config.comp[0]->k, config.norm);
+
+            //(modulo, A, maxDim, r, LatticeType, Norm)
       }
    }
 
