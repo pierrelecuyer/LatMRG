@@ -140,6 +140,9 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[])
 // weights is the array of the weights of all projections as follows:
 //    weights[i] is the weight for projection [1, ..., i]
 // weights == 0 means unit weight for all projections
+  
+//===========================================================================
+   
 bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const double* weights)
 {
    m_merit.setDim(toDim);
@@ -158,6 +161,7 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
    double temp;
    NScal te;
    double lgvv1 = 0.0;
+   
    while (m_lat->getDim () < fromDim){
       m_lat->incDim ();
    }
@@ -178,11 +182,9 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
       int dim = m_lat->getDim ();
 
       //PW_TODO
-      /*
       cout << "\nLatTestSpectral::test" << endl;
       cout << "Primal = \n" << m_lat->getBasis() << endl;
       cout << "Dual = \n" << m_lat->getDualBasis() << endl;
-      */
 
       // pre-reduction step before BB with default parameters
       red.redBKZ();
@@ -251,10 +253,16 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
                cout << "." << endl;
                */
 
+               cout << "espion 2" << endl;
+
                double normalizer2 = m_normalizer->getPreComputedBound(dim);
                normalizer2 *= normalizer2;
 
                m_merit[dim] = temp / normalizer2;
+
+               cout << "temp = " << temp << endl;
+               cout << "normalizer2 = " << normalizer2 << endl;
+               cout << "m_merit[" << dim << "] = " << m_merit[dim] << endl;
 
             } else if (m_lat->getNorm () == L1NORM) {
                if ((m_S2toL2[dim] <= 0.0) || (std::isinf(m_S2toL2[dim]))) {
@@ -301,7 +309,6 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
 
       red = Reducer(*m_lat);
    }
-
    return true;
 }
 
