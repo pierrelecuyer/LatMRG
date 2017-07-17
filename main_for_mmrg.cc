@@ -56,6 +56,25 @@ using namespace NTL;
 using namespace LatticeTester;
 using namespace LatMRG;
 
+void SavvidyMatrix(mat_ZZ& A, int N, int s, int m, int b)
+{
+   A.kill();
+   A.SetDims(N,N);
+   for (int j = 1; j < N; j ++) {
+      for (int i = j+1; i < N; i++)
+         A[i][j] = (i-j+2) * m + b;
+   }
+   for (int i = 0; i < N; i ++)
+      A[i][0] = 1;
+   for (int i = 1; i < N; i++)
+      A[i][i] = 2;
+   for (int i = 0; i < N; i ++) {
+      for (int j = i+1; j < N; j ++)
+         A[i][j] = 1;
+   }
+   A[2][1] += s;
+}
+
 //*=======================================================================================
 
 int main ()
@@ -71,16 +90,20 @@ int main ()
    // generator matrix
    int r = 4;
    MMat A;
+   SavvidyMatrix(A, r, -1, 1, 0);
+   
+   /*
    A.SetDims(r, r);
-   A[0][0]=2; A[0][1]=0; A[0][2]=2; A[0][3]=9;
-   A[1][0]=3; A[1][1]=1; A[1][2]=0; A[1][3]=2;
-   A[2][0]=4; A[2][1]=5; A[2][2]=1; A[2][3]=3;
-   A[3][0]=7; A[3][1]=3; A[3][2]=5; A[3][3]=0;
+   A[0][0]=0; A[0][1]=1; A[0][2]=0; A[0][3]=0;
+   A[1][0]=0; A[1][1]=0; A[1][2]=1; A[1][3]=0;
+   A[2][0]=0; A[2][1]=0; A[2][2]=0; A[2][3]=1;
+   A[3][0]=1; A[3][1]=3; A[3][2]=5; A[3][3]=10;
+   */
    
    cout << "det(A) = " << determinant(A) << endl;
    
    // MMRG
-   MMRGLattice myMMRG (m, A, 3*r, r, FULL, L2NORM);
+   MMRGLattice myMMRG (m, A, r, r, FULL, L2NORM);
    cout << "A = \n" << myMMRG.toStringGeneratorMatrix() << endl;
    
    myMMRG.buildBasis(dimension);
@@ -94,6 +117,16 @@ int main ()
    cout << "\n----- Increment basis dimension -----" << endl;
    cout << "Primal basis = \n" << myMMRG.getBasis() << endl;
    cout << "Dual basis = \n" << myMMRG.getDualBasis() << endl;
+   
+   cout << "V*transpose(W) = \n" << myMMRG.getBasis() * transpose(myMMRG.getDualBasis()) << endl;
+   
+   
+   myMMRG.incrementDimBasis();
+   cout << "\n--- Increment basis dimension bis ---" << endl;
+   cout << "Primal basis = \n" << myMMRG.getBasis() << endl;
+   cout << "Dual basis = \n" << myMMRG.getDualBasis() << endl;
+   
+   cout << "V*transpose(W) = \n" << myMMRG.getBasis() * transpose(myMMRG.getDualBasis()) << endl;
    
    
    return 0;
