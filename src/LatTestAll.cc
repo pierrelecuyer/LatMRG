@@ -242,7 +242,6 @@ int LatTestAll::doTest (const char *infile)
          spectralTest.setDetailFlag (config.detailF);
          spectralTest.setMaxAllDimFlag (true);
          spectralTest.setMaxNodesBB (config.maxNodesBB);
-
          if (1 == config.d) {
             spectralTest.test (fromDim, toDim, minVal);
             // lattice->write();

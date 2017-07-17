@@ -2,21 +2,21 @@ SPECTRAL BESTLAT      			Merit criterion
 FALSE					Read generators from file
 1					J
 MRG					Gener. type
-2 6 0 					Modulo m
+2 8 0 					Modulo m
 1 					Order k
 False 					Maximal period
 Write seek4m.fac	Factors of m-1 (F1)
 Write seek4r.fac		    Factors of r   (F2)
 NoCond					Implem. condition
 1
-63
+2 8 -1
 Exhaust Random 1000 10 10 		Search method: Exhaust, Random
 1					NbCat (C)
 0.0 0.0					Min merit (1 to C)
 1.0 1.0 				Max merit (1 to C)
-10 10                       		Nb. of retained Generators
-1                       		d
-2 8                      		t_1,...,t_d
+4 4                       		Nb. of retained Generators
+2                       		d
+2 3 3                     		t_1,...,t_d
 true					true for dual and false for primal
 PrimePower 				Lattice type (analyzed)
 1 1					Lacunary ind. group sizes, spacing

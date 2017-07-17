@@ -116,7 +116,7 @@ int readConfigFile (int argc, char **argv)
    //}
    // Lecture des paramètres
    //string fname (argv[1]);
-   string fname ("/Users/Erwan1/projects/github/LatMRG/s8b");
+   string fname ("/Users/Erwan1/projects/github/LatMRG/seekZZDD_test1");
    fname += ".dat";
    ParamReaderSeek paramRdr (fname.c_str ());
    paramRdr.read (config);
@@ -125,7 +125,7 @@ int readConfigFile (int argc, char **argv)
    switch (config.outputType) {
    case RES:
       //fname = argv[1];
-      fname = "/Users/Erwan1/projects/github/LatMRG/s8b";
+      fname = "/Users/Erwan1/projects/github/LatMRG/seekZZDD_test1";
       fname += ".res";
       // rw = new WriterRes (fname.c_str());
       fout.open (fname.c_str ());

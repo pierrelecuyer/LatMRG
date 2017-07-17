@@ -29,9 +29,23 @@ MRGComponent::MRGComponent (const MScal & m, const MVect & a0, int k0)
    PolyPE::setM(m);
    module.init(m);
    k = k0;
-   a.SetLength(k);
-   CopyVect(a0, a, k);
-   orbitSeed.SetLength(k);
+   a.resize(k);
+   CopyVect(a, a0, k);
+   orbitSeed.resize(k);
+}
+
+
+//===========================================================================
+
+
+MRGComponent::MRGComponent (const MScal & m, const MMat & A0, int k0)
+{
+   PolyPE::setM(m);
+   module.init(m);
+   k = k0;
+   A.resize(k, k);
+   CopyMatr(A, A0, k);
+   orbitSeed.resize(k);
 }
 
 
@@ -43,9 +57,9 @@ MRGComponent::MRGComponent (long p, long e, long c, const MVect & a0, int k0)
    module.init(p, e, c);
    PolyPE::setM(getM());
    k = k0;
-   a.SetLength(k);
-   CopyVect(a0, a, k);
-   orbitSeed.SetLength(k);
+   a.resize(k);
+   CopyVect(a, a0, k);
+   orbitSeed.resize(k);
 }
 
 
@@ -58,11 +72,11 @@ MRGComponent::MRGComponent (const MRGComponent & lat) : k(lat.k)
    nj = lat.nj;
    rho = lat.rho;
 //   a.kill();
-   a.SetLength(k + 1);
-   CopyVect(lat.a, a, k);
+   a.resize(k + 1);
+   CopyVect(a, lat.a, k);
 //   orbitSeed.kill();
-   orbitSeed.SetLength(k + 1);
-   CopyVect(lat.orbitSeed, orbitSeed, k);
+   orbitSeed.resize(k + 1);
+   CopyVect(orbitSeed, lat.orbitSeed, k);
 }
 
 
@@ -76,11 +90,11 @@ MRGComponent & MRGComponent::operator= (const MRGComponent & lat)
       nj = lat.nj;
       rho = lat.rho;
 //    a.kill();
-      a.SetLength(k + 1);
-      CopyVect(lat.a, a, k);
+      a.resize(k + 1);
+      CopyVect(a, lat.a, k);
  //     orbitSeed.kill();
-      orbitSeed.SetLength(k + 1);
-      CopyVect(lat.orbitSeed, orbitSeed, k);
+      orbitSeed.resize(k + 1);
+      CopyVect(orbitSeed, lat.orbitSeed, k);
 //      ifm1 = lat.ifm1;
 //      ifr = lat.ifr;
    }
@@ -96,8 +110,8 @@ void MRGComponent::init (const MScal & m0, int k0, DecompType decom1,
    PolyPE::setM(m0);
    module.init(m0);
    k = k0;
-   a.SetLength(k + 1);
-   orbitSeed.SetLength(k + 1);
+   a.resize(k + 1);
+   orbitSeed.resize(k + 1);
 
    MScal m1;
    m1 = getM() - 1;

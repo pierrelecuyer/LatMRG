@@ -72,9 +72,9 @@ void ParamReaderLat::read (LatConfig & config)
    long m1(0), m2(0), m3(0);
    int k(0);
    MVect a;
+   MMat A;
    int maxOrder = 0;
    string coefkind (" ");  // = NOCOND, EQUAL, NONZERO
-
    for (int i = 0; i < config.J; i++) {
       readGenType (config.genType[i], ++ln, 0);
       readNumber3 (m, m1, m2, m3, ++ln, 0);
@@ -84,44 +84,52 @@ void ParamReaderLat::read (LatConfig & config)
          readInt (k, ++ln, 0);
       if (maxOrder < k)
          maxOrder = k;
-      a.SetLength (k);
-      SetZero (a, k);
-
-      if (config.criter != PALPHA) {
-         readString (coefkind, ++ln, 0);
+      if (config.genType[i] == MMRG){
+         
+         A.resize(k, k);
+         readMMat(A, ++ln, 0, k);
+         checkBound(m, A, k);
       }
-      if (0 == strcasecmp(coefkind.c_str(), "NONZERO")) {
-         int s;
-         readInt (s, ln, 1);
-         int* T = new int[s+3];
-         T[0] = 0;
-         readIntVect (T, ln++, 2, s+3, 0);
-         readMVect (a, ln, 1, s, 0);
-         //   ln++;
-         for (int j = s; j >= 1; j--) {
-            int r = T[j];
-            a[r] = a[j-1];
-            a[j-1] = 0;
+      else{
+         a.SetLength (k);
+         SetZero (a, k);
+
+         if (config.criter != PALPHA) {
+            readString (coefkind, ++ln, 0);
          }
-         delete[] T;
-      } else if (0 == strcasecmp(coefkind.c_str(), "EQUAL")) {
-         int s;
-         readInt (s, ln, 2);
-         int* T = new int[s+3];
-         readIntVect (T, ln++, 3, s+3, 1);
-         int p0 = 1;
-         for (int j = 1; j <= s; j++) {
-            int r = T[j];
-            readMScal (a[r], ln, j);
-            for (int p = p0; p < r; p++) {
-               a[p] = a[r];
+         if (0 == strcasecmp(coefkind.c_str(), "NONZERO")) {
+            int s;
+            readInt (s, ln, 1);
+            int* T = new int[s+3];
+            T[0] = 0;
+            readIntVect (T, ln++, 2, s+3, 0);
+            readMVect (a, ln, 1, s, 0);
+            //   ln++;
+            for (int j = s; j >= 1; j--) {
+               int r = T[j];
+               a[r] = a[j-1];
+               a[j-1] = 0;
             }
-            p0 = r + 1;
-         }
-         delete[] T;
-      } else   // NoCond
-         readMVect (a, ++ln, 0, k, 0);
-      checkBound (m, a, k);
+            delete[] T;
+         } else if (0 == strcasecmp(coefkind.c_str(), "EQUAL")) {
+            int s;
+            readInt (s, ln, 2);
+            int* T = new int[s+3];
+            readIntVect (T, ln++, 3, s+3, 1);
+            int p0 = 1;
+            for (int j = 1; j <= s; j++) {
+               int r = T[j];
+               readMScal (a[r], ln, j);
+               for (int p = p0; p < r; p++) {
+                  a[p] = a[r];
+               }
+               p0 = r + 1;
+            }
+            delete[] T;
+         } else   // NoCond
+            readMVect (a, ++ln, 0, k, 0);
+         checkBound (m, a, k);
+      }
 
       if (config.genType[i] == KOROBOV) {
          if (1 != k)
@@ -135,6 +143,9 @@ void ParamReaderLat::read (LatConfig & config)
             config.comp[i]->module.reduceM (config.comp[i]->a[0]);
       } else if (config.genType[i] == MWC) {
          config.comp[i] = MRGComponentFactory::fromMWC (m, a, k);
+      }
+      else if (config.genType[i] == MMRG){
+         config.comp[i] = new MRGComponent(m, A, k);
       } else
          assert(0);
    }

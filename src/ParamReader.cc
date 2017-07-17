@@ -342,6 +342,22 @@ void ParamReader::readDoubleVect(double* fields, unsigned int ln,
 
 //===========================================================================
 
+void ParamReader::readMMat(MMat & fields, unsigned int & ln, unsigned int pos,
+   unsigned int numPos)
+{
+   for (unsigned int i = pos; i < numPos; i++){
+      for (unsigned int j = pos; j < numPos; j++){
+         readMScal(fields(i,j), ln, j);
+      }
+      ln++;
+   }
+
+}
+
+
+
+//===========================================================================
+
 void ParamReader::readInterval (MVect & B, MVect & C, unsigned int & ln, int k)
 {
    long m1, m2, m3;
@@ -600,6 +616,19 @@ bool ParamReader::checkBound (const MScal & m, const MVect & A, int k)
    for (int i = 0; i < k; i++) {
       assert (A[i] < m);
       assert (A[i] > -m);
+   }
+   return true;
+}
+
+//===========================================================================
+
+bool ParamReader::checkBound (const MScal & m, const MMat & A, int k)
+{
+   for (int i = 0; i < k; i++) {
+      for (int j = 0; j < k; j++) {
+         assert (A[i][j] < m);
+         assert (A[i][j] > -m);
+      }
    }
    return true;
 }

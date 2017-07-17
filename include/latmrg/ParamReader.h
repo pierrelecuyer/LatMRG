@@ -167,6 +167,13 @@ ParamReader();
                         unsigned int num, int j);
 
    /**
+    * Reads a `BMat` from the <tt>pos</tt>-th token of the <tt>ln</tt>-th
+    * line into `field`.
+    */
+   void readMMat (MMat & fields, unsigned int & ln, unsigned int pos,
+                 unsigned int numPos);
+
+   /**
     * Reads `2k MScal` tokens into vectors `B` and `C`, starting at the
     * <tt>ln</tt>-th line. These represent a box \f$[B_i, C_i]\f$, \f$i =
     * 1, 2, …, k\f$. The \f$B_i, C_i\f$ must be given in the order \f$B_1,
@@ -287,6 +294,13 @@ ParamReader();
     * for \f$i=1, 2, …, k\f$.
     */
    bool checkBound (const MScal & m, const MVect & A, int k);
+
+   /**
+    * Checks that the components of \f$A\f$ satisfy \f$-m < A_{i,j} < m\f$,
+    * for \f$i,j=1, 2, …, k\f$.
+    */
+   bool checkBound (const MScal & m, const MMat & A, int k);
+
 private:
 
 /**

@@ -35,7 +35,7 @@ public:
     * \f$j = 1, 2, …, t\f$.
     */
    Lacunary (const BVect & C, int t) { m_dim = t; LatticeTester::CreateVect (m_lac, t);
-        LatticeTester::CopyVect (C, m_lac, t); }
+        LatticeTester::CopyVect (m_lac, C, t); }
 
    /**
     * Constructor for a set of \f$t\f$ lacunary indices. The lacunary

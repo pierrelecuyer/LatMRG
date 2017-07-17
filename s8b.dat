@@ -15,8 +15,8 @@ Exhaust                       Search method
 0.0  0.0  0.0     Minimal merit value
 1.0 1.0	1.0				max merit (1 to C)
 4 4 4                         Nb of retained generators
-2  
-2 3 3 
+2
+2 3 3
 true false
 Full                            Lattice type (analyzed)
 1  1                            Lacunary ind. group sizes,  spacing
