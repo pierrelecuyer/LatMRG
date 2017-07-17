@@ -103,14 +103,14 @@ public:
    const MMat & getGeneratorMatrix() const { return m_A; }
 
 
-    //PW_TODO ici temporairement
+    //PW_TODO ici temporairement, à déplacer dans latticetester/Util.h
    void getSubLine(vec_ZZ & vec, mat_ZZ& B, int lign, int jMin, int jMax);
 
     /**
     * Increments the basis by 1 in case of non-lacunary indices.
     */ 
    //PW_TODO c'était virtual avant : normal ?
-   // cetait dans protected avant
+   // cetait dans protected avant : normal ?
    void incrementDimBasis ();
 
 protected:
