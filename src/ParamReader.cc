@@ -92,6 +92,7 @@ void ParamReader::getToken(string& field, unsigned int ln, unsigned int pos)
       field.clear();
    } else
       field = tokens[pos];
+      
    return;
 }
 
@@ -283,6 +284,8 @@ void ParamReader::readGenType(GenType& field, unsigned int ln, unsigned int pos)
       field = KOROBOV;
    else if (strcasecmp(val.c_str(), "RANK1") == 0)
       field = RANK1;
+   else if (strcasecmp(val.c_str(), "MMRG") == 0)
+      field = MMRG;
    else
       MyExit(1, "readGenType:   NO SUCH CASE");
 }
@@ -349,7 +352,8 @@ void ParamReader::readMMat(MMat & fields, unsigned int & ln, unsigned int pos,
       for (unsigned int j = pos; j < numPos; j++){
          readMScal(fields(i,j), ln, j);
       }
-      ln++;
+      if(i!=numPos-1)
+         ln++;
    }
 
 }
