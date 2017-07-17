@@ -116,8 +116,6 @@ public:
    virtual std::string toStringCoef() const;
 
 
-
-
 #ifdef WITH_NTL
    /**
     * The components of the lattice when it is built out of more than one
