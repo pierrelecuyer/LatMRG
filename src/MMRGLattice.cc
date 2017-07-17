@@ -28,7 +28,7 @@ namespace LatMRG
 //===========================================================================
 
 MMRGLattice::MMRGLattice(const MScal & m, const MMat & A, int maxDim, int r,
-                       LatticeType lat, NormType norm):
+                        NormType norm, LatticeType lat):
       IntLattice::IntLattice(m, r, maxDim, norm)
 {
    m_A = A;
@@ -43,7 +43,7 @@ MMRGLattice::MMRGLattice(const MScal & m, const MMat & A, int maxDim, int r,
 //===========================================================================
 
 MMRGLattice::MMRGLattice(const MScal & m, const MMat & A, int maxDim, int r,
-                       BVect & lac, LatticeType lat, NormType norm):
+                       BVect & lac, NormType norm, LatticeType lat):
       IntLattice::IntLattice (m, r, maxDim, norm), 
       m_lac(lac, maxDim), 
       m_ip(0)
@@ -110,8 +110,9 @@ void MMRGLattice::kill()
 
    // PW_TODO : methode kill fonctionne sur une matrice ?
    //m_aCoef.kill();
-   m_A.kill();
+   //m_A.kill();
 
+   // PW_TODO à quoi ça sert de killer ça ?
    m_sta.kill();
    m_wSI.kill();
 }
@@ -137,7 +138,7 @@ MMRGLattice & MMRGLattice::operator= (const MMRGLattice & lat)
 
 void MMRGLattice::init()
 {
-   //kill(); //PW_TODO : wzf ?
+   kill(); //PW_TODO : wzf ?
    IntLattice::init();
    m_xi.SetLength(m_order);
    m_A.SetDims(m_order, m_order);
@@ -214,6 +215,8 @@ void MMRGLattice::buildNonLacunaryBasis (int dimension)
 // a basis is built in dimension d
 
 {
+   setDim(dimension);
+
    int sizeA = m_A.NumCols();
    m_basis.resize(dimension, dimension);
 
@@ -255,8 +258,9 @@ void MMRGLattice::buildNonLacunaryBasis (int dimension)
    m_dualbasis.resize(dimension, dimension);
    CalcDual<BMat>(m_basis, m_dualbasis, dimension, m_modulo);
 
-   if (!checkDuality())
-   MyExit (1, "BUG in MMRGLattice::buildNonLacunaryBasis");
+   // PW_TODO à vérifier probleme dans produit scalaire
+   //if (!checkDuality())
+   //   MyExit (1, "BUG in MMRGLattice::buildNonLacunaryBasis");
 }
 
 
