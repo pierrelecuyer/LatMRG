@@ -1,6 +1,6 @@
 #ifndef PALPHALCG_H
 #define PALPHALCG_H
-#include "LatConfig.h"
+#include "latmrg/LatConfig.h"
 
 
 namespace LatMRG {

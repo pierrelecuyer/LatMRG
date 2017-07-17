@@ -1,5 +1,8 @@
 #ifndef LATMRG__INTLATTICE_H
 #define LATMRG__INTLATTICE_H
+
+#include <cassert>
+
 #include "latticetester/IntLatticeBasis.h"
 #include "latticetester/Normalizer.h"
 #include "latmrg/CoordinateSets.h"

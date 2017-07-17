@@ -7,7 +7,7 @@
 extern "C" {
 #include <unif01.h>
 #include <ulcg.h>
-#include <num.h> // ERWAN Previous #include "num.h"
+#include <num.h>
 }
 
 #include <cassert>

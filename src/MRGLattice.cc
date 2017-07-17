@@ -211,7 +211,7 @@ string MRGLattice::toStringCoef () const
 {
    std::ostringstream out;
    out << "[ ";
-   for (int i = 1; i <= m_order; i++)
+   for (int i = 0; i < m_order; i++)
       out << m_aCoef[i] << "  ";
    out << "]";
    return out.str ();

@@ -345,7 +345,7 @@ void ParamReader::readDoubleVect(double* fields, unsigned int ln,
 void ParamReader::readInterval (MVect & B, MVect & C, unsigned int & ln, int k)
 {
    long m1, m2, m3;
-   for (int i = 1; i <= k; i++) {
+   for (int i = 0; i < k; i++) {
       readNumber3 (B[i], m1, m2, m3, ++ln, 0);
       readNumber3 (C[i], m1, m2, m3, ++ln, 0);
       assert (C[i] >= B[i]);

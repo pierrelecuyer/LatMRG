@@ -116,7 +116,7 @@ int readConfigFile (int argc, char **argv)
    //}
    // Lecture des paramètres
    //string fname (argv[1]);
-   string fname ("/Users/Erwan1/projects/github/LatMRG/seekZZDD_test1");
+   string fname ("/Users/Erwan1/projects/github/LatMRG/s8b");
    fname += ".dat";
    ParamReaderSeek paramRdr (fname.c_str ());
    paramRdr.read (config);
@@ -125,7 +125,7 @@ int readConfigFile (int argc, char **argv)
    switch (config.outputType) {
    case RES:
       //fname = argv[1];
-      fname = "/Users/Erwan1/projects/github/LatMRG/seekZZDD_test1";
+      fname = "/Users/Erwan1/projects/github/LatMRG/s8b";
       fname += ".res";
       // rw = new WriterRes (fname.c_str());
       fout.open (fname.c_str ());
@@ -227,8 +227,8 @@ void PrintComponentData (const Component & comp, int j)
    fout << "   Search method                      : " <<
    toStringSearchMethod (comp.searchMethod) << endl;
    string margin = "   Bounds : ";
-   for (int i = 1; i <= comp.k; i++) {
-      if (i != 1)
+   for (int i = 0; i < comp.k; i++) {
+      if (i != 0)
          margin = "            ";
       fout << margin << "a" << i << " from : " << comp.b[i] << endl;
       fout << "                 to : " << comp.c[i] << endl;
@@ -403,7 +403,7 @@ void Test ()
                             config.getMaxDim (), comp0.k, config.latType, Norm);
       else if (comp0.genType == KOROBOV)
          lattice =
-            new KorobovLattice (comp0.modulus.m, coef[0][1],
+            new KorobovLattice (comp0.modulus.m, coef[0][0],
                                 config.getMaxDim (), config.latType, Norm);
       else if (comp0.genType == RANK1) {
          stationary = false;
@@ -621,7 +621,7 @@ void ExamThisaj (int j, int i, bool Pow2, ProcII Exam)
          i = 1;
    }
 
-   if (i == 1) {
+   if (i == 0) {
       ++TotEP[j];
       if (Pow2 || (!comp.PerMax) || (comp.k == 1) ||
             compJ[j]->maxPeriod23 (coef[j])) {
@@ -678,6 +678,7 @@ void InsideExam (Zone * Z, int j, int i, ProcII exam)
    MScal Eight;
    Eight = 8;
    q = Z->getInf ();
+   cout << "INF : " << q << endl;
 
    if (comp.PerMax && (!comp.modulus.primeF) && (comp.modulus.b == 2)
          && comp.modulus.c == 0) {
@@ -751,7 +752,13 @@ void ExamAllZones (int j, int i)
       return ;
    Zone *Z;
    Z = i + zone[j];
+   cout << "La zone de la rec : " << Z << endl;
+   cout << "La zone suivant la rec : " << Z->nextZone << endl;
+   cout << "La zone avant rec : " << zone[0]->nextZone << endl;
+
    while (Z != 0) {
+      cout << "zone Z : " << Z << endl;
+      cout << "inf0 : " << Z->getInf () << endl;
       // On va examiner toute cette zone.
       InsideExam (Z, j, i, ExamAllZones);
       Z = Z->nextZone;
@@ -808,14 +815,14 @@ void Init ()
 
    zone = new Zone * [config.J];
    for (s = 0; s < config.J; s++)
-      zone[s] = new Zone[1 + config.compon[s].k];
+      zone[s] = new Zone[config.compon[s].k];
 
    reg = new Zone * [config.J];
    for (s = 0; s < config.J; s++)
-      reg[s] = new Zone[1 + config.getMaxDim ()];
+      reg[s] = new Zone[config.getMaxDim ()];
 
    for (s = 0; s < config.J; s++) {
-      for (int i = 0; i <= config.compon[s].k; i++)
+      for (int i = 0; i < config.compon[s].k; i++)
          coef[s][i] = 0;
    }
 }
@@ -861,8 +868,9 @@ void Finalize ()
 void InitZones ()
 {
    for (int s = 0; s < config.J; s++) {
-      for (int i = 1; i <= config.compon[s].k; i++) {
+      for (int i = 0; i < config.compon[s].k; i++) {
          zone[s][i].init (config.compon[s], s, i);
+         cout << zone[0][0].nextZone << endl;
       }
    }
 }
@@ -884,10 +892,10 @@ void SeekGen (int j)
          return ;
 
       if (config.compon[j].searchMethod == EXHAUST) {
-         ExamAllZones (j, config.compon[j].k);
+         ExamAllZones (j, config.compon[j].k - 1);
       } else {
          ChoisirBornes (j);
-         ExamRegion (j, config.compon[j].k);
+         ExamRegion (j, config.compon[j].k - 1);
       }
    }
 }

@@ -108,15 +108,15 @@ void ParamReaderSeek::read (SeekConfig & config)
          comp.Icoef[comp.ncoef] = comp.k;
       }
 
-      comp.b.SetLength (1 + comp.k);
-      comp.c.SetLength (1 + comp.k);
+      comp.b.SetLength (comp.k);
+      comp.c.SetLength (comp.k);
 
       lnu = ln;
       if (ZERO_COEF == comp.implemCond) {
          SetZero (comp.b, comp.k);
          SetZero (comp.c, comp.k);
          readInterval (comp.b, comp.c, lnu, comp.ncoef);
-         for (s = comp.ncoef; s >= 1; s--) {
+         for (s = comp.ncoef-1; s >= 0; s--) {
             comp.b[comp.Icoef[s]] = comp.b[s];
             comp.c[comp.Icoef[s]] = comp.c[s];
             if (s < comp.Icoef[s]) {
@@ -127,7 +127,7 @@ void ParamReaderSeek::read (SeekConfig & config)
 
       } else if (EQUAL_COEF == comp.implemCond) {
          readInterval (comp.b, comp.c, lnu, comp.ncoef);
-         for (s = comp.ncoef; s >= 1; s--) {
+         for (s = comp.ncoef-1; s >= 0; s--) {
             for (int i = comp.Icoef[s]; i > comp.Icoef[s-1]; i--) {
                comp.b[i] = comp.b[s];
                comp.c[i] = comp.c[s];
@@ -138,12 +138,12 @@ void ParamReaderSeek::read (SeekConfig & config)
       ln = lnu;
 
       if (comp.genType == RANK1)
-         comp.b[1] = comp.c[1] = 1;
+         comp.b[0] = comp.c[0] = 1;
       checkBound (comp.modulus.m, comp.b, comp.k);
       checkBound (comp.modulus.m, comp.c, comp.k);
 
       if (POWER_TWO == comp.implemCond) {
-         for (int i = 1; i <= comp.k; i++) {
+         for (int i = 0; i < comp.k; i++) {
             comp.b[i] = 0;
             comp.c[i] = comp.HighestBit;
          }

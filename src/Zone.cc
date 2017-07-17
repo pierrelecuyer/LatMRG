@@ -71,7 +71,6 @@ void Zone::initFrontieres (const SeekConfig & config)
 void Zone::init (const Component & comp, int j, int i)
 {
    MScal h, Eb, Ec;
-
    // Calcul des bornes pour a[j][i] ou q (ZONE 1 ou 3) dans chaque zone
    if (comp.searchMethod != EXHAUST) {
       if (i == comp.k)

@@ -12,6 +12,7 @@ using namespace LatMRG;
 
 int main (int argc, char **argv)
 {
+  /*
    if (argc < 2) {
       cerr << "\n*** Usage:\n   "
            << argv[0] << " data_file1 data_file2 ...." << endl
@@ -20,10 +21,12 @@ int main (int argc, char **argv)
            << endl;
       return -1;
    }
-
+ */
    struct stat buf;    // properties of a file or directory
    LatTestAll testall;
    int status = 0;
+
+   char *testfile = "latZZDD_test2";
 
    for (int j = 1; j < argc; j++) {
       // Do the test for each data file or directory on the command line
@@ -34,8 +37,10 @@ int main (int argc, char **argv)
          string dataname(argv[j]);
          dataname.append(".dat");
          stat(dataname.c_str(), &buf);
-         if (0 != S_ISREG(buf.st_mode))    // data file
-            status |= testall.doTest (argv[j]);
+         if (0 != S_ISREG(buf.st_mode)){    // data file
+            //status |= testall.doTest (argv[j]);
+            status |= testall.doTest (testfile);
+         }
       }
    }
 

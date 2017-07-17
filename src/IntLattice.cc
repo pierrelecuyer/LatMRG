@@ -228,7 +228,7 @@ Normalizer * IntLattice::getNormalizer (NormaType norma, int alpha)
    Normalizer *normal;
 
    RScal logDensity;
-   logDensity = - m_order * log(m_modulo); 
+   logDensity = - m_order * log(m_modulo);
    // PW_TODO
    // on travaille dans le dual à chaque fois ?
 
@@ -260,6 +260,12 @@ Normalizer * IntLattice::getNormalizer (NormaType norma, int alpha)
       exit (2);
    }
    return normal;
+}
+
+string IntLattice::toStringCoef () const
+{
+   assert (0);
+   return std::string();
 }
 
 
