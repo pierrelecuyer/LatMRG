@@ -52,17 +52,17 @@
 #include <boost/progress.hpp>
 
 // Include Random Generator of MRG Matrix an tools
-#include "SimpleMRG.h"
-#include "Tools.h"
+//#include "SimpleMRG.h"
+//#include "Tools.h"
 
 using namespace std;
 using namespace NTL;
-using namespace LatticeTester;
+using namespace LatMRG;
 
 
 //==========================================================================
 
-int main (int argc, char **argv)
+int main ()
 {
    // Erwan
    //string testLocation = "ton_path_vers_dossier_input_files_latmrg";
@@ -70,6 +70,7 @@ int main (int argc, char **argv)
    
    // Paul
    //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles";
+   //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/latZZDD_test1";
    string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/mmrg_test1";
    
    struct stat buf; // properties of a file or directory
