@@ -199,8 +199,9 @@ int LatTestAll::doTest (const char *infile)
       
 
       } else if (config.genType[0] == MMRG) {
-         lattice = new MMRGLattice (config.comp[0]->getM (),
-            config.comp[0]->a, config.comp[0]->k, config.norm);
+         
+         //lattice = new MMRGLattice (config.comp[0]->getM (), config.comp[0]->A,
+         //                     config.comp[0]->k,config.comp[0]->k, config.norm);
 
             //(modulo, A, maxDim, r, LatticeType, Norm)
       }
