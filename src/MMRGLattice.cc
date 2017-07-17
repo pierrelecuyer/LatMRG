@@ -137,7 +137,7 @@ MMRGLattice & MMRGLattice::operator= (const MMRGLattice & lat)
 
 void MMRGLattice::init()
 {
-   kill(); //PW_TODO : wzf ?
+   //kill(); //PW_TODO : wzf ?
    IntLattice::init();
    m_xi.SetLength(m_order);
    m_A.SetDims(m_order, m_order);
@@ -181,13 +181,16 @@ void MMRGLattice::setLac(const Lacunary & lac)
 string MMRGLattice::toStringGeneratorMatrix () const
 {
    std::ostringstream out;
-   out << "[ ";
+   out << "[";
    for (int i = 0; i < m_order; i++) {
-      out << "[ ";
+      out << "[";
       for (int j = 0; j < (m_order-1); j++) {
          out << m_A[i][j] << " ";
       }
-      out << m_A[i][m_order-1] << "]" << endl;
+      if (i == (m_order-1))
+         out << m_A[i][m_order-1] << "]";
+      else
+         out << m_A[i][m_order-1] << "]" << endl;
    }
    out << "]" << endl;
 
@@ -207,39 +210,57 @@ void MMRGLattice::buildBasis (int d)
 
 //===========================================================================
 
-void MMRGLattice::buildNonLacunaryBasis (int d)
-// La base est construite en dimension d.
-{ 
-   //initStates();
+void MMRGLattice::buildNonLacunaryBasis (int dimension)
+// a basis is built in dimension d
 
-   int dk = d;
-   if (dk > m_order)
-      dk = m_order;
+{
+    int sizeA = m_A.NumCols();
+    m_basis.resize(dimension, dimension);
 
-   int i, j;
-   for (i = 0; i < dk; i++) {
-      if (m_ip[i]) {
-         for (j = 0; j < dk; j++)
-            m_basis[i][j] = m_sta[i][j];
+    // filling in the diagonal of m_basis
+    for (int i = 0; i < sizeA; i++)
+        m_basis[i][i] = 1;
+    for (int i = sizeA; i < dimension; i++)
+        m_basis[i][i] = m_modulo;
 
-      } else {
-         for (j = 0; j < dk; j++) {
-            if (i != j)
-               m_basis[i][j] = 0;
-            else
-               m_basis[i][j] = m_modulo;
-         }
-      }
-   }
+   // using genrator matrix A to complete the first lines of m_basis
+   // with values generatred by the recurrence
+    ZZ_p::init(m_modulo);
+    mat_ZZ_p temp;
+    temp.SetDims(sizeA, sizeA);
+    for (int i = 0; i < sizeA; i++)
+        temp[i][i] = 1;
+
+    int maxIter = dimension/sizeA;
+
+    for (int k = 1; k < maxIter+1; k++) {
+        // calculation of transpose(A^k)
+        temp *= conv<mat_ZZ_p>(transpose(m_A)); 
+
+        if (k == maxIter) { // we completed the end of m_basis matrix
+            int residu = dimension - maxIter * sizeA;
+            for (int i = 0; i < sizeA; i++) {
+                for (int j = 0; j < residu; j ++)
+                    m_basis[i][k*sizeA +j] = conv<ZZ>(temp[i][j]);
+            }
+        } else {
+            for (int i = 0; i < sizeA; i++) {
+                for (int j = 0; j < sizeA; j ++)
+                    m_basis[i][k*sizeA +j] = conv<ZZ>(temp[i][j]);
+            }
+        }
+    }
+
+    // we create the dual lattice associated
+    m_dualbasis.resize(dimension, dimension);
+    CalcDual<BMat>(m_basis, m_dualbasis, dimension, m_modulo);
 
 
-   CalcDual<BMat>(m_basis, m_dualbasis, dk, m_modulo);
-   setDim(dk);
-   if (d > m_order) {
-      for (i = m_order + 1; i < d; i++)
-         incrementDimBasis ();
-   }
+    if (checkDuality ())
+      cout << "*** Duality check: OK ***" << endl;
+
 }
+
 
 //===========================================================================
 
@@ -305,6 +326,18 @@ void MMRGLattice::buildLacunaryBasis (int d)
 }
 
 
+
+//===========================================================================
+
+void MMRGLattice::getSubLine(vec_ZZ & vec, mat_ZZ& B, int lign, int jMin, int jMax)
+{
+    // both jMin and jMax are included
+    vec.SetLength(jMax-jMin+1);
+    for (int i = 0; i < (jMax-jMin+1); i++)
+        vec[i] = B[lign][jMin+i];
+}
+
+
 //===========================================================================
 
 void MMRGLattice::incrementDim()
@@ -320,6 +353,48 @@ void MMRGLattice::incrementDim()
 void MMRGLattice::incrementDimBasis()
 // X_n = A X_{n-1} mod m. On a Dim >= Order.
 {
+
+    int oldDimension = m_basis.NumRows();
+    int newDimension = oldDimension+1;
+    int sizeA = m_A.NumRows();
+
+    mat_ZZ primalBasisTemp = m_basis;
+    m_basis.SetDims(newDimension, newDimension);
+
+    for (int i = 0; i < oldDimension; i++) {
+        for (int j = 0; j < oldDimension; j++)
+            m_basis[i][j] = primalBasisTemp[i][j];
+    }
+
+    // calcul de la puissance a A en cours
+    int n = floor(oldDimension / sizeA);
+    ZZ_p::init(m_modulo);
+    mat_ZZ_p temp;
+    temp.SetDims(sizeA, sizeA);
+    for (int i = 0; i < sizeA; i++) {
+            temp[i][i] = 1;
+    }
+
+    // étape couteuse qui pourrait etre raccourcie en stockant A^k
+    //--------------------------------------------------------------------
+    for (int k = 1; k < n+1; k++) {
+        temp *= conv<mat_ZZ_p>(transpose(m_A)); 
+    }
+    //--------------------------------------------------------------------
+
+    // mise à jour de la nouvelle colonne de m_basis
+    vec_ZZ initialState;
+    for (int i = 0; i < oldDimension; i++) {
+        getSubLine(initialState, m_basis, i, 0, sizeA-1);
+        initialState = conv<vec_ZZ>( transpose(temp) * conv<vec_ZZ_p>(initialState) );
+        m_basis[i][newDimension-1] = initialState[newDimension - n*sizeA -1];
+    }
+
+    m_basis[newDimension-1][newDimension-1] = m_modulo;
+
+}
+
+/*
    IntLattice::incDim();
    const int dim = getDim();
    //m_basis.setDim(dim);
@@ -363,6 +438,16 @@ void MMRGLattice::incrementDimBasis()
    if (!checkDuality ())
       MyExit (1, "BUG");
 }
+*/
+
+
+
+
+
+
+
+
+
 
 //===========================================================================
 

@@ -102,6 +102,17 @@ public:
     */
    const MMat & getGeneratorMatrix() const { return m_A; }
 
+
+    //PW_TODO ici temporairement
+   void getSubLine(vec_ZZ & vec, mat_ZZ& B, int lign, int jMin, int jMax);
+
+    /**
+    * Increments the basis by 1 in case of non-lacunary indices.
+    */ 
+   //PW_TODO c'était virtual avant : normal ?
+   // cetait dans protected avant
+   void incrementDimBasis ();
+
 protected:
 
    /**
@@ -119,12 +130,6 @@ protected:
     * Builds the basis of the MMRG recurrence in case of lacunary indices.
     */
    void buildLacunaryBasis (int d);
-
-   /**
-    * Increments the basis by 1 in case of non-lacunary indices.
-    */ 
-   //PW_TODO c'était virtual avant : normal ?
-   void incrementDimBasis ();
 
    /**
     * Increments the basis by 1 in case of lacunary indices.
