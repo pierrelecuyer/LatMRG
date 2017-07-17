@@ -26,7 +26,8 @@ int main (int argc, char **argv)
    LatTestAll testall;
    int status = 0;
 
-   char *testfile = "latZZDD_test2";
+   char *testfile = "/Users/Erwan1/projects/github/LatMRG/latZZDD_test2";
+   status |= testall.doTest (testfile);
 
    for (int j = 1; j < argc; j++) {
       // Do the test for each data file or directory on the command line

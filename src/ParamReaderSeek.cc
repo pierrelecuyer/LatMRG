@@ -167,8 +167,8 @@ void ParamReaderSeek::read (SeekConfig & config)
    readInt (config.d, ++ln, 0);
    if (config.d < 1)
       MyExit (1, "ParamReaderSeek:   config.d < 1");
-   config.td = new int[1 + config.d];
-   readIntVect (config.td, ++ln, 0, 1 + config.d, 0);
+   config.td = new int[config.d];
+   readIntVect (config.td, ++ln, 0, config.d, 0);
    if (config.td[0] <= maxOrder)
       config.td[0] = maxOrder + 1;
 
