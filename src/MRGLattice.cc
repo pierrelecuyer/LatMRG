@@ -233,7 +233,7 @@ void MRGLattice::buildBasis (int d)
 
 void MRGLattice::buildNaBasis (int d)
 // La base est construite en dimension d.
-{ 
+{
  // trace( "=====================================AVANT buildNaBasis", -10);
    initStates();
 
@@ -533,7 +533,7 @@ MyExit (1, "case ORBIT is not finished");
          printf("ESPION_RECURRENT\n");
          MVect b;
          b.SetLength(m_order + 1);
-         CopyVect (m_aCoef, b, m_order);
+         CopyVect (b, m_aCoef, m_order);
          PolyPE::reverse (b, m_order, 2);
          // b is the characteristic polynomial
          PolyPE::setF(b);

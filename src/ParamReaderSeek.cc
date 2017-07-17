@@ -15,6 +15,7 @@ authors: Hicham Wahbi
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <cassert>
 
 
 
@@ -69,6 +70,9 @@ void ParamReaderSeek::read (SeekConfig & config)
    Component comp;
    for (int i = 0; i < config.J; i++) {
       readGenType (comp.genType, ++ln, 0);
+      if (comp.genType == MMRG){
+         MyExit(1, "Not Yet Implemented");
+      }
       readNumber3 (comp.modulus.m, comp.modulus.b, comp.modulus.e,
                    comp.modulus.c, ++ln, 0);
       if (0 == comp.modulus.e)

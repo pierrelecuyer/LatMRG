@@ -35,6 +35,8 @@ string toStringGen (GenType gen)
       return "LCG";
    case MRG:
       return "MRG";
+   case MMRG:
+      return "MMRG";
    case KOROBOV:
       return "KOROBOV";
    case RANK1:

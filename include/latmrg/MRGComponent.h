@@ -28,6 +28,14 @@ public:
  */
 MRGComponent (const MScal & m, const MVect & a, int k);
 
+
+   /**
+    * Constructor for MMRG with modulus \f$m\f$, Matrix \f$A\f$ and
+    * order \f$k\f$.
+    */
+   MRGComponent (const MScal & m, const MMat & A, int k);
+
+
    /**
     * Constructor with modulus \f$m=b^e + c\f$, vector \f$a\f$ and order
     * \f$k\f$.
@@ -123,6 +131,11 @@ MRGComponent (const MScal & m, const MVect & a, int k);
     * The multipliers \f$a_i\f$ of the recurrence, \f$i = 1, …, k\f$.
     */
    MVect a;
+
+   /**
+    * The generator matrix \f$A\f$ of the recurrence for MMRG.
+    */
+   MMat A;
 
    /**
     * The length of the period \f$\rho\f$ for this MRG. For now, the
