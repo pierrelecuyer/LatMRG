@@ -22,6 +22,7 @@ namespace LatMRG
 
 /* Max order for lacunary case in this class; takes too much memory.
  For order > ORDERMAX, use subclass MRGLatticeLac instead */
+//PW_TODO à voir plus tard avec lacunary
 #define ORDERMAX 100
 
 //===========================================================================
@@ -35,6 +36,7 @@ MMRGLattice::MMRGLattice(const MScal & m, const MMat & A, int maxDim, int r,
    m_lacunaryFlag = false;
    m_ip = new bool[1];
    init();
+   //PW_TODO attention m_ip aussi initialisé dans init()
 }
 
 
