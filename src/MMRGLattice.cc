@@ -357,6 +357,8 @@ void MMRGLattice::incrementDim()
 void MMRGLattice::incrementDimBasis()
 // X_n = A X_{n-1} mod m. On a Dim >= Order.
 {
+   // PW_TODO à ajouter plus tard
+   //IntLattice::incDim();
 
    int oldDimension = m_basis.NumRows();
    int newDimension = oldDimension+1;
@@ -417,6 +419,8 @@ void MMRGLattice::incrementDimBasis()
 
    m_dualbasis[newDimension-1][newDimension-1] = 1;
 
+   setNegativeNorm();
+   setDualNegativeNorm();
 
    if (!checkDuality())
       MyExit (1, "BUG in MMRGLattice::incrementDimBasis");
