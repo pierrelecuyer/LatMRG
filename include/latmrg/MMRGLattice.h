@@ -33,7 +33,7 @@ public:
     * `maxDim`-1. The norm to be used for the basis vectors is `norm`.
     */
    MMRGLattice (const MScal & m, const MMat & A, int maxDim, int r,
-                 LatticeType lat, LatticeTester::NormType norm = LatticeTester::L2NORM);
+      LatticeTester::NormType norm = LatticeTester::L2NORM, LatticeType lat = FULL);
 
    /**
     * As in the constructor above but the basis is built for the lacunary
@@ -41,7 +41,7 @@ public:
     */
   //PW_TODO à faire plus tard
   MMRGLattice (const MScal & m, const MMat & A, int maxDim, int r, BVect & lac,
-               LatticeType lat, LatticeTester::NormType norm = LatticeTester::L2NORM);
+      LatticeTester::NormType norm = LatticeTester::L2NORM, LatticeType lat = FULL);
 
    /**
     * Copy constructor. The maximal dimension of the created basis is set
