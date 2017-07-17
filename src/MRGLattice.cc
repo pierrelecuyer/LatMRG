@@ -258,15 +258,13 @@ void MRGLattice::buildNaBasis (int d)
       }
    }
 
-
    CalcDual<BMat>(m_basis, m_dualbasis, dk, m_modulo);
    setDim(dk);
    if (d > m_order) {
-      for (i = m_order + 1; i < d; i++)
+      for (i = m_order; i < d; i++)
          incDimBasis ();
    }
-
- // trace( "=================================APRES buildNaBasis", -10);
+ // trace( "=================================APRES buildNaBasis", -10);   
 }
 
 
