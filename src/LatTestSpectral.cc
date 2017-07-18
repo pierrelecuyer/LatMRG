@@ -162,10 +162,8 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
    NScal te;
    double lgvv1 = 0.0;
    
-   while (m_lat->getDim () < fromDim){
+   while (m_lat->getDim () < fromDim)
       m_lat->incDim ();
-   }
-
    Reducer red (*m_lat);
 
    // YO
@@ -177,18 +175,9 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
 
    while (true) {
 
-      if (m_dualF) {
-         cout << "Avant m_dualF = " << m_dualF << endl;
+      if (m_dualF)
          m_lat->dualize ();
-      }
-
       int dim = m_lat->getDim ();
-
-      //PW_TODO
-      cout << "\nLatTestSpectral::test" << endl;
-      cout << "Primal = \n" << m_lat->getBasis() << endl;
-      cout << "Dual = \n" << m_lat->getDualBasis() << endl;
-
       // pre-reduction step before BB with default parameters
       red.redBKZ();
 
@@ -256,16 +245,10 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
                cout << "." << endl;
                */
 
-               cout << "espion 2" << endl;
-
                double normalizer2 = m_normalizer->getPreComputedBound(dim);
                normalizer2 *= normalizer2;
 
                m_merit[dim] = temp / normalizer2;
-
-               cout << "temp = " << temp << endl;
-               cout << "normalizer2 = " << normalizer2 << endl;
-               cout << "m_merit[" << dim << "] = " << m_merit[dim] << endl;
 
             } else if (m_lat->getNorm () == L1NORM) {
                if ((m_S2toL2[dim] <= 0.0) || (std::isinf(m_S2toL2[dim]))) {
@@ -307,11 +290,8 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
          break;
 
       //PW_TODO ben emplacement et bon parametre m_dualF ? (ie veut dire qu'on travaille dans le dual?)
-      if (m_dualF) {
+      if (m_dualF)
             m_lat->dualize ();
-            cout << "Après m_dualF = " << m_dualF << endl;
-         }
-
       m_lat->incDim ();
       red = Reducer(*m_lat);
    }
