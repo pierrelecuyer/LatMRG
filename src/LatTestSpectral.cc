@@ -251,6 +251,9 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
                m_merit[dim] = temp / normalizer2;
 
             } else if (m_lat->getNorm () == L1NORM) {
+
+               // PW_TODO : ce qui était fait avant
+               /*
                if ((m_S2toL2[dim] <= 0.0) || (std::isinf(m_S2toL2[dim]))) {
                   double tmp = exp2 ((m_lat->getLgVolDual2 (dim) / 2.0
                                + m_normalizer->getGamma(dim)) / dim);
@@ -259,6 +262,10 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
                } else {
                   m_merit[dim] = temp / m_S2toL2[dim];
                }
+               */
+
+               double normalizer = m_normalizer->getPreComputedBound(dim);
+               m_merit[dim] = temp / normalizer;
 
             } else
                m_merit[dim] = temp;
