@@ -199,20 +199,8 @@ int LatTestAll::doTest (const char *infile)
       
 
       } else if (config.genType[0] == MMRG) {
-
-         /*
-         cout << "espion 1" << endl;
-         cout << "config.comp[0]->getM() = " << config.comp[0]->getM() << endl;
-         cout << "config.comp[0]->A = " << config.comp[0]->A << endl;
-         cout << "config.comp[0]->k = " << config.comp[0]->k << endl;
-         cout << "config.norm = " << config.norm << endl;
-         cout << "toDim = " << toDim << endl;
-         */
-
          lattice = new MMRGLattice (config.comp[0]->getM(), config.comp[0]->A,
                              toDim,config.comp[0]->k, config.norm);
-
-            //(modulo, A, maxDim, r, LatticeType, Norm)
       }
    }
 
@@ -246,8 +234,7 @@ int LatTestAll::doTest (const char *infile)
          lattice->buildBasis (fromDim - 1);
          spectralTest.attach (&report);
       
-         // PW_TODO include print for MMRG puis décommenter
-         //report.printHeader ();
+         report.printHeader ();
 
          spectralTest.setDualFlag (config.dualF);
          spectralTest.setInvertFlag (config.invertF);
