@@ -344,7 +344,7 @@ void MMRGLattice::getSubLine(vec_ZZ & vec, mat_ZZ& B, int lign, int jMin, int jM
 
 //===========================================================================
 
-void MMRGLattice::incrementDim()
+void MMRGLattice::incDim()
 {
    if (m_lacunaryFlag)
       incrementDimLacunaryBasis (getDim());
@@ -355,68 +355,60 @@ void MMRGLattice::incrementDim()
 //===========================================================================
 
 void MMRGLattice::incrementDimBasis()
-// X_n = A X_{n-1} mod m. On a Dim >= Order.
+// X_n = A X_{n-1} mod m. We have: dimension >= order.
 {
-   // PW_TODO à ajouter plus tard
-   //IntLattice::incDim();
+   IntLattice::incDim();
+   int newDimension = getDim();
+   int sizeA = getOrder();
 
-   int oldDimension = m_basis.NumRows();
-   int newDimension = oldDimension+1;
-   int sizeA = m_A.NumRows();
+   // ************* update of the primal lattice *************
+   //  - we add a new coordinate to each vector v_i, this value being determined
+   //    by the MMRG recurrence (even if the original vectors have been 
+   //    transformed linearly and we must apply the same transformations to their
+   //    last coordinates).
+   //  - we add an extra vector (0,..., 0, m) to complete this dimension 
+   //    increased basis.
 
-   mat_ZZ primalBasisTemp = m_basis;
-   m_basis.SetDims(newDimension, newDimension);
-
-   for (int i = 0; i < oldDimension; i++) {
-      for (int j = 0; j < oldDimension; j++)
-         m_basis[i][j] = primalBasisTemp[i][j];
-   }
-
-   // calcul de la puissance a A en cours
-   int n = floor(oldDimension / sizeA);
+   // we compute the number of steps required to reach the current state of 
+   // the generator for the considered dimension.
+   int n = floor((newDimension-1) / sizeA);
    ZZ_p::init(m_modulo);
    mat_ZZ_p temp;
    temp.SetDims(sizeA, sizeA);
    for (int i = 0; i < sizeA; i++)
       temp[i][i] = 1;
-
-   // étape couteuse qui pourrait etre raccourcie en stockant A^k
-   //--------------------------------------------------------------------
-   for (int k = 1; k < n+1; k++)
+   for (int k = 0; k < n; k++)
      temp *= conv<mat_ZZ_p>(transpose(m_A)); 
-   //--------------------------------------------------------------------
+   // PW_TODO : could be useful to keep A^k in memory to shorten computation
 
-   // mise à jour de la nouvelle colonne de m_basis
+   // update of the new v_i coordinates using the *temp* matrix and the first 
+   // coefficients of each line (can be seen as a seed vector). So this *temp*
+   // matrix multiplied by this seed vector gives us the next values generated
+   // by the MMRG for the considered dimension.
    vec_ZZ initialState;
-   for (int i = 0; i < oldDimension; i++) {
+   for (int i = 0; i < (newDimension-1); i++) {
      getSubLine(initialState, m_basis, i, 0, sizeA-1);
      initialState = conv<vec_ZZ>( transpose(temp) * conv<vec_ZZ_p>(initialState) );
      m_basis[i][newDimension-1] = initialState[newDimension - n*sizeA -1];
    }
-
    m_basis[newDimension-1][newDimension-1] = m_modulo;
 
-   // mise à jour de la base duale
-   mat_ZZ dualBasisTemp = m_dualbasis;
-   m_dualbasis.SetDims(newDimension, newDimension);
 
-   for (int i = 0; i < oldDimension; i++) {
-     for (int j = 0; j < oldDimension; j++)
-         m_dualbasis[i][j] = dualBasisTemp[i][j];
-   }
+   // ************* update of the dual basis *************
+   //  - we add a new 0 coordinate to each vector w_i in the dual basis.
+   //  - for the new last line of the matrix, we add an extra vector, 
+   //    as described in L'Ecuyer's paper
+   // PW_TODO : citer rédérence "Guide LatTester"
 
-   // mise à jour de la dernière ligne
-   vec_ZZ lastLign;
-   lastLign.SetLength(newDimension);
+   vec_ZZ lastLine;
+   lastLine.SetLength(newDimension);
 
-   for (int i = 0; i < oldDimension; i++) {
+   for (int i = 0; i < (newDimension-1); i++) {
       matrix_row<const BMat> row(m_dualbasis, i);
-      lastLign -= m_basis[i][newDimension-1] * row;
+      lastLine -= m_basis[i][newDimension-1] * row;
    }
-
-   for (int i = 0; i < oldDimension; i++)
-      m_dualbasis[newDimension-1][i] = lastLign[i] / m_modulo;
-
+   for (int i = 0; i < (newDimension-1); i++)
+      m_dualbasis[newDimension-1][i] = lastLine[i] / m_modulo;
    m_dualbasis[newDimension-1][newDimension-1] = 1;
 
    setNegativeNorm();

@@ -89,7 +89,7 @@ public:
     * Increments the dimension of the basis by 1 by calling either
     * `incDimBasis` or `incDimLaBasis`.
     */
-   virtual void incrementDim();
+   void incDim();
 
    /**
     * Returns `true` for the case of lacunary indices, returns `false` for
