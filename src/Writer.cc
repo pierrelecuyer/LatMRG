@@ -65,6 +65,23 @@ void Writer::writeMScal(const MScal & value)
    *m_stream << value;
 }
 
+void Writer::writeMMat(const MMat & A)
+{
+   int sizeA = A.size1();
+   *m_stream << "   [";
+   for (int i = 0; i < sizeA; i++) {
+      if (i == 0) { *m_stream << "["; }
+      else { *m_stream << "    ["; }
+
+      for (int j = 0; j < (sizeA-1); j++)
+        *m_stream << A[i][j] << " ";
+
+      if (i == (sizeA-1)) { *m_stream << A[i][sizeA-1] << "]"; }
+      else { *m_stream << A[i][sizeA-1] << "]" << endl; }
+   }
+   *m_stream << "]" << endl;
+}
+
 void Writer::writeDouble(const double & value)
 {
    *m_stream << value;

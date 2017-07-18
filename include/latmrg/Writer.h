@@ -97,6 +97,11 @@ public:
    virtual void writeMScal (const MScal & value);
 
    /**
+    * Writes a `MMat`.
+    */
+   virtual void writeMMat(const MMat & A);
+
+   /**
     * Writes a `string` in a mathematical format using LaTeX notation.
     */
    virtual void writeMathString (const std::string) = 0;
