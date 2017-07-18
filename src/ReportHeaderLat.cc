@@ -59,32 +59,44 @@ void ReportHeaderLat::printHeader ()
 
       m_writer->newLine ();
 
-      m_writer->writeString ("   k = ");
-      m_writer->writeInt (m_config->comp[i]->k);
-      m_writer->newLine ();
+      if (m_config->genType[i] == MMRG) {
+         m_writer->writeString ("   order = ");
+         m_writer->writeInt (m_config->comp[i]->k);
+         m_writer->newLine ();
 
-      if (m_config->comp[i]->k < 13) {
-         // Write all coefficients of a
-         for (int ii = 0; ii < m_config->comp[i]->k; ii++) {
-            m_writer->writeString ("      a_");
-            m_writer->writeInt (ii);
-            m_writer->writeString (" = ");
-            m_writer->writeMScal (m_config->comp[i]->a[ii]);
-            m_writer->newLine ();
-         }
-      } else {
-         // Write only the non-zero coefficients of a
-         for (int ii = 0; ii < m_config->comp[i]->k; ii++) {
-            if (0 != m_config->comp[i]->a[ii]) {
+         m_writer->writeString ("   generator matrix = ");
+         m_writer->newLine ();
+         m_writer->writeMMat(m_config->comp[i]->A);
+
+
+      } else { 
+         m_writer->writeString ("   k = ");
+         m_writer->writeInt (m_config->comp[i]->k);
+         m_writer->newLine ();
+
+         if (m_config->comp[i]->k < 13) {
+            // Write all coefficients of a
+            for (int ii = 0; ii < m_config->comp[i]->k; ii++) {
                m_writer->writeString ("      a_");
                m_writer->writeInt (ii);
                m_writer->writeString (" = ");
                m_writer->writeMScal (m_config->comp[i]->a[ii]);
                m_writer->newLine ();
             }
+         } else {
+            // Write only the non-zero coefficients of a
+            for (int ii = 0; ii < m_config->comp[i]->k; ii++) {
+               if (0 != m_config->comp[i]->a[ii]) {
+                  m_writer->writeString ("      a_");
+                  m_writer->writeInt (ii);
+                  m_writer->writeString (" = ");
+                  m_writer->writeMScal (m_config->comp[i]->a[ii]);
+                  m_writer->newLine ();
+               }
+            }
+            m_writer->writeString ("         All other a_j are  0");
+            m_writer->newLine ();
          }
-         m_writer->writeString ("         All other a_j are  0");
-         m_writer->newLine ();
       }
 
       if (m_config->J > 1) {

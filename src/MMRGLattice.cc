@@ -3,6 +3,7 @@
 
 #include "latticetester/Util.h"
 #include "latticetester/Const.h"
+#include "latticetester/ntlwrap.h"
 
 #include <sstream>
 #include <iostream>
@@ -216,8 +217,7 @@ void MMRGLattice::buildNonLacunaryBasis (int dimension)
 
 {
    setDim(dimension);
-
-   int sizeA = m_A.NumCols();
+   int sizeA = getOrder();
    m_basis.resize(dimension, dimension);
 
    // filling in the diagonal of m_basis
@@ -229,27 +229,27 @@ void MMRGLattice::buildNonLacunaryBasis (int dimension)
    // using genrator matrix A to complete the first lines of m_basis
    // with values generatred by the recurrence
    ZZ_p::init(m_modulo);
-   mat_ZZ_p temp;
+   MMatP temp;
    temp.SetDims(sizeA, sizeA);
    for (int i = 0; i < sizeA; i++)
       temp[i][i] = 1;
 
-   int maxIter = dimension/sizeA;
+   int maxIter = floor(dimension/sizeA);
 
    for (int k = 1; k < maxIter+1; k++) {
       // calculation of transpose(A^k)
-      temp *= conv<mat_ZZ_p>(transpose(m_A)); 
+      temp *= conv<MMatP>(transpose(m_A)); 
 
       if (k == maxIter) { // we completed the end of m_basis matrix
          int residu = dimension - maxIter * sizeA;
          for (int i = 0; i < sizeA; i++) {
             for (int j = 0; j < residu; j ++)
-               m_basis[i][k*sizeA +j] = conv<ZZ>(temp[i][j]);
+               m_basis[i][k*sizeA +j] = conv<MScal>(temp[i][j]);
          }
       } else {
          for (int i = 0; i < sizeA; i++) {
             for (int j = 0; j < sizeA; j ++)
-               m_basis[i][k*sizeA +j] = conv<ZZ>(temp[i][j]);
+               m_basis[i][k*sizeA +j] = conv<MScal>(temp[i][j]);
          }
       }
    }
@@ -258,9 +258,8 @@ void MMRGLattice::buildNonLacunaryBasis (int dimension)
    m_dualbasis.resize(dimension, dimension);
    CalcDual<BMat>(m_basis, m_dualbasis, dimension, m_modulo);
 
-   // PW_TODO à vérifier probleme dans produit scalaire
-   //if (!checkDuality())
-   //   MyExit (1, "BUG in MMRGLattice::buildNonLacunaryBasis");
+   if (!checkDuality())
+      MyExit (1, "BUG in MMRGLattice::buildNonLacunaryBasis");
 }
 
 
@@ -333,10 +332,10 @@ void MMRGLattice::buildLacunaryBasis (int d)
 
 //===========================================================================
 
-void MMRGLattice::getSubLine(vec_ZZ & vec, mat_ZZ& B, int lign, int jMin, int jMax)
+void MMRGLattice::getSubLine(MVect & vec, MMat& B, int lign, int jMin, int jMax)
 {
     // both jMin and jMax are included
-    vec.SetLength(jMax-jMin+1);
+    vec.resize(jMax-jMin+1);
     for (int i = 0; i < (jMax-jMin+1); i++)
         vec[i] = B[lign][jMin+i];
 }
@@ -373,22 +372,22 @@ void MMRGLattice::incrementDimBasis()
    // the generator for the considered dimension.
    int n = floor((newDimension-1) / sizeA);
    ZZ_p::init(m_modulo);
-   mat_ZZ_p temp;
+   MMatP temp;
    temp.SetDims(sizeA, sizeA);
    for (int i = 0; i < sizeA; i++)
       temp[i][i] = 1;
    for (int k = 0; k < n; k++)
-     temp *= conv<mat_ZZ_p>(transpose(m_A)); 
+     temp *= conv<MMatP>(transpose(m_A)); 
    // PW_TODO : could be useful to keep A^k in memory to shorten computation
 
    // update of the new v_i coordinates using the *temp* matrix and the first 
    // coefficients of each line (can be seen as a seed vector). So this *temp*
    // matrix multiplied by this seed vector gives us the next values generated
    // by the MMRG for the considered dimension.
-   vec_ZZ initialState;
+   MVect initialState;
    for (int i = 0; i < (newDimension-1); i++) {
      getSubLine(initialState, m_basis, i, 0, sizeA-1);
-     initialState = conv<vec_ZZ>( transpose(temp) * conv<vec_ZZ_p>(initialState) );
+     initialState = conv<MVect>( transpose(temp) * conv<MVectP>(initialState) );
      m_basis[i][newDimension-1] = initialState[newDimension - n*sizeA -1];
    }
    m_basis[newDimension-1][newDimension-1] = m_modulo;
@@ -400,7 +399,7 @@ void MMRGLattice::incrementDimBasis()
    //    as described in L'Ecuyer's paper
    // PW_TODO : citer rédérence "Guide LatTester"
 
-   vec_ZZ lastLine;
+   MVect lastLine;
    lastLine.SetLength(newDimension);
 
    for (int i = 0; i < (newDimension-1); i++) {

@@ -104,7 +104,7 @@ public:
 
 
     //PW_TODO ici temporairement, à déplacer dans latticetester/Util.h
-   void getSubLine(vec_ZZ & vec, mat_ZZ& B, int lign, int jMin, int jMax);
+   void getSubLine(MVect & vec, MMat& B, int lign, int jMin, int jMax);
 
     /**
     * Increments the basis by 1 in case of non-lacunary indices.
