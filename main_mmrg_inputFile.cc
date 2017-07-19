@@ -70,8 +70,16 @@ int main ()
    
    // Paul
    //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles";
-   string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/latZZDD_test1";
-   //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/mmrg_test1";
+   
+   //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/latZZDD_test1";
+   //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/latZZDD_test2";
+   
+   string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/mmrg_test1";
+   //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/mmrg_test2";
+   //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/mmrg_test3";
+   //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/mmrg_test4";
+   //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/mmrg_test5";
+   //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/mmrg_test6";
    
    struct stat buf; // properties of a file or directory
    LatTestAll testall;
