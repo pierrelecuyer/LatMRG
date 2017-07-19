@@ -140,9 +140,9 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[])
 // weights is the array of the weights of all projections as follows:
 //    weights[i] is the weight for projection [1, ..., i]
 // weights == 0 means unit weight for all projections
-  
+
 //===========================================================================
-   
+
 bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const double* weights)
 {
    m_merit.setDim(toDim);
@@ -161,17 +161,15 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
    double temp;
    NScal te;
    double lgvv1 = 0.0;
-   
+
    while (m_lat->getDim () < fromDim)
       m_lat->incDim ();
    Reducer red (*m_lat);
 
-   // YO
    if (m_S2toL2[fromDim] <= 0.0)
    initLowerBoundL2 (fromDim, toDim);
    setLowerBoundL2 (minVal[toDim], weights);   // same S2 for all dim
    red.setBoundL2 (m_boundL2, fromDim, toDim);
-
 
    while (true) {
 
@@ -179,8 +177,7 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
          m_lat->dualize ();
       int dim = m_lat->getDim ();
       // pre-reduction step before BB with default parameters
-      red.redBKZ();
-
+      red.redBKZ(0.999999, 10, QUADRUPLE, dim);
       if (red.shortestVector (m_lat->getNorm ())) {
 
          // Calcul de D2. Pour Norm # L2NORM, suppose que VV est a jour.
@@ -196,13 +193,11 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
                te = te / m2;
                conv(temp, te);
             }
-
          } else {
             conv (temp, red.getMinLength ());
             if (!m_dualF)
                temp = temp / mr;
          }
-         //cout << "temp vaut : " << temp << endl;
          if (3 == m_detailF) {
             dispatchLatUpdate(*m_lat);
             /*if (m_dualF) {
@@ -286,7 +281,6 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
             m_merit[dim] /= weight;
 
          prepAndDisp (dim);
-         //cout << "la figure de merite vaut ensuite : " << m_merit[dim-1] << endl;
 
       } else {
          m_merit[dim] = -1.0;

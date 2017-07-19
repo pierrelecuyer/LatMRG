@@ -175,8 +175,9 @@ void IntLattice::buildProjection (IntLattice* lattice, const Coordinates & proj)
    int i = 0;
    for (Coordinates::const_iterator iter = proj.begin();
         iter != proj.end(); ++iter) {
-      for (int j = 0; j < dim; j++)
+      for (int j = 0; j < dim; j++){
          lattice->m_dualbasis(j,i) = m_basis(j, *iter);
+      }
       ++i;
    }
 
@@ -196,6 +197,11 @@ lattice->getDualBasis ().setNegativeNorm (true);
 lattice->getDualBasis ().updateScalL2Norm (1,proj.size());
 lattice->getDualBasis ().write();
 */
+   lattice->setNegativeNorm (true);
+   lattice->setDualNegativeNorm (true);
+   lattice->updateDualScalL2Norm (0, proj.size());
+   lattice->updateScalL2Norm (0,proj.size());
+   //lattice->write();
    lattice->setNegativeNorm ();
    lattice->setNegativeNorm ();
 }

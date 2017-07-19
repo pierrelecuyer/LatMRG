@@ -678,7 +678,6 @@ void InsideExam (Zone * Z, int j, int i, ProcII exam)
    MScal Eight;
    Eight = 8;
    q = Z->getInf ();
-   cout << "INF : " << q << endl;
 
    if (comp.PerMax && (!comp.modulus.primeF) && (comp.modulus.b == 2)
          && comp.modulus.c == 0) {
@@ -752,14 +751,8 @@ void ExamAllZones (int j, int i)
       return ;
    Zone *Z;
    Z = i + zone[j];
-   cout << "La zone de la rec : " << Z << endl;
-   cout << "La zone suivant la rec : " << Z->nextZone << endl;
-   cout << "La zone avant rec : " << zone[0] << endl;
 
    while (Z != 0) {
-      cout << "zone Z : " << Z << endl;
-      cout << "inf0 : " << Z->getInf () << endl;
-      cout << "sup0 : " << Z->getSup () << endl;
       // On va examiner toute cette zone.
       InsideExam (Z, j, i, ExamAllZones);
       Z = Z->nextZone;
@@ -871,7 +864,6 @@ void InitZones ()
    for (int s = 0; s < config.J; s++) {
       for (int i = 0; i < config.compon[s].k; i++) {
          zone[s][i].init (config.compon[s], s, i);
-         cout << zone[0][0].nextZone << endl;
       }
    }
 }

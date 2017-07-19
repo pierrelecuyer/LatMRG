@@ -240,14 +240,14 @@ double TestProjections::run (bool stationary, bool forceLast, double minVal[], c
    m_test->setMaxAllDimFlag (true);
 
    // set the temporary weights for successive dimensions
-   for (ProjIteratorSuccCoords projit(1, maxDim, 1, maxDim, true, false); projit; ++projit) {
+   for (ProjIteratorSuccCoords projit(0, maxDim-1, 0, maxDim-1, true, false); projit; ++projit) {
       if ((int)projit->size() >= minDim)
          m_weightsTemp[projit->size()] = weights.getWeight(*projit);
       else
          m_weightsTemp[projit->size()] = 1;
    }
-   m_test->test (minDim, maxDim, minVal, m_weightsTemp);
 
+   m_test->test (minDim, maxDim, minVal, m_weightsTemp);
    // ATTENTION: si le test s'est terminé prématurément parce que le réseau
    // est mauvais, les valeurs de mérites ci-après sont n'importe quoi.
    merit = m_test->getMerit().getST (minDim, maxDim);
@@ -277,7 +277,7 @@ double TestProjections::run (bool stationary, bool forceLast, double minVal[], c
          if (maxCoord <= order)
             continue;
 
-         ProjIteratorSuccCoords projit(2, maxCoord, order, order, stationary, forceLast);
+         ProjIteratorSuccCoords projit(1, maxCoord-1, order, order, stationary, forceLast);
          merit = std::min(merit, run(projit, minVal, weights));
 
          if (merit < minVal[order])
@@ -297,7 +297,7 @@ double TestProjections::run (bool stationary, bool forceLast, double minVal[], c
       if (maxCoord <= order)
          continue;
 
-      ProjIteratorNonSuccCoords projit(1, maxCoord, order, order, stationary, forceLast);
+      ProjIteratorNonSuccCoords projit(0, maxCoord-1, order, order, stationary, forceLast);
       merit = std::min(merit, run(projit, minVal, weights));
 
       if (merit < minVal[order])
@@ -317,13 +317,14 @@ double TestProjections::run (bool stationary, bool forceLast, double minVal[], c
 double TestProjections::run (ProjIterator& projit, double minVal[], const Weights& weights)
 {
    double minMerit = 1.0e100;
-
+   int cpt = 0;
    while (projit) {
+
+      cpt++;
       int dim = (int)projit->size();
       int maxCoord = min (m_td[dim], m_master->getDim ());
       if (maxCoord <= dim) // if equal, already computed
          continue;
-
       if (m_printF)
          m_writer->writeString (formatIndices(*projit));
 
