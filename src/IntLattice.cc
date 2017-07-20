@@ -101,6 +101,7 @@ void IntLattice::incDim ()
 {
    IntLattice lattmp(*this);
    int dim = getDim();
+   int sizemat = m_basis.size1();
    m_basis.resize(dim+1, dim+1);
    m_dualbasis.resize(dim+1, dim+1);
    m_vecNorm.resize(dim+1);
@@ -143,7 +144,7 @@ void IntLattice::calcLgVolDual2 (double lgm2)
 
 void IntLattice::dualize ()
 {
-   BMat tmp(m_dim, m_dim);
+   BMat tmp(m_basis.size1(), m_basis.size2());
 
    tmp = m_basis;
    m_basis = m_dualbasis;
@@ -176,7 +177,7 @@ void IntLattice::buildProjection (IntLattice* lattice, const Coordinates & proj)
    for (Coordinates::const_iterator iter = proj.begin();
         iter != proj.end(); ++iter) {
       for (int j = 0; j < dim; j++){
-         lattice->m_dualbasis(j,i) = m_basis(j, *iter);
+         lattice->m_dualbasis[j][i] = m_basis[j][*iter];
       }
       ++i;
    }
@@ -197,12 +198,11 @@ lattice->getDualBasis ().setNegativeNorm (true);
 lattice->getDualBasis ().updateScalL2Norm (1,proj.size());
 lattice->getDualBasis ().write();
 */
+
    lattice->setNegativeNorm (true);
    lattice->setDualNegativeNorm (true);
    lattice->updateDualScalL2Norm (0, proj.size());
    lattice->updateScalL2Norm (0,proj.size());
-   //lattice->write();
-   lattice->setNegativeNorm ();
    lattice->setNegativeNorm ();
 }
 

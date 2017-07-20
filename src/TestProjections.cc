@@ -319,7 +319,6 @@ double TestProjections::run (ProjIterator& projit, double minVal[], const Weight
    double minMerit = 1.0e100;
    int cpt = 0;
    while (projit) {
-
       cpt++;
       int dim = (int)projit->size();
       int maxCoord = min (m_td[dim], m_master->getDim ());
@@ -331,16 +330,24 @@ double TestProjections::run (ProjIterator& projit, double minVal[], const Weight
       m_numproj++;
 
       m_weightsTemp[dim] = weights.getWeight(*projit);
+
       m_master->buildProjection (m_lattice, *projit);
+
       m_test->test (dim, dim, minVal, m_weightsTemp);
+      
+      
+
       double len = m_test->getMerit ().getMerit (dim);
+
       double curMerit = m_test->getMerit ().getNormVal (dim);
       if (m_printF)
          printMerLen (m_invertF, m_racF, len, curMerit, m_writer);
       if (curMerit < minVal[dim])
          return curMerit;
+
       minMerit = std::min (minMerit, curMerit);
       ++projit;
+
    }
    return minMerit;
 }

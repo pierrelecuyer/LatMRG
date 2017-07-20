@@ -11,12 +11,12 @@ NoCond					Implem. condition
 1
 2 8 -1
 Exhaust Random 1000 10 10 		Search method: Exhaust, Random
-1					NbCat (C)
+2					NbCat (C)
 0.0 0.0					Min merit (1 to C)
 1.0 1.0 				Max merit (1 to C)
 4 4                       		Nb. of retained Generators
-2                       		d
-2 3 3                     		t_1,...,t_d
+3                      		d
+3 10 10 10                 		t_1,...,t_d
 true					true for dual and false for primal
 PrimePower 				Lattice type (analyzed)
 1 1					Lacunary ind. group sizes, spacing

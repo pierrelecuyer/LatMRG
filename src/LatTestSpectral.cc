@@ -156,6 +156,7 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
       exit (EXIT_FAILURE);
    }
 
+
    double mr;
    conv (mr, m_lat->getModulo ());
    double temp;
@@ -175,11 +176,12 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
 
       if (m_dualF)
          m_lat->dualize ();
+
       int dim = m_lat->getDim ();
       // pre-reduction step before BB with default parameters
       red.redBKZ(0.999999, 10, QUADRUPLE, dim);
-      if (red.shortestVector (m_lat->getNorm ())) {
 
+      if (red.shortestVector (m_lat->getNorm ())) {
          // Calcul de D2. Pour Norm # L2NORM, suppose que VV est a jour.
          if (m_lat->getNorm () == L2NORM) {
 
@@ -296,6 +298,7 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
       m_lat->incDim ();
       red = Reducer(*m_lat);
    }
+
    return true;
 }
 
