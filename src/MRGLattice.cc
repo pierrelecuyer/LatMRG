@@ -430,14 +430,22 @@ void MRGLattice::incDimLaBasis(int IMax)
    cout << "lacunary ** APRES m_basis = \n" << m_basis << endl;
    cout << "lacunary ** APRES m_dualbasis = \n" << m_dualbasis << endl;
 
+   BVect tempLineBasis (dim);
+
    for (int i = 0; i < dim; i++) {
-      // v[i] -> VSI[0].
+
+      // tempLineBasis <- m_basis[i]
       for (int j = 0; j < dim; j++)
-         m_vSI[0][j] = m_basis[i][j];
-      clear (m_vSI[i][0]); //ici
+         tempLineBasis[j] = m_basis[i][j];
+
+
+      // v[i] -> VSI[0].
+      // for (int j = 0; j < dim; j++)
+      //    m_vSI[0][j] = m_basis[i][j];
+      clear (m_vSI[i][0]); 
 
       for (int i1 = 0; i1 < dim; i1++) {
-         ProdScal (m_vSI[0], m_wSI[i1], dim, m_wSI[i1][0]);
+         ProdScal (tempLineBasis, m_wSI[i1], dim, m_wSI[i1][0]);
          Quotient (m_wSI[i1][0], m_modulo, m_wSI[i1][0]);
          m_t1 = m_wSI[i1][0] * m_vSI[i1][dim - 1];
          m_vSI[i][0] += m_t1;
