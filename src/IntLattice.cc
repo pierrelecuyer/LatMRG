@@ -46,6 +46,8 @@ IntLattice::IntLattice (const IntLattice & Lat):
    setDualNegativeNorm();
    m_order = Lat.m_order;
    init ();
+   m_vSI = Lat.m_vSI;
+   m_wSI = Lat.m_wSI;
 }
 
 //=========================================================================
