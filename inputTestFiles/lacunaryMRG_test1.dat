@@ -1,0 +1,25 @@
+SPECTRAL BESTLAT			LatticeInfo
+L2NORM						Norm
+FALSE						ReadGenFile
+1							J  (Nb. of components)
+MRG							Gener. type
+2 31 -1						m  (modulus)
+1							k  (order)
+NoCond
+16807						a (multiplier)				
+1
+2 9						MinDim    MaxDim
+true						Dual
+FULL						LatticeType
+3 131072					LaGroupSizes   Spacings
+1000000000					MaxNodesBB
+true						If true, the inverse of the length of the shortest vector will be printed in the results, otherwise the length itself is printed.
+0							details
+terminal	 				ResultForm
+
+
+MRG described by Pierre is "latmrg-accepted", example 2.
+modulo = 2^31-1
+a = 16807
+
+s=3 successive values, with jumps of d=2^17=131072
