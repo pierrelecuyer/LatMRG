@@ -587,6 +587,8 @@ void ParamReader::readLacunary(int ordre, int fromDim, int toDim,
 
    lacunary = true;
    CreateVect (Lac, toDim);
+   //PW_TODO : toDim-1 ?
+
    int i;
    if (t < 0) {
       for (i = 0; i < toDim; i++)
@@ -599,7 +601,7 @@ void ParamReader::readLacunary(int ordre, int fromDim, int toDim,
       Q1 = lacSpacing;
 
    Q = 0;
-   i = 1;
+   i = 0;
    while (true) {
       for (int j = 0; j < t; j++) {
          if (i < toDim) {

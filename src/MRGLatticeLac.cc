@@ -86,13 +86,15 @@ void MRGLatticeLac::setLac (const Lacunary & lac)
 
 void MRGLatticeLac::buildBasis (int d)
 {
+   cout << "lacunary ** MRGLac merde" << endl;
+
    int ord = m_order;
 
    initStates ();
    int IMax = m_lac.getSize ();
 
    MVect b;
-   b.SetLength (m_order + 1);
+   b.SetLength (m_order+1);
    Invert (m_aCoef, b, m_order);
 
    // b is the characteristic polynomial
@@ -110,22 +112,25 @@ void MRGLatticeLac::buildBasis (int d)
       pol.toVector (m_xi);
 
       for (int i = 1; i <= m_order; i++) {
-           m_wSI[i][k] = m_xi[i - 1];
+           m_wSI[i][k] = m_xi[i-1];
       }
    }
 
-   /* On veut s'assurer que la base m_v soit triangulaire (pour satisfaire
-      les conditions de l'article \cite{rLEC94e} [sec. 3, conditions sur
-      V_i >= i]) et de plein rang (on remplace les lignes = 0 par lignes
-      avec m sur la diagonale).
-    */
-   /* Il serait possible de réserver m_wSI, m_vSI avec seulement IMax
-      lignes et colonnes quand order >> IMax. Mais il faudrait un nouveau
-      Triangularization qui pourrait nécessiter un appel pour chaque ligne,
-      mais qui sauverait beaucoup de mémoire.
-      Il n'est pas certain que cela en vaille la peine. */
+   //On veut s'assurer que la base m_v soit triangulaire (pour satisfaire
+   //les conditions de l'article \cite{rLEC94e} [sec. 3, conditions sur
+   //V_i >= i]) et de plein rang (on remplace les lignes = 0 par lignes
+   //avec m sur la diagonale).
+    
+   //Il serait possible de réserver m_wSI, m_vSI avec seulement IMax
+   //lignes et colonnes quand order >> IMax. Mais il faudrait un nouveau
+   //Triangularization qui pourrait nécessiter un appel pour chaque ligne,
+   //mais qui sauverait beaucoup de mémoire.
+   //Il n'est pas certain que cela en vaille la peine.
    Triangularization <BMat> (m_wSI, m_vSI, ord, IMax, m_modulo);
    CalcDual <BMat> (m_vSI, m_wSI, IMax, m_modulo);
+
+   cout << "lacunary ** m_vSI = \n" << m_vSI << endl;
+   cout << "lacunary ** m_wSI = \n" << m_wSI << endl;
 
    // Construire la base de dimension 1
    m_basis[0][0] = m_vSI[0][0];
@@ -134,8 +139,12 @@ void MRGLatticeLac::buildBasis (int d)
 
    setNegativeNorm ();
    setDualNegativeNorm ();
-   for (int i = 1; i < d; i++)
+
+   cout << "lacunary ** d = " << d << endl;
+   for (int i = 1; i < d; i++) {
+      cout << "lacunary ** BASCULE" << endl;
       incDimBasis (IMax);
+   }
 
    // for debugging
    // trace("ESPION_2", i);

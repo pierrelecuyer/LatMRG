@@ -338,6 +338,7 @@ void MRGLattice::incDimBasis()
 //===========================================================================
 
 void MRGLattice::buildLaBasis (int d) {
+
    if (m_order > ORDERMAX)
       MyExit (1, "MRGLattice::buildLaBasis:   k > ORDERMAX");
    initStates();
@@ -401,21 +402,41 @@ void MRGLattice::buildLaBasis (int d) {
 
 void MRGLattice::incDimLaBasis(int IMax)
 {
+   cout << "lacunary ** MRG merde" << endl;
+
+   cout << "lacunary ** m_dim = " << m_dim << endl;
+
+   cout << "lacunary ** AVANT m_vSI = \n" << m_vSI << endl;
+   cout << "lacunary ** AVANT m_wSI = \n" << m_wSI << endl;
+   cout << "lacunary ** AVANT m_basis = \n" << m_basis << endl;
+   cout << "lacunary ** AVANT m_dualbasis = \n" << m_dualbasis << endl;
+
    IntLattice::incDim();
    const int dim = getDim (); // new dimension (dim++)
 
+
+   cout << "lacunary ** dim = " << dim << endl;
+   cout << "lacunary ** IMax = " << IMax << endl;
+
+/*
    if (dim >= IMax) {
       MyExit (0,
     "Dimension of the basis is too big:\nDim > Number of lacunary indices.");
    }
+*/
 
-   for (int i = 0; i < dim-1; i++) {
+   cout << "lacunary ** APRES m_vSI = \n" << m_vSI << endl;
+   cout << "lacunary ** APRES m_wSI = \n" << m_wSI << endl;
+   cout << "lacunary ** APRES m_basis = \n" << m_basis << endl;
+   cout << "lacunary ** APRES m_dualbasis = \n" << m_dualbasis << endl;
+
+   for (int i = 0; i < dim; i++) {
       // v[i] -> VSI[0].
-      for (int j = 0; j < dim-1; j++)
+      for (int j = 0; j < dim; j++)
          m_vSI[0][j] = m_basis[i][j];
-      clear (m_vSI[i][0]);
+      clear (m_vSI[i][0]); //ici
 
-      for (int i1 = 0; i1 < dim-1; i1++) {
+      for (int i1 = 0; i1 < dim; i1++) {
          ProdScal (m_vSI[0], m_wSI[i1], dim, m_wSI[i1][0]);
          Quotient (m_wSI[i1][0], m_modulo, m_wSI[i1][0]);
          m_t1 = m_wSI[i1][0] * m_vSI[i1][dim - 1];
@@ -425,7 +446,7 @@ void MRGLattice::incDimLaBasis(int IMax)
       m_basis[i][dim-1] = m_vSI[i][0];
    }
 
-   for (int j = 0; j < dim-1; j++)
+   for (int j = 0; j < dim; j++)
       m_basis[dim - 1][j] = 0;
    m_basis[dim -1][dim - 1] = m_vSI[dim -1][dim - 1];
 
@@ -441,6 +462,10 @@ void MRGLattice::incDimLaBasis(int IMax)
       }
       if (m_wSI[0][j] != 0)
          m_wSI[0][j] = -m_wSI[0][j];
+      
+      cout << "m_wSI[0]["<<j<<"] = " << m_wSI[0][j] << endl;
+      cout << "m_vSI["<<dim<<" - 1]["<<dim<<" - 1] = " << m_vSI[dim - 1][dim - 1] << endl;
+      
       Quotient (m_wSI[0][j], m_vSI[dim - 1][dim - 1], m_wSI[0][j]);
       m_dualbasis[dim - 1][j] = m_wSI[0][j];
    }

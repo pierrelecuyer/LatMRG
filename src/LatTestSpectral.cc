@@ -145,6 +145,9 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[])
 
 bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const double* weights)
 {
+
+   cout << "\n------ lacunary ** LatTestSpectral::test ------" << endl;
+
    m_merit.setDim(toDim);
    m_fromDim = fromDim;
    m_toDim = toDim;
@@ -163,8 +166,11 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
    NScal te;
    double lgvv1 = 0.0;
 
-   while (m_lat->getDim () < fromDim)
+   while (m_lat->getDim () < fromDim) {
+      cout << "lacunary ** dim = " << m_lat->getDim() << ", fromDim = " << fromDim << endl;
+      cout << "lacunary ** appel à incDim()" << endl;
       m_lat->incDim ();
+   }
    Reducer red (*m_lat);
 
    if (m_S2toL2[fromDim] <= 0.0)
