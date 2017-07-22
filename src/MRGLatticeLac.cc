@@ -51,7 +51,7 @@ MRGLatticeLac::MRGLatticeLac (const MScal & m, const MVect & a, int maxDim,
 {
    m_lacunaryFlag = true;
    m_sta.SetDims(1, 1);
-   for (int i = 1; i <= m_order; i++)
+   for (int i = 0; i < m_order; i++)
       m_aCoef[i] = a[i];
 }
 
@@ -86,8 +86,6 @@ void MRGLatticeLac::setLac (const Lacunary & lac)
 
 void MRGLatticeLac::buildBasis (int d)
 {
-   cout << "lacunary ** MRGLac merde" << endl;
-
    int ord = m_order;
 
    initStates ();
@@ -103,7 +101,7 @@ void MRGLatticeLac::buildBasis (int d)
    PolyPE pol;
 
    // Construction d'un systeme generateur modulo m.
-   for (int k = 1; k <= IMax; k++) {
+   for (int k = 0; k < IMax; k++) {
       // pour chaque indice lacunaire
       conv (m_e, m_lac[k]);
 
@@ -111,8 +109,8 @@ void MRGLatticeLac::buildBasis (int d)
       pol.powerMod (m_e);
       pol.toVector (m_xi);
 
-      for (int i = 1; i <= m_order; i++) {
-           m_wSI[i][k] = m_xi[i-1];
+      for (int i = 0; i < m_order; i++) {
+           m_wSI[i][k] = m_xi[i];
       }
    }
 
@@ -129,9 +127,6 @@ void MRGLatticeLac::buildBasis (int d)
    Triangularization <BMat> (m_wSI, m_vSI, ord, IMax, m_modulo);
    CalcDual <BMat> (m_vSI, m_wSI, IMax, m_modulo);
 
-   cout << "lacunary ** m_vSI = \n" << m_vSI << endl;
-   cout << "lacunary ** m_wSI = \n" << m_wSI << endl;
-
    // Construire la base de dimension 1
    m_basis[0][0] = m_vSI[0][0];
    m_dualbasis[0][0] = m_wSI[0][0];
@@ -140,11 +135,8 @@ void MRGLatticeLac::buildBasis (int d)
    setNegativeNorm ();
    setDualNegativeNorm ();
 
-   cout << "lacunary ** d = " << d << endl;
-   for (int i = 1; i < d; i++) {
-      cout << "lacunary ** BASCULE" << endl;
+   for (int i = 1; i < d; i++)
       incDimBasis (IMax);
-   }
 
    // for debugging
    // trace("ESPION_2", i);

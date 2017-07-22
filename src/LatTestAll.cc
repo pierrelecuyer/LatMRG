@@ -137,10 +137,6 @@ Writer* LatTestAll::createWriter (const char *infile, OutputType ot)
  */
 int LatTestAll::doTest (const char *infile)
 {
-
-   cout << "\n----------- lacunary ** LatTestAll::doTest -----------\n" << endl;
-
-
    // Lecture des paramètres
    string fname (infile);
    fname += ".dat";
@@ -151,8 +147,6 @@ int LatTestAll::doTest (const char *infile)
    paramRdr.read (config);
    //config.write();
    
-   cout << "lacunary ** Lac = " << config.Lac << endl;
-
    Writer* rw = createWriter (infile, config.outputType);
 
    LatMRG::IntLattice *lattice = 0;
@@ -185,15 +179,9 @@ int LatTestAll::doTest (const char *infile)
 
       } else if (config.genType[0] == MRG || config.genType[0] == LCG) {
          if (memLacF && config.lacunary){
-
-            cout << "lacunary ** espion 1" << endl;
-
             lattice = new MRGLatticeLac (config.comp[0]->module.mRed,
                 config.comp[0]->a, toDim, config.comp[0]->k, config.Lac,
                 config.latType, config.norm);
-
-            cout << "lacunary ** espion 2" << endl;
-
          }
          else{
             lattice = new MRGLattice (config.comp[0]->module.mRed,
@@ -246,8 +234,7 @@ int LatTestAll::doTest (const char *infile)
          lattice->buildBasis (fromDim - 1);
          spectralTest.attach (&report);
       
-         //report.printHeader ();
-         //PW_TODO à décommenter
+         report.printHeader ();
 
          spectralTest.setDualFlag (config.dualF);
          spectralTest.setInvertFlag (config.invertF);

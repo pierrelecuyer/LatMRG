@@ -337,15 +337,19 @@ void MRGLattice::incDimBasis()
 
 //===========================================================================
 
-void MRGLattice::buildLaBasis (int d) {
+void MRGLattice::buildLaBasis (int d)
+{
+
+   // NOT USED
 
    if (m_order > ORDERMAX)
       MyExit (1, "MRGLattice::buildLaBasis:   k > ORDERMAX");
+
    initStates();
    int IMax = m_lac.getSize();
 
    MVect b;
-   b.SetLength(m_order);
+   b.SetLength(m_order+1);
    Invert(m_aCoef, b, m_order);
 
    // b is the characteristic polynomial
@@ -402,21 +406,8 @@ void MRGLattice::buildLaBasis (int d) {
 
 void MRGLattice::incDimLaBasis(int IMax)
 {
-   cout << "lacunary ** MRG merde" << endl;
-
-   cout << "lacunary ** m_dim = " << m_dim << endl;
-
-   cout << "lacunary ** AVANT m_vSI = \n" << m_vSI << endl;
-   cout << "lacunary ** AVANT m_wSI = \n" << m_wSI << endl;
-   cout << "lacunary ** AVANT m_basis = \n" << m_basis << endl;
-   cout << "lacunary ** AVANT m_dualbasis = \n" << m_dualbasis << endl;
-
    IntLattice::incDim();
    const int dim = getDim (); // new dimension (dim++)
-
-
-   cout << "lacunary ** dim = " << dim << endl;
-   cout << "lacunary ** IMax = " << IMax << endl;
 
 /*
    if (dim >= IMax) {
@@ -425,36 +416,35 @@ void MRGLattice::incDimLaBasis(int IMax)
    }
 */
 
-   cout << "lacunary ** APRES m_vSI = \n" << m_vSI << endl;
-   cout << "lacunary ** APRES m_wSI = \n" << m_wSI << endl;
-   cout << "lacunary ** APRES m_basis = \n" << m_basis << endl;
-   cout << "lacunary ** APRES m_dualbasis = \n" << m_dualbasis << endl;
-
    BVect tempLineBasis (dim);
+   BVect tempColBasis (dim);
 
-   for (int i = 0; i < dim; i++) {
+   for (int i = 0; i < dim-1; i++) {
 
       // tempLineBasis <- m_basis[i]
-      for (int j = 0; j < dim; j++)
-         tempLineBasis[j] = m_basis[i][j];
-
+      for (int k = 0; k < dim-1; k++)
+         tempLineBasis[k] = m_basis[i][k];
 
       // v[i] -> VSI[0].
       // for (int j = 0; j < dim; j++)
       //    m_vSI[0][j] = m_basis[i][j];
-      clear (m_vSI[i][0]); 
 
-      for (int i1 = 0; i1 < dim; i1++) {
-         ProdScal (tempLineBasis, m_wSI[i1], dim, m_wSI[i1][0]);
-         Quotient (m_wSI[i1][0], m_modulo, m_wSI[i1][0]);
-         m_t1 = m_wSI[i1][0] * m_vSI[i1][dim - 1];
-         m_vSI[i][0] += m_t1;
+      //clear (m_vSI[i][0]); 
+
+      for (int i1 = 0; i1 < dim-1; i1++) {
+
+         BScal tempScalDual;
+
+         ProdScal (tempLineBasis, m_wSI[i1], dim, tempScalDual);
+         Quotient (tempScalDual, m_modulo, tempScalDual);
+         m_t1 = tempScalDual * m_vSI[i1][dim - 1];
+         tempColBasis[i] += m_t1;
       }
-      Modulo (m_vSI[i][0], m_modulo, m_vSI[i][0]);
-      m_basis[i][dim-1] = m_vSI[i][0];
+      Modulo (tempColBasis[i], m_modulo, tempColBasis[i]);
+      m_basis[i][dim-1] = tempColBasis[i];
    }
 
-   for (int j = 0; j < dim; j++)
+   for (int j = 0; j < dim-1; j++)
       m_basis[dim - 1][j] = 0;
    m_basis[dim -1][dim - 1] = m_vSI[dim -1][dim - 1];
 
@@ -462,20 +452,20 @@ void MRGLattice::incDimLaBasis(int IMax)
       m_dualbasis[i][dim - 1] = 0;
 
    for (int j = 0; j < dim-1; j++) {
-      clear (m_wSI[0][j]);
+      
+      //clear (m_wSI[0][j]);
+      BScal tempScalDualBis;
+
       for (int i = 0; i < dim-1; i++) {
          m_t1 = m_dualbasis[i][j];
-         m_t1 *= m_vSI[i][0];
-         m_wSI[0][j] += m_t1;
+         m_t1 *= tempColBasis[i];
+         tempScalDualBis += m_t1;     
       }
-      if (m_wSI[0][j] != 0)
-         m_wSI[0][j] = -m_wSI[0][j];
-      
-      cout << "m_wSI[0]["<<j<<"] = " << m_wSI[0][j] << endl;
-      cout << "m_vSI["<<dim<<" - 1]["<<dim<<" - 1] = " << m_vSI[dim - 1][dim - 1] << endl;
-      
-      Quotient (m_wSI[0][j], m_vSI[dim - 1][dim - 1], m_wSI[0][j]);
-      m_dualbasis[dim - 1][j] = m_wSI[0][j];
+      if (tempScalDualBis != 0)
+         tempScalDualBis = -tempScalDualBis;
+            
+      Quotient (tempScalDualBis, m_vSI[dim - 1][dim - 1], tempScalDualBis);
+      m_dualbasis[dim - 1][j] = tempScalDualBis;
    }
 
    Quotient (m_modulo, m_vSI[dim - 1][dim - 1], m_t1);
@@ -484,6 +474,7 @@ void MRGLattice::incDimLaBasis(int IMax)
    //setDim (dim + 1);
    setNegativeNorm ();
    setDualNegativeNorm ();
+
 }
 
 
