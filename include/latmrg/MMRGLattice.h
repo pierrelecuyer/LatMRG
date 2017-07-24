@@ -113,28 +113,29 @@ public:
    // cetait dans protected avant : normal ?
    void incrementDimBasis ();
 
+   /**
+    * Increments the basis by 1 in case of lacunary indices.
+    */
+   void incrementDimLacunaryBasis (BMat B);
+
+      /**
+    * Builds the basis of the MMRG recurrence in case of non-lacunary
+    * indices.
+    */
+   void buildNonLacunaryBasis (int dimension);
+
+   /**
+    * Builds the basis of the MMRG recurrence in case of lacunary indices.
+    */
+   void buildLacunaryBasis (int dimension, BMat B);
+
+
 protected:
 
    /**
     * Initializes some of the local variables.
     */
    void init();
-
-   /**
-    * Builds the basis of the MMRG recurrence in case of non-lacunary
-    * indices.
-    */
-   void buildNonLacunaryBasis (int d);
-
-   /**
-    * Builds the basis of the MMRG recurrence in case of lacunary indices.
-    */
-   void buildLacunaryBasis (int d);
-
-   /**
-    * Increments the basis by 1 in case of lacunary indices.
-    */
-   void incrementDimLacunaryBasis (int);
 
    /**
     * The generator matrix of the recurrence.
