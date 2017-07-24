@@ -54,6 +54,15 @@ bool LatTestBeyer::test (int fromDim, int toDim, double minVal[])
          conv (x2, m_lat->getVecNorm (dim-1));
          m_merit[dim] = x1 / x2;
 
+
+         /*
+         cout << "\nlac *** dim = " << dim << endl;
+         cout << "lac *** x1 = " << x1 << endl;
+         cout << "lac *** x2 = " << x2 << endl;
+         cout << "lac *** m_merit = " << sqrt(m_merit[dim]) << endl;
+         */
+
+
          // Si on sait deja que ce gen. ne pourra etre retenu,
          // on le rejette tout de suite et on arrete le test.
          if ((m_maxAllDimFlag && (m_merit[dim] < minVal[toDim]))
