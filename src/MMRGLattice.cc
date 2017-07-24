@@ -38,6 +38,7 @@ MMRGLattice::MMRGLattice(const MScal & m, const MMat & A, int maxDim, int r,
    m_ip = new bool[1];
    init();
    //PW_TODO attention m_ip aussi initialisé dans init()
+
 }
 
 
@@ -53,7 +54,13 @@ MMRGLattice::MMRGLattice(const MScal & m, const MMat & A, int maxDim, int r,
    m_latType = lat;
    m_lacunaryFlag = true;
    init();
+
+   //initialization of B
+   m_B.resize(lac.length(), A.size1());
+   for (int k = 0; k < lac.length(); k++)
+      m_B[k][conv<int>(lac[k]) - 1] = 1;
 }
+
 
 //===========================================================================
 
@@ -205,9 +212,7 @@ string MMRGLattice::toStringGeneratorMatrix () const
 void MMRGLattice::buildBasis (int d)
 {
    if (m_lacunaryFlag)
-      cout << "AIE" << endl;
-      //buildLacunaryBasis(d);
-
+      buildLacunaryBasis(d, m_B);
    else
       buildNonLacunaryBasis(d);
 }
@@ -341,17 +346,15 @@ void MMRGLattice::getSubLine(MVect & vec, MMat& B, int lign, int jMin, int jMax)
 
 void MMRGLattice::incDim()
 {
-   /*
    if (m_lacunaryFlag)
-      incrementDimLacunaryBasis (getDim());
+      incrementDimLacunaryBasis (m_B);
    else
-      incrementDimBasis ();
-   */
+      incrementDimNonLacunaryBasis ();
 }
 
 //===========================================================================
 
-void MMRGLattice::incrementDimBasis()
+void MMRGLattice::incrementDimNonLacunaryBasis()
 // X_n = A X_{n-1} mod m. We have: dimension >= order.
 {
    IntLattice::incDim();

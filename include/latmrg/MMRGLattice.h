@@ -106,19 +106,15 @@ public:
     //PW_TODO ici temporairement, à déplacer dans latticetester/Util.h
    void getSubLine(MVect & vec, MMat& B, int lign, int jMin, int jMax);
 
-    /**
-    * Increments the basis by 1 in case of non-lacunary indices.
-    */ 
-   //PW_TODO c'était virtual avant : normal ?
-   // cetait dans protected avant : normal ?
-   void incrementDimBasis ();
+    
+protected:
 
    /**
-    * Increments the basis by 1 in case of lacunary indices.
+    * Initializes some of the local variables.
     */
-   void incrementDimLacunaryBasis (BMat B);
+   void init();
 
-      /**
+   /**
     * Builds the basis of the MMRG recurrence in case of non-lacunary
     * indices.
     */
@@ -129,13 +125,15 @@ public:
     */
    void buildLacunaryBasis (int dimension, BMat B);
 
-
-protected:
+   /**
+    * Increments the basis by 1 in case of non-lacunary indices.
+    */ 
+   void incrementDimNonLacunaryBasis ();
 
    /**
-    * Initializes some of the local variables.
+    * Increments the basis by 1 in case of lacunary indices.
     */
-   void init();
+   void incrementDimLacunaryBasis (BMat B);
 
    /**
     * The generator matrix of the recurrence.
@@ -158,8 +156,10 @@ protected:
     */
    Lacunary m_lac;
 
-
-
+   /**
+    * Matrix used for lacunary indices
+    */
+   BMat m_B;
 
    /**
     * Work variables.
