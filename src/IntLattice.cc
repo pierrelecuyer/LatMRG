@@ -30,7 +30,7 @@ IntLattice::IntLattice ( MScal modulo, int k, int maxDim, NormType norm ):
    m_modulo = modulo;
    m_order = k;
    init ();
-   m_dualbasis.resize(m_dim,m_dim);
+   //m_dualbasis.resize(m_dim,m_dim);
    m_dualvecNorm.resize(m_dim);
    setDualNegativeNorm();
 }
@@ -40,13 +40,15 @@ IntLattice::IntLattice ( MScal modulo, int k, int maxDim, NormType norm ):
 IntLattice::IntLattice (const IntLattice & Lat):
    IntLatticeBasis(Lat)
 {
-   //m_dualbasis.resize(m_dim,m_dim);
-   m_withDual = true;
-   //m_dualvecNorm.resize(m_dim);
-   setDualNegativeNorm();
+   //m_dim = Lat.m_dim;
+   //m_withDual = Lat.m_withDual;
+   //m_modulo = Lat.m_modulo;
    m_order = Lat.m_order;
-   m_modulo = Lat.m_modulo;
    init ();
+
+   //m_dualbasis.resize(m_dim,m_dim);
+   //m_dualvecNorm.resize(m_dim);
+   setDualNegativeNorm();   
    m_vSI = Lat.m_vSI;
    m_wSI = Lat.m_wSI;
 }
@@ -203,11 +205,11 @@ lattice->getDualBasis ().updateScalL2Norm (1,proj.size());
 lattice->getDualBasis ().write();
 */
 
-   lattice->setNegativeNorm (true);
-   lattice->setDualNegativeNorm (true);
-   lattice->updateDualScalL2Norm (0, proj.size());
-   lattice->updateScalL2Norm (0,proj.size());
    lattice->setNegativeNorm ();
+   lattice->setDualNegativeNorm ();
+   //lattice->updateDualScalL2Norm (0, proj.size());
+   //lattice->updateScalL2Norm (0,proj.size());
+   //lattice->setNegativeNorm ();
 }
 
 void IntLattice::buildBasis (int d)
