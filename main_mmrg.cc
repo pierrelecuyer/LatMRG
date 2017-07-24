@@ -75,59 +75,99 @@ void SavvidyMatrix(mat_ZZ& A, int N, int s, int m, int b)
    A[2][1] += s;
 }
 
+void LacunaryMatrix (mat_ZZ& B, mat_ZZ& A, vec_ZZ& lacunaryIndices)
+{
+   int L = lacunaryIndices.length();
+   int N = A.NumCols();
+
+   B.SetDims(L, N);
+   for (int k = 0; k < L; k++)
+      B[k][conv<int>(lacunaryIndices[k])-1] = 1;
+}
+
+void printMatrixForInputFile (mat_ZZ A)
+{
+
+    for (int i = 0; i < A.NumRows(); i++) {
+        for (int j = 0; j < A.NumCols(); j++) {
+            cout << A[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
 //*=======================================================================================
 
 int main ()
 {
    
    // modulus
-   //ZZ m = power_ZZ(2,5)-1; //=31
+   //ZZ m = power_ZZ(2,3)-1; 
    ZZ m = power_ZZ(2,7)-1; //=127
    
    // dimension of projection
    int dimension = 7;
    
    // generator matrix
-   int r = 4;
+   int r = 5;
    MMat A;
    SavvidyMatrix(A, r, -1, 1, 0);
-   
-   /*
-   A.SetDims(r, r);
-   A[0][0]=0; A[0][1]=1; A[0][2]=0; A[0][3]=0;
-   A[1][0]=0; A[1][1]=0; A[1][2]=1; A[1][3]=0;
-   A[2][0]=0; A[2][1]=0; A[2][2]=0; A[2][3]=1;
-   A[3][0]=1; A[3][1]=3; A[3][2]=5; A[3][3]=10;
-   */
-   
-   cout << "det(A) = " << determinant(A) << endl;
-   
+
    // MMRG
-   MMRGLattice myMMRG (m, A, r, r, FULL, L2NORM);
+   MMRGLattice myMMRG (m, A, dimension, r, L2NORM, FULL);
    cout << "A = \n" << myMMRG.toStringGeneratorMatrix() << endl;
+
+   // MMRG lacunary
+   vec_ZZ lacunaryIndices;
+   lacunaryIndices.SetLength(3);
+   lacunaryIndices[0] = 1;
+   lacunaryIndices[1] = 3;
+   lacunaryIndices[2] = 5;
+   //lacunaryIndices[3] = 4;
+   //lacunaryIndices[4] = 5;
+   MMat B;
+   LacunaryMatrix(B, A, lacunaryIndices);
+   cout << "lac B = \n" << B << endl;
+   MMRGLattice myLacMMRG (m, A, dimension, r, L2NORM, FULL);
+   cout << "lac A = \n" << myLacMMRG.toStringGeneratorMatrix() << endl;
+
+
+
+   cout << "\n----- Build basis non lac -----" << endl;
+   myMMRG.buildNonLacunaryBasis(dimension);
+   cout << "Primal basis = \n"; 
+   printMatrixForInputFile(myMMRG.getBasis());
+   cout << "Dual basis = \n"; 
+   printMatrixForInputFile(myMMRG.getDualBasis());
+   cout << "m_dualVecNorm = " << myMMRG.getDualVecNorm() << endl;
+   //cout << "V*transpose(W) = \n" << myMMRG.getBasis() * transpose(myMMRG.getDualBasis()) << endl;
+
+   cout << "\n----- Build basis lac -----" << endl;
+   myLacMMRG.buildLacunaryBasis(dimension, B);
+   cout << "Primal basis = \n";
+   printMatrixForInputFile(myLacMMRG.getBasis());
+   cout << "Dual basis = \n"; 
+   printMatrixForInputFile(myLacMMRG.getDualBasis());
+   cout << "m_dualVecNorm = " << myLacMMRG.getDualVecNorm() << endl;
+   //cout << "V*transpose(W) = \n" << myLacMMRG.getBasis() * transpose(myLacMMRG.getDualBasis()) << endl;
+
+
+
+   cout << "\n----- Increment dim non lac -----" << endl;
+   for (int j = 0; j < 10; j++)
+      myMMRG.incrementDimBasis();
+   cout << "Primal basis = \n"; 
+   printMatrixForInputFile(myMMRG.getBasis());
+   //cout << "Dual basis = \n" << myMMRG.getDualBasis() << endl;
+   //cout << "V*transpose(W) = \n" << myMMRG.getBasis() * transpose(myMMRG.getDualBasis()) << endl;
    
-   myMMRG.buildBasis(dimension);
-   cout << "Primal basis = \n" << myMMRG.getBasis() << endl;
-   cout << "Dual basis = \n" << myMMRG.getDualBasis() << endl;
-   
-   cout << "V*transpose(W) = \n" << myMMRG.getBasis() * transpose(myMMRG.getDualBasis()) << endl;
-   
-   
-   myMMRG.incrementDimBasis();
-   cout << "\n----- Increment basis dimension -----" << endl;
-   cout << "Primal basis = \n" << myMMRG.getBasis() << endl;
-   cout << "Dual basis = \n" << myMMRG.getDualBasis() << endl;
-   
-   cout << "V*transpose(W) = \n" << myMMRG.getBasis() * transpose(myMMRG.getDualBasis()) << endl;
-   
-   
-   myMMRG.incrementDimBasis();
-   cout << "\n--- Increment basis dimension bis ---" << endl;
-   cout << "Primal basis = \n" << myMMRG.getBasis() << endl;
-   cout << "Dual basis = \n" << myMMRG.getDualBasis() << endl;
-   
-   cout << "V*transpose(W) = \n" << myMMRG.getBasis() * transpose(myMMRG.getDualBasis()) << endl;
-   
+   cout << "\n--- Increment dim lac ---" << endl;
+   for (int j = 0; j < 10; j++)
+      myLacMMRG.incrementDimLacunaryBasis(B);
+   cout << "Primal basis = \n";
+   printMatrixForInputFile(myLacMMRG.getBasis());
+   //cout << "Dual basis = \n" << myLacMMRG.getDualBasis() << endl;
+   //cout << "V*transpose(W) = \n" << myLacMMRG.getBasis() * transpose(myLacMMRG.getDualBasis()) << endl;
    
    return 0;
 }
