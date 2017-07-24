@@ -45,6 +45,7 @@ IntLattice::IntLattice (const IntLattice & Lat):
    //m_dualvecNorm.resize(m_dim);
    setDualNegativeNorm();
    m_order = Lat.m_order;
+   m_modulo = Lat.m_modulo;
    init ();
    m_vSI = Lat.m_vSI;
    m_wSI = Lat.m_wSI;
@@ -101,7 +102,7 @@ IntLattice::~IntLattice ()
 
 void IntLattice::incDim ()
 {
-   IntLattice lattmp(*this);
+   IntLattice lattmp (*this);
    int dim = getDim();
    int sizemat = m_basis.size1();
    m_basis.resize(dim+1, dim+1);
