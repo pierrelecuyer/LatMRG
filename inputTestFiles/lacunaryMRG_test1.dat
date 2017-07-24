@@ -8,7 +8,7 @@ MRG							Gener. type
 NoCond
 16807						a (multiplier)				
 1
-2 30						MinDim    MaxDim
+23 27						MinDim    MaxDim
 false						Dual
 FULL						LatticeType
 3 131072					LaGroupSizes   Spacings
