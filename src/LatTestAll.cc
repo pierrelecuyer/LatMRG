@@ -199,8 +199,14 @@ int LatTestAll::doTest (const char *infile)
       
 
       } else if (config.genType[0] == MMRG) {
-         lattice = new MMRGLattice (config.comp[0]->getM(), config.comp[0]->A,
+
+         if (memLacF && config.lacunary) {
+            lattice = new MMRGLattice (config.comp[0]->getM(), config.comp[0]->A,
+                             toDim,config.comp[0]->k, config.Lac, config.norm);           
+         } else {
+            lattice = new MMRGLattice (config.comp[0]->getM(), config.comp[0]->A,
                              toDim,config.comp[0]->k, config.norm);
+         }
       }
    }
 
