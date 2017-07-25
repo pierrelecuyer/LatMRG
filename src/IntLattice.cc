@@ -30,7 +30,7 @@ IntLattice::IntLattice ( MScal modulo, int k, int maxDim, NormType norm ):
    m_modulo = modulo;
    m_order = k;
    init ();
-   //m_dualbasis.resize(m_dim,m_dim);
+   m_dualbasis.resize(m_dim,m_dim);
    m_dualvecNorm.resize(m_dim);
    setDualNegativeNorm();
 }
@@ -48,7 +48,7 @@ IntLattice::IntLattice (const IntLattice & Lat):
 
    //m_dualbasis.resize(m_dim,m_dim);
    //m_dualvecNorm.resize(m_dim);
-   setDualNegativeNorm();   
+   setDualNegativeNorm();
    m_vSI = Lat.m_vSI;
    m_wSI = Lat.m_wSI;
 }
@@ -111,7 +111,7 @@ void IntLattice::incDim ()
    m_dualbasis.resize(dim+1, dim+1);
    m_vecNorm.resize(dim+1);
    m_dualvecNorm.resize(dim+1);
-   
+
    //m_vSI.resize(dim+1, dim+1);
    //m_wSI.resize(dim+1, dim+1);
 
