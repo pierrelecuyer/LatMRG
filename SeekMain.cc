@@ -416,9 +416,7 @@ void Test ()
       normal = lattice->getNormalizer (config.normaType, config.alpha);
       isFirstTest = false;
    }
-   //ERWAN
-   cout << "LATTICE : " << endl;
-   lattice->write();
+   
    lattice->buildBasis (config.td[0]);
 
    switch (config.criter) {
