@@ -1,0 +1,34 @@
+SPECTRAL BESTLAT			LatticeInfo
+L2NORM						Norm
+FALSE						ReadGenFile
+1							J  (Nb. of components)
+MMRG						Gener. type
+2 61 -1						m  (modulus)
+8							k  (order)
+1 1 1 1 1 1 1 1 
+1 2 1 1 1 1 1 1 
+1 9007199254740995 2 1 1 1 1 1 
+1 18014398509481988 9007199254740995 2 1 1 1 1 
+1 27021597764222981 18014398509481988 9007199254740995 2 1 1 1 
+1 36028797018963974 27021597764222981 18014398509481988 9007199254740995 2 1 1 
+1 45035996273704967 36028797018963974 27021597764222981 18014398509481988 9007199254740995 2 1 
+1 54043195528445960 45035996273704967 36028797018963974 27021597764222981 18014398509481988 9007199254740995 2 		
+1
+9 48						MinDim    MaxDim
+true						Dual
+FULL						LatticeType
+0							Lacunary
+1000000000					MaxNodesBB
+false						If true, the inverse of the length of the shortest vector will be printed in the results, otherwise the length itself is printed.
+0							details
+terminal	 				ResultForm
+
+
+
+MMRG as described by Savvidy in README.pdf
+
+modulo = 2^61-1
+N = 8
+s = 0
+m = 2^53+1
+b = 2 - 2 * m;
