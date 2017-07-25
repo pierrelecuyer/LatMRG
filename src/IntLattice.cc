@@ -30,7 +30,7 @@ IntLattice::IntLattice ( MScal modulo, int k, int maxDim, NormType norm ):
    m_modulo = modulo;
    m_order = k;
    init ();
-   //m_dualbasis.resize(m_dim,m_dim);
+   m_dualbasis.resize(m_dim,m_dim);
    m_dualvecNorm.resize(m_dim);
    setDualNegativeNorm();
 }
@@ -40,15 +40,10 @@ IntLattice::IntLattice ( MScal modulo, int k, int maxDim, NormType norm ):
 IntLattice::IntLattice (const IntLattice & Lat):
    IntLatticeBasis(Lat)
 {
-   //m_dim = Lat.m_dim;
-   //m_withDual = Lat.m_withDual;
-   //m_modulo = Lat.m_modulo;
+   m_withDual = true;
    m_order = Lat.m_order;
    init ();
-
-   //m_dualbasis.resize(m_dim,m_dim);
-   //m_dualvecNorm.resize(m_dim);
-   setDualNegativeNorm();   
+   setDualNegativeNorm();
    m_vSI = Lat.m_vSI;
    m_wSI = Lat.m_wSI;
 }
@@ -111,16 +106,16 @@ void IntLattice::incDim ()
    m_dualbasis.resize(dim+1, dim+1);
    m_vecNorm.resize(dim+1);
    m_dualvecNorm.resize(dim+1);
-   
-   //m_vSI.resize(dim+1, dim+1);
-   //m_wSI.resize(dim+1, dim+1);
+
+   m_vSI.resize(dim+1, dim+1);
+   m_wSI.resize(dim+1, dim+1);
 
    for(int i = 0; i < dim; i++){
       for(int j = 0; j < dim; j++){
          m_basis(i,j) = lattmp.m_basis(i,j);
          m_dualbasis(i,j) = lattmp.m_dualbasis(i,j);
-         //m_vSI(i,j) = lattmp.m_vSI(i,j);
-         //m_wSI(i,j) = lattmp.m_wSI(i,j);
+         m_vSI(i,j) = lattmp.m_vSI(i,j);
+         m_wSI(i,j) = lattmp.m_wSI(i,j);
       }
       m_vecNorm(i) = lattmp.m_vecNorm(i);
       m_dualvecNorm(i) = lattmp.m_dualvecNorm(i);

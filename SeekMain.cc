@@ -416,6 +416,7 @@ void Test ()
       normal = lattice->getNormalizer (config.normaType, config.alpha);
       isFirstTest = false;
    }
+   
    lattice->buildBasis (config.td[0]);
 
    switch (config.criter) {
