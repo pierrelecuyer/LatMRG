@@ -9,6 +9,9 @@
 #include <cmath>
 
 
+//BOOST_DISPLAY
+#include <boost/progress.hpp>
+
 using namespace std;
 using namespace NTL;
 using namespace LatticeTester;
@@ -145,6 +148,11 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[])
 
 bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const double* weights)
 {
+
+   //BOOST_DISPLAY
+   boost::progress_display show_progress( toDim-fromDim+1 );
+
+
    m_merit.setDim(toDim);
    m_fromDim = fromDim;
    m_toDim = toDim;
@@ -175,10 +183,14 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
 
    while (true) {
 
+      //BOOST_DISPLAY
+      ++show_progress;
+
       if (m_dualF)
          m_lat->dualize ();
 
       int dim = m_lat->getDim ();
+
       // pre-reduction step before BB with default parameters
       red.redBKZ(0.999999, 10, QUADRUPLE, dim);
 
@@ -306,6 +318,9 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
       m_lat->incDim ();
       red = Reducer(*m_lat);
    }
+
+
+   cout << endl;
 
    return true;
 }
