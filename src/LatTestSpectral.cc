@@ -243,10 +243,17 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
                cout << "." << endl;
                */
 
-               double normalizer2 = m_normalizer->getPreComputedBound(dim);
+               double normalizer2 = m_normalizer->getBound(dim);
                normalizer2 *= normalizer2;
 
                m_merit[dim] = temp / normalizer2;
+
+               /*
+               cout << "\n****** dim = " << dim << endl;
+               cout << "Shortest vector = " << sqrt(temp) << endl;
+               cout << "Upper bound = " << sqrt(normalizer2) << endl;
+               cout << "Merit = " << sqrt(temp) / sqrt(normalizer2) << endl;
+               */
 
             } else if (m_lat->getNorm () == L1NORM) {
 
