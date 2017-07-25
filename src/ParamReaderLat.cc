@@ -185,9 +185,16 @@ void ParamReaderLat::read (LatConfig & config)
          readOrbit (config.J, config.comp, ++ln);
          --ln;
       }
-      readLacunary (k, fromDim, toDim, ln, config.lacunary,
-                    config.lacGroupSize, config.lacSpacing, config.Lac,
-                    config.genType[0]);
+
+      if (config.genType[0] == MMRG) {
+         readMMRGLacunary (k, fromDim, toDim, ln, config.lacunary, config.lacGroupSize, 
+                        config.lacSpacing, config.Lac, config.genType[0]);
+      } else {
+         readLacunary (k, fromDim, toDim, ln, config.lacunary, config.lacGroupSize, 
+                        config.lacSpacing, config.Lac, config.genType[0]);
+      }
+   
+
       if (config.genType[0] != RANK1 && config.td[0] <= maxOrder &&
            !config.lacunary)
          config.td[0] = maxOrder + 1;

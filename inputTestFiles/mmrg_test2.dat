@@ -1,5 +1,5 @@
-SPECTRAL MINKL1 			LatticeInfo
-L1NORM						Norm
+SPECTRAL ROGERS 			LatticeInfo
+L2NORM						Norm
 FALSE						ReadGenFile
 1							J  (Nb. of components)
 MMRG						Gener. type
@@ -23,10 +23,11 @@ MMRG						Gener. type
 1 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 
 1 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 		
 1
-18 48					MinDim    MaxDim
-true						Dual
+60 61						MinDim    MaxDim
+false						Dual
 FULL						LatticeType
-1 1							LaGroupSizes   Spacings
+1
+17						LaGroupSizes   Spacings
 1000000000					MaxNodesBB
 false						If true, the inverse of the length of the shortest vector will be printed in the results, otherwise the length itself is printed.
 0							details

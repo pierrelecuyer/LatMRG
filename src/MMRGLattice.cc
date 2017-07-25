@@ -46,10 +46,13 @@ MMRGLattice::MMRGLattice(const MScal & m, const MMat & A, int maxDim, int r,
 
 MMRGLattice::MMRGLattice(const MScal & m, const MMat & A, int maxDim, int r,
                        BVect & lac, NormType norm, LatticeType lat):
+
       IntLattice::IntLattice (m, r, maxDim, norm), 
-      m_lac(lac, maxDim), 
+      //m_lac(lac, r),
       m_ip(0)
 {
+   cout << "lac = " << lac << endl;
+
    m_A = A;
    m_latType = lat;
    m_lacunaryFlag = true;

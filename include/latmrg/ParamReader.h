@@ -269,6 +269,13 @@ ParamReader();
                       BVect & Lac, GenType genType);
 
    /**
+    * PW_TODO add description
+    */
+   void readMMRGLacunary (int k, int fromDim, int toDim, unsigned int & ln,
+                      bool & lacunary, int & lacGroupSize, NTL::ZZ & lacSpacing,
+                      BVect & Lac, GenType genType);
+
+   /**
     * Reads an output form from the <tt>pos</tt>-th token of the
     * <tt>ln</tt>-th line into `field`.
     */

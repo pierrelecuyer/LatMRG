@@ -614,6 +614,72 @@ void ParamReader::readLacunary(int ordre, int fromDim, int toDim,
    }
 }
 
+//===========================================================================
+
+void ParamReader::readMMRGLacunary(int ordre, int fromDim, int toDim,
+   unsigned int & ln, bool & lacunary, int & lacGroupSize, NTL::ZZ & lacSpacing,
+   BVect & Lac, GenType genType)
+{
+   readInt (lacGroupSize, ++ln, 0);
+
+   if (lacGroupSize == 0) {
+      lacunary = false;
+      return; 
+   } else {
+      lacunary = true;
+      CreateVect (Lac, lacGroupSize-1);
+      for (int i = 0; i < lacGroupSize; i++) {
+         readBScal (Lac[i], ++ln, 0);
+         if (Lac[i] > ordre)
+            MyExit(1, "Lacunary indice too large. Must be smaller than the size of the generated vectors");
+      }
+      return;
+   }
+
+/*
+   const int t = lacGroupSize;
+   if (t > 0)
+      readZZ(lacSpacing, ln, 1);
+
+   if (((t == 1) && (lacSpacing == 1)) || (t > toDim)) {
+      lacunary = false;
+      if (RANK1 == genType)
+         return;
+      if (toDim <= ordre)
+         MyExit(2, "ParamReader::ReadLacunary:   toDim <= k");
+      return;
+   }
+
+   lacunary = true;
+   CreateVect (Lac, toDim);
+   //PW_TODO : toDim-1 ?
+
+   int i;
+   if (t < 0) {
+      for (i = 0; i < toDim; i++)
+         readBScal (Lac[i], ++ln, 0);
+      return;
+   }
+
+   NTL::ZZ Q1, Q;
+   if (t > 0)
+      Q1 = lacSpacing;
+
+   Q = 0;
+   i = 0;
+   while (true) {
+      for (int j = 0; j < t; j++) {
+         if (i < toDim) {
+            conv (Lac[i], Q + j);
+            i++;
+         } else
+            return;
+      }
+      Q += Q1;
+   }
+*/
+
+}
 
 //===========================================================================
 
