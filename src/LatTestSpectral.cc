@@ -9,6 +9,9 @@
 #include <cmath>
 
 
+//BOOST_DISPLAY
+#include <boost/progress.hpp>
+
 using namespace std;
 using namespace NTL;
 using namespace LatticeTester;
@@ -145,6 +148,11 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[])
 
 bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const double* weights)
 {
+
+   //BOOST_DISPLAY
+   boost::progress_display show_progress( toDim-fromDim+1 );
+
+
    m_merit.setDim(toDim);
    m_fromDim = fromDim;
    m_toDim = toDim;
@@ -175,10 +183,14 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
 
    while (true) {
 
+      //BOOST_DISPLAY
+      ++show_progress;
+
       if (m_dualF)
          m_lat->dualize ();
 
       int dim = m_lat->getDim ();
+
       // pre-reduction step before BB with default parameters
       red.redBKZ(0.999999, 10, QUADRUPLE, dim);
 
@@ -218,7 +230,7 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
 
          m_merit.getMerit (dim) = temp / weight;
 
-         if (dim <= Normalizer::MAX_DIM) { // Calcul de S2.
+         if (dim <= toDim) { // Calcul de S2.
             if (m_lat->getNorm () == L2NORM) {
 
                /* PW_TODO : ancienne normalisation
@@ -243,10 +255,17 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
                cout << "." << endl;
                */
 
-               double normalizer2 = m_normalizer->getPreComputedBound(dim);
+               double normalizer2 = m_normalizer->getBound(dim);
                normalizer2 *= normalizer2;
 
                m_merit[dim] = temp / normalizer2;
+
+               /*
+               cout << "\n****** dim = " << dim << endl;
+               cout << "Shortest vector = " << sqrt(temp) << endl;
+               cout << "Upper bound = " << sqrt(normalizer2) << endl;
+               cout << "Merit = " << sqrt(temp) / sqrt(normalizer2) << endl;
+               */
 
             } else if (m_lat->getNorm () == L1NORM) {
 
@@ -262,7 +281,7 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
                }
                */
 
-               double normalizer = m_normalizer->getPreComputedBound(dim);
+               double normalizer = m_normalizer->getBound(dim);
                m_merit[dim] = temp / normalizer;
 
             } else
@@ -299,6 +318,9 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
       m_lat->incDim ();
       red = Reducer(*m_lat);
    }
+
+
+   cout << endl;
 
    return true;
 }

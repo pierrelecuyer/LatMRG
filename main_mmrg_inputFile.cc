@@ -84,10 +84,12 @@ int main ()
    
    //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/mmrg_test1";
    //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/mmrg_test2";
+   //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/mmrg_test2_bis";
    //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/mmrg_test3";
    //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/mmrg_test4";
    //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/mmrg_test5";
    //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/mmrg_test6";
+   string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/mmrg_test7";
    
    //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/mrg_order2_test1";
    
