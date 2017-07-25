@@ -218,7 +218,7 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
 
          m_merit.getMerit (dim) = temp / weight;
 
-         if (dim <= Normalizer::MAX_DIM) { // Calcul de S2.
+         if (dim <= toDim) { // Calcul de S2.
             if (m_lat->getNorm () == L2NORM) {
 
                /* PW_TODO : ancienne normalisation
@@ -269,7 +269,7 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
                }
                */
 
-               double normalizer = m_normalizer->getPreComputedBound(dim);
+               double normalizer = m_normalizer->getBound(dim);
                m_merit[dim] = temp / normalizer;
 
             } else
