@@ -30,7 +30,7 @@ RESULTS
 -----------------------------------------------
 Num. of generators tested             : 255
 Num. of generators conserved          : 4
-Total CPU time (after setup)          : 0:0:1.62
+Total CPU time (after setup)          : 0:0:1.64
 
 
 +--------------------------------------------------------------------

@@ -264,7 +264,7 @@ void MRGLattice::buildNaBasis (int d)
       for (i = m_order; i < d; i++)
          incDimBasis ();
    }
- // trace( "=================================APRES buildNaBasis", -10);   
+ // trace( "=================================APRES buildNaBasis", -10);
 }
 
 
@@ -289,7 +289,11 @@ void MRGLattice::incDimBasis()
 // trace( "=================================AVANT incDimBasis", -10);
 
    IntLattice::incDim();
+   
+   
    const int dim = getDim();
+   m_vSI.resize(dim, dim);
+   m_wSI.resize(dim, dim);
    //m_basis.setDim(dim);
    //m_w.setDim(dim);
    //write();
@@ -406,7 +410,9 @@ void MRGLattice::buildLaBasis (int d)
 
 void MRGLattice::incDimLaBasis(int IMax)
 {
+
    IntLattice::incDim();
+
    const int dim = getDim (); // new dimension (dim++)
 
 /*
@@ -429,7 +435,7 @@ void MRGLattice::incDimLaBasis(int IMax)
       // for (int j = 0; j < dim; j++)
       //    m_vSI[0][j] = m_basis[i][j];
 
-      //clear (m_vSI[i][0]); 
+      //clear (m_vSI[i][0]);
 
       for (int i1 = 0; i1 < dim-1; i1++) {
 
@@ -452,18 +458,18 @@ void MRGLattice::incDimLaBasis(int IMax)
       m_dualbasis[i][dim - 1] = 0;
 
    for (int j = 0; j < dim-1; j++) {
-      
+
       //clear (m_wSI[0][j]);
       BScal tempScalDualBis;
 
       for (int i = 0; i < dim-1; i++) {
          m_t1 = m_dualbasis[i][j];
          m_t1 *= tempColBasis[i];
-         tempScalDualBis += m_t1;     
+         tempScalDualBis += m_t1;
       }
       if (tempScalDualBis != 0)
          tempScalDualBis = -tempScalDualBis;
-            
+
       Quotient (tempScalDualBis, m_vSI[dim - 1][dim - 1], tempScalDualBis);
       m_dualbasis[dim - 1][j] = tempScalDualBis;
    }

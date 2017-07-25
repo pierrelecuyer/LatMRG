@@ -1,4 +1,4 @@
-BEYER						LatticeInfo
+BEYER           			LatticeInfo
 L2NORM						Norm
 FALSE						ReadGenFile
 1							J  (Nb. of components)
@@ -6,7 +6,7 @@ MRG							Gener. type
 2 31 -1						m  (modulus)
 1							k  (order)
 NoCond
-16807						a (multiplier)				
+16807						a (multiplier)
 1
 23 27						MinDim    MaxDim
 false						Dual

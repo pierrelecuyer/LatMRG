@@ -62,11 +62,16 @@ using namespace LatMRG;
 
 //==========================================================================
 
+
+#if 0
 int main ()
 {
    // Erwan
    //string testLocation = "ton_path_vers_dossier_input_files_latmrg";
-   //string testLocation = "ton_path_vers_dossier_input_files_latmrg/input_file_name";
+   //string testLocation = "/Users/Erwan1/projects/github/LatMRG/inputTestFiles/lacunaryMRG_test1";
+   string testLocation = "/Users/Erwan1/projects/github/LatMRG/inputTestFiles/seekZZDD_test1";
+   
+   
    
    // Paul
    //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles";
@@ -78,7 +83,7 @@ int main ()
    //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/lacunaryMRG_test2";
    
    //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/mmrg_test1";
-   string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/mmrg_test2";
+   //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/mmrg_test2";
    //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/mmrg_test3";
    //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/mmrg_test4";
    //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/mmrg_test5";
@@ -104,6 +109,7 @@ int main ()
    
    return status;
 }
+#endif
 
 
 
