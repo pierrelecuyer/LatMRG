@@ -48,6 +48,7 @@ MMRGLattice::MMRGLattice(const MScal & m, const MMat & A, int maxDim, int r,
                        BVect & lac, NormType norm, LatticeType lat):
 
       IntLattice::IntLattice (m, r, maxDim, norm), 
+      //PW_TODO à décommenter ?
       //m_lac(lac, r),
       m_ip(0)
 {
