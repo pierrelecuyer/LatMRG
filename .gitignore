@@ -1,4 +1,6 @@
-doc/
+doc/html/
+doc/xml/
+doc/latex/
 latmrg.xcodeproj/
 main.dSYM/
 main.cc
