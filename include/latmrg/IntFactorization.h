@@ -81,7 +81,7 @@ public:
     *
     * <center>
     *  <div class="LatSoft-fbox"> <div class="LatSoft-parbox">  120
-    * <br>2\qquad3 \qquad P <br>3\qquad1 \qquad P <br>5\qquad1 \qquad P <br>
+    * <br>2\  P <br>3  P <br>5  P <br>
     * </div> </div>
     * </center>
     */

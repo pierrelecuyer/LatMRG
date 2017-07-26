@@ -52,10 +52,10 @@ namespace LatMRG {
  * to the output and deleted.
  *
  * <tt>Chrono timer; <br> \f$\vdots\f$ (<em>suppose 2.1 CPU seconds are used
- * here</em>.)<br> double t = timer.val (Chrono::SEC); \qquad// Here, t =
+ * here</em>.)<br> double t = timer.val (Chrono::SEC); // Here, t =
  * 2.1 <br>timer.init(); <br> \f$\vdots\f$ (<em>suppose 330 CPU seconds are
- * used here</em>.) <br> t = timer.val (Chrono::MIN); \qquad// Here, t = 5.5
- * <br>timer.write (Chrono::HMS); \qquad// Prints: 00:05:30.00 <br></tt>
+ * used here</em>.) <br> t = timer.val (Chrono::MIN); // Here, t = 5.5
+ * <br>timer.write (Chrono::HMS); // Prints: 00:05:30.00 <br></tt>
  *
  */
 class Chrono {

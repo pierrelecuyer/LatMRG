@@ -18,7 +18,7 @@ namespace LatMRG {
  * \f[
  * \mathbf{u}_i = (i/n)(z_1, z_2, …, z_s) \bmod1
  * \f]
- * where \f$z_s = a^{s-1} \bmod n\f$. 
+ * where \f$z_s = a^{s-1} \bmod n\f$.
  *
  * The figure of merit object in the constructor *must* set the number of
  * points \f$n\f$, the maximal dimension \f$s\f$ of the lattice and possibly,
@@ -38,9 +38,7 @@ public:
  */
 SearcherKorobov (const FigureOfMerit* merit);
 
-   /**
-    * Destructor.
-    *
+   /*
     * `double exhaust (int s, long n);`
     *
     * Exhaustive search to find the best Korobov lattice (i.e. with the
@@ -67,6 +65,10 @@ SearcherKorobov (const FigureOfMerit* merit);
     *
     * Similar to  {@link #random(int,int) random(s, k)}, except that only
     * values of \f$a\f$ *relatively prime* to \f$n\f$ are considered.
+    */
+
+  /**
+    * Destructor.
     */
    virtual ~SearcherKorobov();
 

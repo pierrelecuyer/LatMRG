@@ -73,7 +73,7 @@ void Zone::init (const Component & comp, int j, int i)
    MScal h, Eb, Ec;
    // Calcul des bornes pour a[j][i] ou q (ZONE 1 ou 3) dans chaque zone
    if (comp.searchMethod != EXHAUST) {
-      if (i == comp.k)
+      if (i == comp.k - 1)
          h = comp.Hk;
       else
          h = comp.H;         // Taille des regions pour a[j][i]
@@ -85,10 +85,12 @@ void Zone::init (const Component & comp, int j, int i)
       // Pas de contrainte d'implantation; une seule grande zone
       inf = Eb;
       sup = Ec;                // Les bornes de la zone
+
       if (comp.searchMethod != EXHAUST) {
          // Ajuster taille des régions qui seront tirées au hasard
          frac = 1.0;
          T1 = sup - inf;
+
          smallF = T1 < h;
          if (!smallF)
             supMsH = sup - h + 1;
@@ -284,7 +286,7 @@ void Zone::chooseBoundaries (const Component & comp, Zone *zone)
    Zone *R;
    long h;
 
-   for (int i = 1; i <= comp.k; ++i) {
+   for (int i = 0; i < comp.k; ++i) {
       Z = i + zone;
       if (Z->nextZone != 0) {
          // Choisir d'abord l'une des zones selon les probabilites Z->frac

@@ -21,14 +21,17 @@ class IntLattice : public LatticeTester::IntLatticeBasis {
 public:
 
    /**
-    * \copydoc LatticeTester::IntLatticeBasis::IntLatticeBasis(const MScal&, int, int, NormType)
+    * \copydoc LatticeTester::IntLatticeBasis::IntLatticeBasis (
+        const BMat primalbasis,
+        const BMat dualbasis,
+        const MScal modulo,
+        const int dim,
+        NormType norm = L2NORM);
     */
    IntLattice (MScal modulo, int k, int maxDim, LatticeTester::NormType norm = LatticeTester::L2NORM);
 
-
    /**
-    * \copydoc LatticeTester::IntLatticeBasis::IntLatticeBasis(const IntLattice&)
-    * Erwan
+    * \copydoc LatticeTester::IntLatticeBasis::IntLatticeBasis (const IntLatticeBasis & Lat)
     */
    IntLattice (const IntLattice & Lat);
 
@@ -129,7 +132,7 @@ public:
 protected:
 
    /**
-    * \copydoc IntLattice::kill()
+    * \copydoc LatticeTester::IntLatticeBasis::kill()
     */
    virtual void kill ();
 

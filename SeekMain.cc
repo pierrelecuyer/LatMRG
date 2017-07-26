@@ -416,7 +416,7 @@ void Test ()
       normal = lattice->getNormalizer (config.normaType, config.alpha);
       isFirstTest = false;
    }
-   
+
    lattice->buildBasis (config.td[0]);
 
    switch (config.criter) {
@@ -865,6 +865,7 @@ void InitZones ()
    for (int s = 0; s < config.J; s++) {
       for (int i = 0; i < config.compon[s].k; i++) {
          zone[s][i].init (config.compon[s], s, i);
+
       }
    }
 }
@@ -884,7 +885,6 @@ void SeekGen (int j)
    for (int region = 0; region < config.compon[j].numReg; region++) {
       if (timer.timeOver (config.duration))
          return ;
-
       if (config.compon[j].searchMethod == EXHAUST) {
          ExamAllZones (j, config.compon[j].k - 1);
       } else {

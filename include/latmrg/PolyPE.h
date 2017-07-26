@@ -126,7 +126,7 @@ static void setM (const MScal & m);
     * modulo \f$m\f$. For this to be true, assuming that \f$f(x)\f$ has
     * the form {@link REF__PolyPE_eq_poly2 (eq.poly2)} above, the three
     * following conditions must be satisfied: \anchor REF__PolyPE_isprimi
-    * <ol> <dt>None</dt>
+    * <dl> <dt>None</dt>
     * <dd>
     * \f$[(-1)^{k+1} a_k]^{(m-1)/q} \bmod m \neq1\f$ for each prime
     * factor \f$q\f$ of \f$m - 1\f$;
@@ -140,7 +140,7 @@ static void setM (const MScal & m);
     * \f$x^{r/q} \bmod(f(x), m) \f$ has positive degree for each prime
     * factor \f$q\f$ of \f$r\f$, with \f$1<q< r\f$;
     * </dd>
-    * </ol> where \f$r = (m^k - 1)/(m - 1)\f$. The factorizations of
+    * </dl> where \f$r = (m^k - 1)/(m - 1)\f$. The factorizations of
     * \f$m-1\f$ and \f$r\f$ must be in `fm` and `fr` respectively.
     * Condition 1 is the same as saying that \f$(-1)^{k+1} a_k\f$ is a
     * primitive root of \f$m\f$. Condition 3 is automatically satisfied

@@ -106,20 +106,11 @@ void IntLattice::incDim ()
    m_dualbasis.resize(dim+1, dim+1);
    m_vecNorm.resize(dim+1);
    m_dualvecNorm.resize(dim+1);
-   /*if(with_tmp){
-      m_vSI.resize(dim+1, dim+1);
-      m_wSI.resize(dim+1, dim+1);
-   }*/
-
 
    for(int i = 0; i < dim; i++){
       for(int j = 0; j < dim; j++){
          m_basis(i,j) = lattmp.m_basis(i,j);
          m_dualbasis(i,j) = lattmp.m_dualbasis(i,j);
-         /*if(with_tmp){
-            m_vSI(i,j) = lattmp.m_vSI(i,j);
-            m_wSI(i,j) = lattmp.m_wSI(i,j);
-         }*/
       }
       m_vecNorm(i) = lattmp.m_vecNorm(i);
       m_dualvecNorm(i) = lattmp.m_dualvecNorm(i);

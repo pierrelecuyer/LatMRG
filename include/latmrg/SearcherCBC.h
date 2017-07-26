@@ -32,9 +32,7 @@ public:
  */
 SearcherCBC (const FigureOfMerit* merit);
 
-   /**
-    * Destructor.
-    *
+   /*
     * `double exhaust (int s, long n);`
     *
     * Exhaustive CBC search to find the lattice with the best (the
@@ -66,6 +64,10 @@ SearcherCBC (const FigureOfMerit* merit);
     *
     * Similar to  {@link #random(int,int) random(s, k)}, except that only
     * values of \f$a_j\f$ *relatively prime* to \f$n\f$ are considered.
+    */
+
+   /**
+    * Destructor.
     */
    virtual ~SearcherCBC();
 
