@@ -23,33 +23,33 @@ namespace LatMRG {
  * as
  * \anchor REF__Palpha_palpha_1
  * \f[
- *   P_{2\alpha}(\Psi_s) = -1  +  \frac{1}{n}\sum_{\mathbf{u}\in\Psi_s}  \prod_{j=1}^s \left[1 - \frac{(-4\pi^2)^{\alpha}}{(2\alpha)!} B_{2\alpha}(u_j)\right], \tag{palpha.1}
+ *   P_{2\alpha}(\Psi_s) = -1  +  \frac{1}{n}\sum_{\mathbf{u}\in\Psi_s} \prod_{j=1}^s \left[1 - \frac{(-4\pi^2)^{\alpha}}{(2\alpha)!} B_{2\alpha}(u_j)\right], \tag{palpha.1}
  * \f]
  * where \f$B_{2\alpha}(x)\f$ is the Bernoulli polynomial of degree
  * \f$2\alpha\f$. The first Bernoulli polynomials of even degree are:
  * \f{align*}{
- *    B_0(x) 
- *    & 
+ *    B_0(x)
+ *    &
  *   =
  *    1
- *  \\ 
- *   B_2(x) 
- *    & 
+ *  \\
+ *   B_2(x)
+ *    &
  *   =
- *    x^2-x+1/6 
- *  \\ 
- *   B_4(x) 
- *    & 
+ *    x^2-x+1/6
+ *  \\
+ *   B_4(x)
+ *    &
  *   =
  *    x^4-2x^3+x^2-1/30
- *  \\ 
- *   B_6(x) 
- *    & 
+ *  \\
+ *   B_6(x)
+ *    &
  *   =
  *    x^6-3x^5+5x^4/2-x^2/2+1/42
- *  \\ 
- *   B_8(x) 
- *    & 
+ *  \\
+ *   B_8(x)
+ *    &
  *   =
  *    x^8-4x^7+14x^6/3 - 7x^4/3 +2x^2/3-1/30.
  * \f}
@@ -70,7 +70,7 @@ namespace LatMRG {
  * \f]
  * One recovers the original (unweighted) criterion {@link
  * REF__Palpha_palpha_1 (palpha.1)} for \f$P_{2\alpha}\f$ by setting
- * \f$\gamma_{\mathfrak u} = 1\f$ for all \f$\mathfrak u\in\{1,…,s\}\f$. 
+ * \f$\gamma_{\mathfrak u} = 1\f$ for all \f$\mathfrak u\in\{1,…,s\}\f$.
  *
  * \remark This class uses functions from MyLib, part of TestU01.
  */
@@ -106,7 +106,7 @@ protected:
       // cache for scaled values of Bernoulli polynomials
       public:
     	    BernCache() { m_n = 0; m_alpha = 0; }
-    	    void init(int alpha, int n); 
+    	    void init(int alpha, int n);
     	    double operator[](int i) const { return m_b[i % m_n]; }
 
       private:

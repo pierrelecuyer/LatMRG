@@ -96,7 +96,7 @@ public:
    /**
     * Precomputes the Fourier factors
     * \f[
-    *   C_k = \sideset{}’\sum_{-N/2<h\le N/2}\; \frac{e^{i2\pi hk/n}}{|h|}
+    *   C_k = \sideset{}{’}\sum_{-N/2<h\le N/2}\; \frac{e^{i2\pi hk/n}}{|h|}
     * \f]
     * for all \f$k = 0, 1,…, n-1\f$.
     */
@@ -105,7 +105,7 @@ public:
    /**
     * Precomputes the Fourier factors
     * \f[
-    *   C_k = \sideset{}’\sum_{h\in\mathbb Z}\; \frac{e^{i2\pi hk/n}}{|h|^{\alpha}}
+    *   C_k = \sideset{}{’}\sum_{h\in\mathbb Z}\; \frac{e^{i2\pi hk/n}}{|h|^{\alpha}}
     * \f]
     * for all \f$k = 0, 1,…, n-1\f$.
     */

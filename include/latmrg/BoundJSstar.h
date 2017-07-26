@@ -13,13 +13,13 @@ namespace LatMRG {
  * denoted by \f$D^*_{n,\boldsymbol {\gamma}}\f$, is given by
  * \anchor REF__BoundJSstar_eq_sinescu1
  * \f{align}{
- *    e_{n,d}^2(\mathbf{z}) 
- *    & 
+ *    e_{n,d}^2(\mathbf{z})
+ *    &
  *   =
- *  \frac{1}{n} \sum_{k=0}^{n-1} \prod_{j=1}^d \left( \beta_j + \gamma_j \sideset{}’\sum_{-N/2<h\le N/2}\; \frac{e^{i2\pi hkz_j/n}}{|h|}\right) - \prod_{j=1}^d \beta_j \tag{eq.sinescu1} 
- *  \\ 
- *    D^*_{n,\boldsymbol {\gamma}}(\mathbf{z}) 
- *    & 
+ *  \frac{1}{n} \sum_{k=0}^{n-1} \prod_{j=1}^d \left( \beta_j + \gamma_j \sideset{}{’}\sum_{-N/2<h\le N/2}\; \frac{e^{i2\pi hkz_j/n}}{|h|}\right) - \prod_{j=1}^d \beta_j \tag{eq.sinescu1}
+ *  \\
+ *    D^*_{n,\boldsymbol {\gamma}}(\mathbf{z})
+ *    &
  * \le
  *  \frac{e_{n,d}^2(\mathbf{z})}{2} + \prod_{j=1}^d\beta_j-\prod_{j=1}^d\left(\beta_j-\gamma_j/N\right), \nonumber
  * \f}
@@ -39,7 +39,7 @@ namespace LatMRG {
  *
  * The constructors below precomputes the sum
  * \f[
- * \sideset{}’\sum_{-N/2<h\le N/2}\; \frac{e^{i2\pi hkz_j/n}}{|h|}
+ * \sideset{}{’}\sum_{-N/2<h\le N/2}\; \frac{e^{i2\pi hkz_j/n}}{|h|}
  * \f]
  * for all possible values of \f$z_j\f$ and keeps them in an array. This will
  * accelerate the computation of the bounds tremendously, when we do a search

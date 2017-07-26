@@ -110,7 +110,7 @@ static void setM (const MScal & m);
    void setVal (std::string & str);
 
    /**
-    * Sets \f$v = x^j \mod f(x) &nbsp;(\bmod&nbsp;m)\f$.
+    * Sets \f$v = x^j \mod f(x) (\bmod m)\f$.
     */
    void powerMod (const MScal & j);
 
