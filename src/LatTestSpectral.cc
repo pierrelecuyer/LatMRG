@@ -256,9 +256,42 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
                */
 
                double normalizer2 = m_normalizer->getBound(dim);
+               cout << "NORMA : " << normalizer2 << endl;
                normalizer2 *= normalizer2;
-
                m_merit[dim] = temp / normalizer2;
+
+               /*
+                  Erwan : la version précédentes ne fonctionnait pas
+                  pour la base primal. J'ai fait à la main le calcul
+                  en détaillant. Ca marche bien avec les MMRG
+
+               // log du plus court vecteur
+               // si on est dans le primal, on a déjà divisé le
+               // plus court vecteur par m voir BARRERECHERCHEEB
+               lgvv1 = Lg (temp);
+
+               // 2 * log de (gamma)
+               double normalizer2 = m_normalizer->getBound(dim);
+               double lgvol = 1./dim;
+               if(m_dualF)
+                  lgvol *= m_lat->getOrder() * Lg(m_lat->getModulo());
+               else
+                  lgvol *= -m_lat->getOrder() * Lg(m_lat->getModulo());
+               // lgvol = +k/dim * log(m) pour le dual
+               // lgvol = -k/dim * log(m) pour le primal
+
+               // on ajoute à la normalisation la partie sur
+               // la densité dans la lattice
+               normalizer2 += lgvol;
+
+               // Pour L2 NORM on le met au carré
+               normalizer2 += normalizer2;
+
+               // On passe à l'exponnentielle en comparant avec
+               // le plus court vecteur.
+               m_merit[dim] = exp2(lgvv1 - normalizer2);
+               */
+
 
                /*
                cout << "\n****** dim = " << dim << endl;
@@ -266,7 +299,6 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
                cout << "Upper bound = " << sqrt(normalizer2) << endl;
                cout << "Merit = " << sqrt(temp) / sqrt(normalizer2) << endl;
                */
-
             } else if (m_lat->getNorm () == L1NORM) {
 
                // PW_TODO : ce qui était fait avant
@@ -283,6 +315,35 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
 
                double normalizer = m_normalizer->getBound(dim);
                m_merit[dim] = temp / normalizer;
+
+               /*
+                  Erwan : la version précédentes ne fonctionnait pas
+                  pour la base primal. J'ai fait à la main le calcul
+                  en détaillant. Ca marche bien là.
+
+               // log du plus court vecteur
+               // si on est dans le primal, on a déjà divisé le
+               // plus court vecteur par m voir BARRERECHERCHEEB
+               lgvv1 = Lg (temp);
+
+               // 2 * log de (gamma)
+               double normalizer2 = m_normalizer->getBound(dim);
+               double lgvol = 1./dim;
+               if(m_dualF)
+                  lgvol *= m_lat->getOrder() * Lg(m_lat->getModulo());
+               else
+                  lgvol *= -m_lat->getOrder() * Lg(m_lat->getModulo());
+               // lgvol = +k/dim * log(m) pour le dual
+               // lgvol = -k/dim * log(m) pour le primal
+
+               // on ajoute à la normalisation la partie sur
+               // la densité dans la lattice
+               normalizer2 += lgvol;
+
+               // On passe à l'exponnentielle en comparant avec
+               // le plus court vecteur.
+               m_merit[dim] = exp2(lgvv1 - normalizer2);
+               */
 
             } else
                m_merit[dim] = temp;

@@ -47,7 +47,7 @@ MMRGLattice::MMRGLattice(const MScal & m, const MMat & A, int maxDim, int r,
 MMRGLattice::MMRGLattice(const MScal & m, const MMat & A, int maxDim, int r,
                        BVect & lac, NormType norm, LatticeType lat):
 
-      IntLattice::IntLattice (m, r, maxDim, norm), 
+      IntLattice::IntLattice (m, r, maxDim, norm),
       //PW_TODO à décommenter ?
       //m_lac(lac, r),
       m_ip(0)
@@ -164,6 +164,10 @@ void MMRGLattice::init()
    int rmax = max(m_order, getDim());
    m_wSI.SetDims(rmax, getDim());
 
+   double temp;
+   conv(temp, m_modulo);
+   double lgm2 = 2.0 * Lg (temp);
+   calcLgVolDual2 (lgm2);
    //if (m_latType == ORBIT)
    //   initOrbit();
 }
@@ -253,7 +257,7 @@ void MMRGLattice::buildNonLacunaryBasis (int dimension)
 
    for (int k = 1; k < maxIter+1; k++) {
       // calculation of transpose(A^k)
-      temp *= conv<MMatP>(transpose(m_A)); 
+      temp *= conv<MMatP>(transpose(m_A));
 
       if (k == maxIter) { // we completed the end of m_basis matrix
          int residu = dimension - maxIter * sizeA;
@@ -280,7 +284,7 @@ void MMRGLattice::buildNonLacunaryBasis (int dimension)
 
 //===========================================================================
 
-void MMRGLattice::buildLacunaryBasis (int dimension, BMat B) 
+void MMRGLattice::buildLacunaryBasis (int dimension, BMat B)
 {
    setDim(dimension);
    int sizeA = getOrder();
@@ -309,7 +313,7 @@ void MMRGLattice::buildLacunaryBasis (int dimension, BMat B)
 
    for (int k = 0; k < maxIter+1; k++) {
       // calculation of transpose(A^k)
-      temp *= conv<MMatP>(transpose(m_A)); 
+      temp *= conv<MMatP>(transpose(m_A));
 
 
       if (k == maxIter) { // we completed the end of m_basis matrix
@@ -367,13 +371,13 @@ void MMRGLattice::incrementDimNonLacunaryBasis()
 
    // ************* update of the primal lattice *************
    //  - we add a new coordinate to each vector v_i, this value being determined
-   //    by the MMRG recurrence (even if the original vectors have been 
+   //    by the MMRG recurrence (even if the original vectors have been
    //    transformed linearly and we must apply the same transformations to their
    //    last coordinates).
-   //  - we add an extra vector (0,..., 0, m) to complete this dimension 
+   //  - we add an extra vector (0,..., 0, m) to complete this dimension
    //    increased basis.
 
-   // we compute the number of steps required to reach the current state of 
+   // we compute the number of steps required to reach the current state of
    // the generator for the considered dimension.
    int n = floor((newDimension-1) / sizeA);
    ZZ_p::init(m_modulo);
@@ -382,10 +386,10 @@ void MMRGLattice::incrementDimNonLacunaryBasis()
    for (int i = 0; i < sizeA; i++)
       temp[i][i] = 1;
    for (int k = 0; k < n; k++)
-     temp *= conv<MMatP>(transpose(m_A)); 
+     temp *= conv<MMatP>(transpose(m_A));
    // PW_TODO : could be useful to keep A^k in memory to shorten computation
 
-   // update of the new v_i coordinates using the *temp* matrix and the first 
+   // update of the new v_i coordinates using the *temp* matrix and the first
    // coefficients of each line (can be seen as a seed vector). So this *temp*
    // matrix multiplied by this seed vector gives us the next values generated
    // by the MMRG for the considered dimension.
@@ -400,7 +404,7 @@ void MMRGLattice::incrementDimNonLacunaryBasis()
 
    // ************* update of the dual basis *************
    //  - we add a new 0 coordinate to each vector w_i in the dual basis.
-   //  - for the new last line of the matrix, we add an extra vector, 
+   //  - for the new last line of the matrix, we add an extra vector,
    //    as described in L'Ecuyer's paper
    // PW_TODO : citer rédérence "Guide LatTester"
 
@@ -434,13 +438,13 @@ void MMRGLattice::incrementDimLacunaryBasis(BMat B)
 
    // ************* update of the primal lattice *************
    //  - we add a new coordinate to each vector v_i, this value being determined
-   //    by the MMRG recurrence (even if the original vectors have been 
+   //    by the MMRG recurrence (even if the original vectors have been
    //    transformed linearly and we must apply the same transformations to their
    //    last coordinates).
-   //  - we add an extra vector (0,..., 0, m) to complete this dimension 
+   //  - we add an extra vector (0,..., 0, m) to complete this dimension
    //    increased basis.
 
-   // we compute the number of steps required to reach the current state of 
+   // we compute the number of steps required to reach the current state of
    // the generator for the considered dimension.
    int n = ceil((newDimension-sizeA-1) / sizeB);
    ZZ_p::init(m_modulo);
@@ -449,10 +453,10 @@ void MMRGLattice::incrementDimLacunaryBasis(BMat B)
    for (int i = 0; i < sizeA; i++)
       temp[i][i] = 1;
    for (int k = 0; k < n+1; k++)
-     temp *= conv<MMatP>(transpose(m_A)); 
+     temp *= conv<MMatP>(transpose(m_A));
    // PW_TODO : could be useful to keep A^k in memory to shorten computation
 
-   // update of the new v_i coordinates using the *temp* matrix and the first 
+   // update of the new v_i coordinates using the *temp* matrix and the first
    // coefficients of each line (can be seen as a seed vector). So this *temp*
    // matrix multiplied by this seed vector gives us the next values generated
    // by the MMRG for the considered dimension.
@@ -470,7 +474,7 @@ void MMRGLattice::incrementDimLacunaryBasis(BMat B)
 
    // ************* update of the dual basis *************
    //  - we add a new 0 coordinate to each vector w_i in the dual basis.
-   //  - for the new last line of the matrix, we add an extra vector, 
+   //  - for the new last line of the matrix, we add an extra vector,
    //    as described in L'Ecuyer's paper
    // PW_TODO : citer rédérence "Guide LatTester"
 

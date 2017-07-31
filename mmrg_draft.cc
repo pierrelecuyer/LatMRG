@@ -1,7 +1,7 @@
 //
 // Brouillon de travail
 // main program to build lattice basis for Matrix-MRG
-// 
+//
 
 #include <iostream>
 #include <map>
@@ -38,7 +38,7 @@ using namespace NTL;
 using namespace LatticeTester;
 
 
-void SavvidyMatrix(mat_ZZ& A, int N, int s, int m, int b) 
+void SavvidyMatrix(mat_ZZ& A, int N, int s, int m, int b)
 {
     A.kill();
     A.SetDims(N,N);
@@ -56,6 +56,27 @@ void SavvidyMatrix(mat_ZZ& A, int N, int s, int m, int b)
     }
     A[2][1] += s;
 }
+
+
+void SavvidyMatrix(mat_ZZ& A, int N, int s, ZZ m, ZZ b)
+{
+   A.kill();
+   A.SetDims(N,N);
+   for (int j = 1; j < N; j ++) {
+      for (int i = j+1; i < N; i++)
+         A[i][j] = (i-j+2) * m + b;
+   }
+   for (int i = 0; i < N; i ++)
+      A[i][0] = 1;
+   for (int i = 1; i < N; i++)
+      A[i][i] = 2;
+   for (int i = 0; i < N; i ++) {
+      for (int j = i+1; j < N; j ++)
+         A[i][j] = 1;
+   }
+   A[2][1] += s;
+}
+
 
 
 mat_ZZ Dualize (const mat_ZZ V, const ZZ modulus, const int k)
@@ -97,7 +118,7 @@ mat_ZZ buildBasis (mat_ZZ& A, int dimension, ZZ modulus, int factor)
 
     for (int k = 1; k < maxIter+1; k++) {
         // calcul de transpose(A^k)
-        temp *= conv<mat_ZZ_p>(transpose(A)); 
+        temp *= conv<mat_ZZ_p>(transpose(A));
 
         if (k == maxIter) { //on complète le bout de la matrice B
             int residu = dimension - maxIter * sizeA;
@@ -144,7 +165,7 @@ void incrementDimension (mat_ZZ& B, mat_ZZ& A, ZZ modulus)
     // étape couteuse qui pourrait etre raccourcie en stockant A^k
     //--------------------------------------------------------------------
     for (int k = 1; k < n+1; k++) {
-        temp *= conv<mat_ZZ_p>(transpose(A)); 
+        temp *= conv<mat_ZZ_p>(transpose(A));
     }
     //--------------------------------------------------------------------
 
@@ -193,7 +214,7 @@ void incrementDimensionTest (mat_ZZ& B, mat_ZZ& A, ZZ modulus)
     // étape couteuse qui pourrait etre raccourcie en stockant A^k
     //--------------------------------------------------------------------
     for (int k = 1; k < n+1; k++) {
-        temp *= conv<mat_ZZ_p>(transpose(A)); 
+        temp *= conv<mat_ZZ_p>(transpose(A));
     }
     //--------------------------------------------------------------------
 
@@ -229,7 +250,7 @@ mat_ZZ buildBasisMultiple (mat_ZZ& A, int multiple, ZZ modulus)
 
     for (int k = 1; k < multiple; k++) {
         // calcul de transpose(A^k)
-        temp *= conv<mat_ZZ_p>(transpose(A)); 
+        temp *= conv<mat_ZZ_p>(transpose(A));
 
         for (int i = 0; i < sizeA; i++) {
             for (int j = 0; j < sizeA; j ++)
@@ -239,7 +260,7 @@ mat_ZZ buildBasisMultiple (mat_ZZ& A, int multiple, ZZ modulus)
 
     return B;
 }
-    
+
 
 void printMatrixForInputFile (mat_ZZ A)
 {
@@ -254,17 +275,26 @@ void printMatrixForInputFile (mat_ZZ A)
 
 
 //*===========================================================*
-
-int main () 
+#if 0
+int main ()
 {
 
     // dimension parameters
-    int r = 3;
+    int r = 10;
     int dimension = 12;
 
     // modulus
     //ZZ p = conv<ZZ>(101);
     ZZ p = power_ZZ(2,7) - 1; //=127
+
+    ZZ m = power_ZZ(2,36) + 1;
+    ZZ b = 2 - 2*m;
+
+
+
+    mat_ZZ A;
+    SavvidyMatrix(A, 17, 0, m, b);
+    printMatrixForInputFile(A);
 
     /*
     // matrix for usual MRG
@@ -290,7 +320,7 @@ int main ()
 
 
     /*
-    // savvidy matrix 
+    // savvidy matrix
     mat_ZZ A;
     SavvidyMatrix(A, r, -1, 1, 0);
     //cout << "A = \n" << A << endl;
@@ -336,11 +366,12 @@ int main ()
 
 
 
-    
-    // savvidy matrix 
+/*
+    // savvidy matrix
     mat_ZZ A;
     SavvidyMatrix(A, r, -1, 1, 0);
     cout << "A = \n" << A << endl;
+
 
     mat_ZZ init;
     init.SetDims(r,r);
@@ -379,7 +410,7 @@ int main ()
         cout << "---------------------" << endl;
 
     }
-    
+*/
 
 
     /*
@@ -407,6 +438,7 @@ int main ()
 
     return 0;
 }
+#endif
 
 
 
