@@ -1,0 +1,22 @@
+SPECTRAL BESTLAT 			LatticeInfo
+L2NORM						Norm
+FALSE						ReadGenFile
+1							J  (Nb. of components)
+MMRG						Gener. type
+2 63 -2247						m  (modulus)
+3							k  (order)
+0 1 0
+0 0 1
+-1184153554609676 0 1145902849652723
+1
+4 15						MinDim    MaxDim
+false						Dual
+FULL						LatticeType
+1
+3							Lacunary
+1000000000					MaxNodesBB
+false						If true, the inverse of the length of the shortest vector will be printed in the results, otherwise the length itself is printed.
+0							details
+terminal	 				ResultForm
+
+matrix for MRG described in example 7 (to be tested with lacunary indices only last coordinate)
