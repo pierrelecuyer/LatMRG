@@ -147,6 +147,7 @@ void IntLattice::dualize ()
    m_dualbasis = tmp;
    setNegativeNorm ();
    setDualNegativeNorm ();
+
 }
 
 //=========================================================================
@@ -233,6 +234,7 @@ Normalizer * IntLattice::getNormalizer (NormaType norma, int alpha)
    logDensity = - m_order * log(m_modulo);
    // PW_TODO
    // on travaille dans le dual à chaque fois ?
+   // NOOOOOONNNN EB
 
    switch (norma) {
    case BESTLAT:

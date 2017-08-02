@@ -21,17 +21,17 @@ namespace LatMRG {
  *    e_{n,d}^2(\mathbf{z})
  *    &
  *   =
- *  \frac{1}{n} \sum_{k=0}^{n-1} \prod_{j=1}^d \Bigg\{ \beta_j + \tilde{\gamma}_j \sideset{}’\sum_{-{\tilde{N}}_j/2<h\le{\tilde{N}}_j/2}\; \frac{e^{i2\pi hk\tilde{z}_j/n}}{|h|}\Bigg\} - \prod_{j=1}^d \beta_j \tag{eq.sinescu3}
+ *  \frac{1}{n} \sum_{k=0}^{n-1} \prod_{j=1}^d \Bigg\{ \beta_j + \tilde{\gamma}_j \sideset{}{'}\sum_{-{\tilde{N}}_j/2<h\le{\tilde{N}}_j/2}\; \frac{e^{i2\pi hk\tilde{z}_j/n}}{|h|}\Bigg\} - \prod_{j=1}^d \beta_j \tag{eq.sinescu3}
  *  \\
  *    D^*_{n,\boldsymbol {\gamma}}(\mathbf{z})
  *    &
  *   =
  *  \frac{e_{n,d}^2(\mathbf{z})}{2} + \prod_{j=1}^d\beta_j-\prod_{j=1}^d\left(\beta_j-\frac{\gamma_j}{N}\right), \nonumber
  * \f}
- * where \f$\beta_j = 1 + \gamma_j\f$ for all \f$j=1,…,d\f$,
+ * where \f$\beta_j = 1 + \gamma_j\f$ for all \f$j=1,\cdots,d\f$,
  * \f$i=\sqrt{-1}\f$, and \f$\mathbf{z}\f$ is the generating vector of the
  * lattice rule. Each component \f$z_j\f$ of the generating vector is taken
- * from the set \f$\{1, 2, …, n-1\}\f$ such that \f$z_j\f$ is relatively
+ * from the set \f$\{1, 2, \cdots, n-1\}\f$ such that \f$z_j\f$ is relatively
  * prime with \f$n\f$. By \f$\boldsymbol {\gamma}\f$ we denote the weights.
  * The symbol \f$\sum^{\prime}\f$ means that the \f$h=0\f$ term is omitted
  * from the sum. In the above, we also used the following notations:

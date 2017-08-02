@@ -24,7 +24,7 @@ namespace LatMRG {
  * =\{(x_k,y_k), 1\le k\le n\}\f$ is given by
  * \anchor REF__ExactDiscStar_eq_stardisd2
  * \f[
- * \tag{eq.stardisd2} D^*(P_n) = \max_{0\le\ell\le n}  \max_{0\le k\le\ell}  \max\left(\left|\frac{k}{n} -x_{\ell}\xi_{\ell,k}\right|, \left|\frac{k}{n}-x_{\ell+1}\xi_{\ell,k+1}\right|\right),
+ * \tag{eq.stardisd2} D^*(P_n) = \max_{0\le\ell\le n} \max_{0\le k\le\ell} \max\left(\left|\frac{k}{n} -x_{\ell}\xi_{\ell,k}\right|, \left|\frac{k}{n}-x_{\ell+1}\xi_{\ell,k+1}\right|\right),
  * \f]
  * where we put \f$(x_0, y_0) = (0, 0)\f$ and \f$(x_{n+1}, y_{n+1}) =(1,
  * 1)\f$, while the coordinates \f$y_i\f$, for \f$i=0, 1, …, \ell, n+1\f$,
@@ -43,7 +43,7 @@ namespace LatMRG {
  * star discrepancy is then given by
  * \anchor REF__ExactDiscStar_eq_stardisd3
  * \f[
- * \tag{eq.stardisd3} D^*(P_n) = \max_{0\le\ell\le n}  \max_{0\le t\le\ell}  \max_{0\le k\le t}   \max\left(\left|\frac{k}{n}-x_{\ell}\xi_{\ell,t}\eta_{\ell,t,k}\right|, \left|\frac{k}{n}-x_{\ell+1}\xi_{\ell,t+1}\eta_{\ell,t,k+1}\right|\right).
+ * \tag{eq.stardisd3} D^*(P_n) = \max_{0\le\ell\le n}\max_{0\le t\le\ell} \max_{0\le k\le t} \max\left(\left|\frac{k}{n}-x_{\ell}\xi_{\ell,t}\eta_{\ell,t,k}\right|, \left|\frac{k}{n}-x_{\ell+1}\xi_{\ell,t+1}\eta_{\ell,t,k+1}\right|\right).
  * \f]
  * The algorithm can be extended for higher dimensions in a similar fashion.
  *

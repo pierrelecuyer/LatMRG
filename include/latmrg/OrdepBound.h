@@ -14,13 +14,13 @@ namespace LatMRG {
  * implemented in this class. For a lattice rule with \f$n\f$ points, the
  * bound on the weighted star discrepancy for general weights is given by
  * \f{align*}{
- *    e_{n,d}^2(\mathbf{z}) 
- *    & 
+ *    e_{n,d}^2(\mathbf{z})
+ *    &
  *   =
- *  \frac{1}{n} \sum_{\mathbf{u} \subseteq\{1,2,…,d\}} \boldsymbol {\gamma}_{\mathbf{u}}\left(\sum_{k=0}^{n-1} \prod_{j\in\mathbf{u}} \left( \sideset{}’\sum_{-N/2<h\le N/2}\frac{e^{i2\pi hkz_j/n}}{|h|}\right)\right), 
- *  \\ 
- *    D^*_{n,\boldsymbol {\gamma}}(\mathbf{z}) 
- *    & 
+ *  \frac{1}{n} \sum_{\mathbf{u} \subseteq\{1,2,…,d\}} \boldsymbol {\gamma}_{\mathbf{u}}\left(\sum_{k=0}^{n-1} \prod_{j\in\mathbf{u}} \left( \sideset{}{'}\sum_{-N/2<h\le N/2}\frac{e^{i2\pi hkz_j/n}}{|h|}\right)\right),
+ *  \\
+ *    D^*_{n,\boldsymbol {\gamma}}(\mathbf{z})
+ *    &
  *   =
  *  \frac{e_{n,d}^2(\mathbf{z})}{2} + \frac{1}{N} \max_{\mathbf{u} \subseteq\{1,2,…,d\}}| \mathbf{u}|\boldsymbol {\gamma}_{\mathbf{u}}.
  * \f}
@@ -42,15 +42,15 @@ namespace LatMRG {
  * For order-dependent weights, the bound is given by
  * \anchor REF__OrdepBound_eq_sinescu2
  * \f{align}{
- *    e_{n,d}^2(\mathbf{z}) 
- *    & 
+ *    e_{n,d}^2(\mathbf{z})
+ *    &
  *   =
  *  \frac{1}{n} \sum_{\ell=1}^d \Gamma_{\ell}\sum_{\substack {\mathbf{u} \subseteq\{1,2,…,d\} \\
  *   |\mathbf{u}|=\ell
- *   }} \; \sum_{k=0}^{n-1}\prod_{j\in\mathbf{u}}\left( \sideset{}’\sum_{-N/2<h\le N/2}\; \frac{e^{i2\pi hkz_j/n}}{|h|}\right), \tag{eq.sinescu2} 
- *  \\ 
- *    D^*_{n,\boldsymbol {\gamma}}(\mathbf{z}) 
- *    & 
+ *   }} \; \sum_{k=0}^{n-1}\prod_{j\in\mathbf{u}}\left( \sideset{}{’}\sum_{-N/2<h\le N/2}\; \frac{e^{i2\pi hkz_j/n}}{|h|}\right), \tag{eq.sinescu2}
+ *  \\
+ *    D^*_{n,\boldsymbol {\gamma}}(\mathbf{z})
+ *    &
  *   =
  *  \frac{e_{n,d}^2(\mathbf{z})}{2} + \frac{1}{N} \max_{\ell\in\{1, 2,…,d\}}\ell\Gamma_{\ell}. \nonumber
  * \f}
@@ -66,7 +66,7 @@ namespace LatMRG {
  * \f]
  * with
  * \f[
- *   C_k(z)=\sideset{}’\sum_{-N/2<h\le N/2}\frac{e^{i2\pi hkz/n}}{|h|}.
+ *   C_k(z)=\sideset{}{’}\sum_{-N/2<h\le N/2}\frac{e^{i2\pi hkz/n}}{|h|}.
  * \f]
  * Then we have a recursive formula to compute the quantities
  * \f$\sigma_k(d,\ell)\f$, that is
@@ -75,7 +75,7 @@ namespace LatMRG {
  * \f]
  * for \f$\ell=2,3,…,d-1\f$, while
  * \f$\sigma_k(d,1)=\sum\limits_{j=1}^dC_k(z_j)\f$ and
- * \f$\sigma_k(d,d)=\prod\limits_{j=1}^dC_k(z_j)\f$. 
+ * \f$\sigma_k(d,d)=\prod\limits_{j=1}^dC_k(z_j)\f$.
  *
  * <div class="LatSoft-bigskip"></div>
  */

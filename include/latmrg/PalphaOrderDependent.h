@@ -21,7 +21,7 @@ namespace LatMRG {
  *   =
  *  \frac{1}{n} \sum_{\ell=1}^d \Gamma_{\ell}\sum_{\substack {\mathbf{u} \subseteq\{1,2,…,d\} \\
  *   |\mathbf{u}|=\ell
- *   }} \; \sum_{k=0}^{n-1}\prod_{j\in\mathbf{u}}\left( \sideset{}’\sum_{h\in\mathbb Z}\; \frac{e^{i2\pi hkz_j/n}}{|h|^{\alpha}}\right)\tag{eq.ordeppalpha}.
+ *   }} \; \sum_{k=0}^{n-1}\prod_{j\in\mathbf{u}}\left( \sideset{}{’}\sum_{h\in\mathbb Z}\; \frac{e^{i2\pi hkz_j/n}}{|h|^{\alpha}}\right)\tag{eq.ordeppalpha}.
  * \f}
  * The order-dependent weights are denoted by
  * \f$\Gamma_1,\Gamma_2,…,\Gamma_d\f$, where by \f$\Gamma_{\ell}\f$ we
@@ -35,7 +35,7 @@ namespace LatMRG {
  * the difference being the quantities \f$C_k(z)\f$ which are here given by
  * \anchor REF__PalphaOrderDependent_eq_ckz
  * \f[
- * \tag{eq.ckz} C_k(z, \alpha)=\sideset{}’\sum_{h\in\mathbb Z}\frac{e^{i2\pi hkz/n}}{|h|^{\alpha}}.
+ * \tag{eq.ckz} C_k(z, \alpha)=\sideset{}{’}\sum_{h\in\mathbb Z}\frac{e^{i2\pi hkz/n}}{|h|^{\alpha}}.
  * \f]
  * If \f$\alpha\f$ is an even integer, then we may use the Bernoulli
  * polynomials to express the quantities \f$C_k(z)\f$. For any other

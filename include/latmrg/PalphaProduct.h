@@ -22,7 +22,7 @@ namespace LatMRG {
  * \f$\alpha\f$ is even, \f$P_{\alpha}\f$ can be evaluated explicitly as
  * \anchor REF__PalphaProduct_palpha_1
  * \f[
- * \qquad P_{\alpha}(s) = -1  +  \frac{1}{n}\sum_{\mathbf{u}\in\Psi_s}  \prod_{j=1}^s \left(1 - \frac{(-1)^{\alpha/2}(2\pi)^{\alpha}}{\alpha!} B_{\alpha}(u_j)\right), \tag{palpha.1}
+ * \qquad P_{\alpha}(s) = -1  +  \frac{1}{n}\sum_{\mathbf{u}\in\Psi_s}\prod_{j=1}^s \left(1 - \frac{(-1)^{\alpha/2}(2\pi)^{\alpha}}{\alpha!} B_{\alpha}(u_j)\right), \tag{palpha.1}
  * \f]
  * where \f$B_{\alpha}(x)\f$ is the Bernoulli polynomial of degree
  * \f$\alpha\f$. The first Bernoulli polynomials of even degree are:
@@ -62,7 +62,7 @@ namespace LatMRG {
  * \f$\beta_I =\beta_0\prod_{j=1}^s\beta_j\f$, and for even \f$\alpha\f$
  * \anchor REF__PalphaProduct_palpha_2
  * \f[
- * \qquad P_{\alpha}(s) = \beta_0 \left\{-1  +  \frac{1}{n}\sum_{\mathbf{u}\in\Psi_s}   \prod_{j=1}^s \left(1 - \frac{(-1)^{\alpha/2}(2\pi)^{\alpha}\beta_j}{\alpha!} B_{\alpha}(u_j)\right) \right\}. \tag{palpha.2}
+ * \qquad P_{\alpha}(s) = \beta_0 \left\{-1  +  \frac{1}{n}\sum_{\mathbf{u}\in\Psi_s} \prod_{j=1}^s \left(1 - \frac{(-1)^{\alpha/2}(2\pi)^{\alpha}\beta_j}{\alpha!} B_{\alpha}(u_j)\right) \right\}. \tag{palpha.2}
  * \f]
  * One recovers the original criterion {@link REF__PalphaProduct_palpha_1
  * (palpha.1)} for \f$P_{\alpha}\f$ by choosing all \f$\beta_j = 1\f$.

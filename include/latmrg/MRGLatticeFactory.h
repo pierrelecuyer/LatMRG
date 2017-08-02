@@ -35,14 +35,14 @@ static MRGLattice * fromCombMRG (MRGComponent **comp, int J, int maxDim,
     *    x_n
     *    &
     *    =
-    *    (a_1 x_{n-1} + \cdots+ a_k x_{n-k} + c_{n-1}) d \mbox{ mod } b,
+    *    (a_1 x_{n-1} + \cdots+ a_k x_{n-k} + c_{n-1})d \mbox{ mod } b,
     *  \\
     *   c_n
     *    &
     *    =
-    *  \lfloor(a_0 x_n + a_1 x_{n-1} + \cdots+ a_k x_{n-k} + c_{n-1}) / b \rfloor
+    *  \lfloor(a_0 x_n + a_1 x_{n-1} +\cdots+ a_k x_{n-k} + c_{n-1}) / b \rfloor
     * \f}
-    * where \f$b\f$ is a positive integer, \f$a_0,…,a_k\f$ are arbitrary
+    * where \f$b\f$ is a positive integer, \f$a_0,\cdots,a_k\f$ are arbitrary
     * integers such that \f$a_0\f$ is relatively prime to \f$b\f$, and
     * \f$d\f$ is the multiplicative inverse of \f$-a_0\f$ mod \f$b\f$. The
     * MRG derived from such a MWC is defined by \f$ m = \sum^k_{l=0} a_l

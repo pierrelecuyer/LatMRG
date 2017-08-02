@@ -6,14 +6,14 @@ MRG							Gener. type
 2 63 -2247					m  (modulus)
 3							k  (order)
 NoCond
-1145902849652723 0  -1184153554609676	a (multiplier)				
+1145902849652723 0  -1184153554609676	a (multiplier)
 1
 4 12						MinDim    MaxDim
 true						Dual
 FULL						LatticeType
 1 1							LaGroupSizes   Spacings
 1000000000					MaxNodesBB
-true						If true, the inverse of the length of the shortest vector will be printed in the results, otherwise the length itself is printed.
+false						If true, the inverse of the length of the shortest vector will be printed in the results, otherwise the length itself is printed.
 0							details
 terminal	 				ResultForm
 
