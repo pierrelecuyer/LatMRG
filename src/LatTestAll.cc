@@ -220,7 +220,7 @@ int LatTestAll::doTest (const char *infile)
    Normalizer *normal = 0;
 
    if (config.criter == SPECTRAL) {
-      normal = lattice->getNormalizer (config.norma, 0);
+      normal = lattice->getNormalizer (config.norma, 0, config.dualF);
       // creates and returns the normalizer corresponding to config.norma
       normal->setNorm (config.norm);
    } else if (config.criter == PALPHA &&

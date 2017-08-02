@@ -225,16 +225,18 @@ void IntLattice::copy (const IntLattice & lat)
 
 //=========================================================================
 
-Normalizer * IntLattice::getNormalizer (NormaType norma, int alpha)
+Normalizer * IntLattice::getNormalizer (NormaType norma, int alpha, bool dualF)
 {
    int dim = getDim();
    Normalizer *normal;
 
    RScal logDensity;
-   logDensity = - m_order * log(m_modulo);
-   // PW_TODO
-   // on travaille dans le dual à chaque fois ?
-   // NOOOOOONNNN EB
+
+   // PW_TODO : à tester
+   if (dualF) // dual basis 
+      logDensity = - m_order * log(m_modulo);
+   else // primal basis
+      logDensity = m_order * log(m_modulo);
 
    switch (norma) {
    case BESTLAT:

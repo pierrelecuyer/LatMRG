@@ -104,7 +104,8 @@ public:
     * `norma`. In the case of the \f$P_{\alpha}\f$ test, the argument
     * `alpha` = \f$\alpha\f$. In all other cases, it is unused.
     */
-   LatticeTester::Normalizer * getNormalizer (LatticeTester::NormaType norma, int alpha);
+   LatticeTester::Normalizer * getNormalizer (LatticeTester::NormaType norma, 
+                                              int alpha, bool dualF);
 
    /**
     * Does nothing is this base class.

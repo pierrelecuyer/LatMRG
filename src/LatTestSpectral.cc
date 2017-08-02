@@ -233,31 +233,9 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
          if (dim <= toDim) { // Calcul de S2.
             if (m_lat->getNorm () == L2NORM) {
 
-               /* PW_TODO : ancienne normalisation
-               // Calcul du log(base 2) de ||V1||^2.
-               lgvv1 = Lg (temp);
-
-               if ((m_S2toL2[dim] <= 0.0) || (0 != std::isinf(m_S2toL2[dim]))) {
-                  m_merit[dim] = exp2(lgvv1 - m_lat->getLgVolDual2 (dim)/dim)
-                                  / m_normalizer->getGamma (dim);
-               } else {
-                  m_merit[dim] = temp / m_S2toL2[dim];
-               }
-               */
-
-               /* PW_TODO
-               cout << "Dimension = " << dim;
-               cout << ".  m_S2toL2[dim] = " << m_S2toL2[dim];
-               cout << ".  shortestVector = " << temp;
-               cout << ".  Normalizer = " << m_normalizer->getPreComputedBound(dim);
-               cout << ".  getPreComputedBound = " << m_normalizer->getPreComputedBound(dim);
-               cout << ".  getBound = " << m_normalizer->getBound(dim);
-               cout << "." << endl;
-               */
-
                double normalizer2 = m_normalizer->getBound(dim);
-               cout << "NORMA : " << normalizer2 << endl;
                normalizer2 *= normalizer2;
+
                m_merit[dim] = temp / normalizer2;
 
                /*
@@ -292,26 +270,7 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
                m_merit[dim] = exp2(lgvv1 - normalizer2);
                */
 
-
-               /*
-               cout << "\n****** dim = " << dim << endl;
-               cout << "Shortest vector = " << sqrt(temp) << endl;
-               cout << "Upper bound = " << sqrt(normalizer2) << endl;
-               cout << "Merit = " << sqrt(temp) / sqrt(normalizer2) << endl;
-               */
             } else if (m_lat->getNorm () == L1NORM) {
-
-               // PW_TODO : ce qui était fait avant
-               /*
-               if ((m_S2toL2[dim] <= 0.0) || (std::isinf(m_S2toL2[dim]))) {
-                  double tmp = exp2 ((m_lat->getLgVolDual2 (dim) / 2.0
-                               + m_normalizer->getGamma(dim)) / dim);
-                  // Je ne suis pas sûr que c'est correct pour le primal
-                  m_merit[dim] = temp / trunc(tmp);
-               } else {
-                  m_merit[dim] = temp / m_S2toL2[dim];
-               }
-               */
 
                double normalizer = m_normalizer->getBound(dim);
                m_merit[dim] = temp / normalizer;
@@ -350,8 +309,6 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
 
             m_merit[dim] /= weight;
 
-            //cout << "la figure de merite vaut : " << m_merit[dim-1] << endl;
-
             // Si on sait deja que ce gen. ne pourra etre retenu,
             // on le rejette tout de suite et on arrete le test.
             if ((m_maxAllDimFlag && m_merit[dim] < minVal[toDim])
@@ -373,15 +330,11 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
       if (dim == toDim)
          break;
 
-      //PW_TODO ben emplacement et bon parametre m_dualF ? (ie veut dire qu'on travaille dans le dual?)
       if (m_dualF)
             m_lat->dualize ();
       m_lat->incDim ();
       red = Reducer(*m_lat);
    }
-
-
-   cout << endl;
 
    return true;
 }
