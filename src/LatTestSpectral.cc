@@ -164,7 +164,6 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
       exit (EXIT_FAILURE);
    }
 
-
    double mr;
    conv (mr, m_lat->getModulo ());
    double temp;
@@ -189,10 +188,13 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
       if (m_dualF)
          m_lat->dualize ();
 
+      cout << "\nDB initial basis =\n" << m_lat->getBasis() << endl;
+
       int dim = m_lat->getDim ();
 
       // pre-reduction step before BB with default parameters
       red.redBKZ(0.999999, 10, QUADRUPLE, dim);
+      //PW_TODO: hard coding?
 
       if (red.shortestVector (m_lat->getNorm ())) {
          // Calcul de D2. Pour Norm # L2NORM, suppose que VV est a jour.
@@ -200,18 +202,27 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
 
             m_lat->updateScalL2Norm (0);
             conv (temp, m_lat->getVecNorm (0));
+
             if (!m_dualF) {
+               // PW_TODO AVANT 
+               /*
                conv(te, temp);
                NScal m2;
                conv(m2, m_lat->getModulo ());
                m2 = m2*m2;
                te = te / m2;
                conv(temp, te);
+               */
             }
+
          } else {
+
             conv (temp, red.getMinLength ());
-            if (!m_dualF)
-               temp = temp / mr;
+
+            if (!m_dualF) {
+               // AVANT
+               //temp = temp / mr;
+            }
          }
          if (3 == m_detailF) {
             dispatchLatUpdate(*m_lat);
@@ -233,15 +244,30 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
          if (dim <= toDim) { // Calcul de S2.
             if (m_lat->getNorm () == L2NORM) {
 
-               double normalizer2 = m_normalizer->getBound(dim);
-               normalizer2 *= normalizer2;
-
-               m_merit[dim] = temp / normalizer2;
 
                /*
-                  Erwan : la version précédentes ne fonctionnait pas
-                  pour la base primal. J'ai fait à la main le calcul
-                  en détaillant. Ca marche bien avec les MMRG
+               double normalizer2 = m_normalizer->getBound(dim);
+               normalizer2 *= normalizer2;
+               cout << "DB length = " << sqrt(temp) << endl;
+               cout << "DB normalizer = " << sqrt(normalizer2) << endl;
+               m_merit[dim] = temp / normalizer2;
+               */
+
+               if (!m_dualF) {
+                  double normalizer = m_normalizer->getBound(dim);
+                  m_merit[dim] = log(temp) - 2*log(normalizer) - 2*log(mr);
+                  m_merit[dim] = exp(m_merit[dim]);
+               } else {
+                  double normalizer = m_normalizer->getBound(dim);
+                  m_merit[dim] = log(temp) - 2*log(normalizer);
+                  m_merit[dim] = exp(m_merit[dim]);
+               }
+
+
+               /*
+               //Erwan : la version précédentes ne fonctionnait pas
+               //pour la base primal. J'ai fait à la main le calcul
+               //en détaillant. Ca marche bien avec les MMRG
 
                // log du plus court vecteur
                // si on est dans le primal, on a déjà divisé le
@@ -267,18 +293,33 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
 
                // On passe à l'exponnentielle en comparant avec
                // le plus court vecteur.
-               m_merit[dim] = exp2(lgvv1 - normalizer2);
+               //m_merit[dim] = exp2(lgvv1 - normalizer2);
                */
+               
 
             } else if (m_lat->getNorm () == L1NORM) {
 
+               /*
                double normalizer = m_normalizer->getBound(dim);
                m_merit[dim] = temp / normalizer;
+               */
+
+
+               if (!m_dualF) {
+                  double normalizer = m_normalizer->getBound(dim);
+                  m_merit[dim] = log(temp) - log(normalizer) - log(mr);
+                  m_merit[dim] = exp(m_merit[dim]);
+               } else {
+                  double normalizer = m_normalizer->getBound(dim);
+                  m_merit[dim] = log(temp) - log(normalizer);
+                  m_merit[dim] = exp(m_merit[dim]);
+               }
+
 
                /*
-                  Erwan : la version précédentes ne fonctionnait pas
-                  pour la base primal. J'ai fait à la main le calcul
-                  en détaillant. Ca marche bien là.
+               Erwan : la version précédentes ne fonctionnait pas
+               pour la base primal. J'ai fait à la main le calcul
+               en détaillant. Ca marche bien là.
 
                // log du plus court vecteur
                // si on est dans le primal, on a déjà divisé le
@@ -303,6 +344,8 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
                // le plus court vecteur.
                m_merit[dim] = exp2(lgvv1 - normalizer2);
                */
+
+
 
             } else
                m_merit[dim] = temp;
