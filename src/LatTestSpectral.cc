@@ -188,8 +188,6 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
       if (m_dualF)
          m_lat->dualize ();
 
-      cout << "\nDB initial basis =\n" << m_lat->getBasis() << endl;
-
       int dim = m_lat->getDim ();
 
       // pre-reduction step before BB with default parameters
@@ -199,39 +197,35 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
       if (red.shortestVector (m_lat->getNorm ())) {
          // Calcul de D2. Pour Norm # L2NORM, suppose que VV est a jour.
          if (m_lat->getNorm () == L2NORM) {
-
             m_lat->updateScalL2Norm (0);
             conv (temp, m_lat->getVecNorm (0));
 
-            if (!m_dualF) {
-               // PW_TODO AVANT 
-               /*
+            // to work with (0,1) variables otherwise we get the rescaled values
+            /*if (!m_dualF) {
                conv(te, temp);
                NScal m2;
                conv(m2, m_lat->getModulo ());
                m2 = m2*m2;
                te = te / m2;
                conv(temp, te);
-               */
-            }
+            }*/
 
          } else {
-
             conv (temp, red.getMinLength ());
-
-            if (!m_dualF) {
-               // AVANT
-               //temp = temp / mr;
-            }
+            
+            // to work with (0,1) variables otherwise we get the rescaled values
+            /*if (!m_dualF)
+               temp = temp / mr;
+            */
          }
          if (3 == m_detailF) {
             dispatchLatUpdate(*m_lat);
             /*if (m_dualF) {
-               dispatchBaseUpdate (m_lat->getDualBasis());
-               dispatchBaseUpdate (m_lat->getBasis());
+               dispatchLatUpdate (m_lat->getDualBasis());
+               dispatchLatUpdate (m_lat->getBasis());
             } else {
-               dispatchBaseUpdate (m_lat->getBasis());
-               dispatchBaseUpdate (m_lat->getDualBasis());
+               dispatchLatUpdate (m_lat->getBasis());
+               dispatchLatUpdate (m_lat->getDualBasis());
             }*/
          }
          // weight factor:
@@ -244,110 +238,29 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
          if (dim <= toDim) { // Calcul de S2.
             if (m_lat->getNorm () == L2NORM) {
 
-
-               /*
-               double normalizer2 = m_normalizer->getBound(dim);
-               normalizer2 *= normalizer2;
-               cout << "DB length = " << sqrt(temp) << endl;
-               cout << "DB normalizer = " << sqrt(normalizer2) << endl;
-               m_merit[dim] = temp / normalizer2;
-               */
-
-               if (!m_dualF) {
+               if (!m_dualF) { // in case we work with rescaled values
                   double normalizer = m_normalizer->getBound(dim);
                   m_merit[dim] = log(temp) - 2*log(normalizer) - 2*log(mr);
                   m_merit[dim] = exp(m_merit[dim]);
-               } else {
+               } else { // general case
                   double normalizer = m_normalizer->getBound(dim);
                   m_merit[dim] = log(temp) - 2*log(normalizer);
                   m_merit[dim] = exp(m_merit[dim]);
                }
 
-
-               /*
-               //Erwan : la version précédentes ne fonctionnait pas
-               //pour la base primal. J'ai fait à la main le calcul
-               //en détaillant. Ca marche bien avec les MMRG
-
-               // log du plus court vecteur
-               // si on est dans le primal, on a déjà divisé le
-               // plus court vecteur par m voir BARRERECHERCHEEB
-               lgvv1 = Lg (temp);
-
-               // 2 * log de (gamma)
-               double normalizer2 = m_normalizer->getBound(dim);
-               double lgvol = 1./dim;
-               if(m_dualF)
-                  lgvol *= m_lat->getOrder() * Lg(m_lat->getModulo());
-               else
-                  lgvol *= -m_lat->getOrder() * Lg(m_lat->getModulo());
-               // lgvol = +k/dim * log(m) pour le dual
-               // lgvol = -k/dim * log(m) pour le primal
-
-               // on ajoute à la normalisation la partie sur
-               // la densité dans la lattice
-               normalizer2 += lgvol;
-
-               // Pour L2 NORM on le met au carré
-               normalizer2 += normalizer2;
-
-               // On passe à l'exponnentielle en comparant avec
-               // le plus court vecteur.
-               //m_merit[dim] = exp2(lgvv1 - normalizer2);
-               */
-               
-
             } else if (m_lat->getNorm () == L1NORM) {
 
-               /*
-               double normalizer = m_normalizer->getBound(dim);
-               m_merit[dim] = temp / normalizer;
-               */
-
-
-               if (!m_dualF) {
+               if (!m_dualF) { // in case we work with rescaled values
                   double normalizer = m_normalizer->getBound(dim);
                   m_merit[dim] = log(temp) - log(normalizer) - log(mr);
                   m_merit[dim] = exp(m_merit[dim]);
-               } else {
+               } else { // general case
                   double normalizer = m_normalizer->getBound(dim);
                   m_merit[dim] = log(temp) - log(normalizer);
                   m_merit[dim] = exp(m_merit[dim]);
                }
 
-
-               /*
-               Erwan : la version précédentes ne fonctionnait pas
-               pour la base primal. J'ai fait à la main le calcul
-               en détaillant. Ca marche bien là.
-
-               // log du plus court vecteur
-               // si on est dans le primal, on a déjà divisé le
-               // plus court vecteur par m voir BARRERECHERCHEEB
-               lgvv1 = Lg (temp);
-
-               // 2 * log de (gamma)
-               double normalizer2 = m_normalizer->getBound(dim);
-               double lgvol = 1./dim;
-               if(m_dualF)
-                  lgvol *= m_lat->getOrder() * Lg(m_lat->getModulo());
-               else
-                  lgvol *= -m_lat->getOrder() * Lg(m_lat->getModulo());
-               // lgvol = +k/dim * log(m) pour le dual
-               // lgvol = -k/dim * log(m) pour le primal
-
-               // on ajoute à la normalisation la partie sur
-               // la densité dans la lattice
-               normalizer2 += lgvol;
-
-               // On passe à l'exponnentielle en comparant avec
-               // le plus court vecteur.
-               m_merit[dim] = exp2(lgvv1 - normalizer2);
-               */
-
-
-
-            } else
+             } else
                m_merit[dim] = temp;
 
             m_merit[dim] /= weight;
