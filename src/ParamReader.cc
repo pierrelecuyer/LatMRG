@@ -637,50 +637,6 @@ void ParamReader::readMMRGLacunary(int ordre, int fromDim, int toDim,
       }
       return;
    }
-
-/*
-   const int t = lacGroupSize;
-   if (t > 0)
-      readZZ(lacSpacing, ln, 1);
-
-   if (((t == 1) && (lacSpacing == 1)) || (t > toDim)) {
-      lacunary = false;
-      if (RANK1 == genType)
-         return;
-      if (toDim <= ordre)
-         MyExit(2, "ParamReader::ReadLacunary:   toDim <= k");
-      return;
-   }
-
-   lacunary = true;
-   CreateVect (Lac, toDim);
-   //PW_TODO : toDim-1 ?
-
-   int i;
-   if (t < 0) {
-      for (i = 0; i < toDim; i++)
-         readBScal (Lac[i], ++ln, 0);
-      return;
-   }
-
-   NTL::ZZ Q1, Q;
-   if (t > 0)
-      Q1 = lacSpacing;
-
-   Q = 0;
-   i = 0;
-   while (true) {
-      for (int j = 0; j < t; j++) {
-         if (i < toDim) {
-            conv (Lac[i], Q + j);
-            i++;
-         } else
-            return;
-      }
-      Q += Q1;
-   }
-*/
-
 }
 
 //===========================================================================

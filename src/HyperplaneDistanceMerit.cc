@@ -66,7 +66,7 @@ double HyperplaneDistanceMerit::compute (const std::vector<long>& a, int n,
 
    // convert to NTL
    MVect big_a;
-   big_a.SetLength (projDim); //PW_TODO : ne connait pas .SetLength lorsqu'on travaille sans NTL et avec Boost
+   big_a.resize(projDim);
    //big_a[0] = 0;
    for (int j = 0; j < projDim; j++)
       big_a[j] = a[projection[j]];

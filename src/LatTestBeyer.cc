@@ -46,7 +46,6 @@ bool LatTestBeyer::test (int fromDim, int toDim, double minVal[])
    Reducer red (*m_lat);
 
    m_lat->dualize ();
-   //PW_TODO à voir si existe plus efficace
    red.preRedDieter (0);
    m_lat->dualize ();
 
