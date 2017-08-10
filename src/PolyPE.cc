@@ -150,7 +150,7 @@ std::string PolyPE::toString ()const
 void PolyPE::toVector (MVect & C)
 {
    // C = rep(*this);
-   for (int i = 0; i <= getK (); ++i) {
+   for (int i = 0; i < getK (); ++i) { //PW_TODO c'est sur pour getK() ?
       C[i] = rep (coeff (rep (*this), i));
    }
 }
