@@ -586,13 +586,13 @@ void ParamReader::readLacunary(int ordre, int fromDim, int toDim,
    }
 
    lacunary = true;
-   CreateVect (Lac, toDim);
-   //PW_TODO : toDim-1 ?
+   CreateVect (Lac, toDim-1);
 
    int i;
    if (t < 0) {
       for (i = 0; i < toDim; i++)
          readBScal (Lac[i], ++ln, 0);
+      //cout << "BVect Lac = " << Lac << endl;
       return;
    }
 
@@ -600,15 +600,17 @@ void ParamReader::readLacunary(int ordre, int fromDim, int toDim,
    if (t > 0)
       Q1 = lacSpacing;
 
-   Q = 0;
+   Q = 1; //PW_TODO: sur du 1 à la place de 0 ?
    i = 0;
    while (true) {
       for (int j = 0; j < t; j++) {
          if (i < toDim) {
             conv (Lac[i], Q + j);
             i++;
-         } else
+         } else {
+            //cout << "BVect Lac = " << Lac << endl;
             return;
+         }
       }
       Q += Q1;
    }

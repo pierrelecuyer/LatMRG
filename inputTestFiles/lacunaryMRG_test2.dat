@@ -8,10 +8,10 @@ MRG							Gener. type
 NoCond
 1968402271571654650			a (multiplier)				
 1
-2 30						MinDim    MaxDim
+2 11						MinDim    MaxDim
 true						Dual
 FULL						LatticeType
-3 1073741824					LaGroupSizes   Spacings
+3 1073741824 				LaGroupSizes   Spacings
 1000000000					MaxNodesBB
 true						If true, the inverse of the length of the shortest vector will be printed in the results, otherwise the length itself is printed.
 0							details
@@ -21,5 +21,24 @@ terminal	 				ResultForm
 MRG described by Pierre is "latmrg-accepted", example 3.
 modulo = 4611685301167870637
 a = 1968402271571654650
-
 s=3 successive values, with jumps of d=2^30=1073741824
+
+input line for lacunary pre-set:
+3 1073741824
+
+input line for same indices but arbitrary style:
+-11 11
+1    
+2    
+3    
+1073741825    
+1073741826    
+1073741827    
+2147483649    
+2147483650   
+2147483651    
+3221225473    
+3221225474	
+
+
+ 

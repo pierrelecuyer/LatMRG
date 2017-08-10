@@ -198,9 +198,8 @@ void ReportHeaderLat::printHeader ()
       int dim = m_config->td[1];
       m_writer->writeString ("dim = ");
       m_writer->writeInt (dim);
-      m_writer->writeString ("\n\nLacunary indices for each vector = {   ");
-
       if (m_config->genType[0] == MMRG) {
+         m_writer->writeString ("\n\nLacunary indices for each vector = {   ");
          MScal pre;
          conv (pre, -9);
          for (int i = 0; i < m_config->lacGroupSize; i++) {
@@ -212,10 +211,11 @@ void ReportHeaderLat::printHeader ()
             pre = r;
          }
       } else {
+         m_writer->writeString ("\n\nLacunary = {   ");
          // Print indices by group of s
          MScal pre;
          conv (pre, -9);
-         for (int i = 1; i <= dim; i++) {
+         for (int i = 0; i < dim; i++) {
             MScal r = m_config->Lac[i];
             if (pre < r - 1)
                m_writer->writeString ("\n   ");
