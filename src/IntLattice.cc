@@ -232,7 +232,6 @@ Normalizer * IntLattice::getNormalizer (NormaType norma, int alpha, bool dualF)
 
    RScal logDensity;
 
-   // PW_TODO : à tester
    if (dualF) // dual basis 
       logDensity = - m_order * log(m_modulo);
    else // primal basis
@@ -259,7 +258,6 @@ Normalizer * IntLattice::getNormalizer (NormaType norma, int alpha, bool dualF)
       break;
    case PALPHA_N:
       normal = new NormaPalpha (m_modulo, alpha, dim);
-      //PW_TODO : c'est bien ça ?
       break;
    default:
       cout << "normalizer:   no such case";
