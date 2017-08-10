@@ -11,6 +11,17 @@ using namespace std;
 using namespace NTL;
 using namespace LatticeTester;
 
+
+void testPrinting(BMat A, string name)
+{
+   for (int i = 0; i < A.size1(); i++) {
+      for (int j = 0; j < A.size2(); j++)
+         cout << name << "[" << i << "][" << j << "]=" << A(i,j) << "; ";
+      cout << endl;
+   }
+}
+
+
 namespace LatMRG
 {
 
@@ -42,6 +53,10 @@ bool LatTestBeyer::test (int fromDim, int toDim, double minVal[])
    while (true) {
       if (m_dualF)
          m_lat->dualize ();
+
+      //cout << "CURRENT BASIS =\n";
+      //testPrinting(m_lat->getBasis(), "testMatrix");
+
       bool success = red.reductMinkowski (0);
       int dim = m_lat->getDim ();
       if (success) {
