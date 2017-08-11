@@ -1,13 +1,22 @@
 #include <iostream>
+#include "latmrg/LatConfig.h"
+#include "latmrg/Writer.h"
+#include "latmrg/WriterRes.h"
+#include "latmrg/ReportLat.h"
+#include "latmrg/ReportHeaderLat.h"
+#include "latmrg/ReportFooterLat.h"
+#include "latmrg/LatTestAll.h"
 #include "latmrg/LatTestSpectral.h"
+#include "latmrg/LatTestBeyer.h"
+#include "latmrg/MMRGLattice.h"
 
 using namespace std;
 using namespace LatticeTester;
 using namespace LatMRG;
 
-void SavvidyMatrix(mat_ZZ_p& A, ZZ p, int N, ZZ s, ZZ m, ZZ b) {
+BMat SavvidyMatrix(BScal p, int N, BScal s, BScal m, BScal b) {
 	ZZ_p::init(p);
-    A.kill();
+	mat_ZZ_p A;
     A.SetDims(N,N);
     for (int j = 1; j < N; j ++) {
         for (int i = j+1; i < N; i++)
@@ -22,9 +31,14 @@ void SavvidyMatrix(mat_ZZ_p& A, ZZ p, int N, ZZ s, ZZ m, ZZ b) {
             A[i][j] = 1;
     }
     A[2][1] += conv<ZZ_p>(s);
+
+    return conv<BMat>(A);
 }
 
 //==========================================================================
+
+
+//PW_TODO : clarifier notations
 
 int main ()
 {
@@ -32,37 +46,37 @@ int main ()
 	//----------------------------------------------------------------------
 	CriterionType criter = SPECTRAL;
 	NormaType norma = BESTLAT;		
-	NormType norm = L2NORM;
-	//bool readGenFile = false;						
+	NormType norm = L2NORM;					
 	int J = 1;
-
-	MRGComponent **comp;
-
-	GenType genType = MMRG; //GenType *genType;
-	ZZ m = power_ZZ(2,29)-3;
-	int k = 3; 
-	ZZ d = conv<ZZ>(0);
-	ZZ c = conv<ZZ>(1);
-	ZZ b; b = 2; b -= 2*c;
-	BMat A;
-	SavvidyMatrix(mat_ZZ_p& A, ZZ m, int k, ZZ d, ZZ c, ZZ b)
+	GenType genType = MMRG;
+	//BScal m = power_ZZ(2,29)-3;
+   BScal m = conv<ZZ>("2305843009213693951");
+	int k = 8;
+	BScal param_d = conv<ZZ>(0);
+   BScal param_c = power_ZZ(2,53) + 1;
+	BScal param_b; param_b = 2; param_b -= 2*param_c;
+	BMat A = SavvidyMatrix(m, k, param_d, param_c, param_b);
 	//1
 	int d = 1;
-	int *td;
-	int fromDim = 4;
-	int toDim = 8;
+	int fromDim = 9;
+	int toDim = 38;
 	bool dualF = true;
 	LatticeType latType = FULL;
 
-	int Lacunary = 0; // ou bool ?
-	int lacGroupSize;
-	BScal lacSpacing;
+	int lacunary;
+	int lacGroupSize = 0;
+	if (lacGroupSize == 0)
+		lacunary = 0;
+	else
+		lacunary = 1;
 	BVect Lac;
-
-	long MaxNodesBB = 1000000000;
-	bool invertF = false; // If true, the inverse of length of the shortest vector is printed, otherwise the length itself is printed.
+	Lac.resize(lacGroupSize);
+	//Lac[0] = 6;
+	BScal lacSpacing;
+	long maxNodesBB = 1000000000;
+	bool invertF = false; // If true = inverse of length, if false = length itself
 	int detailF = 0;
-	OutputType outputType = "terminal";
+	OutputType outputType = TERMINAL;
 
 
 	// creating a LatConfig object to store all the parameters
@@ -80,61 +94,62 @@ int main ()
     config.J = J;
 	config.setJ (config.J);
 
-for (int i = 0; i < config.J; i++) {
-	config.genType[i] = &genType;
-	config.comp[i] = new MRGComponent(m, A, k);
-}
+	for (int i = 0; i < config.J; i++) {
+		config.genType[i] = genType;
+		config.comp[i] = new MRGComponent(m, A, k);
+	}
 
-config.d = d;
-if (config.d < 1) {
-  MyExit (1, "ParamReaderLat:   config.d < 1");
-}
-config.td = new int[config.d];
-config.td[0] = fromDim;
-config.td[1] = toDim;
-
-
-config.dualF = dualF;
-config.latType = latType;
-
-if ((config.genType[0] == RANK1 || config.genType[0] == KOROBOV) && config.latType != FULL)
-	MyExit (1, "ParamReaderLat:   latType must be FULL for KOROBOV or RANK1 lattices");
- 
-if (config.latType == ORBIT) {
-	MyExit (1, "case ORBIT is not finished");
-	//PW_TODO
-   	//readOrbit (config.J, config.comp, ++ln);
-}
-
-config.lacunary = lacunary;
-config.lacGroupSize = lacGroupSize;
-config.lacSpacing = lacSpacing;
-config.Lac = Lac;
-config.maxNodesBB = maxNodesBB;
-config.invertF = invertF;
-config.detailF = detailF;
-config.outputType = outputType;
+	config.d = d;
+	if (config.d < 1) {
+	  MyExit (1, "ParamReaderLat:   config.d < 1");
+	}
+	config.td = new int[config.d];
+	config.td[0] = fromDim;
+	config.td[1] = toDim;
 
 
+	config.dualF = dualF;
+	config.latType = latType;
 
+	if ((config.genType[0] == RANK1 || config.genType[0] == KOROBOV) && config.latType != FULL)
+		MyExit (1, "ParamReaderLat:   latType must be FULL for KOROBOV or RANK1 lattices");
+	 
+	if (config.latType == ORBIT) {
+		MyExit (1, "case ORBIT is not finished");
+		//PW_TODO
+	   	//readOrbit (config.J, config.comp, ++ln);
+	}
 
+	config.lacunary = lacunary;
+	config.lacGroupSize = lacGroupSize;
+	config.lacSpacing = lacSpacing;
+	config.Lac = Lac;
+	config.maxNodesBB = maxNodesBB;
+	config.invertF = invertF;
+	config.detailF = detailF;
+	config.outputType = outputType;
 
 
 	// building the MMRGLattice and LatTestSpectral objects
-	string fname (infile);
-  	fname += ".dat";
-   	ParamReaderLat paramRdr (fname.c_str ());
-   	fname.clear ();
-	Writer* rw = createWriter (infile, config.outputType);
+	//----------------------------------------------------------------------
+   	string infile = "name";
+    LatTestAll latTestAll;
+    Writer* rw = latTestAll.createWriter (infile.c_str(), config.outputType);
 
 	LatMRG::IntLattice *lattice = 0;
 	LatMRG::IntLattice *master = 0;
 	Lacunary *plac = 0;
 	bool stationary = true;
-	int toDim = config.td[1];
-	int fromDim = config.td[0];
 	bool memLacF = true; 
 
+
+	if (memLacF && config.lacunary) {
+		lattice = new MMRGLattice (config.comp[0]->getM(), config.comp[0]->A,
+									toDim,config.comp[0]->k, config.Lac, config.norm);           
+	} else {
+		lattice = new MMRGLattice (config.comp[0]->getM(), config.comp[0]->A,
+									toDim,config.comp[0]->k, config.norm);
+	}
 
 	ReportHeaderLat header (rw, &config, lattice);
 	ReportFooterLat footer (rw);
@@ -164,37 +179,11 @@ config.outputType = outputType;
 				spectralTest.setDetailFlag (config.detailF);
 				spectralTest.setMaxAllDimFlag (true);
 				spectralTest.setMaxNodesBB (config.maxNodesBB);
-				if (1 == config.d) {
-					spectralTest.test (fromDim, toDim, minVal);
-					// lattice->write();
-					footer.setLatticeTest (&spectralTest);
-					report.printTable ();
-					report.printFooter ();
-				} else {
-					if (config.genType[0] == MRG || config.genType[0] == LCG)
-						master = new MRGLattice (*(MRGLattice *) lattice);
-					else if (config.genType[0] == KOROBOV)
-						master = new KorobovLattice (*(KorobovLattice *) lattice);
-					else if (config.genType[0] == RANK1)
-						master = new Rank1Lattice (*(Rank1Lattice *) lattice);
-
-					master->buildBasis (toDim);
-					TestProjections proj (master, lattice, &spectralTest, config.td, config.d);
-					proj. setOutput (rw);
-					// proj.setDualFlag (config.dualF);
-					proj.setPrintF (true);
-					double merit = proj.run (stationary, false, minVal);
-					int nbProj = proj.getNumProjections ();
-					rw->writeString ("\nMin merit:   ");
-					rw->writeDouble (sqrt (merit));
-					rw->newLine ();
-					rw->writeString ("Num projections:   ");
-					rw->writeInt (nbProj);
-					rw->newLine ();
-					// nbProj = proj.calcNumProjections(stationary, false);
-					// cout << "Num projections2:  " << nbProj << endl << endl;
-					delete master;
-				}
+				spectralTest.test (fromDim, toDim, minVal);
+				// lattice->write();
+				footer.setLatticeTest (&spectralTest);
+				report.printTable ();
+				report.printFooter ();
 			}
 			break;
 
@@ -226,8 +215,7 @@ config.outputType = outputType;
 	delete plac;
 	delete lattice;
 	delete rw;
-	return 0;
-
 
 	return 0;
 }
+

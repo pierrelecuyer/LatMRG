@@ -37,7 +37,8 @@ public:
     */
    int doTestDir (const char *dirname);
 
-private:
+//private:
+//PW_TODO voir comment c'était avant
 
    /**
     * Returns a `Writer` created from the input file `infile` and the given
