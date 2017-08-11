@@ -72,18 +72,6 @@ public:
     */
    MRGComponent **comp;
 
-   /*
-    * The minimal dimension for which the test will be performed. ************
-    * REMPLACÉ PAR `td[0]`. À ÉLIMINER.
-    */
-   //   int fromDim;
-
-   /*
-    * The maximal dimension for which the test will be performed. ************
-    * REMPLACÉ PAR `td[1]`. À ÉLIMINER.
-    */
-   //   int toDim;
-
    /**
     * The number of categories of projections (see `td` below). The
     * classical case corresponds to \f$d=1\f$, for which the chosen test
@@ -185,7 +173,7 @@ public:
    /**
     * \copydoc lacGroupSize
     */
-   NTL::ZZ lacSpacing;
+   BScal lacSpacing;
 
    /**
     * The lacunary indices, either read explicitly or computed from
@@ -228,6 +216,7 @@ public:
     * of the possible output types.
     */
    LatticeTester::OutputType outputType;
+
 };
 
 }
