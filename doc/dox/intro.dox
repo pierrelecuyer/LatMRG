@@ -2,7 +2,9 @@
  * \page intro Background and overview
  *
  *   LatMRG is a software system implemented as a library of classes written
- * in the C++ language. It provides different tools for studying the
+ * in the C++ language. 
+ *
+ *   It provides different tools for studying the
  * structure of lattices in the real space and for examining the theoretical
  * properties of random number generators based on linear recurrences in
  * modular arithmetic or the properties of integration lattices (for now,
