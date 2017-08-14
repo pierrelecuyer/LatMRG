@@ -101,7 +101,6 @@ double HyperplaneDistanceMerit::compute (const std::vector<long>& a, int n,
    double sqlength0 = m_normalizer.getGamma(projDim) * pow(n, 2.0 / projDim);
    // FIXME: use logarithms for big integers
    // FIXME: warn Richard about m_lgVolDual2 not being initialized in IntLattice through calcLgVolDual2()
-   // PW_TODO : voir ces merdes
 
    double merit = sqrt(sqlength0 / sqlength);
 
