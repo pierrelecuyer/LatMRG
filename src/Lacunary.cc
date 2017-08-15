@@ -31,7 +31,7 @@ std::string Lacunary::toString () const
    std::ostringstream out;
    out << "dim = " << m_dim;
    out << "\nLac = {\n   ";
-   for (int i = 1; i <= m_dim; i++)
+   for (int i = 0; i < m_dim; i++)
       out << m_lac[i] << "\n   ";
    out << "}\n";
    return out.str ();

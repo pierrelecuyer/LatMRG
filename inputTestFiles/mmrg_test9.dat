@@ -9,10 +9,12 @@ MMRG						Gener. type
 0 0 1
 -1184153554609676 0 1145902849652723
 1
-4 40						MinDim    MaxDim
+4 7						MinDim    MaxDim
 true						Dual
 FULL						LatticeType
+3
 1
+2
 3							Lacunary
 1000000000					MaxNodesBB
 false						If true, the inverse of the length of the shortest vector will be printed in the results, otherwise the length itself is printed.

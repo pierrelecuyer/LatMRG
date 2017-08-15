@@ -40,6 +40,8 @@ BMat SavvidyMatrix(BScal p, int N, BScal s, BScal m, BScal b) {
 
 //PW_TODO : clarifier notations
 
+#if 0
+
 int main ()
 {
 	// parameters of the test
@@ -218,4 +220,6 @@ int main ()
 
 	return 0;
 }
+
+#endif
 

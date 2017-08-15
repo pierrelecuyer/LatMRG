@@ -293,6 +293,24 @@ void ParamReader::readGenType(GenType& field, unsigned int ln, unsigned int pos)
 
 //===========================================================================
 
+void ParamReader::readLacunaryType(LacunaryType& lacunaryType, unsigned int ln, unsigned int pos)
+{
+   string val;
+   getToken(val, ln, pos);
+
+   if (strcasecmp(val.c_str(), "NONE") == 0)
+      lacunaryType = NONE;
+   else if (strcasecmp(val.c_str(), "SUBVECTOR") == 0)
+      lacunaryType = SUBVECTOR;
+   else if (strcasecmp(val.c_str(), "ARBITRARYINDICES") == 0)
+      lacunaryType = ARBITRARYINDICES;
+   else
+      MyExit(1, "readLacunaryType:   NO SUCH CASE");
+}
+
+
+//===========================================================================
+
 void ParamReader::readMScal(MScal & field, unsigned int ln, unsigned int pos)
 {
    string val;
@@ -619,22 +637,35 @@ void ParamReader::readLacunary(int ordre, int fromDim, int toDim,
 //===========================================================================
 
 void ParamReader::readMMRGLacunary(int ordre, int fromDim, int toDim,
-   unsigned int & ln, bool & lacunary, int & lacGroupSize, NTL::ZZ & lacSpacing,
+   unsigned int & ln, bool & lacunary, lacunaryType & lacunaryType, int & numberLacIndices,
    BVect & Lac, GenType genType)
 {
-   readInt (lacGroupSize, ++ln, 0);
+   readLacunaryType(lacunaryType, ln, 0);
 
-   if (lacGroupSize == 0) {
-      lacunary = false;
-      return; 
-   } else {
+   if (lacunaryType == SUBVECTOR) {
+
+      // PW_TODO à compléter plus tard
+      readInt (numberLacIndices, ln, 1);
       lacunary = true;
-      CreateVect (Lac, lacGroupSize-1);
-      for (int i = 0; i < lacGroupSize; i++) {
+      CreateVect (Lac, numberLacIndices-1);
+      for (int i = 0; i < numberLacIndices; i++) {
          readBScal (Lac[i], ++ln, 0);
          if (Lac[i] > ordre)
             MyExit(1, "Lacunary indice too large. Must be smaller than the size of the generated vectors");
       }
+      
+   } else if (lacunaryType == ARBITRARYINDICES) {
+
+      readInt (numberLacIndices, ln, 1);
+      lacunary = true;
+      CreateVect (Lac, numberLacIndices-1);
+      for (int i = 0; i < numberLacIndices; i++)
+         readBScal (Lac[i], ++ln, 0);
+      return;
+
+   } else if (lacunaryType == NONE) {
+
+      lacunary = false;
       return;
    }
 }

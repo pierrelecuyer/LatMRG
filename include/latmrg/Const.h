@@ -112,6 +112,14 @@ enum ImplemCond { NO_COND, APP_FACT, POWER_TWO, EQUAL_COEF, ZERO_COEF };
 enum SearchMethod { EXHAUST, RANDOM };
 
 /**
+ * Indicates the type of lacunary projection used for MMRG:
+ * - NONE: no lacunary projection
+ * - SUBVECTOR: only the selected coordinates of each new random vector are kept
+ * - ARBITRARY: only the selected indices are kept.
+ */
+enum LacunaryType {NONE, SUBVECTOR, ARBITRARYINDICES };
+
+/**
  * \name toString functions
  *
  * Useful functions for printing the `enum` constants in this module.

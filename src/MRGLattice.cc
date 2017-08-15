@@ -344,7 +344,7 @@ void MRGLattice::incDimBasis()
 void MRGLattice::buildLaBasis (int d)
 {
 
-   // NOT USED
+   // NOT USED, see: MRGLatticeLac::buildBasis
 
    if (m_order > ORDERMAX)
       MyExit (1, "MRGLattice::buildLaBasis:   k > ORDERMAX");

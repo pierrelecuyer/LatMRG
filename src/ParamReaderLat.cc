@@ -187,8 +187,8 @@ void ParamReaderLat::read (LatConfig & config)
       }
 
       if (config.genType[0] == MMRG) {
-         readMMRGLacunary (k, fromDim, toDim, ln, config.lacunary, config.lacGroupSize, 
-                        config.lacSpacing, config.Lac, config.genType[0]);
+         readMMRGLacunary (k, fromDim, toDim, ln, config.lacunary, config.lacunaryType, 
+                        config.numberLacIndices, config.Lac, config.genType[0]);
       } else {
          readLacunary (k, fromDim, toDim, ln, config.lacunary, config.lacGroupSize, 
                         config.lacSpacing, config.Lac, config.genType[0]);

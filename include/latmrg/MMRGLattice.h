@@ -151,10 +151,19 @@ protected:
    bool m_lacunaryFlag;
 
    /**
+    * Type of the lacunary projection selected.
+    */
+   LacunaryType m_lacunaryType;
+   /**
     * Contains the lacunary indices when `LacunaryFlag` is `true`,
     * otherwise is undefined.
     */
    Lacunary m_lac;
+
+   /**
+    * Contains the number of lacunary indices
+    */ 
+   int m_numberLacIndices;
 
    /**
     * Matrix used for lacunary indices

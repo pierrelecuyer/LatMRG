@@ -271,9 +271,14 @@ ParamReader();
    /**
     * PW_TODO add description
     */
-   void readMMRGLacunary (int k, int fromDim, int toDim, unsigned int & ln,
-                      bool & lacunary, int & lacGroupSize, NTL::ZZ & lacSpacing,
+   void readMMRGLacunary(int ordre, int fromDim, int toDim, unsigned int & ln, 
+                      bool & lacunary, lacunaryType & lacunaryType, int & m_numberLacIndices,
                       BVect & Lac, GenType genType);
+
+   /**
+    * PW_TODO add description bis
+    */
+   void readLacunaryType(LacunaryType& lacunaryType, unsigned int ln, unsigned int pos);
 
    /**
     * Reads an output form from the <tt>pos</tt>-th token of the

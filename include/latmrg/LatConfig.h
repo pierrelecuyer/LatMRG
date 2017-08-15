@@ -217,6 +217,16 @@ public:
     */
    LatticeTester::OutputType outputType;
 
+   /**
+    * Type of lacunary type projection for MMRG
+    */
+    LacunaryType LacunaryType;
+
+    /**
+     * Number of lacunary indices used for projection
+     */
+     int numberLacIndices;
+
 };
 
 }
