@@ -184,6 +184,11 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
       //BOOST_DISPLAY
       ++show_progress;
 
+
+      cout << "primal basis = \n" << m_lat->getBasis() << endl;
+      cout << "dual basis = \n" << m_lat->getDualBasis() << endl;
+      
+
       if (m_dualF)
          m_lat->dualize ();
       int dim = m_lat->getDim ();

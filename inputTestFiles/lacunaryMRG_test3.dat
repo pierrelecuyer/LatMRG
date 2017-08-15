@@ -8,7 +8,7 @@ MRG							Gener. type
 NoCond
 11 1 7 9 13						a (multiplier)
 1
-2 7						MinDim    MaxDim
+2 6						MinDim    MaxDim
 true						Dual
 FULL						LatticeType
 -10 10
@@ -17,8 +17,7 @@ FULL						LatticeType
 8
 9
 11
-12
-13					LaGroupSizes   Spacings
+12					LaGroupSizes   Spacings
 1000000000					MaxNodesBB
 false						If true, the inverse of the length of the shortest vector will be printed in the results, otherwise the length itself is printed.
 0							details

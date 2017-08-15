@@ -365,17 +365,20 @@ void MMRGLattice::getSubLine(MVect & vec, MMat& B, int lign, int jMin, int jMax)
 
 void MMRGLattice::buildLacunaryBasisArbitrary (int dimension)
 {
-
    int sizeA = getOrder();
    m_vecNorm.resize(dimension);
    m_dualvecNorm.resize(dimension);
 
    int maxIndiceLac = conv<int>(m_lac[m_lac.getSize()-1]);
+
+
+   cout << "maxIndiceLac = " << maxIndiceLac << endl;
+   
    
    // building the complete basis until: dimension = max lacunary indice
    //-----------------------------------------------------------------------
    BMat tempBasis;
-   tempBasis.resize(maxIndiceLac+1, maxIndiceLac+1); 
+   tempBasis.resize(m_order, maxIndiceLac+1); 
    // PW_TODO meilleurs size à trouver
    // +1 because lacunary indices start at 0
 
@@ -415,23 +418,33 @@ void MMRGLattice::buildLacunaryBasisArbitrary (int dimension)
 
    // projecting over the columns of interest (lacunary indices)
    //-----------------------------------------------------------------------
-   m_wSI.resize(m_numberLacIndices, m_numberLacIndices);
-   m_vSI.resize(m_numberLacIndices, m_numberLacIndices);
+   m_wSI.resize(max(m_order, m_numberLacIndices), m_numberLacIndices);
+   m_vSI.resize(max(m_order, m_numberLacIndices), m_numberLacIndices);
+   // PW_TODO meilleurs size à trouver
 
    for (int j = 0; j < m_numberLacIndices; j++) {
-      for (int i = 0; i < m_numberLacIndices; i++)
+      for (int i = 0; i < m_order; i++)
          m_wSI[i][j] = tempBasis[ i ][ conv<int>(m_lac[j]) ];
    }
 
 
-   cout << "LAC_DEBUG tempBasis = \n" << tempBasis << endl;
-   cout << "LAC_DEBUG m_wSI = \n" << m_wSI << endl;
+   cout << "tempBasis = \n" << tempBasis << endl;
+   cout << "projection = \n" << m_wSI << endl;
+   cout << "\n********************\n" << endl;
+   cout << "m_vSI = \n" << m_vSI << endl;
+   cout << "m_wSI = \n" << m_wSI << endl;
+   cout << "--------------------" << endl;
 
 
    // transforming this generating familly into a basis of the lattice
    //-----------------------------------------------------------------------
    Triangularization <BMat> (m_wSI, m_vSI, m_order, m_numberLacIndices, m_modulo);
    CalcDual <BMat> (m_vSI, m_wSI, m_numberLacIndices, m_modulo);
+
+   
+   cout << "m_vSI = \n" << m_vSI << endl;
+   cout << "m_wSI = \n" << m_wSI << endl;
+
 
 
    //building the basis in dimension 1
@@ -618,12 +631,6 @@ void MMRGLattice::incrementDimLacunaryBasisArbitrary(int Imax)
    }
 */
 
-   cout << "\n---- incrementDimLacunaryBasisArbitrary ----" << endl;
-   cout << "new dimension = " << dim << endl;
-   cout << "primal basis AVANT =\n" << m_basis << endl;
-   cout << "dual basis AVANT =\n" << m_dualbasis << endl;
-
-
    BVect tempLineBasis (dim);
    BVect tempColBasis (dim);
 
@@ -683,10 +690,6 @@ void MMRGLattice::incrementDimLacunaryBasisArbitrary(int Imax)
    setNegativeNorm ();
    setDualNegativeNorm ();
 
-
-   cout << "primal basis APRES =\n" << m_basis << endl;
-   cout << "dual basis APRES =\n" << m_dualbasis << endl;
-   cout << "---- fin incrementDimLacunaryBasisArbitrary ----" << endl;
 }
 
 

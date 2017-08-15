@@ -1,30 +1,32 @@
-BEYER           				LatticeInfo
+SPECTRAL BESTLAT           				LatticeInfo
 L2NORM									Norm
 FALSE									ReadGenFile
 1										J  (Nb. of components)
 MMRG									Gener. type
-2 63 -2247								m  (modulus)
-3										k  (order)
-0 1 0
-0 0 1
--1184153554609676 0 1145902849652723	A (matrix)
+4611686018427341489						m  (modulus)
+7										k  (order)
+1 1 1 1 1 1 1
+1 2 1 1 1 1 1 
+1 4 2 1 1 1 1
+1 4 3 2 1 1 1 
+1 5 4 3 2 1 1 
+1 6 5 4 3 2 1 
+1 7 6 5 4 3 2 							A (matrix)
 1
-4 12									MinDim    MaxDim
-false									Dual
+3 10									MinDim    MaxDim
+true									Dual
 FULL									LatticeType
-ARBITRARYINDICES 12						Lacunary type
-2
-5
-8
+ARBITRARYINDICES 10						Lacunary type
+0
+6
+7
+10
 11
-14
+15	
 17
 20
 23
-26
-29
-32
-35						
+24	
 1000000000								MaxNodesBB
 false									If true, the inverse of the length of the shortest vector will be printed in the results, otherwise the length itself is printed.
 0										details
@@ -38,8 +40,53 @@ terminal	 							ResultForm
 97715140 195637636 201812864
 101381044 9996681 309223913
 
+
 # matrix for MRG described in example 7 (to be tested with lacunary indices only last coordinate)
 2 63 -2247
 0 1 0
 0 0 1
 -1184153554609676 0 1145902849652723	
+
+
+Savvidy matrix in README (3 parameter family):
+N = 8
+s = 0
+m = 2^53+1
+b = 2-2*m
+2 61 -1
+1 1 1 1 1 1 1 1
+1 2 1 1 1 1 1 1
+1 9007199254740995 2 1 1 1 1 1
+1 18014398509481988 9007199254740995 2 1 1 1 1
+1 27021597764222981 18014398509481988 9007199254740995 2 1 1 1
+1 36028797018963974 27021597764222981 18014398509481988 9007199254740995 2 1 1
+1 45035996273704967 36028797018963974 27021597764222981 18014398509481988 9007199254740995 2 1
+1 54043195528445960 45035996273704967 36028797018963974 27021597764222981 18014398509481988 9007199254740995 2
+
+
+Savvidy matrix of table 2, parameters:
+N = 17
+s = 0
+m = 1
+b = 0
+4611686018427341489
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+1 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+1 4 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+1 4 3 2 1 1 1 1 1 1 1 1 1 1 1 1 1
+1 5 4 3 2 1 1 1 1 1 1 1 1 1 1 1 1
+1 6 5 4 3 2 1 1 1 1 1 1 1 1 1 1 1
+1 7 6 5 4 3 2 1 1 1 1 1 1 1 1 1 1
+1 8 7 6 5 4 3 2 1 1 1 1 1 1 1 1 1
+1 9 8 7 6 5 4 3 2 1 1 1 1 1 1 1 1
+1 10 9 8 7 6 5 4 3 2 1 1 1 1 1 1 1
+1 11 10 9 8 7 6 5 4 3 2 1 1 1 1 1 1
+1 12 11 10 9 8 7 6 5 4 3 2 1 1 1 1 1
+1 13 12 11 10 9 8 7 6 5 4 3 2 1 1 1 1
+1 14 13 12 11 10 9 8 7 6 5 4 3 2 1 1 1
+1 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1 1
+1 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2 1
+1 17 16 15 14 13 12 11 10 9 8 7 6 5 4 3 2
+
+
+
