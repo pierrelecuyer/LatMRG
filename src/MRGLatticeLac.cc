@@ -86,8 +86,6 @@ void MRGLatticeLac::setLac (const Lacunary & lac)
 
 void MRGLatticeLac::buildBasis (int d)
 {
-   cout << "iciii" << endl;
-
    int ord = m_order;
 
    initStates ();
@@ -117,12 +115,13 @@ void MRGLatticeLac::buildBasis (int d)
    }
 
 
+   /*
    cout << "m_order = " << m_order << endl;
    cout << "IMax = " << IMax << endl;
    cout << "m_lac = " << m_lac.toString() << endl;
    cout << "m_wSI = \n" << m_wSI << endl;
    cout << "m_vSI = \n" << m_vSI << endl;
-
+   */
 
 
    //On veut s'assurer que la base m_v soit triangulaire (pour satisfaire
@@ -171,8 +170,6 @@ void MRGLatticeLac::initStates ()
  * considérés.
  */
 {
-   cout << "lààààà" << endl;
-
    clear (m_t2);
 
    if (m_latType == RECURRENT) {

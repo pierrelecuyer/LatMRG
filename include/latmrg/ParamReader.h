@@ -272,7 +272,7 @@ ParamReader();
     * PW_TODO add description
     */
    void readMMRGLacunary(int ordre, int fromDim, int toDim, unsigned int & ln, 
-                      bool & lacunary, lacunaryType & lacunaryType, int & m_numberLacIndices,
+                      bool & lacunary, LacunaryType & lacunaryType, int & m_numberLacIndices,
                       BVect & Lac, GenType genType);
 
    /**

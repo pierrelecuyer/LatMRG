@@ -220,7 +220,7 @@ public:
    /**
     * Type of lacunary type projection for MMRG
     */
-    LacunaryType LacunaryType;
+    LacunaryType lacunaryType;
 
     /**
      * Number of lacunary indices used for projection

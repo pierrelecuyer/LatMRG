@@ -82,7 +82,9 @@ int main ()
    
    //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/lacunaryMRG_test1";
    //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/lacunaryMRG_test2";
-   string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/lacunaryMRG_test3";
+   //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/lacunaryMRG_test3";
+   
+   string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/lacunaryMMRG_test1";
    
    //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/mmrg_test1";
    //string testLocation = "/Users/paulwambergue/UdeM/latmrg/inputTestFiles/mmrg_test2";

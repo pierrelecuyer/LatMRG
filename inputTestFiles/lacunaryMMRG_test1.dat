@@ -1,0 +1,45 @@
+BEYER           				LatticeInfo
+L2NORM									Norm
+FALSE									ReadGenFile
+1										J  (Nb. of components)
+MMRG									Gener. type
+2 63 -2247								m  (modulus)
+3										k  (order)
+0 1 0
+0 0 1
+-1184153554609676 0 1145902849652723	A (matrix)
+1
+4 12									MinDim    MaxDim
+false									Dual
+FULL									LatticeType
+ARBITRARYINDICES 12						Lacunary type
+2
+5
+8
+11
+14
+17
+20
+23
+26
+29
+32
+35						
+1000000000								MaxNodesBB
+false									If true, the inverse of the length of the shortest vector will be printed in the results, otherwise the length itself is printed.
+0										details
+terminal	 							ResultForm
+
+
+
+# Afflerbach et Grothe
+2 29 -3
+32009361 506208029 281476751
+97715140 195637636 201812864
+101381044 9996681 309223913
+
+# matrix for MRG described in example 7 (to be tested with lacunary indices only last coordinate)
+2 63 -2247
+0 1 0
+0 0 1
+-1184153554609676 0 1145902849652723	

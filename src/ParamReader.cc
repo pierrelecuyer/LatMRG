@@ -637,7 +637,7 @@ void ParamReader::readLacunary(int ordre, int fromDim, int toDim,
 //===========================================================================
 
 void ParamReader::readMMRGLacunary(int ordre, int fromDim, int toDim,
-   unsigned int & ln, bool & lacunary, lacunaryType & lacunaryType, int & numberLacIndices,
+   unsigned int & ln, bool & lacunary, LacunaryType & lacunaryType, int & numberLacIndices,
    BVect & Lac, GenType genType)
 {
    readLacunaryType(lacunaryType, ln, 0);

@@ -146,7 +146,7 @@ int LatTestAll::doTest (const char *infile)
    LatConfig config;
    paramRdr.read (config);
    //config.write();
-   
+      
    Writer* rw = createWriter (infile, config.outputType);
 
    LatMRG::IntLattice *lattice = 0;
@@ -155,9 +155,8 @@ int LatTestAll::doTest (const char *infile)
    bool stationary = true;
    int toDim = config.td[1];
    int fromDim = config.td[0];
-   bool memLacF = true;        // Lacunary with only used lines-columns of
-   // bases
-   // memLacF = false; // Lacunary with all lines-columns of bases
+   bool memLacF = true; // Lacunary with only used lines-columns of bases
+   //memLacF = false; // Lacunary with all lines-columns of bases
 
    if (config.J > 1) { //Several MRG
       lattice = MRGLatticeFactory::fromCombMRG (config.comp, config.J,
@@ -202,7 +201,8 @@ int LatTestAll::doTest (const char *infile)
 
          if (memLacF && config.lacunary) {
             lattice = new MMRGLattice (config.comp[0]->getM(), config.comp[0]->A,
-                             toDim,config.comp[0]->k, config.Lac, config.norm);           
+                             toDim,config.comp[0]->k, config.lacunaryType,
+                             config.Lac, config.norm);           
          } else {
             lattice = new MMRGLattice (config.comp[0]->getM(), config.comp[0]->A,
                              toDim,config.comp[0]->k, config.norm);
@@ -232,7 +232,6 @@ int LatTestAll::doTest (const char *infile)
       plac = new Lacunary (config.Lac, toDim);
       lattice->setLac (*plac);
    }
-
 
    switch (config.criter) {
    case SPECTRAL: {

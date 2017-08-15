@@ -411,16 +411,25 @@ void MRGLattice::buildLaBasis (int d)
 void MRGLattice::incDimLaBasis(int IMax)
 {
 
+   //PW_TODO voir si les changements faits ici sont les bons.
+
    IntLattice::incDim();
 
    const int dim = getDim (); // new dimension (dim++)
 
+//PW_TODO
 /*
    if (dim >= IMax) {
       MyExit (0,
     "Dimension of the basis is too big:\nDim > Number of lacunary indices.");
    }
 */
+
+   cout << "\n---- incDimLaBasis ----" << endl;
+   cout << "new dimension = " << dim << endl;
+   cout << "primal basis AVANT =\n" << m_basis << endl;
+   cout << "dual basis AVANT =\n" << m_dualbasis << endl;
+
 
    BVect tempLineBasis (dim);
    BVect tempColBasis (dim);
@@ -480,6 +489,11 @@ void MRGLattice::incDimLaBasis(int IMax)
    //setDim (dim + 1);
    setNegativeNorm ();
    setDualNegativeNorm ();
+
+
+   cout << "primal basis APRES =\n" << m_basis << endl;
+   cout << "dual basis APRES =\n" << m_dualbasis << endl;
+   cout << "---- fin incDimLaBasis ----" << endl;
 
 }
 

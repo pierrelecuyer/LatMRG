@@ -40,8 +40,8 @@ public:
     * indices `lac`.
     */
   //PW_TODO à faire plus tard
-  MMRGLattice (const MScal & m, const MMat & A, int maxDim, int r, BVect & lac,
-      LatticeTester::NormType norm = LatticeTester::L2NORM, LatticeType lat = FULL);
+  MMRGLattice (const MScal & m, const MMat & A, int maxDim, int r, LacunaryType & lacunaryType,
+      BVect & lac, LatticeTester::NormType norm = LatticeTester::L2NORM, LatticeType lat = FULL);
 
    /**
     * Copy constructor. The maximal dimension of the created basis is set
@@ -121,9 +121,16 @@ protected:
    void buildNonLacunaryBasis (int dimension);
 
    /**
-    * Builds the basis of the MMRG recurrence in case of lacunary indices.
+    * Builds the basis of the MMRG recurrence in case of lacunary indices
+    * over sub-vectors.
     */
-   void buildLacunaryBasis (int dimension, BMat B);
+   void buildLacunaryBasisSubvector (int dimension, BMat B);
+
+   /**
+    * Builds the basis of the MMRG recurrence in case of arbitrary 
+    * lacunary indices 
+    */
+   void buildLacunaryBasisArbitrary (int dimension);
 
    /**
     * Increments the basis by 1 in case of non-lacunary indices.
@@ -134,6 +141,9 @@ protected:
     * Increments the basis by 1 in case of lacunary indices.
     */
    void incrementDimLacunaryBasis (BMat B);
+
+   //PW_TODO: to be fixed
+   void incrementDimLacunaryBasisArbitrary(int Imax);
 
    /**
     * The generator matrix of the recurrence.

@@ -152,7 +152,6 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
    //BOOST_DISPLAY
    boost::progress_display show_progress( toDim-fromDim+1 );
 
-
    m_merit.setDim(toDim);
    m_fromDim = fromDim;
    m_toDim = toDim;
@@ -185,15 +184,8 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
       //BOOST_DISPLAY
       ++show_progress;
 
-      cout << "\n----- LatTestSpectral -----" << endl;
-      cout << "PRIMAL BASIS = \n" << m_lat->getBasis() << endl;
-      cout << "DUAL BASIS = \n" << m_lat->getDualBasis() << endl;
-      cout << "----- fin LatTestSpectral -----\n" << endl;
-
-
       if (m_dualF)
          m_lat->dualize ();
-
       int dim = m_lat->getDim ();
 
       // pre-reduction step before BB with default parameters
