@@ -184,13 +184,15 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
       //BOOST_DISPLAY
       ++show_progress;
 
-
+      cout << "\n*******************************************************" << endl;
+      cout << "Dimension = " << m_lat->getDim() << endl;
       cout << "primal basis = \n" << m_lat->getBasis() << endl;
       cout << "dual basis = \n" << m_lat->getDualBasis() << endl;
-      
+      cout << "V*tranpose(W) = \n" << m_lat->getBasis() * transpose(m_lat->getDualBasis()) << endl;
 
       if (m_dualF)
          m_lat->dualize ();
+
       int dim = m_lat->getDim ();
 
       // pre-reduction step before BB with default parameters
@@ -198,6 +200,9 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
       //PW_TODO: hard coding?
 
       if (red.shortestVector (m_lat->getNorm ())) {
+
+         cout << "dual basis reduced = \n" << m_lat->getBasis() << endl;
+
          // Calcul de D2. Pour Norm # L2NORM, suppose que VV est a jour.
          if (m_lat->getNorm () == L2NORM) {
             m_lat->updateScalL2Norm (0);

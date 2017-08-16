@@ -430,20 +430,40 @@ void MMRGLattice::buildLacunaryBasisArbitrary (int dimension)
 
    cout << "tempBasis = \n" << tempBasis << endl;
    cout << "projection = \n" << m_wSI << endl;
-   cout << "\n********************\n" << endl;
+
+   cout << "\n******************************************\n" << endl;
+
+   cout << "\nAVANT TRIANGULARIZATION" << endl;
    cout << "m_vSI = \n" << m_vSI << endl;
    cout << "m_wSI = \n" << m_wSI << endl;
-   cout << "--------------------" << endl;
+
 
 
    // transforming this generating familly into a basis of the lattice
    //-----------------------------------------------------------------------
    Triangularization <BMat> (m_wSI, m_vSI, m_order, m_numberLacIndices, m_modulo);
-   CalcDual <BMat> (m_vSI, m_wSI, m_numberLacIndices, m_modulo);
 
-   
+   cout << "\nAPRES TRIANGULARIZATION, AVANT CALCDUAL" << endl;
    cout << "m_vSI = \n" << m_vSI << endl;
    cout << "m_wSI = \n" << m_wSI << endl;
+
+   
+   //m_vSI[0][1]=0;
+   //m_vSI[0][2]=1;
+   //m_vSI[1][2]=1;
+   //m_vSI[4][4]=m_modulo;
+   //cout << "MY CHANGES m_vSI = \n" << m_vSI << endl;
+   //cout << "MY CHANGES m_wSI = \n" << m_wSI << endl;
+   
+
+
+   CalcDual <BMat> (m_vSI, m_wSI, m_numberLacIndices, m_modulo);
+
+   cout << "\nAPRES CALCDUAL" << endl;
+   cout << "m_vSI = \n" << m_vSI << endl;
+   cout << "m_wSI = \n" << m_wSI << endl;
+
+   cout << "\n******************************************\n" << endl;
 
 
 
