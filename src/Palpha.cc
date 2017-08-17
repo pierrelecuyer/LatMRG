@@ -65,7 +65,7 @@ double Palpha::compute (const std::vector<long>& a, int n, const std::vector<int
    for (int i = 0; i < n; i++) {
       double prod = 1.0;
       for (std::vector<int>::const_iterator it = projection.begin(); it != projection.end(); ++it)
-         prod *= m_bern[i * a[*it]];
+         prod *= m_bern[i * (int) a[*it]];
       sum += prod;
    }
    sum /= n;

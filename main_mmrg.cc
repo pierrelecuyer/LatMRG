@@ -77,8 +77,8 @@ void SavvidyMatrix(mat_ZZ& A, int N, int s, int m, int b)
 
 void LacunaryMatrix (mat_ZZ& B, mat_ZZ& A, vec_ZZ& lacunaryIndices)
 {
-   int L = lacunaryIndices.length();
-   int N = A.NumCols();
+   int L = (int) lacunaryIndices.length();
+   int N = (int) A.NumCols();
 
    B.SetDims(L, N);
    for (int k = 0; k < L; k++)

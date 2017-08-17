@@ -109,6 +109,7 @@ bool LatTestPalpha::test (int fromDim, int toDim, double minVal[])
       cout << endl;
    }
 
+   //PW_TODO pourquoi c'est commenté ?
    //PalphaLCG palpha (*m_config);
    const int alpha = m_config->alpha;
    double x;

@@ -62,7 +62,7 @@ double HyperplaneDistanceMerit::compute (const std::vector<long>& a, int n,
    if (projection.size() <= 1)
       return 1.0;
 
-   int projDim = projection.size(); // projection order
+   int projDim = (int) projection.size(); // projection order
 
    // convert to NTL
    MVect big_a;

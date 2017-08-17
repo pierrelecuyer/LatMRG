@@ -235,7 +235,7 @@ void Discrepancy::setFourier (double *C, long n, int alpha)
 
 void Discrepancy::computeSigma(const std::vector<long> & z, double* C, long k) const
 {
-   int d = z.size() - 1;
+   long d = z.size() - 1;
    long s = 0;
    m_Sigma[1][1] = C[k];
 

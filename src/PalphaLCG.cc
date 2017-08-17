@@ -75,7 +75,7 @@ PalphaLCG::~PalphaLCG ()
 
 void PalphaLCG::setMult (long a)
 {
-   m_a = a;
+   m_a = (int) a;
 }
 
 
@@ -198,7 +198,7 @@ void PalphaLCG::calcPalpha2PerNonMax (int minDim, int maxDim, double P2[])
    M = m_m;
    A = m_a;
    const double InvM = 1.0 / M;
-   CreateVect (T, M - 1);
+   CreateVect (T, (int) M - 1);
    for (j = 0; j < M; ++j) {
       U = j * InvM;
       T[j] = 1.0 + DeuxPi2 * (UnSixieme + U * (U - 1.0));

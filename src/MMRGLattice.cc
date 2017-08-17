@@ -330,7 +330,7 @@ void MMRGLattice::buildLacunaryBasisSubvector (int dimension, BMat B)
    for (int i = 0; i < sizeA; i++)
       temp[i][i] = 1;
 
-   int sizeB = B.NumRows();
+   long sizeB = B.NumRows();
    int maxIter = ceil( (dimension-sizeA) / sizeB );
 
    for (int k = 0; k < maxIter+1; k++) {
@@ -339,7 +339,7 @@ void MMRGLattice::buildLacunaryBasisSubvector (int dimension, BMat B)
 
 
       if (k == maxIter) { // we completed the end of m_basis matrix
-         int residu = dimension - sizeA - maxIter * sizeB;
+         long residu = dimension - sizeA - maxIter * sizeB;
          for (int i = 0; i < sizeA; i++) {
             for (int j = 0; j < residu; j ++)
                m_basis[i][sizeA + k*sizeB + j] = conv<MScal>( (temp * conv<MMatP>(transpose(B))) [i][j]);
@@ -570,7 +570,7 @@ void MMRGLattice::incrementDimLacunaryBasis(BMat B)
    IntLattice::incDim();
    int newDimension = getDim();
    int sizeA = getOrder();
-   int sizeB = B.NumRows();
+   long sizeB = B.NumRows();
 
    // ************* update of the primal lattice *************
    //  - we add a new coordinate to each vector v_i, this value being determined

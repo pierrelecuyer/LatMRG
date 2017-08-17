@@ -152,7 +152,7 @@ double ExactDiscStar::compute2Dim (long z[])
    double tem, sem;
    double D = 0;               // discrepancy
    for (i = 0; i <= m_n; i++) {
-      insert2Dim (m_y[i], i);
+      insert2Dim (m_y[i], (int) i);
       for (k = 0; k <= i; k++) {
          tem = fabs (m_frac[k] - m_x[i] * m_Ksi[k]);
          sem = fabs (m_frac[k] - m_x[i + 1] * m_Ksi[k + 1]);
@@ -193,9 +193,9 @@ double ExactDiscStar::compute3Dim (long z[])
    m_Eta[1] = 1.;
 
    for (i = 0; i <= m_n; i++) {
-      insert_yz (m_y[i], m_z[i], i);
+      insert_yz (m_y[i], m_z[i], (int) i);
       for (k = 0; k <= i; k++) {
-         insert_z (m_temp[k], k);
+         insert_z (m_temp[k], (int) k);
          for (l = 0; l <= k; l++) {
             tem = fabs (m_x[l] - m_x[i] * m_Ksi[k] * m_Eta[l]);
             rem = fabs (m_x[l] - m_x[i + 1] * m_Ksi[k + 1] * m_Eta[l + 1]);

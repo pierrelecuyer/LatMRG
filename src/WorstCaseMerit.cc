@@ -38,7 +38,7 @@ double WorstCaseMerit::compute (const std::vector <long>&a, int n,
                                 double abortThreshold) const
 {
    // FIXME: start at order 2
-   int dim = a.size () - 1;
+   int dim = (int) a.size () - 1;
    ProjIteratorDefault proj (1, dim, 1, dim, false, m_alwaysLastCoord);
    return compute (a, n, proj, abortThreshold);
 }

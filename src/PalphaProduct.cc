@@ -109,7 +109,7 @@ double PalphaProduct::compute (const std::vector< long > & z, int n, double abor
             "from that used during object instantiation");
 
    // z est le vecteur générateur du réseau de rang 1
-   int d = z.size() - 1;
+   long d = z.size() - 1;
    double sum = 0;
    double prod;
 

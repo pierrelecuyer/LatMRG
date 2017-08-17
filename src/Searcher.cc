@@ -86,7 +86,7 @@ double Searcher::exhaust (int s, long n, bool relPrime)
    m_bestAs.assign(s + 1, 1L);
 
    while (y[2] < n) {
-      err = m_merit->compute (y, n, m_bestVal);
+      err = m_merit->compute (y, (int) n, m_bestVal);
       if (err < m_bestVal) {
          m_bestVal = err;
          // keep the best y in m_bestAs
@@ -126,7 +126,7 @@ double Searcher::randomPower2 (int s, long n, int k, bool relPrime)
          if (relPrime || (y[j] == 0))
             y[j] |= 1;
       }
-      err = m_merit->compute (y, n, m_bestVal);
+      err = m_merit->compute (y, (int) n, m_bestVal);
       if (err < m_bestVal) {
          m_bestVal = err;
          for (j = 2; j <= s; j++)
@@ -160,10 +160,10 @@ double Searcher::random (int s, long n, int k, bool relPrime)
       for (j = 2; j <= s; j++) {
          do {
             // y[j] = 1 + unif01_StripL (m_gen, 0, nm1);
-            y[j] = RandInt (1, nm1);
+            y[j] = RandInt (1, (int) nm1);
          } while (relPrime && (gcd (n, y[j]) != 1L));
       }
-      err = m_merit->compute (y, n, m_bestVal);
+      err = m_merit->compute (y, (int) n, m_bestVal);
       if (err < m_bestVal) {
          m_bestVal = err;
          for (j = 2; j <= s; j++)

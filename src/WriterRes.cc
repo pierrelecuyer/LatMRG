@@ -135,10 +135,10 @@ void WriterRes::writeTable (Table & data, const string pos)
          temp = data[i]->getFormattedValue (j);
 
          while ((curpos = temp.find ("\n", curpos)) != string::npos) {
-            int tmp = curpos - curpos_b - 1;
+            int tmp = (int) curpos - curpos_b - 1;
             max_length[i] = std::max (max_length[i], tmp);
             lig++;
-            curpos_b = curpos;
+            curpos_b = (int) curpos;
             curpos++;
          }
          if (curpos_b == -1) {
@@ -193,7 +193,7 @@ void WriterRes::writeTable (Table & data, const string pos)
             sub_data[i][j + offset + k + 1] =
                temp.substr (curpos_b, curpos);
             k++;
-            curpos_b = curpos;
+            curpos_b = (int) curpos;
             curpos++;
          }
          if (curpos_b > 0) {
@@ -214,7 +214,7 @@ void WriterRes::writeTable (Table & data, const string pos)
       for (int j = 0; j < t; j++) {
 
          align = pos[j];
-         length = sub_data[j][i].length ();
+         length = (int) sub_data[j][i].length ();
 
          switch (align) {
          case 'c':

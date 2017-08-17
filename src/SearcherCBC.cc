@@ -49,7 +49,7 @@ double SearcherCBC::exhaust (int s, long n, bool relPrime)
             }
          }
          y[j] = i;
-         err = m_merit->compute (y, n, best);
+         err = m_merit->compute (y, (int) n, best);
          if (err < best) {
             best = err;
             pos = i;
@@ -76,7 +76,7 @@ double SearcherCBC::random (int s, long n, int k, bool relPrime)
 
    bool power2F = isPower2(n);
    const int t = (int) (Lg(n) + 0.5);    // n = 2^t
-   const int nm1 = n - 1;
+   const int nm1 = (int) n - 1;
    int pos = -1;
    double err;
    double best = 0;
@@ -109,10 +109,10 @@ double SearcherCBC::random (int s, long n, int k, bool relPrime)
             } while (relPrime && (gcd (n, x) != 1));
          }
          y[j] = x;
-         err = m_merit->compute (y, n, best);
+         err = m_merit->compute (y, (int) n, best);
          if (err < best) {
             best = err;
-            pos = y[j];
+            pos = (int) y[j];
          }
          i++;
       }

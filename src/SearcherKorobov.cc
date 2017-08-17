@@ -56,7 +56,7 @@ double SearcherKorobov::exhaustPrimePower2 (int s, long n)
 
    for (long i = 1; i < n; i += 2) {
       calcAs (n, s, i, z);
-      err = m_merit->compute (z, n, bestVal);
+      err = m_merit->compute (z, (int) n, bestVal);
       if (err < bestVal) {
          bestVal = err;
          bestA = i;
@@ -88,7 +88,7 @@ double SearcherKorobov::exhaust (int s, long n, bool relPrime)
       if (relPrime && (gcd (n, i) != 1))
          continue;
       calcAs (n, s, i, z);
-      err = m_merit->compute (z, n, bestVal);
+      err = m_merit->compute (z, (int) n, bestVal);
       if (err < bestVal) {
          bestVal = err;
          bestA = i;
@@ -111,7 +111,7 @@ double SearcherKorobov::random (int s, long n, int k, bool relPrime)
 
    bool power2F = isPower2(n);
    const int t = (int) (Lg (n) + 0.5); // n = 2^t
-   const int nm1 = n - 1;
+   const int nm1 = (int) n - 1;
    double err;
    double bestVal = DBL_MAX;
    long bestA = -1;
@@ -134,7 +134,7 @@ double SearcherKorobov::random (int s, long n, int k, bool relPrime)
 
       i++;
       calcAs (n, s, a, z);
-      err = m_merit->compute (z, n, bestVal);
+      err = m_merit->compute (z, (int) n, bestVal);
       if (err < bestVal) {
          bestVal = err;
          bestA = a;

@@ -73,7 +73,7 @@ double OrdepBound::compute (const std::vector<long> & z, int n, double abortThre
             "from that used during object instantiation");
 
    double sum = 0.0;
-   int d = z.size() - 1;
+   long d = z.size() - 1;
 
    for (long k = 0; k < m_n; k++) {
      computeSigma(z, m_C, k);

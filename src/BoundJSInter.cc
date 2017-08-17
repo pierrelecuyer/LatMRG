@@ -24,7 +24,7 @@ void BoundJSInter::init (long el, double gamma[], int d)
    m_Beta = new double[m_dim + 1];
    setBeta (gamma, d);
 
-   int j;
+   long j;
    for (j = 1; j <= m_r; j++)
       m_GammaTil[j] = gamma[j]/el;
 
@@ -116,7 +116,7 @@ double BoundJSInter::compute (long z[], int d)
    double bound = 0;
    double prod;
    long s;
-   int j;
+   long j;
 
    for (j = 1; j <= m_r; j++)
       m_zTil[j] = z[j] * m_el;

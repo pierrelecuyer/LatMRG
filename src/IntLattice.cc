@@ -101,7 +101,7 @@ void IntLattice::incDim ()
 {
    IntLattice lattmp (*this);
    int dim = getDim();
-   int sizemat = m_basis.size1();
+   long sizemat = m_basis.size1();
    m_basis.resize(dim+1, dim+1);
    m_dualbasis.resize(dim+1, dim+1);
    m_vecNorm.resize(dim+1);
