@@ -50,10 +50,10 @@ MMRGLattice::MMRGLattice(const MScal & m, const MMat & A, int maxDim, int r,
                        LatticeType lat):
 
       IntLattice::IntLattice (m, r, maxDim, norm),
-      //PW_TODO à décommenter ?
-      //m_lac(lac, r),
       m_ip(0), 
       m_lac(lac, maxDim)
+      //m_lac(lac, r)
+      //PW_TODO r ou maxDim?
 {
    m_A = A;
    m_latType = lat;
@@ -63,10 +63,15 @@ MMRGLattice::MMRGLattice(const MScal & m, const MMat & A, int maxDim, int r,
    init();
 
    if (m_lacunaryType == SUBVECTOR) {
+
+      //PW_TODO c'était avant, à garder ?
       //initialization of B
+      /*
       m_B.resize(lac.length(), A.size1());
       for (int k = 0; k < lac.length(); k++)
          m_B[k][conv<int>(lac[k]) - 1] = 1;
+      */
+
    } else if (m_lacunaryType == ARBITRARYINDICES) {
       //PW_TODO
       // tester dans tous les sens si les mauvais paramètres sont donnés
@@ -228,10 +233,15 @@ string MMRGLattice::toStringGeneratorMatrix () const
 void MMRGLattice::buildBasis (int d)
 {
    if (m_lacunaryFlag) {
+
+      //PW_TODO à voir
+      /*
       if (m_lacunaryType == SUBVECTOR)
          buildLacunaryBasisSubvector(d, m_B);
       else if (m_lacunaryType == ARBITRARYINDICES)
          buildLacunaryBasisArbitrary(d);
+      */
+      buildLacunaryBasisArbitrary(d);
    }
    else
       buildNonLacunaryBasis(d);
@@ -369,11 +379,7 @@ void MMRGLattice::buildLacunaryBasisArbitrary (int dimension)
    m_vecNorm.resize(dimension);
    m_dualvecNorm.resize(dimension);
 
-   int maxIndiceLac = conv<int>(m_lac[m_lac.getSize()-1]);
-
-
-   cout << "maxIndiceLac = " << maxIndiceLac << endl;
-   
+   int maxIndiceLac = conv<int>(m_lac[m_lac.getSize()-1]); 
    
    // building the complete basis until: dimension = max lacunary indice
    //-----------------------------------------------------------------------
@@ -427,45 +433,31 @@ void MMRGLattice::buildLacunaryBasisArbitrary (int dimension)
          m_wSI[i][j] = tempBasis[ i ][ conv<int>(m_lac[j]) ];
    }
 
-
+   /*
    cout << "tempBasis = \n" << tempBasis << endl;
    cout << "projection = \n" << m_wSI << endl;
-
    cout << "\n******************************************\n" << endl;
-
    cout << "\nAVANT TRIANGULARIZATION" << endl;
    cout << "m_vSI = \n" << m_vSI << endl;
    cout << "m_wSI = \n" << m_wSI << endl;
-
-
+   */
 
    // transforming this generating familly into a basis of the lattice
    //-----------------------------------------------------------------------
    Triangularization <BMat> (m_wSI, m_vSI, m_order, m_numberLacIndices, m_modulo);
 
-   cout << "\nAPRES TRIANGULARIZATION, AVANT CALCDUAL" << endl;
-   cout << "m_vSI = \n" << m_vSI << endl;
-   cout << "m_wSI = \n" << m_wSI << endl;
-
-   
-   //m_vSI[0][1]=0;
-   //m_vSI[0][2]=1;
-   //m_vSI[1][2]=1;
-   //m_vSI[4][4]=m_modulo;
-   //cout << "MY CHANGES m_vSI = \n" << m_vSI << endl;
-   //cout << "MY CHANGES m_wSI = \n" << m_wSI << endl;
-   
-
+   //cout << "\nAPRES TRIANGULARIZATION, AVANT CALCDUAL" << endl;
+   //cout << "m_vSI = \n" << m_vSI << endl;
+   //cout << "m_wSI = \n" << m_wSI << endl;
 
    CalcDual <BMat> (m_vSI, m_wSI, m_numberLacIndices, m_modulo);
 
+   /*
    cout << "\nAPRES CALCDUAL" << endl;
    cout << "m_vSI = \n" << m_vSI << endl;
    cout << "m_wSI = \n" << m_wSI << endl;
-
    cout << "\n******************************************\n" << endl;
-
-
+   */
 
    //building the basis in dimension 1
    m_basis[0][0] = m_vSI[0][0];
@@ -490,10 +482,15 @@ void MMRGLattice::buildLacunaryBasisArbitrary (int dimension)
 void MMRGLattice::incDim()
 {
    if (m_lacunaryFlag) {
+
+      //PW_TODO à voir plus tard
+      /*
       if (m_lacunaryType == ARBITRARYINDICES)
          incrementDimLacunaryBasisArbitrary(m_numberLacIndices);
       else if (m_lacunaryType == SUBVECTOR)
          incrementDimLacunaryBasis (m_B);
+      */
+      incrementDimLacunaryBasisArbitrary(m_numberLacIndices);
    }
    else
       incrementDimNonLacunaryBasis ();

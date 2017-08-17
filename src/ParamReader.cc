@@ -647,12 +647,25 @@ void ParamReader::readMMRGLacunary(int ordre, int fromDim, int toDim,
       // PW_TODO à compléter plus tard
       readInt (numberLacIndices, ln, 1);
       lacunary = true;
-      CreateVect (Lac, numberLacIndices-1);
+
+      // storing the lacunary indices for each vector
+      BVect vectorSubLac;
+      CreateVect (vectorSubLac, numberLacIndices-1); 
       for (int i = 0; i < numberLacIndices; i++) {
-         readBScal (Lac[i], ++ln, 0);
-         if (Lac[i] > ordre)
+         if (vectorSubLac[i] > ordre)
             MyExit(1, "Lacunary indice too large. Must be smaller than the size of the generated vectors");
+         readBScal (vectorSubLac[i], ++ln, 0);
       }
+
+      // using those lacunary indices for each vector to build the arbitrary lacunary indices
+      CreateVect (Lac, toDim-1);
+      int alpha = 0;
+      for (int i = 0; i < toDim; i++) {
+         Lac[i] = vectorSubLac[i - alpha * numberLacIndices] + alpha * ordre;
+         if ( (i+1) % numberLacIndices == 0 )
+            alpha++;
+      } 
+      return;
       
    } else if (lacunaryType == ARBITRARYINDICES) {
 
