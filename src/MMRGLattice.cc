@@ -308,6 +308,8 @@ void MMRGLattice::buildNonLacunaryBasis (int dimension)
 
 void MMRGLattice::buildLacunaryBasisSubvector (int dimension, BMat B)
 {
+
+#if 0
    setDim(dimension);
    int sizeA = getOrder();
    m_basis.resize(dimension, dimension);
@@ -359,6 +361,8 @@ void MMRGLattice::buildLacunaryBasisSubvector (int dimension, BMat B)
    if (!checkDuality())
       MyExit (1, "BUG in MMRGLattice::buildNonLacunaryBasis");
 
+#endif
+   
 }
 
 //===========================================================================

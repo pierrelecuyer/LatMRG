@@ -21,11 +21,20 @@ MRGLattice *MRGLatticeFactory::fromCombMRG (MRGComponent ** comp, int J,
 {
    MScal _m;
    int _k = 1;
+   
+   /*
+   Remark: before the code was
+   ''
+   MScal _n[J];
 
+   ''
+   But this sends a compiler error: "variable length array of non-POD
+   type MScal".
+   So instead we decied to use a vector to perform the same operations
+   with _n[].
+   */
    MVect _n;
    _n.resize(J);
-   //MScal _n[J];
-   //PW_TODO : voir si cela fonctionne correctement
    
    MScal d, e, f, g;
 
@@ -104,6 +113,8 @@ MRGLattice *MRGLatticeFactory::fromCombMRG (MRGComponent ** comp, int J,
 
 //=========================================================================
 #if 0
+
+// maybe an old and not updated implementation ?
 
 MRGLattice *MRGLatticeFactory::fromCombMRG (const MScal * m,
       const MMat & coef, int MaxDim, int *k, int J, BVect * I, LatticeType lat,

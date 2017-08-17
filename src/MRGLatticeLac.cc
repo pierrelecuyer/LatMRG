@@ -134,23 +134,8 @@ void MRGLatticeLac::buildBasis (int d)
    //Triangularization qui pourrait nécessiter un appel pour chaque ligne,
    //mais qui sauverait beaucoup de mémoire.
    //Il n'est pas certain que cela en vaille la peine.
-
-
-
-   cout << "projection = \n" << m_wSI << endl;
-   cout << "\n********************\n" << endl;
-   cout << "m_vSI = \n" << m_vSI << endl;
-   cout << "m_wSI = \n" << m_wSI << endl;
-   cout << "--------------------" << endl;
-
-
-
    Triangularization <BMat> (m_wSI, m_vSI, ord, IMax, m_modulo);
    CalcDual <BMat> (m_vSI, m_wSI, IMax, m_modulo);
-
-
-   cout << "m_vSI = \n" << m_vSI << endl;
-   cout << "m_wSI = \n" << m_wSI << endl;
 
    // Construire la base de dimension 1
    m_basis[0][0] = m_vSI[0][0];

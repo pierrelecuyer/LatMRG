@@ -37,8 +37,10 @@ public:
     */
    int doTestDir (const char *dirname);
 
+
 //private:
-//PW_TODO voir comment c'était avant
+// no longer *private* because this function *createWriter()* is sometimes
+// called outside of this class.
 
    /**
     * Returns a `Writer` created from the input file `infile` and the given

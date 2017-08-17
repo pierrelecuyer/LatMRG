@@ -618,17 +618,17 @@ void ParamReader::readLacunary(int ordre, int fromDim, int toDim,
    if (t > 0)
       Q1 = lacSpacing;
 
-   Q = 1; //PW_TODO: sur du 1 à la place de 0 ?
+   Q = 1;
+   // before Q was starting at 1, but this was producing a shift in the
+   // indices of the lacunary vector.
    i = 0;
    while (true) {
       for (int j = 0; j < t; j++) {
          if (i < toDim) {
             conv (Lac[i], Q + j);
             i++;
-         } else {
-            //cout << "BVect Lac = " << Lac << endl;
+         } else 
             return;
-         }
       }
       Q += Q1;
    }
@@ -644,7 +644,6 @@ void ParamReader::readMMRGLacunary(int ordre, int fromDim, int toDim,
 
    if (lacunaryType == SUBVECTOR) {
 
-      // PW_TODO à compléter plus tard
       readInt (numberLacIndices, ln, 1);
       lacunary = true;
 

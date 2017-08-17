@@ -411,25 +411,15 @@ void MRGLattice::buildLaBasis (int d)
 void MRGLattice::incDimLaBasis(int IMax)
 {
 
-   //PW_TODO voir si les changements faits ici sont les bons.
-
    IntLattice::incDim();
-
    const int dim = getDim (); // new dimension (dim++)
 
-//PW_TODO
 /*
    if (dim >= IMax) {
       MyExit (0,
     "Dimension of the basis is too big:\nDim > Number of lacunary indices.");
    }
 */
-
-   cout << "\n---- incDimLaBasis ----" << endl;
-   cout << "new dimension = " << dim << endl;
-   cout << "primal basis AVANT =\n" << m_basis << endl;
-   cout << "dual basis AVANT =\n" << m_dualbasis << endl;
-
 
    BVect tempLineBasis (dim);
    BVect tempColBasis (dim);
@@ -440,16 +430,9 @@ void MRGLattice::incDimLaBasis(int IMax)
       for (int k = 0; k < dim-1; k++)
          tempLineBasis[k] = m_basis[i][k];
 
-      // v[i] -> VSI[0].
-      // for (int j = 0; j < dim; j++)
-      //    m_vSI[0][j] = m_basis[i][j];
-
-      //clear (m_vSI[i][0]);
-
       for (int i1 = 0; i1 < dim-1; i1++) {
 
          BScal tempScalDual;
-
          ProdScal (tempLineBasis, m_wSI[i1], dim, tempScalDual);
          Quotient (tempScalDual, m_modulo, tempScalDual);
          m_t1 = tempScalDual * m_vSI[i1][dim - 1];
@@ -468,7 +451,6 @@ void MRGLattice::incDimLaBasis(int IMax)
 
    for (int j = 0; j < dim-1; j++) {
 
-      //clear (m_wSI[0][j]);
       BScal tempScalDualBis;
 
       for (int i = 0; i < dim-1; i++) {
@@ -486,14 +468,8 @@ void MRGLattice::incDimLaBasis(int IMax)
    Quotient (m_modulo, m_vSI[dim - 1][dim - 1], m_t1);
    m_dualbasis[dim - 1][dim - 1] = m_t1;
 
-   //setDim (dim + 1);
    setNegativeNorm ();
    setDualNegativeNorm ();
-
-
-   cout << "primal basis APRES =\n" << m_basis << endl;
-   cout << "dual basis APRES =\n" << m_dualbasis << endl;
-   cout << "---- fin incDimLaBasis ----" << endl;
 
 }
 
@@ -568,8 +544,6 @@ MyExit (1, "case ORBIT is not finished");
  * Voir la déf du m effectif comparé au vrai m dans LATIO. Je soupçonne
  * que cela pourrait être l'origine des erreurs.
  */
-
-//PW_TODO voir ces merdes
 
  MyExit (1, "case RECURRENT ne fonctionne pas");
          printf("ESPION_RECURRENT\n");

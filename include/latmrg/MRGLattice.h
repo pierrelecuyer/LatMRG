@@ -148,6 +148,10 @@ protected:
 
    /**
     * Increments the basis by 1 in case of lacunary indices.
+    * Uses the method described in the article: P. L'Ecuyer and R. Couture, 
+    * "An Implementation of the Lattice and Spectral Tests for Multiple Recursive
+    * Linear Random Number Generators", INFORMS Journal on Computing, 9, 2 (1997), 
+    * page 206--217. Section 3, "Lacunary indices".
     */
    void incDimLaBasis (int);
 

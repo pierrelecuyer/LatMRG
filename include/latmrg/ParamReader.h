@@ -269,14 +269,21 @@ ParamReader();
                       BVect & Lac, GenType genType);
 
    /**
-    * PW_TODO add description
+    * Reads the lacunary configuration specified in the input file. If 
+    * *lacunaryType* is NONE, then the projection is done without lacunary
+    * indices. If *lacunaryType* is SUBVECTOR, the projection is performed
+    * using only the specified coordinates for each vector (*m_numberLacIndices*
+    * coordinates per vector) until the dimension *toDim* is reached. Finally, 
+    * if *lacunaryType* is ARBITRARYINDICES, the projection is performed using
+    * the specified indices (*m_numberLacIndices* of them). 
     */
    void readMMRGLacunary(int ordre, int fromDim, int toDim, unsigned int & ln, 
                       bool & lacunary, LacunaryType & lacunaryType, int & m_numberLacIndices,
                       BVect & Lac, GenType genType);
 
    /**
-    * PW_TODO add description bis
+    * Reads the type of lacunary projection used (either NONE, SUBVECTOR, or
+    * ARBITRARYINDICES).
     */
    void readLacunaryType(LacunaryType& lacunaryType, unsigned int ln, unsigned int pos);
 
