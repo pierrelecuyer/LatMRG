@@ -59,7 +59,7 @@ Table();
    /**
     * Return the numbers of columns in the table.
     */
-   int size() const { return m_columns.size(); }
+   int size() const { int result = (int) m_columns.size(); return result; }
 
    /**
     * Returns the column at position `pos`.

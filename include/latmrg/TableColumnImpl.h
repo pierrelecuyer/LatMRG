@@ -187,7 +187,8 @@ void TableColumnImpl<T>::setValue(void* value, unsigned int i)
 template <typename T>
 int TableColumnImpl<T>::size()
 {
-    return m_data.size();
+   int result = (int) m_data.size();
+   return result;
 }
 }
 #endif

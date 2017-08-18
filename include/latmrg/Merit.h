@@ -124,7 +124,7 @@ Merit ();
    /**
     * Returns the effective dimension of the vectors.
     */
-   int getDim () const { return m_normVal.size() - 1; }
+   int getDim () const { int result = (int) m_normVal.size()-1; return result; }
 
    /**
     * Returns the *unnormalized* value of the merit in dimension \f$j\f$.

@@ -53,9 +53,9 @@ bool LatticeTest::test (int minDim, int maxDim, double minVal[],
                         const double* weights)
 {
    throw "Not implemented with weights";
-   // compiler warnings
-   minDim = maxDim = -1;
-   minVal[0] =  weights[0];
+   // remark: compiler warnings
+   //minDim = maxDim = -1;
+   //minVal[0] =  weights[0];
 }
 
 

@@ -26,8 +26,6 @@ LatTestSpectral::LatTestSpectral (const Normalizer * normal,
 {
    m_criter = SPECTRAL;
    m_normalizer = normal;
-   int dim = lat->getDim();
-
 }
 
 
@@ -166,9 +164,11 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
    double mr;
    conv (mr, m_lat->getModulo ());
    double temp;
-   NScal te;
-   double lgvv1 = 0.0;
-
+   
+   //NScal te;
+   //double lgvv1 = 0.0;
+   // "unused variables" according to the compiler
+   
    while (m_lat->getDim () < fromDim)
       m_lat->incDim ();
 
