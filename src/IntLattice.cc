@@ -240,6 +240,10 @@ Normalizer * IntLattice::getNormalizer (NormaType norma, int alpha, bool dualF)
    else // primal basis
       logDensity = m_order * log(m_modulo);
 
+
+   //PW_TODO: quand dim < order, moins de points que ça
+   
+
    switch (norma) {
    case BESTLAT:
       normal = new NormaBestLat (logDensity, dim);
