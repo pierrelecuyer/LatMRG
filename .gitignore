@@ -7,3 +7,5 @@ main.cc
 latZZDD_test1.dat
 .waf-1.9.12-b227b06a1e8640d5a0d30ef8e165ab44/
 build/
+.lock-waf_darwin_build
+waf
