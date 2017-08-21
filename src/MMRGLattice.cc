@@ -61,21 +61,6 @@ MMRGLattice::MMRGLattice(const MScal & m, const MMat & A, int maxDim, int r,
    m_lacunaryType = lacunaryType;
    m_numberLacIndices = m_lac.getSize();
    init();
-
-   if (m_lacunaryType == SUBVECTOR) {
-
-      //PW_TODO c'était avant, à garder ?
-      //initialization of B
-      /*
-      m_B.resize(lac.length(), A.size1());
-      for (int k = 0; k < lac.length(); k++)
-         m_B[k][conv<int>(lac[k]) - 1] = 1;
-      */
-
-   } else if (m_lacunaryType == ARBITRARYINDICES) {
-      //PW_TODO
-      // tester dans tous les sens si les mauvais paramètres sont donnés
-   }
 }
 
 
@@ -140,6 +125,7 @@ void MMRGLattice::kill()
    // PW_TODO à quoi ça sert de killer ça ?
    m_sta.kill();
    m_wSI.kill();
+   //m_vSI.kill(); ??
 }
 
 //=========================================================================
@@ -183,6 +169,7 @@ void MMRGLattice::init()
    calcLgVolDual2 (lgm2);
    //if (m_latType == ORBIT)
    //   initOrbit();
+   //PW_TODO
 }
 
 //=========================================================================
@@ -232,17 +219,8 @@ string MMRGLattice::toStringGeneratorMatrix () const
 
 void MMRGLattice::buildBasis (int d)
 {
-   if (m_lacunaryFlag) {
-
-      //PW_TODO à voir
-      /*
-      if (m_lacunaryType == SUBVECTOR)
-         buildLacunaryBasisSubvector(d, m_B);
-      else if (m_lacunaryType == ARBITRARYINDICES)
-         buildLacunaryBasisArbitrary(d);
-      */
-      buildLacunaryBasisArbitrary(d);
-   }
+   if (m_lacunaryFlag)
+      buildLacunaryBasis(d);
    else
       buildNonLacunaryBasis(d);
 }
@@ -306,67 +284,6 @@ void MMRGLattice::buildNonLacunaryBasis (int dimension)
 
 //===========================================================================
 
-void MMRGLattice::buildLacunaryBasisSubvector (int dimension, BMat B)
-{
-
-#if 0
-   setDim(dimension);
-   int sizeA = getOrder();
-   m_basis.resize(dimension, dimension);
-   m_vecNorm.resize(dimension);
-   m_dualvecNorm.resize(dimension);
-   setNegativeNorm ();
-   setDualNegativeNorm ();
-
-   // filling in the diagonal of m_basis
-   for (int i = 0; i < sizeA; i++)
-      m_basis[i][i] = 1;
-   for (int i = sizeA; i < dimension; i++)
-      m_basis[i][i] = m_modulo;
-
-   // using genrator matrix A to complete the first lines of m_basis
-   // with values generatred by the recurrence
-   ZZ_p::init(m_modulo);
-   MMatP temp;
-   temp.SetDims(sizeA, sizeA);
-   for (int i = 0; i < sizeA; i++)
-      temp[i][i] = 1;
-
-   long sizeB = B.NumRows();
-   int maxIter = ceil( (dimension-sizeA) / sizeB );
-
-   for (int k = 0; k < maxIter+1; k++) {
-      // calculation of transpose(A^k)
-      temp *= conv<MMatP>(transpose(m_A));
-
-
-      if (k == maxIter) { // we completed the end of m_basis matrix
-         long residu = dimension - sizeA - maxIter * sizeB;
-         for (int i = 0; i < sizeA; i++) {
-            for (int j = 0; j < residu; j ++)
-               m_basis[i][sizeA + k*sizeB + j] = conv<MScal>( (temp * conv<MMatP>(transpose(B))) [i][j]);
-         }
-      } else {
-         for (int i = 0; i < sizeA; i++) {
-            for (int j = 0; j < sizeB; j ++)
-               m_basis[i][sizeA + k*sizeB + j] = conv<MScal>( (temp * conv<MMatP>(transpose(B))) [i][j]);
-         }
-      }
-   }
-
-   // we create the dual lattice associated
-   m_dualbasis.resize(dimension, dimension);
-   CalcDual<BMat>(m_basis, m_dualbasis, dimension, m_modulo);
-
-   if (!checkDuality())
-      MyExit (1, "BUG in MMRGLattice::buildNonLacunaryBasis");
-
-#endif
-   
-}
-
-//===========================================================================
-
 void MMRGLattice::getSubLine(MVect & vec, MMat& B, int lign, int jMin, int jMax)
 {
     // both jMin and jMax are included
@@ -377,7 +294,7 @@ void MMRGLattice::getSubLine(MVect & vec, MMat& B, int lign, int jMin, int jMax)
 
 //===========================================================================
 
-void MMRGLattice::buildLacunaryBasisArbitrary (int dimension)
+void MMRGLattice::buildLacunaryBasis (int dimension)
 {
    int sizeA = getOrder();
    m_vecNorm.resize(dimension);
@@ -485,19 +402,10 @@ void MMRGLattice::buildLacunaryBasisArbitrary (int dimension)
 
 void MMRGLattice::incDim()
 {
-   if (m_lacunaryFlag) {
-
-      //PW_TODO à voir plus tard
-      /*
-      if (m_lacunaryType == ARBITRARYINDICES)
-         incrementDimLacunaryBasisArbitrary(m_numberLacIndices);
-      else if (m_lacunaryType == SUBVECTOR)
-         incrementDimLacunaryBasis (m_B);
-      */
-      incrementDimLacunaryBasisArbitrary(m_numberLacIndices);
-   }
+   if (m_lacunaryFlag)
+      incrementDimLacunaryBasis(m_numberLacIndices);
    else
-      incrementDimNonLacunaryBasis ();
+      incrementDimNonLacunaryBasis();
 }
 
 //===========================================================================
@@ -569,77 +477,7 @@ void MMRGLattice::incrementDimNonLacunaryBasis()
 
 //===========================================================================
 
-void MMRGLattice::incrementDimLacunaryBasis(BMat B)
-{
-   IntLattice::incDim();
-   int newDimension = getDim();
-   int sizeA = getOrder();
-   long sizeB = B.NumRows();
-
-   // ************* update of the primal lattice *************
-   //  - we add a new coordinate to each vector v_i, this value being determined
-   //    by the MMRG recurrence (even if the original vectors have been
-   //    transformed linearly and we must apply the same transformations to their
-   //    last coordinates).
-   //  - we add an extra vector (0,..., 0, m) to complete this dimension
-   //    increased basis.
-
-   // we compute the number of steps required to reach the current state of
-   // the generator for the considered dimension.
-   int n = ceil((newDimension-sizeA-1) / sizeB);
-   ZZ_p::init(m_modulo);
-   MMatP temp;
-   temp.SetDims(sizeA, sizeA);
-   for (int i = 0; i < sizeA; i++)
-      temp[i][i] = 1;
-   for (int k = 0; k < n+1; k++)
-     temp *= conv<MMatP>(transpose(m_A));
-   // PW_TODO : could be useful to keep A^k in memory to shorten computation
-
-   // update of the new v_i coordinates using the *temp* matrix and the first
-   // coefficients of each line (can be seen as a seed vector). So this *temp*
-   // matrix multiplied by this seed vector gives us the next values generated
-   // by the MMRG for the considered dimension.
-   MVect initialState;
-   MVect outputState;
-   outputState.SetLength(sizeB);
-
-   for (int i = 0; i < (newDimension-1); i++) {
-      getSubLine(initialState, m_basis, i, 0, sizeA-1);
-      outputState = conv<MVect>( conv<MMatP>(B) * transpose(temp) * conv<MVectP>(initialState) );
-      m_basis[i][newDimension-1] = outputState[newDimension - sizeA - n*sizeB - 1];
-   }
-   m_basis[newDimension-1][newDimension-1] = m_modulo;
-
-
-   // ************* update of the dual basis *************
-   //  - we add a new 0 coordinate to each vector w_i in the dual basis.
-   //  - for the new last line of the matrix, we add an extra vector,
-   //    as described in L'Ecuyer's paper
-   // PW_TODO : citer rédérence "Guide LatTester"
-
-   MVect lastLine;
-   lastLine.SetLength(newDimension);
-
-   for (int i = 0; i < (newDimension-1); i++) {
-      matrix_row<const BMat> row(m_dualbasis, i);
-      lastLine -= m_basis[i][newDimension-1] * row;
-   }
-   for (int i = 0; i < (newDimension-1); i++)
-      m_dualbasis[newDimension-1][i] = lastLine[i] / m_modulo;
-   m_dualbasis[newDimension-1][newDimension-1] = 1;
-
-   setNegativeNorm();
-   setDualNegativeNorm();
-
-   if (!checkDuality())
-      MyExit (1, "BUG in MMRGLattice::incrementDimBasis");
-
-}
-
-//===========================================================================
-
-void MMRGLattice::incrementDimLacunaryBasisArbitrary(int Imax)
+void MMRGLattice::incrementDimLacunaryBasis(int Imax)
 {
    IntLattice::incDim();
    const int dim = getDim (); // new dimension (dim++)
