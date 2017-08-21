@@ -14,11 +14,13 @@ namespace LatMRG {
  * This class is used to implement a MRG component in a combined MRG. It
  * exists in order to avoid creating numerous relatively heavy `MRGLattice`
  * objects to represent MRG components. Each MRG component is defined by a
- * modulus \f$m\f$, an order \f$k\f$ and a vector of multipliers \f$a\f$,
+ * modulus \f$m\f$, an order \f$k\f$ and 
+ * - either a vector of multipliers \f$a\f$,
  * where \f$a[i]\f$ represents \f$a_i\f$. This MRG satisfies the recurrence
  * \f[
  *   x_n = (a_1 x_{n-1} + \cdots+ a_k x_{n-k}) \mbox{ mod } m
  * \f]
+ * - or a matrix A in case of MMRG
  */
 class MRGComponent {
 public:
@@ -34,6 +36,12 @@ MRGComponent (const MScal & m, const MVect & a, int k);
     * order \f$k\f$.
     */
    MRGComponent (const MScal & m, const MMat & A, int k);
+
+   /**
+    * Constructor for MMRG with modulus \f$m\f$, Matrix \f$A\f$ and
+    * order \f$k\f$.
+    */
+   MRGComponent (long b, long e, long c, const MMat & A, int k);
 
 
    /**

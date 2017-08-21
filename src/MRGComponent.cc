@@ -48,6 +48,18 @@ MRGComponent::MRGComponent (const MScal & m, const MMat & A0, int k0)
    orbitSeed.resize(k);
 }
 
+//===========================================================================
+
+
+MRGComponent::MRGComponent (long p, long e, long c, const MMat & A0, int k0)
+{
+   module.init(p, e, c);
+   PolyPE::setM(getM());
+   k = k0;
+   A.resize(k, k);
+   CopyMatr(A, A0, k);
+   orbitSeed.resize(k);
+}
 
 //===========================================================================
 
