@@ -121,16 +121,10 @@ protected:
    void buildNonLacunaryBasis (int dimension);
 
    /**
-    * Builds the basis of the MMRG recurrence in case of lacunary indices
-    * over sub-vectors.
+    * Builds the basis of the MMRG recurrence in case of lacunary
+    * indices.
     */
-   void buildLacunaryBasisSubvector (int dimension, BMat B);
-
-   /**
-    * Builds the basis of the MMRG recurrence in case of arbitrary 
-    * lacunary indices 
-    */
-   void buildLacunaryBasisArbitrary (int dimension);
+   void buildLacunaryBasis (int dimension);
 
    /**
     * Increments the basis by 1 in case of non-lacunary indices.
@@ -140,10 +134,7 @@ protected:
    /**
     * Increments the basis by 1 in case of lacunary indices.
     */
-   void incrementDimLacunaryBasis (BMat B);
-
-   //PW_TODO: to be fixed
-   void incrementDimLacunaryBasisArbitrary(int Imax);
+   void incrementDimLacunaryBasis(int Imax);
 
    /**
     * The generator matrix of the recurrence.
