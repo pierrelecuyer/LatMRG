@@ -295,6 +295,9 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
 
             m_merit[dim] /= weight;
 
+
+            cout << "m_merit[" << dim << "] = " << m_merit[dim] << endl;
+
             // Si on sait deja que ce gen. ne pourra etre retenu,
             // on le rejette tout de suite et on arrete le test.
             if ((m_maxAllDimFlag && m_merit[dim] < minVal[toDim])

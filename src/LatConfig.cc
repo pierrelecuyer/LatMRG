@@ -41,7 +41,8 @@ void LatConfig::kill()
 
    if (genType != 0)
       delete[] genType;
-   delete[] td;
+   if (td != 0)
+      delete[] td;
 }
 
 void LatConfig::write()

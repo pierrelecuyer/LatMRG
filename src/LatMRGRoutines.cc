@@ -57,10 +57,12 @@ namespace LatMRG {
 
 //*=============================================================================================
 
-double doTest (LatConfig config)
+std::vector<double> doLETest (LatConfig config)
 {
 
    //Writer* rw = createWriter (infile, config.outputType);
+
+   std::vector<double> result;
 
    LatMRG::IntLattice *lattice = 0;
    LatMRG::IntLattice *master = 0;
@@ -70,6 +72,8 @@ double doTest (LatConfig config)
    int fromDim = config.td[0];
    bool memLacF = true; // Lacunary with only used lines-columns of bases
    //memLacF = false; // Lacunary with all lines-columns of bases
+
+   cout << "config.genType[0] = " << toStringGen(config.genType[0]) << endl;
 
    if (config.J > 1) { //Several MRG
       lattice = MRGLatticeFactory::fromCombMRG (config.comp, config.J,
@@ -90,7 +94,8 @@ double doTest (LatConfig config)
          }
 
       } else if (config.genType[0] == MRG || config.genType[0] == LCG) {
-         if (memLacF && config.lacunary){
+     
+         if (memLacF && config.lacunary){            
             lattice = new MRGLatticeLac (config.comp[0]->module.mRed,
                 config.comp[0]->a, toDim, config.comp[0]->k, config.Lac,
                 config.latType, config.norm);
@@ -111,7 +116,6 @@ double doTest (LatConfig config)
       
 
       } else if (config.genType[0] == MMRG) {
-
          if (memLacF && config.lacunary) {
             lattice = new MMRGLattice (config.comp[0]->getM(), config.comp[0]->A,
                              toDim,config.comp[0]->k, config.lacunaryType,
@@ -159,7 +163,6 @@ double doTest (LatConfig config)
             //footer.setLatticeTest (&spectralTest);
             //report.printTable ();
             //report.printFooter ();
-
          } else {
             if (config.genType[0] == MRG || config.genType[0] == LCG)
                master = new MRGLattice (*(MRGLattice *) lattice);
@@ -186,6 +189,9 @@ double doTest (LatConfig config)
             // cout << "Num projections2:  " << nbProj << endl << endl;
             delete master;
          }
+
+         result = spectralTest.getMerit().getVectNormVal();
+
       }
       break;
 
@@ -203,6 +209,8 @@ double doTest (LatConfig config)
          //report.printTable ();
          //report.printFooter ();
          //rw->writeString (lattice->toStringDualBasis ());
+
+         result = beyerTest.getMerit().getVectNormVal();
       }
       break;
 
@@ -232,12 +240,14 @@ double doTest (LatConfig config)
             rw->newLine ();
             rw->newLine ();*/
          }
+
+         result = palphaTest.getMerit().getVectNormVal();
       }
       break;
 
    default:
       cerr << "Default case for config.criter" << endl;
-      return -1;
+      return result;
    }
 
    if (normal != 0)
@@ -246,7 +256,8 @@ double doTest (LatConfig config)
       delete plac;
    delete lattice;
    //delete rw;
-   return 0;
+   
+   return result;
 
 }
 

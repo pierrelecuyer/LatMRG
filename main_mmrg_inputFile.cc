@@ -62,7 +62,7 @@ using namespace LatMRG;
 
 //==========================================================================
 
-
+#if 0
 
 int main ()
 {
@@ -117,6 +117,8 @@ int main ()
    return status;
 }
 
+
+#endif
 
 
 

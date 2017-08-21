@@ -143,6 +143,11 @@ Merit ();
      }
 
    /**
+    * Returns the *normalized* values of the merit in all dimensions.
+    */
+  std::vector<double> getVectNormVal () { return m_normVal; }
+
+   /**
     * Returns the *normalized* value of the merit in dimension \f$j\f$.
     * (Same as `getNormVal`.)
     */

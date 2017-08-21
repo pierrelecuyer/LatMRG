@@ -13,7 +13,7 @@ namespace LatMRG {
  * Returns -1.0 if there was an error in Branch-and-Bound procedure. Return the length
  * of the shortest non-zero vector otherwise.
  */
-double doTest (LatConfig config);
+std::vector<double> doLETest (LatConfig config);
 
 
 

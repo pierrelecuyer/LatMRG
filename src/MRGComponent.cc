@@ -191,8 +191,8 @@ MRGComponent::MRGComponent (Modulus & modu, int k, DecompType decom1,
 
 MRGComponent::~MRGComponent()
 {
- //  a.kill();
- //  orbitSeed.kill();
+   //a.kill();
+   //orbitSeed.kill();
 }
 
 

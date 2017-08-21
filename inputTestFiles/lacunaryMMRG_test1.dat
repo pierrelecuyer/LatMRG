@@ -14,7 +14,7 @@ MMRG									Gener. type
 1 45035996273704967 36028797018963974 27021597764222981 18014398509481988 9007199254740995 2 1
 1 54043195528445960 45035996273704967 36028797018963974 27021597764222981 18014398509481988 9007199254740995 2 						A (matrix)
 1
-7 48									MinDim    MaxDim
+7 10									MinDim    MaxDim
 true									Dual
 FULL									LatticeType
 SUBVECTOR 6
@@ -26,7 +26,7 @@ SUBVECTOR 6
 7
 1000000000								MaxNodesBB
 false									If true, the inverse of the length of the shortest vector will be printed in the results, otherwise the length itself is printed.
-0										details
+2										details
 terminal	 							ResultForm
 
 
