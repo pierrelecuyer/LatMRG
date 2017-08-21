@@ -21,7 +21,7 @@ namespace LatMRG
 
 //===========================================================================
 
-LatTestSpectral::LatTestSpectral (const Normalizer * normal,
+LatTestSpectral::LatTestSpectral (Normalizer * normal,
               LatMRG::IntLattice * lat): LatticeTest (lat)
 {
    m_criter = SPECTRAL;
@@ -193,8 +193,11 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
       red.redBKZ(0.999999, 10, QUADRUPLE, dim);
       //PW_TODO: hard coding?
 
+      //cout << "dual basis = \n" << m_lat->getBasis() << endl;
+      //cout << "primal basis = \n" << m_lat->getDualBasis() << endl;
+
       if (red.shortestVector (m_lat->getNorm ())) {
-         
+
          // Calcul de D2. Pour Norm # L2NORM, suppose que VV est a jour.
          if (m_lat->getNorm () == L2NORM) {
             m_lat->updateScalL2Norm (0);
@@ -236,6 +239,23 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
          m_merit.getMerit (dim) = temp / weight;
 
          if (dim <= toDim) { // Calcul de S2.
+
+            //cout << "dim = " << dim << endl;
+            //cout << "order = " << m_lat->getOrder() << endl;
+            //cout << "density AVANT = " << exp(m_normalizer->getLogDensity()) << endl;
+
+            //updating value of matrix density.
+            if (dim <= m_lat->getOrder()) {
+               if (m_dualF) // dual basis
+                  m_normalizer->setLogDensity( - dim * log(m_lat->getModulo()) );
+               else // primal basis
+                  m_normalizer->setLogDensity( dim * log(m_lat->getModulo()) );
+            }
+
+            //cout << "density APRES = " << exp(m_normalizer->getLogDensity()) << endl;
+            //cout << "m_normalizer->getBound = " << m_normalizer->getBound(dim) << endl;
+
+
             if (m_lat->getNorm () == L2NORM) {
 
                if (!m_dualF) { // in case we work with rescaled values

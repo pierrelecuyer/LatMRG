@@ -35,7 +35,7 @@ public:
     * Constructor. The *spectral* test will be applied to the lattice `lat`
     * using normalizer `normal` to normalize the figure of merit.
     */
-   LatTestSpectral (const LatticeTester::Normalizer * normal,
+   LatTestSpectral (LatticeTester::Normalizer * normal,
                        IntLattice * lat);
 
    /**
@@ -88,7 +88,7 @@ private:
    /**
     * The normalizer used to normalize the figure of merit.
     */
-   const LatticeTester::Normalizer* m_normalizer;
+   LatticeTester::Normalizer* m_normalizer;
 
    /**
     * The lower bound on the square length of the shortest vector in each
