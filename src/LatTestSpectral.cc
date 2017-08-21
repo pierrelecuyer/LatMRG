@@ -245,12 +245,22 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
             //cout << "density AVANT = " << exp(m_normalizer->getLogDensity()) << endl;
 
             //updating value of matrix density.
+
+      #if NTL_TYPES_CODE == 3
+            if (dim <= m_lat->getOrder()) {
+               if (m_dualF) // dual basis
+                  m_normalizer->setLogDensity(conv<RScal>( - dim * log(m_lat->getModulo()) ));
+               else // primal basis
+                  m_normalizer->setLogDensity(conv<RScal>( dim * log(m_lat->getModulo())  ));
+            }
+      #else
             if (dim <= m_lat->getOrder()) {
                if (m_dualF) // dual basis
                   m_normalizer->setLogDensity( - dim * log(m_lat->getModulo()) );
                else // primal basis
                   m_normalizer->setLogDensity( dim * log(m_lat->getModulo()) );
             }
+      #endif
 
             //cout << "density APRES = " << exp(m_normalizer->getLogDensity()) << endl;
             //cout << "m_normalizer->getBound = " << m_normalizer->getBound(dim) << endl;
