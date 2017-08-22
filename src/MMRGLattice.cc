@@ -305,7 +305,8 @@ void MMRGLattice::buildLacunaryBasis (int dimension)
    // building the complete basis until: dimension = max lacunary indice
    //-----------------------------------------------------------------------
    BMat tempBasis;
-   tempBasis.resize(m_order, maxIndiceLac+1); 
+   //PW_TODO
+   tempBasis.resize(m_order, maxIndiceLac+1);
    // PW_TODO meilleurs size à trouver
    // +1 because lacunary indices start at 0
 

@@ -29,6 +29,7 @@ fromDIm, toDim
 MRGcomponent ?
 primal ou dual
 lacanary à part ?
+elvel of detail
 */
 
 void initConfigBeyerTest(LatConfig& config);
