@@ -1,10 +1,11 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <string>
 
-#include "latcommon/Types.h"
-#include "latcommon/Util.h"
-#include "latcommon/Const.h"
+#include "latticetester/Types.h"
+#include "latticetester/Util.h"
+#include "latticetester/Const.h"
 #include "latmrg/Chrono.h"
 
 #include "latmrg/Const.h"
@@ -18,11 +19,11 @@
 #include "latmrg/MRGLatticeFactory.h"
 #include "latmrg/MRGComponent.h"
 
-#include "latcommon/NormaBestLat.h"
-#include "latcommon/NormaLaminated.h"
-#include "latcommon/NormaRogers.h"
-#include "latcommon/NormaMinkL1.h"
-#include "latcommon/NormaMinkowski.h"
+#include "latticetester/NormaBestLat.h"
+#include "latticetester/NormaLaminated.h"
+#include "latticetester/NormaRogers.h"
+#include "latticetester/NormaMinkL1.h"
+#include "latticetester/NormaMinkowski.h"
 
 #include "latmrg/LatTestBeyer.h"
 #include "latmrg/LatTestSpectral.h"
@@ -109,12 +110,13 @@ void SortBestGen ()
 
 int readConfigFile (int argc, char **argv)
 {
-   if (argc != 2) {
-      cerr << "\n***  Usage: " << argv[0] << " <data file>" << endl;
-      return -1;
-   }
+   //if (argc != 2) {
+   //   cerr << "\n***  Usage: " << argv[0] << " <data file>" << endl;
+   //   return -1;
+   //}
    // Lecture des paramètres
-   string fname (argv[1]);
+   //string fname (argv[1]);
+   string fname ("/Users/Erwan1/projects/github/LatMRG/inputTestFiles/seekZZDD_test1");
    fname += ".dat";
    ParamReaderSeek paramRdr (fname.c_str ());
    paramRdr.read (config);
@@ -122,7 +124,8 @@ int readConfigFile (int argc, char **argv)
    // Writer *rw;
    switch (config.outputType) {
    case RES:
-      fname = argv[1];
+      //fname = argv[1];
+      fname = "/Users/Erwan1/projects/github/LatMRG/inputTestFiles/seekZZDD_test1";
       fname += ".res";
       // rw = new WriterRes (fname.c_str());
       fout.open (fname.c_str ());
@@ -160,7 +163,7 @@ void debug (int dim1, int dim2)
    "=================================================================\n\n";
    for (int j = 0; j < poolLen; j++) {
       LatMRG::IntLattice *lat = pool[j]->getLattice ();
-      cout << "A = " << lat->toStringCoef ();
+      cout << "A = "; lat->write();
       int dimWorst;
       double S_T = pool[j]->getMerit ().getST (dim1, dim2, dimWorst);
       if (lat->getNorm () == L2NORM)
@@ -195,7 +198,7 @@ void printPool (char *mess)
                fout << endl;
          }
       } else {
-         fout << " " << lat->toStringCoef ();
+         fout << " "; lat->write();
       }
       fout << "\t\tS_" << dimWorst << " = " << S_T << endl;
    }
@@ -224,8 +227,8 @@ void PrintComponentData (const Component & comp, int j)
    fout << "   Search method                      : " <<
    toStringSearchMethod (comp.searchMethod) << endl;
    string margin = "   Bounds : ";
-   for (int i = 1; i <= comp.k; i++) {
-      if (i != 1)
+   for (int i = 0; i < comp.k; i++) {
+      if (i != 0)
          margin = "            ";
       fout << margin << "a" << i << " from : " << comp.b[i] << endl;
       fout << "                 to : " << comp.c[i] << endl;
@@ -400,7 +403,7 @@ void Test ()
                             config.getMaxDim (), comp0.k, config.latType, Norm);
       else if (comp0.genType == KOROBOV)
          lattice =
-            new KorobovLattice (comp0.modulus.m, coef[0][1],
+            new KorobovLattice (comp0.modulus.m, coef[0][0],
                                 config.getMaxDim (), config.latType, Norm);
       else if (comp0.genType == RANK1) {
          stationary = false;
@@ -410,9 +413,10 @@ void Test ()
    }
 
    if (isFirstTest) {
-      normal = lattice->getNormalizer (config.normaType, config.alpha);
+      normal = lattice->getNormalizer (config.normaType, config.alpha, config.dualF);
       isFirstTest = false;
    }
+
    lattice->buildBasis (config.td[0]);
 
    switch (config.criter) {
@@ -618,7 +622,7 @@ void ExamThisaj (int j, int i, bool Pow2, ProcII Exam)
          i = 1;
    }
 
-   if (i == 1) {
+   if (i == 0) {
       ++TotEP[j];
       if (Pow2 || (!comp.PerMax) || (comp.k == 1) ||
             compJ[j]->maxPeriod23 (coef[j])) {
@@ -748,6 +752,7 @@ void ExamAllZones (int j, int i)
       return ;
    Zone *Z;
    Z = i + zone[j];
+
    while (Z != 0) {
       // On va examiner toute cette zone.
       InsideExam (Z, j, i, ExamAllZones);
@@ -805,14 +810,14 @@ void Init ()
 
    zone = new Zone * [config.J];
    for (s = 0; s < config.J; s++)
-      zone[s] = new Zone[1 + config.compon[s].k];
+      zone[s] = new Zone[config.compon[s].k];
 
    reg = new Zone * [config.J];
    for (s = 0; s < config.J; s++)
-      reg[s] = new Zone[1 + config.getMaxDim ()];
+      reg[s] = new Zone[config.getMaxDim ()];
 
    for (s = 0; s < config.J; s++) {
-      for (int i = 0; i <= config.compon[s].k; i++)
+      for (int i = 0; i < config.compon[s].k; i++)
          coef[s][i] = 0;
    }
 }
@@ -858,8 +863,9 @@ void Finalize ()
 void InitZones ()
 {
    for (int s = 0; s < config.J; s++) {
-      for (int i = 1; i <= config.compon[s].k; i++) {
+      for (int i = 0; i < config.compon[s].k; i++) {
          zone[s][i].init (config.compon[s], s, i);
+
       }
    }
 }
@@ -879,12 +885,11 @@ void SeekGen (int j)
    for (int region = 0; region < config.compon[j].numReg; region++) {
       if (timer.timeOver (config.duration))
          return ;
-
       if (config.compon[j].searchMethod == EXHAUST) {
-         ExamAllZones (j, config.compon[j].k);
+         ExamAllZones (j, config.compon[j].k - 1);
       } else {
          ChoisirBornes (j);
-         ExamRegion (j, config.compon[j].k);
+         ExamRegion (j, config.compon[j].k - 1);
       }
    }
 }
@@ -892,16 +897,19 @@ void SeekGen (int j)
 
 //===========================================================================
 
-}                                 // namespace
+}   // namespace
 
 
 //===========================================================================
 
 int main (int argc, char **argv)
 {
+
+   //putenv("FACTORHOME=/Users/Erwan1/projects/github/LatMRG/latmrg/latmrg-extra/test/MIRACL");
+
    if (readConfigFile (argc, argv))
       return -1;
-   config.write ();
+   //config.write ();
    Init ();
    timer.init ();
    Zone::initFrontieres (config);
@@ -910,4 +918,5 @@ int main (int argc, char **argv)
    SortBestGen ();
    PrintResults ();
    Finalize ();
+
 }
