@@ -90,7 +90,7 @@ int main ()
    latconfig.Lac[9]=13;
 
    std::vector<double> FoM;
-   FoM = applyTest(latconfig);
+   FoM = ComputeFigureOfMerit(latconfig);
 
    printResult(FoM, latconfig.td[0]);
 

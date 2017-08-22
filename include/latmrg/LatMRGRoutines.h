@@ -17,11 +17,19 @@ std::vector<double> ComputeFigureOfMerit (LatConfig& config);
 
 
 void printResult(const std::vector<double> & result, const int & fromDim);
+// ajouter plus de détails
 
 // une fonction qui calcule le shortest vector
 
 // une fonction d'aide à la configuration de LatConfig
 void initConfigSpectralTest(LatConfig& config);
+/*
+parameters:
+fromDIm, toDim
+MRGcomponent ?
+primal ou dual
+lacanary à part ?
+*/
 
 void initConfigBeyerTest(LatConfig& config);
 
