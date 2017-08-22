@@ -90,10 +90,9 @@ int main ()
    latconfig.Lac[9]=13;
 
    std::vector<double> FoM;
-   FoM = doLETest(latconfig);
+   FoM = applyTest(latconfig);
 
-   for (int i = 0; i < FoM.size(); i++)
-      cout << "FoM(" << latconfig.td[0]+i << ") = " << FoM[i] << endl;
+   printResult(FoM, latconfig.td[0]);
 
    return 0;
 }

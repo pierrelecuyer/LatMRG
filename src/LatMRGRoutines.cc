@@ -57,7 +57,7 @@ namespace LatMRG {
 
 //*=============================================================================================
 
-std::vector<double> doLETest (LatConfig& config)
+std::vector<double> applyTest (LatConfig& config)
 {
 
    //Writer* rw = createWriter (infile, config.outputType);
@@ -265,5 +265,13 @@ std::vector<double> doLETest (LatConfig& config)
 }
 
 //*=============================================================================================
+
+void printResult(const std::vector<double> & result, const int & fromDim)
+{
+   cout << "Result: " << endl;
+   for (int i = 0; i < result.size(); ++i)
+      cout << "  dim(" << fromDim+i << ") = " << sqrt(result[i]) << endl;
+
+}
 
 }

@@ -38,8 +38,6 @@ BMat SavvidyMatrix(BScal p, int N, BScal s, BScal m, BScal b) {
 //==========================================================================
 
 
-//PW_TODO : clarifier notations
-
 #if 0
 
 int main ()
@@ -118,7 +116,6 @@ int main ()
 	 
 	if (config.latType == ORBIT) {
 		MyExit (1, "case ORBIT is not finished");
-		//PW_TODO
 	   	//readOrbit (config.J, config.comp, ++ln);
 	}
 

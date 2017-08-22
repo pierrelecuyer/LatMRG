@@ -278,9 +278,6 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
                   m_merit[dim] = exp(m_merit[dim]);
                }
 
-               cout << "length(" << dim << ") = " << sqrt(temp) << endl;
-
-
             } else if (m_lat->getNorm () == L1NORM) {
 
                if (!m_dualF) { // in case we work with rescaled values
