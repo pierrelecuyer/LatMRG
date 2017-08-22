@@ -57,7 +57,7 @@ namespace LatMRG {
 
 //*=============================================================================================
 
-std::vector<double> doLETest (LatConfig config)
+std::vector<double> doLETest (LatConfig& config)
 {
 
    //Writer* rw = createWriter (infile, config.outputType);
@@ -72,8 +72,6 @@ std::vector<double> doLETest (LatConfig config)
    int fromDim = config.td[0];
    bool memLacF = true; // Lacunary with only used lines-columns of bases
    //memLacF = false; // Lacunary with all lines-columns of bases
-
-   cout << "config.genType[0] = " << toStringGen(config.genType[0]) << endl;
 
    if (config.J > 1) { //Several MRG
       lattice = MRGLatticeFactory::fromCombMRG (config.comp, config.J,
@@ -190,7 +188,9 @@ std::vector<double> doLETest (LatConfig config)
             delete master;
          }
 
-         result = spectralTest.getMerit().getVectNormVal();
+         // storing the figures of merit in result
+         for (int i = fromDim; i <= toDim; i++) 
+            result.push_back(spectralTest.getMerit().getNormVal(i));
 
       }
       break;
@@ -210,7 +210,9 @@ std::vector<double> doLETest (LatConfig config)
          //report.printFooter ();
          //rw->writeString (lattice->toStringDualBasis ());
 
-         result = beyerTest.getMerit().getVectNormVal();
+         // storing the figures of merit in result
+         for (int i = fromDim; i <= toDim; i++) 
+            result.push_back(beyerTest.getMerit().getNormVal(i));
       }
       break;
 
@@ -241,7 +243,9 @@ std::vector<double> doLETest (LatConfig config)
             rw->newLine ();*/
          }
 
-         result = palphaTest.getMerit().getVectNormVal();
+         // storing the figures of merit in result
+         for (int i = fromDim; i <= toDim; i++) 
+            result.push_back(palphaTest.getMerit().getNormVal(i));
       }
       break;
 
@@ -256,9 +260,8 @@ std::vector<double> doLETest (LatConfig config)
       delete plac;
    delete lattice;
    //delete rw;
-   
-   return result;
 
+   return result;
 }
 
 //*=============================================================================================

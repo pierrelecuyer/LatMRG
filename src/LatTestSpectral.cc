@@ -278,6 +278,9 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
                   m_merit[dim] = exp(m_merit[dim]);
                }
 
+               cout << "length(" << dim << ") = " << sqrt(temp) << endl;
+
+
             } else if (m_lat->getNorm () == L1NORM) {
 
                if (!m_dualF) { // in case we work with rescaled values
@@ -296,7 +299,7 @@ bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const doubl
             m_merit[dim] /= weight;
 
 
-            cout << "m_merit[" << dim << "] = " << m_merit[dim] << endl;
+            //cout << "m_merit[" << dim << "] = " << m_merit[dim] << endl;
 
             // Si on sait deja que ce gen. ne pourra etre retenu,
             // on le rejette tout de suite et on arrete le test.

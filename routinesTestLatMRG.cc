@@ -29,7 +29,7 @@ using namespace LatMRG;
 //==================================================================================
 
 
-int main (int argc, char *argv[])
+int main ()
 {
 
    MScal m = power_ZZ(2,61) - 1;
@@ -92,11 +92,8 @@ int main (int argc, char *argv[])
    std::vector<double> FoM;
    FoM = doLETest(latconfig);
 
-   cout << "FoM.size() = " << FoM.size() << endl;
-   //for (int i = 0; i < 11; i++)
-   //   cout << "FoM(" << i << ") = " << FoM[i] << endl;
-
-   cout << "fin du programme" << endl;
+   for (int i = 0; i < FoM.size(); i++)
+      cout << "FoM(" << latconfig.td[0]+i << ") = " << FoM[i] << endl;
 
    return 0;
 }
