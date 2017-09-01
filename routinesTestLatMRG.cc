@@ -32,15 +32,22 @@ using namespace LatMRG;
 
 int main ()
 {
-   // four-family parameters
+   // four-family parameters DIMENSION 8
+   /*
    MScal m = power_ZZ(2,61) - 1; // p
    int k = 8; // N
    MScal d (0); // s
    MScal c = power_ZZ(2,53) + 1; //m
-
+   */
+   
+   // four-family parameters DIMENSION 240
+   MScal m = power_ZZ(2,61) - 1; // p
+   int k = 240; // N
+   MScal d (487013230256099140); // s
+   MScal c = power_ZZ(2,51) + 1; //m
+   
    MixmaxMMRG mixmax (m, k, d, c);
    cout << "A = \n" << mixmax.getMatrix() << endl;
-
 
    LatConfig latconfig;
 
@@ -57,7 +64,7 @@ int main ()
    latconfig.d = 1;
    latconfig.td = new int[latconfig.d];
    latconfig.td[0] = 7;
-   latconfig.td[1] = 10;
+   latconfig.td[1] = 7;
 
    latconfig.criter = SPECTRAL;
    latconfig.norma = BESTLAT;
@@ -67,21 +74,39 @@ int main ()
    latconfig.latType = FULL;
    latconfig.lacunary = true;
    latconfig.lacunaryType = ARBITRARYINDICES;
-   latconfig.numberLacIndices = 10;
+   latconfig.numberLacIndices = 7;
    latconfig.maxNodesBB = 1000000;
 
    latconfig.Lac.resize(latconfig.numberLacIndices);
-   latconfig.Lac[0]=2;
-   latconfig.Lac[1]=3;
-   latconfig.Lac[2]=4;
-   latconfig.Lac[3]=5;
-   latconfig.Lac[4]=6;
-   latconfig.Lac[5]=7;
-   latconfig.Lac[6]=10;
-   latconfig.Lac[7]=11;
-   latconfig.Lac[8]=12;
-   latconfig.Lac[9]=13;
-
+   // DIMENSION 8 - first part
+   /*
+   latconfig.Lac[0]=4;
+   latconfig.Lac[1]=5;
+   latconfig.Lac[2]=6;
+   latconfig.Lac[3]=11;
+   latconfig.Lac[4]=12;
+   latconfig.Lac[5]=13;
+   latconfig.Lac[6]=14;
+   */
+   
+   // DIMENSION 8 - second part
+   /*
+   latconfig.Lac[0]=4;
+   latconfig.Lac[1]=5;
+   latconfig.Lac[2]=11;
+   latconfig.Lac[3]=12;
+   latconfig.Lac[4]=13;
+   */
+   
+   // DIMENSION 240
+   latconfig.Lac[0]=4;
+   latconfig.Lac[1]=5;
+   latconfig.Lac[2]=6;
+   latconfig.Lac[3]=243;
+   latconfig.Lac[4]=244;
+   latconfig.Lac[5]=245;
+   latconfig.Lac[6]=246;
+   
    std::vector<double> FoM;
    FoM = ComputeFigureOfMerit(latconfig);
 
