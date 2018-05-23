@@ -1,18 +1,30 @@
+# This repository is a work in progress and MOST of the functionnalities probably do not work
+
 # LatMRG
 
 *A front-end software package using [LatticeTester](https://github.com/erwanbou/LatticeTester) to test and search for new multiple recursive random number generators*
 
+## Dependencies
+
+LatMRG currently depends on
+* [LatticeTester](https://github.com/erwanbou/LatticeTester)
+* [NTL](http://www.shoup.net/ntl/index.html)
+* [TestU01](http://simul.iro.umontreal.ca/testu01/tu01.html) _Not yet on GitHub_
+* [Boost](https://www.boost.org/)
+
 ## Compiling
 
+#### This whole section will eventually change since I will probably use a makefile for transparence
+
+You should also note the github has a tendency to break the waf executable.
+
 ### Configuring the Build
-'hello'
-`hello`
-LatticeTester relies on the
+LatMRG relies on the
 [waf meta build system](https://code.google.com/p/waf/) for configuring and
 compiling the software source.
-Waf is included in the LatticeTester source tree, but it depends on
+Waf is included in the LatMRG source tree, but it depends on
 [Python](http://python.org/download), which must be available on the system
-on which LatticeTester is to be compiled.
+on which LatMRG is to be compiled.
 
 The commands below should work verbatim under Linux and MacOS systems.
 **Microsoft Windows** users should replace every instance of `./waf`
@@ -31,7 +43,7 @@ named `latticetester-master` instead of `latmrg`.
 At the root of the source tree lies the `waf` script, manages the build
 process.
 
-LatticeTester can be configured to do integer and floating-point
+LatMRG can be configured to do integer and floating-point
 computations with native types of with big integers or real numbers.
 This is done by executing:
 
@@ -84,20 +96,20 @@ that case, you should check the Boost, NTL and TestU01 installation paths.
 ### Building and Installing
 
 Once everything is configured correctly, the following command will build the
-LatticeTester library and command-line tool:
+LatMRG library and command-line tool:
 
     ./waf build
 
-If the build process completed without errors, LatticeTester can be installed to the
+If the build process completed without errors, LatMRG can be installed to the
 directory specified with the `--prefix` option during the configuration step,
 with:
 
     ./waf install
 
 
-## Running LatticeTester
+## Running LatMRG
 
-The LatticeTester executable can be found in the `build` subdirectory, under the installation prefix.
+The LatMRG executable can be found in the `build` subdirectory, under the installation prefix.
 These include:
 
 - `lattest<NTLTYPES>`: study lattice properties;
