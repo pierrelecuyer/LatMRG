@@ -1,11 +1,12 @@
 # LatMRG
 
-*A front-end software package using LatticeTester to test and search for new multiple recursive random number generators*
+*A front-end software package using [LatticeTester](https://github.com/erwanbou/LatticeTester) to test and search for new multiple recursive random number generators*
 
 ## Compiling
 
 ### Configuring the Build
-
+'hello'
+`hello`
 LatticeTester relies on the
 [waf meta build system](https://code.google.com/p/waf/) for configuring and
 compiling the software source.
