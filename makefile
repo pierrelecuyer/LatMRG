@@ -1,128 +1,40 @@
-#
-# To use this makefile, you have to:
-#       - [line 19, 24] Modifie include and library paths
-#       - [line 32} Modifie the path for main.cc if it is not in src folder, and update .cc list
-# 'make depend' uses makedepend to automatically generate dependencies
-#               (dependencies are added to end of Makefile)
-# 'make'        build executable file 'mycc'
-# 'make clean'  removes all .o and executable files
-#
-
 # define the C compiler to use
 CC = g++
 
 # define any compile-time flags
-CFLAGS = -std=c++11 -g -Wall
+CFLAGS = -std=c++14 -Wall -O2
+DEBUG_FLAGS = -std=c++14 -g -Wall -O2
 
 # define any directories containing header files other than /usr/include
-##INCLUDES = -I../include -I/u/simul/opt/boost-1.60.0/include -I/u/jemelaym/Code/ntl/include
-INCLUDES = \
--I/Users/Erwan1/projects/github/LatMRG/include \
--I/Users/Erwan1/projects/github/Lattice\ Tester/include \
--I/Users/Erwan1/projects/github/Lattice\ Tester \
--I/usr/local/include \
--I/usr/local/Cellar/NTL \
--I/usr/local/Cellar/boost/1.60.0_2/include
+INCLUDES = -I/usr/local/include -I./include -I./latticetester/include
+
+DEFINITIONS = -DWITH_NTL -DHAVE_NTL_VECTOR_H -DHAVE_GMP_H -DHAVE_ULCG_H\
+	      -DHAVE_NUM_H
+DEF_LLDD = -DNTL_TYPES_CODE=1
+DEF_ZZDD = -DNTL_TYPES_CODE=2
+DEF_ZZRR = -DNTL_TYPES_CODE=3
+NUM_TYPES = $(DEF_ZZDD)
 
 # define library paths in addition to /usr/lib
 #   if I wanted to include libraries not in /usr/lib I'd specify
 #   their path using -Lpath, something like:
-LFLAGS = \
--L/usr/local/lib/ \
--L/usr/local/Cellar/boost/1.60.0_2/lib/
+LFLAGS = -L/usr/local/lib
 
-# define any libraries to link into executable:
-#   if I want to link in libraries (libx.so or libx.a) I use the -llibname
-#   option, something like (this will link in libmylib.so and libm.so:
-LIBS = -lntl -lgmp -lm -ltestu01 -lmylib
+#Note here that latticetester can be considered as a library as long as we
+#include the header files
+LIBS = -lntl -lgmp -ltestu01 -lmylib -llatticetester
+
+# A few directories we need to be aware of
+SRC_DIR = ./src
+OBJ_DIR = ./obj
+LIB_DIR = ./lib
+BIN_DIR = ./bin
+PRO_DIR = ./progs
+
 
 # define the C source files
-SRCS = LatMain.cc \
-\
-../Lattice\ Tester/SimpleMRG.cc \
-../Lattice\ Tester/src/IntLatticeBasis.cc \
-../Lattice\ Tester/src/Const.cc \
-../Lattice\ Tester/src/CoordinateSets.cc \
-../Lattice\ Tester/src/Coordinates.cc \
-../Lattice\ Tester/src/IntFactor.cc \
-../Lattice\ Tester/src/Lacunary.cc \
-../Lattice\ Tester/src/NormaBestLat.cc \
-../Lattice\ Tester/src/NormaLaminated.cc \
-../Lattice\ Tester/src/NormaMinkL1.cc \
-../Lattice\ Tester/src/NormaMinkowski.cc \
-../Lattice\ Tester/src/NormaPalpha.cc \
-../Lattice\ Tester/src/NormaRogers.cc \
-../Lattice\ Tester/src/Normalizer.cc \
-../Lattice\ Tester/src/Num.cc \
-../Lattice\ Tester/src/OrderDependentWeights.cc \
-../Lattice\ Tester/src/PODWeights.cc \
-../Lattice\ Tester/src/ProductWeights.cc \
-../Lattice\ Tester/src/ProjectionDependentWeights.cc \
-../Lattice\ Tester/src/Random.cc \
-../Lattice\ Tester/src/Reducer.cc \
-../Lattice\ Tester/src/Util.cc \
-\
-./src/AverageCaseMerit.cc \
-./src/HyperplaneDistanceMerit.cc \
-./src/LatticeTest.cc \
-./src/PalphaLCG.cc \
-./src/ProjIteratorSuccCoords.cc \
-./src/SpectralMeritClassic.cc \
-./src/BoundJSInter.cc \
-./src/IntFactorization.cc \
-./src/MRGComponent.cc \
-./src/PalphaOrderDependent.cc \
-./src/Rank1Lattice.cc \
-./src/Table.cc \
-./src/BoundJSstar.cc \
-./src/IntLattice.cc \
-./src/MRGComponentFactory.cc \
-./src/PalphaProduct.cc \
-./src/ReportFooterLat.cc \
-./src/TestProjections.cc \
-./src/Chrono.cc \
-./src/IntPrimitivity.cc \
-./src/MRGLattice.cc \
-./src/ParamReader.cc \
-./src/ReportHeaderLat.cc \
-./src/WorstCaseMerit.cc \
-./src/CoefApproxFact.cc \
-./src/KorobovLattice.cc \
-./src/MRGLatticeFactory.cc \
-./src/ParamReaderLat.cc \
-./src/ReportLat.cc \
-./src/Writer.cc \
-./src/CoefEqual.cc \
-./src/LatConfig.cc \
-./src/MRGLatticeLac.cc \
-./src/ParamReaderSeek.cc \
-./src/Searcher.cc \
-./src/WriterRes.cc \
-./src/CoefZero.cc \
-./src/LatTestAll.cc \
-./src/Merit.cc \
-./src/PolyPE.cc \
-./src/SearcherCBC.cc \
-./src/Zone.cc \
-./src/Discrepancy.cc \
-./src/LatTestBeyer.cc \
-./src/Modulus.cc \
-./src/Primes.cc \
-./src/SearcherKorobov.cc \
-./src/DoubleFormatter.cc \
-./src/LatTestPalpha.cc \
-./src/OrdepBound.cc \
-./src/ProjIteratorDefault.cc \
-./src/SeekConfig.cc \
-./src/ExactDiscStar.cc \
-./src/LatTestSpectral.cc \
-./src/Palpha.cc \
-./src/ProjIteratorNonSuccCoords.cc \
-./src/ShortestDualVectorMerit.cc
-
-#../latticetester/src/Basis.cc \
-../latticetester/src/IntLattice.cc \
-../latticetester/src/Rank1Lattice.cc \
+SRCS = $(wildcard $(SRC_DIR)/*.cc)
+PROGS_CC = $(wildcard $(PRO_DIR)/*.cc)
 
 # define the C object files
 #
@@ -132,36 +44,46 @@ SRCS = LatMain.cc \
 # Below we are replacing the suffix .c of all words in the macro SRCS
 # with the .o suffix
 #
-OBJS = $(SRCS:.c=.o)
+OBJS = $(SRCS:$(SRC_DIR)/%.cc=$(OBJ_DIR)/%.o)
+PROGS_O = $(PROGS_CC:$(PRO_DIR)/%.cc=$(PRO_DIR)/%.o)
 
 # define the executable file
 MAIN = main
 
-#
-# The following part of the makefile is generic; it can be used to
-# build any executable just by changing the definitions above and by
-# deleting dependencies appended to the file from 'make depend'
-#
 
-.PHONY:	depend clean
+all: clean mkdir objects lib
 
-all:	$(MAIN)
-	@echo  Simple compiler named mycc has been compiled
+lib: lib_objects
+	ar rcs $(LIB_DIR)/liblatmrg.a $(OBJS)
 
-$(MAIN): $(OBJS)
-	$(CXX) $(CFLAGS) $(INCLUDES) -o $(MAIN) $(OBJS) $(LFLAGS) $(LIBS)
+objects: lib_objects progs_objects
 
-# this is a suffix replacement rule for building .o's from .c's
-# it uses automatic variables $<: the name of the prerequisite of
-# the rule(a .c file) and $@: the name of the target of the rule (a .o file)
-# (see the gnu make manual section about automatic variables)
-.c.o:
-	$(CC) $(CFLAGS) $(INCLUDES) -c $<  -o $@
+lib_objects: $(OBJS)
 
-clean:
-	$(RM) *.o *~ $(MAIN)
+progs_objects: $(PROGS_O)
 
-depend: $(SRCS)
-	makedepend $(INCLUDES) $^
+$(OBJ_DIR)/%.o:$(SRC_DIR)/%.cc
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINITIONS) $(NUM_TYPES) -c $< -o $@
 
-# DO NOT DELETE THIS LINE -- make depend needs it
+$(PRO_DIR)/%.o:$(PRO_DIR)/%.cc
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINITIONS) $(NUM_TYPES) -c $< -o $@
+
+clean: clean_objects clean_bin clean_lib
+
+clean_objects:
+	rm -rf $(OBJ_DIR)
+	rm -f $(PRO_DIR)/*.o
+
+clean_bin:
+	rm -rf $(BIN_DIR)
+
+clean_lib:
+	rm -rf $(LIB_DIR)
+
+mkdir:
+	mkdir -p bin
+	mkdir -p obj
+	mkdir -p lib
+
+include: clean
+	$(CC) -E progs/LatMain.cc $(CFLAGS) $(INCLUDES) $(DEFINITIONS) $(NUM_TYPES) | grep '#' | cut -d' ' -f3 | sort | uniq

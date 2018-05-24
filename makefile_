@@ -1,0 +1,66 @@
+CC = g++
+FLAGS = -Wall -O2 -std=c++11
+MAIN_NAME = main
+INC_PATH = include/
+NTL_INC = ../../dep/ntl/include/
+NTL_LIB = ../../dep/ntl/lib/
+INCLUDE = -I$(INC_PATH) -I$(NTL_INC)
+DYN_LIBS_PATH = -L$(NTL_LIB)
+DYN_LIBS = -lntl -lgmp
+# This next variable is temporary, the first thing I would like to do is remove
+# This compilation option because it is stupid (especially since only one of those changes)
+DEFINITIONS = -DWITH_NTL=1 -DHAVE_NTL_VECTOR_H=1 -DLATTICETESTER_VERSION=1.1 \
+	      -DHAVE_GMP_H=1 -DHAVE_ULCG_H=1 -DHAVE_NUM_H=1 -DNDEBUG=1
+DEF_LLDD = -DNTL_TYPES_CODE=1
+DEF_ZZDD = -DNTL_TYPES_CODE=2
+DEF_ZZRR = -DNTL_TYPES_CODE=3
+#The next lines can be changed to change the numeric types at compile time
+NUM_TYPES = $(DEF_LLDD)
+LIBNAME = latticetesterLLDD
+OBJ_PATH = bin/
+MAIN_PATH = progs/
+MAIN_FILE = lattester.cc
+MAIN_PROGRAMS = lattester
+SOURCE_PATH = src/
+SOURCE_FILES = Const.cc IntFactor.cc IntLatticeBasis.cc LatTestWriter.cc \
+       	LatTestWriterRes.cc LatticeAnalysis.cc LatticeTesterConfig.cc \
+	LatticeTesterRoutines.cc NormaBestLat.cc NormaLaminated.cc \
+	Normalizer.cc NormaMinkL1.cc NormaMinkowski.cc NormaPalpha.cc \
+	NormaRogers.cc Num.cc ParamReader.cc Random.cc Reducer.cc Util.cc
+OBJ = Const.o IntFactor.o IntLatticeBasis.o LatTestWriter.o \
+       	LatTestWriterRes.o LatticeAnalysis.o LatticeTesterConfig.o \
+	LatticeTesterRoutines.o NormaBestLat.o NormaLaminated.o \
+	Normalizer.o NormaMinkL1.o NormaMinkowski.o NormaPalpha.o \
+	NormaRogers.o Num.o ParamReader.o Random.o Reducer.o Util.o
+OBJ_FILES = $(patsubst %, $(OBJ_PATH)%, $(OBJ))
+all: clean mkdir objects main lib exec
+
+lib:
+	rm -f $(OBJ_PATH)lib$(LIBNAME).a
+	ar rcs $(OBJ_PATH)lib$(LIBNAME).a $(OBJ_FILES)
+
+exec: lib $(MAIN_PATH)$(MAIN_NAME).o
+	$(CC) $(MAIN_PATH)$(MAIN_NAME).o -o$(MAIN_PATH)$(MAIN_NAME) \
+	    -Wl,-Bstatic -L$(OBJ_PATH) -l$(LIBNAME) -Wl,-Bdynamic \
+	    $(DYN_LIBS_PATH) $(DYN_LIBS)
+
+main: $(MAIN_PATH)$(MAIN_FILE)
+	$(CC) $(FLAGS) $(INCLUDE) $(NUM_TYPES) $(DEFINITIONS) -c $< \
+	    -o$(MAIN_PATH)$(MAIN_NAME).o
+
+objects:$(OBJ_FILES)
+
+$(OBJ_PATH)%.o:$(SOURCE_PATH)%.cc
+	$(CC) $(FLAGS) $(INCLUDE) $(NUM_TYPES) $(DEFINITIONS) -c $< -o $@
+
+clean:clean_objects clean_main
+
+clean_objects:
+	rm -rf $(OBJ_PATH)
+
+clean_main:
+	rm -f $(MAIN_PATH)$(MAIN_NAME).o
+	rm -f $(MAIN_PATH)$(MAIN_NAME)
+
+mkdir:
+	mkdir -p bin

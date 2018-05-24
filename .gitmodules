@@ -1,0 +1,3 @@
+[submodule "latticetester"]
+	path = latticetester
+	url = git@github.com:erwanbou/LatticeTester.git

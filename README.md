@@ -9,7 +9,7 @@
 LatMRG currently depends on
 * [LatticeTester](https://github.com/erwanbou/LatticeTester)
 * [NTL](http://www.shoup.net/ntl/index.html)
-* [TestU01](http://simul.iro.umontreal.ca/testu01/tu01.html) _Not yet on GitHub_
+* [TestU01](http://simul.iro.umontreal.ca/testu01/tu01.html)
 * [Boost](https://www.boost.org/)
 
 ## Compiling
