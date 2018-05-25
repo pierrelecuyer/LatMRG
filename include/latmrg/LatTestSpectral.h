@@ -1,7 +1,7 @@
 #ifndef LATTESTSPECTRAL_H
 #define LATTESTSPECTRAL_H
-#include "latmrg/IntLattice.h"
-#include "latmrg/Weights.h"
+#include "latticetester/IntLattice.h"
+#include "latticetester/Weights.h"
 #include "LatticeTest.h"
 #include "latticetester/Reducer.h"
 #include "latticetester/Normalizer.h"
@@ -36,7 +36,7 @@ public:
     * using normalizer `normal` to normalize the figure of merit.
     */
    LatTestSpectral (LatticeTester::Normalizer * normal,
-                       IntLattice * lat);
+                       LatticeTester::IntLattice * lat);
 
    /**
     * Destructor.

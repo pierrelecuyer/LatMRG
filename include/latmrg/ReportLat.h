@@ -56,13 +56,13 @@ ReportLat (Writer* writer, LatConfig* config, ReportHeader* header,
     * Defined in interface `LatticeTestObserver`. Prints the base directly
     * in the report.
     */
-   void latUpdate (IntLattice & lat);
+   void latUpdate (LatticeTester::IntLattice & lat);
 
    /**
     * Defined in interface `LatticeTestObserver`. Prints basis vector
     * \f$V[i]\f$ directly in the report.
     */
-   void latUpdate (IntLattice & lat, int i);
+   void latUpdate (LatticeTester::IntLattice & lat, int i);
 
    /**
     * Defined in interface `LatticeTestObserver`. The results are stacked

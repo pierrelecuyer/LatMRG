@@ -4,11 +4,11 @@
 #include "latticetester/Util.h"
 #include "latticetester/Const.h"
 #include "latticetester/IntLatticeBasis.h"
-#include "latmrg/IntLattice.h"
+#include "latticetester/IntLattice.h"
 #include "latmrg/Merit.h"
 #include "latmrg/Subject.h"
 #include "latmrg/LatticeTestObserver.h"
-#include "latmrg/Weights.h"
+#include "latticetester/Weights.h"
 #include "latmrg/Chrono.h"
 #include <string>
 #include <list>
@@ -40,7 +40,7 @@ public:
    /**
     * Constructor. The test will be applied on `lattice`.
     */
-   explicit LatticeTest (LatMRG::IntLattice * lattice);
+   explicit LatticeTest (LatticeTester::IntLattice * lattice);
 
    /**
     * Destructor.
@@ -108,7 +108,7 @@ public:
    /**
     * Gets the lattice on which the test is applied.
     */
-   LatMRG::IntLattice * getLattice () const { return m_lat; }
+   LatticeTester::IntLattice * getLattice () const { return m_lat; }
 
    /**
     * Returns the lowest dimension on which the test is performed.
@@ -188,7 +188,7 @@ protected:
    /**
     * The lattice on which the test is applied.
     */
-   LatMRG::IntLattice* m_lat;
+   LatticeTester::IntLattice* m_lat;
 
    /**
     * The dimension parameters.
@@ -203,13 +203,13 @@ protected:
    /**
     * Dispatches a `baseUpdate` signal to all observers.
     */
-   void dispatchLatUpdate (IntLattice &);
+   void dispatchLatUpdate (LatticeTester::IntLattice &);
 
    /**
     * Dispatches a `baseUpdate(V, i)` signal to all observers. Only base
     * vector \f$i\f$ will be sent.
     */
-   void dispatchLatUpdate (IntLattice & lat, int i);
+   void dispatchLatUpdate (LatticeTester::IntLattice & lat, int i);
 
    /**
     * Dispatches a `resultUpdate` signal to all observers.

@@ -2,9 +2,9 @@
 #define MRGLATTICE_H
 #include "latticetester/Types.h"
 #include "latticetester/Const.h"
-#include "latmrg/Lacunary.h"
+#include "latticetester/Lacunary.h"
 #include "latmrg/Const.h"
-#include "latmrg/IntLattice.h"
+#include "latticetester/IntLattice.h"
 #include "latmrg/MRGComponent.h"
 #include <string>
 
@@ -23,7 +23,7 @@ namespace LatMRG {
  *   x_n = (a_1 x_{n-1} + \cdots+ a_k x_{n-k}) \mod m.
  * \f]
  */
-class MRGLattice: public LatMRG::IntLattice {
+class MRGLattice: public LatticeTester::IntLattice {
 public:
 
 /**
@@ -90,7 +90,7 @@ MRGLattice (const MScal & m, const MVect & a, int maxDim, int k,
    /**
     * Sets the lacunary indices for this lattice to `lat`.
     */
-   virtual void setLac (const Lacunary & lat);
+   virtual void setLac (const LatticeTester::Lacunary & lat);
 
    /**
     * \name Sets and gets the values of <tt>m_rho</tt> and <tt>m_lossRho</tt>.
@@ -115,6 +115,14 @@ MRGLattice (const MScal & m, const MVect & a, int maxDim, int k,
     * Returns the vector of multipliers \f$A\f$ as a string.
     */
    std::string toStringCoef() const;
+ #ifdef WITH_NTL
+    /**
+     * The components of the lattice when it is built out of more than one
+     * component. When there is only one component, it is unused as the
+     * parameters are the same as above.
+     */
+     std::vector<MRGComponent *> comp;
+ #endif
 
 protected:
 
@@ -196,7 +204,7 @@ protected:
     * Contains the lacunary indices when `LacunaryFlag` is `true`,
     * otherwise is undefined.
     */
-   Lacunary m_lac;
+   LatticeTester::Lacunary m_lac;
 
 
    /**

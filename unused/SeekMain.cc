@@ -15,7 +15,7 @@
 
 #include "latmrg/MRGLattice.h"
 #include "latmrg/KorobovLattice.h"
-#include "latmrg/Rank1Lattice.h"
+#include "latticetester/Rank1Lattice.h"
 #include "latmrg/MRGLatticeFactory.h"
 #include "latmrg/MRGComponent.h"
 
@@ -59,8 +59,8 @@ Chrono timer;
 
 MRGComponent **compJ;
 MMat coef;
-LatMRG::IntLattice *lattice;
-LatMRG::IntLattice *master;
+LatticeTester::IntLattice *lattice;
+LatticeTester::IntLattice *master;
 LatticeTest *latTest;
 LatticeTest **pool;            // vecteur de LatticeTest*
 int poolLen = 0;               // longueur du vecteur pool <= numGen
@@ -162,7 +162,7 @@ void debug (int dim1, int dim2)
    cout <<
    "=================================================================\n\n";
    for (int j = 0; j < poolLen; j++) {
-      LatMRG::IntLattice *lat = pool[j]->getLattice ();
+      LatticeTester::IntLattice *lat = pool[j]->getLattice ();
       cout << "A = "; lat->write();
       int dimWorst;
       double S_T = pool[j]->getMerit ().getST (dim1, dim2, dimWorst);
@@ -184,7 +184,7 @@ void printPool (char *mess)
    mess << endl;
    for (int i = 0; i < poolLen; i++) {
       LatticeTest *latTest = pool[i];
-      LatMRG::IntLattice *lat = latTest->getLattice ();
+      LatticeTester::IntLattice *lat = latTest->getLattice ();
       int dimWorst;
       double S_T = latTest->getMerit ().getST (config.td[0],
                    config.td[1], dimWorst);
@@ -347,7 +347,7 @@ void PrintResults ()
       << endl;
       for (int s = 0; s < poolLen; s++) {
          LatticeTest *latTest = pool[s];
-         LatMRG::IntLattice *lat = latTest->getLattice ();
+         LatticeTester::IntLattice *lat = latTest->getLattice ();
          int dimWorst = latTest->getMerit ().getDimWorst ();
          double S_T = latTest->getMerit ().getWorstMerit ();
          if (rac)
@@ -407,7 +407,7 @@ void Test ()
                                 config.getMaxDim (), config.latType, Norm);
       else if (comp0.genType == RANK1) {
          stationary = false;
-         lattice = new LatMRG::Rank1Lattice (comp0.modulus.m, coef[0],
+         lattice = new LatticeTester::Rank1Lattice (comp0.modulus.m, coef[0],
                                      config.getMaxDim (), Norm);
       }
    }
@@ -434,7 +434,7 @@ void Test ()
          else if (comp0.genType == KOROBOV)
             master = new KorobovLattice (*(KorobovLattice *) lattice);
          else if (comp0.genType == RANK1)
-            master = new LatMRG::Rank1Lattice (*(LatMRG::Rank1Lattice *) lattice);
+            master = new LatticeTester::Rank1Lattice (*(LatticeTester::Rank1Lattice *) lattice);
 
          master->buildBasis (config.td[1]);
          TestProjections proj (master, lattice, latTest, config.td, config.d);
@@ -550,7 +550,7 @@ void CompareMerit ()
       double curMerit = latTest->getMerit ().getWorstMerit ();
 
       if (minMerit < curMerit) {
-         LatMRG::IntLattice *lat = pool[0]->getLattice ();
+         LatticeTester::IntLattice *lat = pool[0]->getLattice ();
          delete lat;
          delete pool[0];
          pool[0] = latTest;
@@ -562,7 +562,7 @@ void CompareMerit ()
             minVal[s] = minMerit;
 
       } else {
-         LatMRG::IntLattice *lat = latTest->getLattice ();
+         LatticeTester::IntLattice *lat = latTest->getLattice ();
          delete lat;
          delete latTest;
       }

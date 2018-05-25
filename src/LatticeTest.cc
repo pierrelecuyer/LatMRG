@@ -10,7 +10,7 @@
 #include "NTL/vec_ZZ.h"
 #include "NTL/mat_ZZ.h"
 
-#include "latmrg/IntLattice.h"
+#include "latticetester/IntLattice.h"
 #include "latmrg/Merit.h"
 #include "latticetester/Util.h"
 #include "latmrg/PolyPE.h"
@@ -28,7 +28,7 @@ using namespace LatticeTester;
 namespace LatMRG
 {
 
-LatticeTest::LatticeTest (LatMRG::IntLattice * lat): m_merit()
+LatticeTest::LatticeTest (LatticeTester::IntLattice * lat): m_merit()
 {
    m_lat = lat;
    m_dualF = true;

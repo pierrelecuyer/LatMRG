@@ -1,10 +1,10 @@
 #ifndef TESTPROJECTIONS_H
 #define TESTPROJECTIONS_H
-#include "latmrg//IntLattice.h"
+#include "latticetester/IntLattice.h"
 #include "latmrg/LatticeTest.h"
-#include "latmrg/Weights.h"
+#include "latticetester/Weights.h"
 #include "latmrg/ProjIterator.h"
-#include "latmrg/CoordinateSets.h"
+#include "latticetester/CoordinateSets.h"
 #include "latmrg/Writer.h"
 
 
@@ -170,7 +170,7 @@ public:
     * for dimensions \f$\le12\f$. The results of the tests will be outputted on
     * `Writer`.
     */
-   TestProjections (IntLattice *master, IntLattice *lattice,
+   TestProjections (LatticeTester::IntLattice *master, LatticeTester::IntLattice *lattice,
                        LatticeTest *test, int td[], int d);
 
    /**
@@ -213,7 +213,7 @@ public:
     * `indices` = \f$[1, 4]\f$, then a 2-dimensional basis is built using
     * coordinates 1 and 4 of the master basis.
     */
-   void build (const Coordinates & proj);
+   void build (const LatticeTester::Coordinates & proj);
 
    /**
     * Calculates the \f$M_{t_1, …, t_d}\f$ merit by running all the tests
@@ -232,7 +232,7 @@ public:
     * As method `run` above, but with the weights `weights`.
     */
    double run (bool stationary, bool last, double minVal[],
-               const Weights & weights);
+               const LatticeTester::Weights & weights);
 
    /**
     * Calculates the number of projections, given the parameters of this
@@ -257,17 +257,17 @@ protected:
     * Run only for projections given by the iterator `projit`.
     */
    double run (ProjIterator & projit, double minVal[],
-                  const Weights & weights);
+                  const LatticeTester::Weights & weights);
 
    /**
     * Lattice on which the \f$M_{t_1, …, t_d}\f$ merit will be calculated.
     */
-   IntLattice* m_master;
+   LatticeTester::IntLattice* m_master;
 
    /**
     * Working lattice which is used to test the different projections.
     */
-   IntLattice* m_lattice;
+   LatticeTester::IntLattice* m_lattice;
 
    /**
     * The lattice test used to calculate the merit.

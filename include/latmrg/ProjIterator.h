@@ -1,7 +1,7 @@
 #ifndef PROJ_ITERATOR_H
 #define PROJ_ITERATOR_H
-#include "latmrg/Weights.h"
-#include "latmrg/CoordinateSets.h"
+#include "latticetester/Weights.h"
+#include "latticetester/CoordinateSets.h"
 
 
 namespace LatMRG {
@@ -23,14 +23,14 @@ public:
     * Resets the iterator to the first projection.
     */
    virtual void reset() = 0;
-   virtual const Coordinates * operator->() const {
+   virtual const LatticeTester::Coordinates * operator->() const {
    return &(operator*());
     }
 
    /**
     * Returns the current projection.
     */
-   virtual const Coordinates & operator*() const = 0;
+   virtual const LatticeTester::Coordinates & operator*() const = 0;
 
    /**
     * Advances to the next projection.

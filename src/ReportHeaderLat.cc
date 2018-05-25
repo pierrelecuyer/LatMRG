@@ -17,7 +17,7 @@ namespace LatMRG
 {
 
 ReportHeaderLat::ReportHeaderLat (Writer * writer, LatConfig * config,
-                                  LatMRG::IntLattice * lattice): ReportHeader (writer)
+                                  LatticeTester::IntLattice * lattice): ReportHeader (writer)
 {
    m_config = config;
    m_lattice = lattice;

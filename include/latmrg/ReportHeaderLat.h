@@ -2,7 +2,7 @@
 #define	REPORTHEADERLAT_H
 #include "ReportHeader.h"
 #include "LatConfig.h"
-#include "latmrg/IntLattice.h"
+#include "latticetester/IntLattice.h"
 #include "Writer.h"
 
 
@@ -25,7 +25,7 @@ public:
     * the result of a combination of MRG components, a MWC transformed into a
     * MRG, and so on.
     */
-   ReportHeaderLat (Writer *writer, LatConfig *config, IntLattice *lattice);
+   ReportHeaderLat (Writer *writer, LatConfig *config, LatticeTester::IntLattice *lattice);
 
    /**
     * Does the actual writing of the report header with the `Writer`
@@ -43,7 +43,7 @@ private:
     * Pointer to the final MRG lattice on which the lattice test will be
     * performed.
     */
-    IntLattice* m_lattice;
+    LatticeTester::IntLattice* m_lattice;
 };
 
 }

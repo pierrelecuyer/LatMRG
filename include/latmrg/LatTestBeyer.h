@@ -1,6 +1,6 @@
 #ifndef LATTESTBEYER_H
 #define LATTESTBEYER_H
-#include "latmrg/IntLattice.h"
+#include "latticetester/IntLattice.h"
 #include "LatticeTest.h"
 
 
@@ -23,7 +23,7 @@ public:
    /**
     * Constructor. The *Beyer* test will be applied on lattice `lat`.
     */
-   LatTestBeyer (LatMRG::IntLattice * lat);
+   LatTestBeyer (LatticeTester::IntLattice * lat);
 
    /**
     * Destructor.

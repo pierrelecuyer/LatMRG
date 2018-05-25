@@ -135,8 +135,8 @@ int main ()
     LatTestAll latTestAll;
     Writer* rw = latTestAll.createWriter (infile.c_str(), config.outputType);
 
-	LatMRG::IntLattice *lattice = 0;
-	LatMRG::IntLattice *master = 0;
+	LatticeTester::IntLattice *lattice = 0;
+	LatticeTester::IntLattice *master = 0;
 	Lacunary *plac = 0;
 	bool stationary = true;
 	bool memLacF = true; 

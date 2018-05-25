@@ -17,7 +17,7 @@ namespace LatMRG
 
 KorobovLattice::KorobovLattice (const MScal & n, const MScal & a, int maxDim,
                                 NormType norm) :
-      LatMRG::IntLattice::IntLattice(n, 0, maxDim, norm)
+      LatticeTester::IntLattice::IntLattice(n, 0, maxDim, norm)
 {
    m_a = a;
    m_shift = 0;

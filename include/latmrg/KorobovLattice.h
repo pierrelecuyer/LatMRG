@@ -2,7 +2,7 @@
 #define LatticeTester__KOROBOVLATTICE_H
 #include "latticetester/Types.h"
 #include "latticetester/Const.h"
-#include "latmrg/IntLattice.h"
+#include "latticetester/IntLattice.h"
 
 
 namespace LatMRG {
@@ -20,7 +20,7 @@ namespace LatMRG {
  * \c MRGLattice
  *
  */
-class KorobovLattice: public IntLattice {
+class KorobovLattice: public LatticeTester::IntLattice {
 public:
 
    /**

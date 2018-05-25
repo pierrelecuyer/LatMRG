@@ -25,7 +25,7 @@ public:
     * parameters are in `config`. The `bounds` \f$B_{\alpha}(s)\f$ may be used
     * to normalize the \f$P_{\alpha}(s)\f$ values.
     */
-   LatTestPalpha (LatticeTester::Normalizer * bounds, LatMRG::IntLattice * lat);
+   LatTestPalpha (LatticeTester::Normalizer * bounds, LatticeTester::IntLattice * lat);
 
    /**
     * Destructor.

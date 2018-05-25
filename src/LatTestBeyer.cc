@@ -1,5 +1,5 @@
 #include "latmrg/LatTestBeyer.h"
-#include "latmrg/IntLattice.h"
+#include "latticetester/IntLattice.h"
 #include "latticetester/Reducer.h"
 #include "latmrg/Merit.h"
 #include "latticetester/Const.h"
@@ -27,7 +27,7 @@ namespace LatMRG
 
 //===========================================================================
 
-LatTestBeyer::LatTestBeyer (LatMRG::IntLattice * lat): LatticeTest (lat)
+LatTestBeyer::LatTestBeyer (LatticeTester::IntLattice * lat): LatticeTest (lat)
 {
    m_criter = BEYER;
 }

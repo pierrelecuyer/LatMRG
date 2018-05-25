@@ -2,9 +2,9 @@
 #define MMRGLATTICE_H
 #include "latticetester/Types.h"
 #include "latticetester/Const.h"
-#include "latmrg/Lacunary.h"
+#include "latticetester/Lacunary.h"
 #include "latmrg/Const.h"
-#include "latmrg/IntLattice.h"
+#include "latticetester/IntLattice.h"
 #include <string>
 
 
@@ -22,7 +22,7 @@ namespace LatMRG {
  *   X_n = A X_{n-1} \mod m.
  * \f]
  */
-class MMRGLattice: public LatMRG::IntLattice {
+class MMRGLattice: public LatticeTester::IntLattice {
 public:
 
    /**
@@ -73,7 +73,7 @@ public:
    /**
     * Sets the lacunary indices for this lattice to `lat`.
     */
-   virtual void setLac (const Lacunary & lat);
+   virtual void setLac (const LatticeTester::Lacunary & lat);
 
    /**
     * Returns the generator matrix \f$A\f$ as a string.
@@ -159,7 +159,7 @@ protected:
     * Contains the lacunary indices when `LacunaryFlag` is `true`,
     * otherwise is undefined.
     */
-   Lacunary m_lac;
+   LatticeTester::Lacunary m_lac;
 
    /**
     * Contains the number of lacunary indices

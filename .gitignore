@@ -9,3 +9,4 @@ bin/
 !.gitmodules
 waf
 makefile_
+NOTES

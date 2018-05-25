@@ -12,7 +12,7 @@
 #include "latmrg/LatConfig.h"
 #include "latmrg/ParamReaderLat.h"
 #include "latmrg/KorobovLattice.h"
-#include "latmrg/Rank1Lattice.h"
+#include "latticetester/Rank1Lattice.h"
 #include "latmrg/MRGLatticeFactory.h"
 #include "latmrg/MRGLattice.h"
 #include "latmrg/MRGLatticeLac.h"
@@ -149,8 +149,8 @@ int LatTestAll::doTest (const char *infile)
       
    Writer* rw = createWriter (infile, config.outputType);
 
-   LatMRG::IntLattice *lattice = 0;
-   LatMRG::IntLattice *master = 0;
+   LatticeTester::IntLattice *lattice = 0;
+   LatticeTester::IntLattice *master = 0;
    Lacunary *plac = 0;
    bool stationary = true;
    int toDim = config.td[1];

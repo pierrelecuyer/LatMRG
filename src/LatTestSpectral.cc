@@ -1,5 +1,5 @@
 #include "latmrg/LatTestSpectral.h"
-#include "latmrg/IntLattice.h"
+#include "latticetester/IntLattice.h"
 #include "latticetester/Const.h"
 #include "latmrg/Merit.h"
 #include "latticetester/Util.h"
@@ -22,7 +22,7 @@ namespace LatMRG
 //===========================================================================
 
 LatTestSpectral::LatTestSpectral (Normalizer * normal,
-              LatMRG::IntLattice * lat): LatticeTest (lat)
+              LatticeTester::IntLattice * lat): LatticeTest (lat)
 {
    m_criter = SPECTRAL;
    m_normalizer = normal;

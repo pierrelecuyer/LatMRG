@@ -2,7 +2,7 @@
 #include "latmrg/LatticeTest.h"
 //#include "latmrg/PalphaLCG.h"
 #include "latmrg/MRGComponent.h"
-#include "latmrg/IntLattice.h"
+#include "latticetester/IntLattice.h"
 #include "latticetester/IntFactor.h"
 #include "latticetester/Const.h"
 #include "latmrg/Merit.h"
@@ -59,7 +59,7 @@ void LatTestPalpha::prepAndDisp (int dim)
 
 //===========================================================================
 
-LatTestPalpha::LatTestPalpha (Normalizer * normal, LatMRG::IntLattice * lat): LatticeTest (lat)
+LatTestPalpha::LatTestPalpha (Normalizer * normal, LatticeTester::IntLattice * lat): LatticeTest (lat)
 {
    m_criter = PALPHA;
    m_bound = normal;

@@ -43,7 +43,7 @@ public:
    /**
     * Returns the current projection.
     */
-   virtual const Coordinates & operator*() const;
+   virtual const LatticeTester::Coordinates & operator*() const;
 
    /**
     * Advance to the next projection.
@@ -71,7 +71,7 @@ protected:
    bool m_forceMinCoord;     // force first coordinate to the minimum index
    bool m_forceMaxCoord;     // force last coordinate to the maximum index
 
-   Coordinates m_projection;
+   LatticeTester::Coordinates m_projection;
 };
 
 }

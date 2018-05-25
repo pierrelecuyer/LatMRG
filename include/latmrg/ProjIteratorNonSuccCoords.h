@@ -42,7 +42,7 @@ public:
    virtual ProjIterator & operator++();
 protected:
 
-   static bool successive (const Coordinates & proj);
+   static bool successive (const LatticeTester::Coordinates & proj);
 };
 
 }
