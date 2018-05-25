@@ -3,6 +3,8 @@ build/
 lib/
 obj/
 bin/
+obscure_files/
+unused/
 .*
 *.o
 !.gitignore
