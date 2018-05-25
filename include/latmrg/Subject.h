@@ -12,56 +12,56 @@
 
 namespace LatMRG {
 
-/**
- * Constructor.
- */
-template <typename T>
-class Subject {
-public:
+  /**
+   * Constructor.
+   */
+  template <typename T>
+    class Subject {
+      public:
 
-   Subject() {}
+        Subject() {}
 
-   /**
-    * Destructor.
-    */
-   virtual ~Subject();
+        /**
+         * Destructor.
+         */
+        virtual ~Subject();
 
-   /**
-    * Attaches the observer `observer` to this object.
-    */
-   void attach (T observer);
+        /**
+         * Attaches the observer `observer` to this object.
+         */
+        void attach (T observer);
 
-   /**
-    * Detaches the observer `observer` to this object.
-    */
-   void detach (T observer);
-protected:
+        /**
+         * Detaches the observer `observer` to this object.
+         */
+        void detach (T observer);
+      protected:
 
-   typedef std::list<T> list_ob;
+        typedef std::list<T> list_ob;
 
-/**
- * The list that contains the observers.
- */
-list_ob m_observers;
-};
+        /**
+         * The list that contains the observers.
+         */
+        list_ob m_observers;
+    };
 
-template <typename T>
-void Subject<T>::attach (T observer)
-{
-   m_observers.push_back (observer);
-   m_observers.unique ();
-}
+  template <typename T>
+    void Subject<T>::attach (T observer)
+    {
+      m_observers.push_back (observer);
+      m_observers.unique ();
+    }
 
-template <typename T>
-void Subject<T>::detach (T observer)
-{
-   m_observers.remove (observer);
-}
+  template <typename T>
+    void Subject<T>::detach (T observer)
+    {
+      m_observers.remove (observer);
+    }
 
-template <typename T>
-Subject<T>::~Subject()
-{
-   m_observers.clear();
-}
+  template <typename T>
+    Subject<T>::~Subject()
+    {
+      m_observers.clear();
+    }
 }
 #endif

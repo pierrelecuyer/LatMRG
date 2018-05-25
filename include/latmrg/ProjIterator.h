@@ -6,44 +6,44 @@
 
 namespace LatMRG {
 
-/**
- * This abstract class is the basis for different kinds of projection
- * iterators used to walk through sets of projections.
- *
- */
-class ProjIterator {
-public:
+  /**
+   * This abstract class is the basis for different kinds of projection
+   * iterators used to walk through sets of projections.
+   *
+   */
+  class ProjIterator {
+    public:
 
-   /**
-    * Destructor.
-    */
-   virtual ~ProjIterator() {}
+      /**
+       * Destructor.
+       */
+      virtual ~ProjIterator() {}
 
-   /**
-    * Resets the iterator to the first projection.
-    */
-   virtual void reset() = 0;
-   virtual const LatticeTester::Coordinates * operator->() const {
-   return &(operator*());
-    }
+      /**
+       * Resets the iterator to the first projection.
+       */
+      virtual void reset() = 0;
+      virtual const LatticeTester::Coordinates * operator->() const {
+        return &(operator*());
+      }
 
-   /**
-    * Returns the current projection.
-    */
-   virtual const LatticeTester::Coordinates & operator*() const = 0;
+      /**
+       * Returns the current projection.
+       */
+      virtual const LatticeTester::Coordinates & operator*() const = 0;
 
-   /**
-    * Advances to the next projection.
-    */
-   virtual ProjIterator & operator++() = 0;
-   bool atEnd() const { return operator bool(); }
+      /**
+       * Advances to the next projection.
+       */
+      virtual ProjIterator & operator++() = 0;
+      bool atEnd() const { return operator bool(); }
 
-   /**
-    * Returns `true` if the current projection is valid, or `false` if all
-    * projections have already been visited.
-    */
-   virtual operator bool() const = 0;
-};
+      /**
+       * Returns `true` if the current projection is valid, or `false` if all
+       * projections have already been visited.
+       */
+      virtual operator bool() const = 0;
+  };
 
 }
 #endif

@@ -17,63 +17,63 @@ using namespace LatticeTester;
 
 namespace
 {
-const char* espaceM = " \t\t   ";
-const char* espaceG = "                                                   ";
+  const char* espaceM = " \t\t   ";
+  const char* espaceG = "                                                   ";
 
-const LatticeTester::UniformWeights unitWeights(1.0);
+  const LatticeTester::UniformWeights unitWeights(1.0);
 
-const string formatIndices (const LatticeTester::Coordinates & ens)
-{
-   ostringstream os;
-   os << "  ";
-   LatticeTester::Coordinates::const_iterator it = ens.begin ();
-   os << *it;
-   ++it;
-   while (it != ens.end ()) {
+  const string formatIndices (const LatticeTester::Coordinates & ens)
+  {
+    ostringstream os;
+    os << "  ";
+    LatticeTester::Coordinates::const_iterator it = ens.begin ();
+    os << *it;
+    ++it;
+    while (it != ens.end ()) {
       os << "," << *it;
       ++it;
-   }
-   os << espaceM;
-   return os.str ();
-}
+    }
+    os << espaceM;
+    return os.str ();
+  }
 
 
-void printMerit (bool racF, double merit, LatMRG::Writer * rw)
-{
-   if (racF) {
+  void printMerit (bool racF, double merit, LatMRG::Writer * rw)
+  {
+    if (racF) {
       rw->writeString (espaceG);
       rw->writeString ("min merit = ");
       rw->writeDouble (LatticeTester::mysqrt (merit));
-   } else {
+    } else {
       rw->writeString (espaceG);
       rw->writeString ("min merit = ");
       rw->writeDouble (merit);
-   }
-   rw->newLine ();
-   rw->newLine ();
-}
+    }
+    rw->newLine ();
+    rw->newLine ();
+  }
 
 
-void printMerLen (bool invF, bool racF, double len, double merit,
-                  LatMRG::Writer * rw)
-{
-   double x = len;
-   if (racF)
+  void printMerLen (bool invF, bool racF, double len, double merit,
+      LatMRG::Writer * rw)
+  {
+    double x = len;
+    if (racF)
       x = LatticeTester::mysqrt (len);
-   if (invF)
+    if (invF)
       x = 1.0 / x;
 
-   if (racF) {
+    if (racF) {
       rw->writeDouble (x);
       rw->writeString (espaceM);
       rw->writeDouble (LatticeTester::mysqrt (merit));
-   } else {
+    } else {
       rw->writeDouble (x);
       rw->writeString (espaceM);
       rw->writeDouble (merit);
-   }
-   rw->newLine ();
-}
+    }
+    rw->newLine ();
+  }
 
 }                                 // namespace
 
@@ -83,177 +83,177 @@ void printMerLen (bool invF, bool racF, double len, double merit,
 namespace LatMRG
 {
 
-//===========================================================================
+  //===========================================================================
 
-TestProjections::TestProjections (LatticeTester::IntLattice * master, LatticeTester::IntLattice * lattice,
-                                  LatticeTest * test, int td[], int d)
-{
-   if (d <= 0)
+  TestProjections::TestProjections (LatticeTester::IntLattice * master, LatticeTester::IntLattice * lattice,
+      LatticeTest * test, int td[], int d)
+  {
+    if (d <= 0)
       MyExit(1, "   TestProjections:   d <= 0");
-   for (int i = 2; i <= d; i++) {
+    for (int i = 2; i <= d; i++) {
       if (td[i] >= 100)
-         MyExit(1, "   TestProjections:   td[i] >= 100");
-   }
-   m_d = d;
-   m_td = new int[d + 1];
-   memcpy (m_td, td, (d + 1) * sizeof (int));
-   int maxDim = 0;
-   for (int i = 0; i <= d; i++)
+        MyExit(1, "   TestProjections:   td[i] >= 100");
+    }
+    m_d = d;
+    m_td = new int[d + 1];
+    memcpy (m_td, td, (d + 1) * sizeof (int));
+    int maxDim = 0;
+    for (int i = 0; i <= d; i++)
       maxDim = max (maxDim, m_td[i]);
-   m_weightsTemp = new double[maxDim + 1];
-   for (int i = 0; i <= maxDim; i++)
+    m_weightsTemp = new double[maxDim + 1];
+    for (int i = 0; i <= maxDim; i++)
       m_weightsTemp[i] = 1.0;
-   m_master = master;
-   m_lattice = lattice;
-   m_test = test;
-   m_dualF = test->getDualFlag ();
-   m_printF = true;
-   m_invertF = test->getInvertFlag ();
-   if ((SPECTRAL == test->getCriterion() && L2NORM == master->getNorm ())
-         || (BEYER == test->getCriterion()))
+    m_master = master;
+    m_lattice = lattice;
+    m_test = test;
+    m_dualF = test->getDualFlag ();
+    m_printF = true;
+    m_invertF = test->getInvertFlag ();
+    if ((SPECTRAL == test->getCriterion() && L2NORM == master->getNorm ())
+        || (BEYER == test->getCriterion()))
       m_racF = true;
-   else
+    else
       m_racF = false;
-   m_writer = new WriterRes (&cout);
-   m_wrFlag = true;
-}
+    m_writer = new WriterRes (&cout);
+    m_wrFlag = true;
+  }
 
 
-//===========================================================================
+  //===========================================================================
 
-TestProjections::~TestProjections ()
-{
-   delete[] m_td;
-   delete[] m_weightsTemp;
-   if (m_wrFlag)
+  TestProjections::~TestProjections ()
+  {
+    delete[] m_td;
+    delete[] m_weightsTemp;
+    if (m_wrFlag)
       delete m_writer;
-}
+  }
 
 
-//===========================================================================
+  //===========================================================================
 
-void TestProjections::setOutput (Writer * rw)
-{
-   delete m_writer;
-   m_wrFlag = false;
-   m_writer = rw;
-}
-
-
-//===========================================================================
-
-void TestProjections::setDualFlag (bool dual)
-{
-   m_dualF = dual;
-}
+  void TestProjections::setOutput (Writer * rw)
+  {
+    delete m_writer;
+    m_wrFlag = false;
+    m_writer = rw;
+  }
 
 
-//===========================================================================
+  //===========================================================================
 
-void TestProjections::setPrintF (bool flag)
-{
-   m_printF = flag;
-}
+  void TestProjections::setDualFlag (bool dual)
+  {
+    m_dualF = dual;
+  }
 
 
-//===========================================================================
+  //===========================================================================
 
-void TestProjections::build (const Coordinates & proj)
-{
-   m_master->buildProjection (m_lattice, proj);
-}
+  void TestProjections::setPrintF (bool flag)
+  {
+    m_printF = flag;
+  }
 
-//===========================================================================
 
-int TestProjections::calcNumProjections (bool stationary, bool forceLast)
-{
-   // Les projections sur dimensions successives
-   m_numproj = m_td[1] - m_td[0] + 1;
+  //===========================================================================
 
-   if (!stationary) {
+  void TestProjections::build (const Coordinates & proj)
+  {
+    m_master->buildProjection (m_lattice, proj);
+  }
+
+  //===========================================================================
+
+  int TestProjections::calcNumProjections (bool stationary, bool forceLast)
+  {
+    // Les projections sur dimensions successives
+    m_numproj = m_td[1] - m_td[0] + 1;
+
+    if (!stationary) {
       for (int order = 2; order <= m_d; order++) {
-         int maxCoord = min (m_td[order], m_master->getDim ());
-         if (maxCoord <= order)
-            continue;
-         for (ProjIteratorSuccCoords projit(2, maxCoord, order, order, stationary, forceLast); projit; ++projit)
-            m_numproj++;
+        int maxCoord = min (m_td[order], m_master->getDim ());
+        if (maxCoord <= order)
+          continue;
+        for (ProjIteratorSuccCoords projit(2, maxCoord, order, order, stationary, forceLast); projit; ++projit)
+          m_numproj++;
       }
-   }
+    }
 
-   // test for non-successive coordinates
-   // loop over projection orders
-   for (int order = 2; order <= m_d; order++) {
+    // test for non-successive coordinates
+    // loop over projection orders
+    for (int order = 2; order <= m_d; order++) {
       int maxCoord = min (m_td[order], m_master->getDim ());
       if (maxCoord <= order)
-         continue;
+        continue;
       for (ProjIteratorNonSuccCoords projit(1, maxCoord, order, order, stationary, forceLast); projit; ++projit)
-         m_numproj++;
-   }
+        m_numproj++;
+    }
 
-   //! if (false == stationary) {
-   //!    // Les autres projections sur dimensions successives
-   //!    for (int i = 2; i <= m_d; i++) {
-   //!       int dim = min (m_td[i], m_master->getMaxDim ());
-   //!       initSuccDims (i, dim, forceLast);
-   //!       do {
-   //!          m_numproj++;
-   //!       } while (nextSuccDims (stationary, forceLast, i, dim));
-   //!    }
-   //! }
+    //! if (false == stationary) {
+    //!    // Les autres projections sur dimensions successives
+    //!    for (int i = 2; i <= m_d; i++) {
+    //!       int dim = min (m_td[i], m_master->getMaxDim ());
+    //!       initSuccDims (i, dim, forceLast);
+    //!       do {
+    //!          m_numproj++;
+    //!       } while (nextSuccDims (stationary, forceLast, i, dim));
+    //!    }
+    //! }
 
-   //! // Les projections sur dimensions non successives
-   //! for (int i = 2; i <= m_d; i++) {
-   //!    int dim = min (m_td[i], m_master->getMaxDim ());
-   //!    if (initNonSuccDims (i, dim, forceLast)) {
-   //!       do {
-   //!          m_numproj++;
-   //!       } while (nextNonSuccDims (stationary, forceLast, i, dim));
-   //!    }
-   //! }
-   return m_numproj;
-}
-
-
-//=========================================================================
-
-double TestProjections::run (bool stationary, bool forceLast, double minVal[])
-{
-   return run(stationary, forceLast, minVal, unitWeights);
-}
+    //! // Les projections sur dimensions non successives
+    //! for (int i = 2; i <= m_d; i++) {
+    //!    int dim = min (m_td[i], m_master->getMaxDim ());
+    //!    if (initNonSuccDims (i, dim, forceLast)) {
+    //!       do {
+    //!          m_numproj++;
+    //!       } while (nextNonSuccDims (stationary, forceLast, i, dim));
+    //!    }
+    //! }
+    return m_numproj;
+  }
 
 
-double TestProjections::run (bool stationary, bool forceLast, double minVal[], const Weights& weights)
-{
-   // we assume that m_td[1] >= m_td[i] for all i
-   int maxDim = m_td[1];
-   double merit = 1.0e100;
+  //=========================================================================
 
-   //! cout << "minVal: " << minVal[0];
-   //! for (int j = 1; j < maxDim; j++)
-   //!    cout << "," << minVal[j];
-   //! cout << endl;
+  double TestProjections::run (bool stationary, bool forceLast, double minVal[])
+  {
+    return run(stationary, forceLast, minVal, unitWeights);
+  }
 
-   // Le test pour les projections sur dimensions successives
-   m_lattice->buildBasis (m_td[0] - 1);
-   int minDim = m_td[0];
-   m_test->setDualFlag (m_dualF);
-   m_test->setMaxAllDimFlag (true);
 
-   // set the temporary weights for successive dimensions
-   for (ProjIteratorSuccCoords projit(0, maxDim-1, 0, maxDim-1, true, false); projit; ++projit) {
+  double TestProjections::run (bool stationary, bool forceLast, double minVal[], const Weights& weights)
+  {
+    // we assume that m_td[1] >= m_td[i] for all i
+    int maxDim = m_td[1];
+    double merit = 1.0e100;
+
+    //! cout << "minVal: " << minVal[0];
+    //! for (int j = 1; j < maxDim; j++)
+    //!    cout << "," << minVal[j];
+    //! cout << endl;
+
+    // Le test pour les projections sur dimensions successives
+    m_lattice->buildBasis (m_td[0] - 1);
+    int minDim = m_td[0];
+    m_test->setDualFlag (m_dualF);
+    m_test->setMaxAllDimFlag (true);
+
+    // set the temporary weights for successive dimensions
+    for (ProjIteratorSuccCoords projit(0, maxDim-1, 0, maxDim-1, true, false); projit; ++projit) {
       if ((int)projit->size() >= minDim)
-         m_weightsTemp[projit->size()] = weights.getWeight(*projit);
+        m_weightsTemp[projit->size()] = weights.getWeight(*projit);
       else
-         m_weightsTemp[projit->size()] = 1;
-   }
+        m_weightsTemp[projit->size()] = 1;
+    }
 
-   m_test->test (minDim, maxDim, minVal, m_weightsTemp);
-   // ATTENTION: si le test s'est terminé prématurément parce que le réseau
-   // est mauvais, les valeurs de mérites ci-après sont n'importe quoi.
-   merit = m_test->getMerit().getST (minDim, maxDim);
-   m_numproj = maxDim - minDim + 1;
+    m_test->test (minDim, maxDim, minVal, m_weightsTemp);
+    // ATTENTION: si le test s'est terminé prématurément parce que le réseau
+    // est mauvais, les valeurs de mérites ci-après sont n'importe quoi.
+    merit = m_test->getMerit().getST (minDim, maxDim);
+    m_numproj = maxDim - minDim + 1;
 
-   if (m_printF) {
+    if (m_printF) {
       //cout << "------------------------------------------" << endl;
       //cout << " a = " << m_lattice->toStringCoef () << endl;
       m_writer->writeString (" ");
@@ -262,70 +262,70 @@ double TestProjections::run (bool stationary, bool forceLast, double minVal[], c
       m_writer->writeString (
           m_test->getMerit ().toString(minDim, maxDim, m_racF, m_invertF));
       printMerit (m_racF, merit, m_writer);
-   }
-   if (merit < minVal[maxDim] || m_d <= 1)
+    }
+    if (merit < minVal[maxDim] || m_d <= 1)
       return merit;
 
-   if (!stationary) {
+    if (!stationary) {
       // test for successive coordinates
       // loop over projection orders
       for (int order = 2; order <= m_d; order++) {
 
-         int maxCoord = min (m_td[order], m_master->getDim ());
-         // if maxCoord < order, there are no projections to consider
-         // if maxCoord == order, the merit has already been computed above
-         if (maxCoord <= order)
-            continue;
+        int maxCoord = min (m_td[order], m_master->getDim ());
+        // if maxCoord < order, there are no projections to consider
+        // if maxCoord == order, the merit has already been computed above
+        if (maxCoord <= order)
+          continue;
 
-         ProjIteratorSuccCoords projit(1, maxCoord-1, order, order, stationary, forceLast);
-         merit = std::min(merit, run(projit, minVal, weights));
+        ProjIteratorSuccCoords projit(1, maxCoord-1, order, order, stationary, forceLast);
+        merit = std::min(merit, run(projit, minVal, weights));
 
-         if (merit < minVal[order])
-            return merit;
+        if (merit < minVal[order])
+          return merit;
 
-         if (m_printF)
-            printMerit (m_racF, merit, m_writer);
+        if (m_printF)
+          printMerit (m_racF, merit, m_writer);
       }
-   }
+    }
 
-   // test for non-successive coordinates
-   // loop over projection orders
-   for (int order = 2; order <= m_d; order++) {
+    // test for non-successive coordinates
+    // loop over projection orders
+    for (int order = 2; order <= m_d; order++) {
 
       int maxCoord = min (m_td[order], m_master->getDim ());
       // if maxCoord <= order, there are no projections with non-successive indices to consider
       if (maxCoord <= order)
-         continue;
+        continue;
 
       ProjIteratorNonSuccCoords projit(0, maxCoord-1, order, order, stationary, forceLast);
       merit = std::min(merit, run(projit, minVal, weights));
 
       if (merit < minVal[order])
-         return merit;
+        return merit;
 
       if (m_printF)
-         printMerit (m_racF, merit, m_writer);
-   }
+        printMerit (m_racF, merit, m_writer);
+    }
 
-   m_test->getMerit ().setWorstMerit (merit);
-   return merit;
-}
+    m_test->getMerit ().setWorstMerit (merit);
+    return merit;
+  }
 
 
-//===========================================================================
+  //===========================================================================
 
-double TestProjections::run (ProjIterator& projit, double minVal[], const Weights& weights)
-{
-   double minMerit = 1.0e100;
-   int cpt = 0;
-   while (projit) {
+  double TestProjections::run (ProjIterator& projit, double minVal[], const Weights& weights)
+  {
+    double minMerit = 1.0e100;
+    int cpt = 0;
+    while (projit) {
       cpt++;
       int dim = (int)projit->size();
       int maxCoord = min (m_td[dim], m_master->getDim ());
       if (maxCoord <= dim) // if equal, already computed
-         continue;
+        continue;
       if (m_printF)
-         m_writer->writeString (formatIndices(*projit));
+        m_writer->writeString (formatIndices(*projit));
 
       m_numproj++;
 
@@ -334,24 +334,24 @@ double TestProjections::run (ProjIterator& projit, double minVal[], const Weight
       m_master->buildProjection (m_lattice, *projit);
 
       m_test->test (dim, dim, minVal, m_weightsTemp);
-      
-      
+
+
 
       double len = m_test->getMerit ().getMerit (dim);
 
       double curMerit = m_test->getMerit ().getNormVal (dim);
       if (m_printF)
-         printMerLen (m_invertF, m_racF, len, curMerit, m_writer);
+        printMerLen (m_invertF, m_racF, len, curMerit, m_writer);
       if (curMerit < minVal[dim])
-         return curMerit;
+        return curMerit;
 
       minMerit = std::min (minMerit, curMerit);
       ++projit;
 
-   }
-   return minMerit;
-}
+    }
+    return minMerit;
+  }
 
-//===========================================================================
+  //===========================================================================
 
 }

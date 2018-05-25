@@ -10,192 +10,192 @@
 
 namespace LatMRG {
 
-/**
- * This class implements lattice basis built from M-MRG (matrix multiple recursive 
- * linear congruential generators). One must first call the constructor with a
- * given congruence modulus \f$m\f$, a given generator matrix for the 
- * recurrence, and a maximal dimension for the basis. One must then build the
- * lattice basis associated to the generator matrix for a given dimension.
- * Each MMRG is defined by a generator matrix \f$A\f$. This MMRG satisfies 
- * the recurrence
- * \f[
- *   X_n = A X_{n-1} \mod m.
- * \f]
- */
-class MMRGLattice: public LatticeTester::IntLattice {
-public:
+  /**
+   * This class implements lattice basis built from M-MRG (matrix multiple recursive 
+   * linear congruential generators). One must first call the constructor with a
+   * given congruence modulus \f$m\f$, a given generator matrix for the 
+   * recurrence, and a maximal dimension for the basis. One must then build the
+   * lattice basis associated to the generator matrix for a given dimension.
+   * Each MMRG is defined by a generator matrix \f$A\f$. This MMRG satisfies 
+   * the recurrence
+   * \f[
+   *   X_n = A X_{n-1} \mod m.
+   * \f]
+   */
+  class MMRGLattice: public LatticeTester::IntLattice {
+    public:
 
-   /**
-    * Constructor with modulus of congruence \f$m\f$, generator matrix \f$A\f$, dimension 
-    * of generator matrix \f$r\f$, maximal dimension `MaxDim`, and lattice type
-    * `Latt`. Vectors and (square) matrices of the basis have maximal dimension
-    * `maxDim`, and the indices of vectors and matrices vary from dimension 0 to
-    * `maxDim`-1. The norm to be used for the basis vectors is `norm`.
-    */
-   MMRGLattice (const MScal & m, const MMat & A, int maxDim, int r,
-      LatticeTester::NormType norm = LatticeTester::L2NORM, LatticeType lat = FULL);
+      /**
+       * Constructor with modulus of congruence \f$m\f$, generator matrix \f$A\f$, dimension 
+       * of generator matrix \f$r\f$, maximal dimension `MaxDim`, and lattice type
+       * `Latt`. Vectors and (square) matrices of the basis have maximal dimension
+       * `maxDim`, and the indices of vectors and matrices vary from dimension 0 to
+       * `maxDim`-1. The norm to be used for the basis vectors is `norm`.
+       */
+      MMRGLattice (const MScal & m, const MMat & A, int maxDim, int r,
+          LatticeTester::NormType norm = LatticeTester::L2NORM, LatticeType lat = FULL);
 
-   /**
-    * As in the constructor above but the basis is built for the lacunary
-    * indices `lac`.
-    */
-  //PW_TODO à faire plus tard
-  MMRGLattice (const MScal & m, const MMat & A, int maxDim, int r, LacunaryType & lacunaryType,
-      BVect & lac, LatticeTester::NormType norm = LatticeTester::L2NORM, LatticeType lat = FULL);
+      /**
+       * As in the constructor above but the basis is built for the lacunary
+       * indices `lac`.
+       */
+      //PW_TODO à faire plus tard
+      MMRGLattice (const MScal & m, const MMat & A, int maxDim, int r, LacunaryType & lacunaryType,
+          BVect & lac, LatticeTester::NormType norm = LatticeTester::L2NORM, LatticeType lat = FULL);
 
-   /**
-    * Copy constructor. The maximal dimension of the created basis is set
-    * equal to <tt>Lat</tt>’s current dimension.
-    */
-   MMRGLattice (const MMRGLattice & Lat);
+      /**
+       * Copy constructor. The maximal dimension of the created basis is set
+       * equal to <tt>Lat</tt>’s current dimension.
+       */
+      MMRGLattice (const MMRGLattice & Lat);
 
-   /**
-    * Destructor.
-    */
-   ~MMRGLattice();
+      /**
+       * Destructor.
+       */
+      ~MMRGLattice();
 
-   /**
-    * Cleans and releases memory used by this object.
-    */
-   void kill();
+      /**
+       * Cleans and releases memory used by this object.
+       */
+      void kill();
 
-   /**
-    * Assigns `Lat` to this object. The maximal dimension of this basis is
-    * set equal to <tt>Lat</tt>’s current dimension.
-    */
-   MMRGLattice & operator= (const MMRGLattice & Lat);
+      /**
+       * Assigns `Lat` to this object. The maximal dimension of this basis is
+       * set equal to <tt>Lat</tt>’s current dimension.
+       */
+      MMRGLattice & operator= (const MMRGLattice & Lat);
 
-   /**
-    * Returns the \f$j\f$-th lacunary index.
-    */
-   BScal & getLac (int j);
+      /**
+       * Returns the \f$j\f$-th lacunary index.
+       */
+      BScal & getLac (int j);
 
-   /**
-    * Sets the lacunary indices for this lattice to `lat`.
-    */
-   virtual void setLac (const LatticeTester::Lacunary & lat);
+      /**
+       * Sets the lacunary indices for this lattice to `lat`.
+       */
+      virtual void setLac (const LatticeTester::Lacunary & lat);
 
-   /**
-    * Returns the generator matrix \f$A\f$ as a string.
-    */
-   std::string toStringGeneratorMatrix() const;
+      /**
+       * Returns the generator matrix \f$A\f$ as a string.
+       */
+      std::string toStringGeneratorMatrix() const;
 
-   /**
-    * Builds the basis in dimension \f$d\f$.
-    */
-   virtual void buildBasis (int d);
+      /**
+       * Builds the basis in dimension \f$d\f$.
+       */
+      virtual void buildBasis (int d);
 
-   /**
-    * Increments the dimension of the basis by 1 by calling either
-    * `incDimBasis` or `incDimLaBasis`.
-    */
-   void incDim();
+      /**
+       * Increments the dimension of the basis by 1 by calling either
+       * `incDimBasis` or `incDimLaBasis`.
+       */
+      void incDim();
 
-   /**
-    * Returns `true` for the case of lacunary indices, returns `false` for
-    * non-lacunary indices.
-    */
-   bool isLacunary() const { return m_lacunaryFlag; }
+      /**
+       * Returns `true` for the case of lacunary indices, returns `false` for
+       * non-lacunary indices.
+       */
+      bool isLacunary() const { return m_lacunaryFlag; }
 
-   /**
-    * Returns a non-mutable copy of the generator matrix of the MMRG
-    */
-   const MMat & getGeneratorMatrix() const { return m_A; }
+      /**
+       * Returns a non-mutable copy of the generator matrix of the MMRG
+       */
+      const MMat & getGeneratorMatrix() const { return m_A; }
 
 
-    //PW_TODO ici temporairement, à déplacer dans latticetester/Util.h
-   void getSubLine(MVect & vec, MMat& B, int lign, int jMin, int jMax);
+      //PW_TODO ici temporairement, à déplacer dans latticetester/Util.h
+      void getSubLine(MVect & vec, MMat& B, int lign, int jMin, int jMax);
 
-    
-protected:
 
-   /**
-    * Initializes some of the local variables.
-    */
-   void init();
+    protected:
 
-   /**
-    * Builds the basis of the MMRG recurrence in case of non-lacunary
-    * indices.
-    */
-   void buildNonLacunaryBasis (int dimension);
+      /**
+       * Initializes some of the local variables.
+       */
+      void init();
 
-   /**
-    * Builds the basis of the MMRG recurrence in case of lacunary
-    * indices.
-    */
-   void buildLacunaryBasis (int dimension);
+      /**
+       * Builds the basis of the MMRG recurrence in case of non-lacunary
+       * indices.
+       */
+      void buildNonLacunaryBasis (int dimension);
 
-   /**
-    * Increments the basis by 1 in case of non-lacunary indices.
-    */ 
-   void incrementDimNonLacunaryBasis ();
+      /**
+       * Builds the basis of the MMRG recurrence in case of lacunary
+       * indices.
+       */
+      void buildLacunaryBasis (int dimension);
 
-   /**
-    * Increments the basis by 1 in case of lacunary indices.
-    */
-   void incrementDimLacunaryBasis(int Imax);
+      /**
+       * Increments the basis by 1 in case of non-lacunary indices.
+       */ 
+      void incrementDimNonLacunaryBasis ();
 
-   /**
-    * The generator matrix of the recurrence.
-    */
-   MMat m_A;
+      /**
+       * Increments the basis by 1 in case of lacunary indices.
+       */
+      void incrementDimLacunaryBasis(int Imax);
 
-   /**
-    * Indicates which lattice or sublattice is analyzed.
-    */
-   LatticeType m_latType;
+      /**
+       * The generator matrix of the recurrence.
+       */
+      MMat m_A;
 
-   /**
-    * Is `true` in the case of lacunary indices, `false` otherwise.
-    */
-   bool m_lacunaryFlag;
+      /**
+       * Indicates which lattice or sublattice is analyzed.
+       */
+      LatticeType m_latType;
 
-   /**
-    * Type of the lacunary projection selected.
-    */
-   LacunaryType m_lacunaryType;
-   /**
-    * Contains the lacunary indices when `LacunaryFlag` is `true`,
-    * otherwise is undefined.
-    */
-   LatticeTester::Lacunary m_lac;
+      /**
+       * Is `true` in the case of lacunary indices, `false` otherwise.
+       */
+      bool m_lacunaryFlag;
 
-   /**
-    * Contains the number of lacunary indices
-    */ 
-   int m_numberLacIndices;
+      /**
+       * Type of the lacunary projection selected.
+       */
+      LacunaryType m_lacunaryType;
+      /**
+       * Contains the lacunary indices when `LacunaryFlag` is `true`,
+       * otherwise is undefined.
+       */
+      LatticeTester::Lacunary m_lac;
 
-   /**
-    * Matrix used for lacunary indices
-    */
-   BMat m_B;
+      /**
+       * Contains the number of lacunary indices
+       */ 
+      int m_numberLacIndices;
 
-   /**
-    * Work variables.
-    *
-    * @{
-    */
-    MScal m_t4, m_t5, m_t6, m_t7, m_t8, m_e;
-    MVect m_xi;
-    /**
-     * @}
-     */
+      /**
+       * Matrix used for lacunary indices
+       */
+      BMat m_B;
 
-   /**
-    * \f$\clubsuit\f$ Seems to be use as working variables. To be completed. Erwan
-    */
-   BMat m_sta;
+      /**
+       * Work variables.
+       *
+       * @{
+       */
+      MScal m_t4, m_t5, m_t6, m_t7, m_t8, m_e;
+      MVect m_xi;
+      /**
+       * @}
+       */
 
-   /**
-    * When the flag <tt>m_ip[i]</tt> is `true`, the \f$i\f$-th diagonal
-    * element of matrix <tt>m_sta</tt> is non-zero (modulo \f$m\f$) and
-    * divides \f$m\f$. Otherwise (when <tt>m_ip[i]</tt> is
-    * <tt>false</tt>), the \f$i\f$-th line of matrix <tt>m_sta</tt> is
-    * identically 0.
-    */
-   bool *m_ip;
-};
+      /**
+       * \f$\clubsuit\f$ Seems to be use as working variables. To be completed. Erwan
+       */
+      BMat m_sta;
+
+      /**
+       * When the flag <tt>m_ip[i]</tt> is `true`, the \f$i\f$-th diagonal
+       * element of matrix <tt>m_sta</tt> is non-zero (modulo \f$m\f$) and
+       * divides \f$m\f$. Otherwise (when <tt>m_ip[i]</tt> is
+       * <tt>false</tt>), the \f$i\f$-th line of matrix <tt>m_sta</tt> is
+       * identically 0.
+       */
+      bool *m_ip;
+  };
 
 }
 #endif
