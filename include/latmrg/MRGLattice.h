@@ -115,15 +115,13 @@ MRGLattice (const MScal & m, const MVect & a, int maxDim, int k,
     * Returns the vector of multipliers \f$A\f$ as a string.
     */
    std::string toStringCoef() const;
- #ifdef WITH_NTL
     /**
      * The components of the lattice when it is built out of more than one
      * component. When there is only one component, it is unused as the
      * parameters are the same as above.
      */
      std::vector<MRGComponent *> comp;
- #endif
-
+ 
 protected:
 
    /**

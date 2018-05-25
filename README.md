@@ -2,29 +2,32 @@
 
 # LatMRG
 
-*A front-end software package using [LatticeTester](https://github.com/erwanbou/LatticeTester) to test and search for new multiple recursive random number generators*
+*A front-end software package using 
+[LatticeTester](https://github.com/umontreal-simul/latcommon) 
+to test and search for new multiple recursive random number generators*
 
 ## Dependencies
 
 LatMRG currently depends on
-* [LatticeTester](https://github.com/erwanbou/LatticeTester)
+* [LatticeTester](https://github.com/umontreal-simul/latcommon)
 * [NTL](http://www.shoup.net/ntl/index.html)
-* [TestU01](http://simul.iro.umontreal.ca/testu01/tu01.html)
 * [Boost](https://www.boost.org/)
 
 ## Compiling
 
-#### This whole section will eventually change since I will probably use a makefile for transparence
-
-You should also note the github has a tendency to break the waf executable.
-
 ### Configuring the Build
-LatMRG relies on the
-[waf meta build system](https://code.google.com/p/waf/) for configuring and
-compiling the software source.
-Waf is included in the LatMRG source tree, but it depends on
-[Python](http://python.org/download), which must be available on the system
-on which LatMRG is to be compiled.
+
+LatMRG currently only has a very simple makefile that should work on most Linux
+distributions. Assuming you have NTL installed in `/usr/local`, you can simply
+call
+```
+git clone --recursive https://github.com/savamarc/LatMRG.git
+cd LatMRG
+make
+```
+
+This will pull and build the LatMRG library in `./LatMRG/lib`, and the executable
+programs in `./LatMRG/bin`.
 
 The commands below should work verbatim under Linux and MacOS systems.
 **Microsoft Windows** users should replace every instance of `./waf`

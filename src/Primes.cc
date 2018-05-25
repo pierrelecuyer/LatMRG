@@ -8,8 +8,6 @@
 #include <cstdlib>
 #include <climits>
 
-#ifdef WITH_NTL
-
 using namespace std;
 using namespace NTL;
 using namespace LatticeTester;
@@ -215,5 +213,3 @@ void Primes::writeFooter (ofstream & fout)
 //===========================================================================
 
 }
-
-#endif
