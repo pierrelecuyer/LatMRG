@@ -1,6 +1,6 @@
 #ifndef PARAMREADERSEEK_H
 #define PARAMREADERSEEK_H
-#include "ParamReader.h"
+#include "ParamReaderExt.h"
 #include "SeekConfig.h"
 
 #include <string>
@@ -15,7 +15,7 @@ namespace LatMRG {
  * `SeekMain` on page (FIXME: page#).
  *
  */
-class ParamReaderSeek : public ParamReader {
+class ParamReaderSeek : public ParamReaderExt {
 public:
 
 /**

@@ -6,8 +6,9 @@ CFLAGS = -std=c++14 -Wall -O2
 DEBUG_FLAGS = -std=c++14 -g -Wall -O2
 
 # define any directories containing header files other than /usr/include
-INCLUDES = -I/usr/local/include -I./include -I./latticetester/include
+INCLUDES = -I./include -I./latticetester/include
 
+# This is included for backwards compatibility
 DEFINITIONS = -DWITH_NTL -DHAVE_NTL_VECTOR_H -DHAVE_GMP_H -DHAVE_ULCG_H\
 	      -DHAVE_NUM_H
 DEF_LLDD = -DNTL_TYPES_CODE=1
@@ -16,13 +17,10 @@ DEF_ZZRR = -DNTL_TYPES_CODE=3
 NUM_TYPES = $(DEF_ZZDD)
 
 # define library paths in addition to /usr/lib
-#   if I wanted to include libraries not in /usr/lib I'd specify
-#   their path using -Lpath, something like:
-LFLAGS = -L/usr/local/lib
-
-#Note here that latticetester can be considered as a library as long as we
-#include the header files
-LIBS = -lntl -lgmp -ltestu01 -lmylib -llatticetester
+STAT_LIBS_PATH = -Wl,-Bstatic -L$(LIB_DIR)
+STAT_LIBS = -llatmrg -llatticetester 
+DYN_LIBS_PATH = -Wl,-Bdynamic -L/usr/local/lib 
+DYN_LIBS = -lntl -lgmp -ltestu01 -lmylib
 
 # A few directories we need to be aware of
 SRC_DIR = ./src
@@ -47,18 +45,15 @@ PROGS_CC = $(wildcard $(PRO_DIR)/*.cc)
 OBJS = $(SRCS:$(SRC_DIR)/%.cc=$(OBJ_DIR)/%.o)
 PROGS_O = $(PROGS_CC:$(PRO_DIR)/%.cc=$(PRO_DIR)/%.o)
 
-# define the executable file
-MAIN = main
+all: mkdir lib bin
 
-
-all: clean mkdir objects lib
-
-lib: lib_objects
+lib: latticetester lib_objects
+	rm -f $(LIB_DIR)/liblatmrg.a
 	ar rcs $(LIB_DIR)/liblatmrg.a $(OBJS)
 
-objects: lib_objects progs_objects
-
 lib_objects: $(OBJS)
+
+bin: lib progs_objects
 
 progs_objects: $(PROGS_O)
 
@@ -67,8 +62,16 @@ $(OBJ_DIR)/%.o:$(SRC_DIR)/%.cc
 
 $(PRO_DIR)/%.o:$(PRO_DIR)/%.cc
 	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINITIONS) $(NUM_TYPES) -c $< -o $@
+	$(CC) $@ $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) -o $(BIN_DIR)/$(@:progs/%.o=%) 
 
-clean: clean_objects clean_bin clean_lib
+#==============================================================================
+
+latticetester:
+	cd latticetester; make
+	cp latticetester/lib/liblatticetester.a $(LIB_DIR)
+
+#==============================================================================
+clean: clean_objects clean_bin clean_lib clean_lattice
 
 clean_objects:
 	rm -rf $(OBJ_DIR)
@@ -80,10 +83,14 @@ clean_bin:
 clean_lib:
 	rm -rf $(LIB_DIR)
 
+clean_lattice:
+	cd latticetester; make clean
+
 mkdir:
 	mkdir -p bin
 	mkdir -p obj
 	mkdir -p lib
 
-include: clean
-	$(CC) -E progs/LatMain.cc $(CFLAGS) $(INCLUDES) $(DEFINITIONS) $(NUM_TYPES) | grep '#' | cut -d' ' -f3 | sort | uniq
+#==============================================================================
+
+.PHONY: clean latticetester

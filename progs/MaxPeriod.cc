@@ -3,14 +3,13 @@
 #include "latticetester/Util.h"
 #include "latmrg/Const.h"
 #include "latmrg/MRGComponent.h"
-#include "latmrg/ParamReader.h"
+#include "latmrg/ParamReaderExt.h"
 
 #include <string>
 
 using namespace NTL;
 using namespace std;
 using namespace LatMRG;
-using namespace LatticeTester;
 
 
 
@@ -35,7 +34,7 @@ typedef struct {
 
 //===========================================================================
 
-void read (ParamReader & reader, ParamType & par)
+void read (ParamReaderExt & reader, ParamType & par)
 {
    reader.getLines ();
    int ln = 0;
@@ -72,7 +71,7 @@ int main(int argc, char** argv)
    }
    string fname(argv[1]);
    fname += ".dat";
-   ParamReader reader (fname);
+   ParamReaderExt reader (fname);
    ParamType par;
    read (reader, par);
 
@@ -83,7 +82,7 @@ int main(int argc, char** argv)
    cout << "   m = " << par.m << endl;
    cout << "   k = " << par.k << endl;
    cout << "   a = ";
-   cout <<  toString(par.a, 1, par.k);
+   cout <<  LatticeTester::toString(par.a, 1, par.k);
 
    if (mrg.maxPeriod (par.a))
       cout << "      HAS maximal period." << endl;

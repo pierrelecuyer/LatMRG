@@ -1,6 +1,6 @@
 #ifndef PARAMREADERLAT_H
 #define PARAMREADERLAT_H
-#include "ParamReader.h"
+#include "ParamReaderExt.h"
 #include "LatConfig.h"
 
 #include <string>
@@ -15,7 +15,7 @@ namespace LatMRG {
  * `LatMain` on page (FIXME: page#).
  *
  */
-class ParamReaderLat : public ParamReader {
+class ParamReaderLat : public ParamReaderExt {
 public:
 
 /**

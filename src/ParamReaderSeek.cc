@@ -33,7 +33,7 @@ ParamReaderSeek::ParamReaderSeek ()
 
 //===========================================================================
 
-ParamReaderSeek::ParamReaderSeek (string fileName): ParamReader (fileName)
+ParamReaderSeek::ParamReaderSeek (string fileName): ParamReaderExt (fileName)
 {}
 
 

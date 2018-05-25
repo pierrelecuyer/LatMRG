@@ -34,7 +34,7 @@ namespace LatMRG
 
 //===========================================================================
 
-ParamReaderLat::ParamReaderLat (string fileName): ParamReader (fileName)
+ParamReaderLat::ParamReaderLat (string fileName): ParamReaderExt (fileName)
 {}
 
 

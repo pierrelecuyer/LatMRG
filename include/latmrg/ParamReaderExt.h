@@ -1,9 +1,10 @@
-#ifndef PARAMREADER_H
-#define PARAMREADER_H
+#ifndef PARAMREADEREXT_H
+#define PARAMREADEREXT_H
 #include "NTL/ZZ.h"
 #include "latticetester/Types.h"
 #include "latticetester/Util.h"
 #include "latticetester/Const.h"
+#include "latticetester/ParamReader.h"
 #include "latmrg/Const.h"
 #include "latmrg/MRGComponent.h"
 #include <string>
@@ -18,86 +19,24 @@ namespace LatMRG {
  * comments and discarded.
  *
  */
-class ParamReader {
+class ParamReaderExt: public LatticeTester::ParamReader {
 public:
    static const int MAX_WORD_SIZE = 64;
 
 /**
  * Constructor.
  */
-ParamReader();
+ParamReaderExt();
 
    /**
     * Constructor. Opens the file `fileName`.
     */
-   ParamReader (std::string fileName);
+   ParamReaderExt (std::string fileName);
 
    /**
     * Destructor.
     */
-   ~ParamReader();
-
-   /**
-    * Reads all the lines from the file and stores them into this object’s
-    * buffer. Lines whose first non-blank character is a <tt>#</tt> are
-    * considered as comments and discarded. Empty lines are also
-    * discarded.
-    */
-   void getLines();
-
-   /**
-    * Puts into `field` the <tt>pos</tt>-th string token from line `ln`.
-    */
-   void getToken (std::string & field, unsigned int ln, unsigned int pos);
-
-   /**
-    * Splits line `ln` from the file into several string tokens. Separator
-    * characters are defined in function `IsDelim`. Tokens are stored in
-    * vector `tokens`.
-    */
-   int tokenize (std::vector<std::string> & tokens, unsigned int ln);
-
-   /**
-    * Reads a string from the <tt>pos</tt>-th token of the <tt>ln</tt>-th
-    * line into `field`.
-    */
-   void readString (std::string & field, unsigned int ln, unsigned int pos);
-
-   /**
-    * Reads a boolean from the <tt>pos</tt>-th token of the <tt>ln</tt>-th
-    * line into `field`.
-    */
-   void readBool (bool & field, unsigned int ln, unsigned int pos);
-
-   /**
-    * Reads a character from the <tt>pos</tt>-th token of the
-    * <tt>ln</tt>-th line into `field`.
-    */
-   void readChar (char & field, unsigned int ln, unsigned int pos);
-
-   /**
-    * Reads an integer from the <tt>pos</tt>-th token of the
-    * <tt>ln</tt>-th line into `field`.
-    */
-   void readInt (int & field, unsigned int ln, unsigned int pos);
-
-   /**
-    * Reads a long from the <tt>pos</tt>-th token of the <tt>ln</tt>-th
-    * line into `field`.
-    */
-   void readLong (long & field, unsigned int ln, unsigned int pos);
-
-   /**
-    * Reads a large integer from the <tt>pos</tt>-th token of the
-    * <tt>ln</tt>-th line into `field`.
-    */
-   void readZZ (NTL::ZZ & field, unsigned int ln, int pos);
-
-   /**
-    * Reads a double from the <tt>pos</tt>-th token of the <tt>ln</tt>-th
-    * line into `field`.
-    */
-   void readDouble (double & field, unsigned int ln, unsigned int pos);
+   ~ParamReaderExt();
 
    /**
     * Reads a `GenType` from the <tt>pos</tt>-th token of the
@@ -105,66 +44,6 @@ ParamReader();
     */
    void readGenType (GenType & field, unsigned int ln,
                      unsigned int pos);
-
-   /**
-    * Reads \f$b\f$, \f$e\f$ and \f$c\f$, starting at the <tt>pos</tt>-th
-    * token of the <tt>ln</tt>-th line and uses them to define \f$r\f$.
-    * The numbers in the data file may be given in one of the two
-    * following formats:
-    *
-    * \f$\bullet\f$ A single integer giving the value of \f$r=b\f$
-    * directly on a line. In that case, one sets \f$e=c=0\f$. <br>
-    * \f$\bullet\f$ Three integers \f$b\f$, \f$e\f$, \f$c\f$ on the same
-    * line, separated by at least one blank. The \f$r\f$ value will be set
-    * as \f$r=b^e+c\f$ if \f$b>0\f$, and \f$r= -(|b|^e+c)\f$ if \f$b<0\f$.
-    * One must have \f$e\ge0\f$. For example, \f$(b, e, c) = (2,
-    * 5, -1)\f$ will give \f$r=31\f$, while \f$(b, e, c) = (-2, 5, -1)\f$
-    * will give \f$r=-31\f$.
-    */
-   void readNumber3 (MScal & r, long & b, long & e, long & c,
-                     unsigned int ln, unsigned int pos);
-
-   /**
-    * Reads a `BScal` from the <tt>pos</tt>-th token of the <tt>ln</tt>-th
-    * line into `field`.
-    */
-   void readBScal (BScal & field, unsigned int ln, int pos);
-
-   /**
-    * Reads a `MScal` from the <tt>pos</tt>-th token of the <tt>ln</tt>-th
-    * line into `field`.
-    */
-   void readMScal (MScal & field, unsigned int ln, unsigned int pos);
-
-   /**
-    * Reads a `RScal` from the <tt>pos</tt>-th token of the <tt>ln</tt>-th
-    * line into `field`.
-    */
-   void readRScal (RScal & field, unsigned int ln, unsigned int pos);
-
-   /**
-    * Reads `num` tokens (from the <tt>pos</tt>-th token of the
-    * <tt>ln</tt>-th line) into `field`, starting at index \f$j\f$ of
-    * `field`.
-    */
-   void readMVect (MVect & field, unsigned int & ln, unsigned int pos,
-                   unsigned int num, int j);
-
-   /**
-    * Reads `num` tokens (from the <tt>pos</tt>-th token of the
-    * <tt>ln</tt>-th line) into `field`, starting at index \f$j\f$ of
-    * `field`.
-    */
-   void readIntVect (int* field, unsigned int ln, unsigned int pos,
-                     unsigned int num, int j);
-
-   /**
-    * Reads `num` tokens (from the <tt>pos</tt>-th token of the
-    * <tt>ln</tt>-th line) into `field`, starting at index \f$j\f$ of
-    * `field`.
-    */
-   void readDoubleVect (double* field, unsigned int ln, unsigned int pos,
-                        unsigned int num, int j);
 
    /**
     * Reads a `BMat` from the <tt>pos</tt>-th token of the <tt>ln</tt>-th
@@ -182,27 +61,6 @@ ParamReader();
     * above.
     */
    void readInterval (MVect & B, MVect & C, unsigned int & ln, int k);
-
-   /**
-    * Reads a criterion from the <tt>pos</tt>-th token of the
-    * <tt>ln</tt>-th line into `field`.
-    */
-   void readCriterionType (LatticeTester::CriterionType & field, unsigned int ln,
-                           unsigned int pos);
-
-   /**
-    * Reads a norm from the <tt>pos</tt>-th token of the <tt>ln</tt>-th
-    * line into `field`.
-    */
-   void readNormType (LatticeTester::NormType & field, unsigned int ln,
-                      unsigned int pos);
-
-   /**
-    * Reads a type of normalization from the <tt>pos</tt>-th token of the
-    * <tt>ln</tt>-th line into `field`.
-    */
-   void readNormaType (LatticeTester::NormaType & field, unsigned int ln,
-                       unsigned int pos);
 
    /**
     * Reads the type of calculation to do (<tt>PAL</tt> or <tt>BAL</tt>)
@@ -265,7 +123,7 @@ ParamReader();
     * this case, the `lacunary` flag is set `false`.
     */
    void readLacunary (int k, int fromDim, int toDim, unsigned int & ln,
-                      bool & lacunary, int & lacGroupSize, NTL::ZZ & lacSpacing,
+                      bool & lacunary, int & lacGroupSize, BScal & lacSpacing,
                       BVect & Lac, GenType genType);
 
    /**
@@ -286,13 +144,6 @@ ParamReader();
     * ARBITRARYINDICES).
     */
    void readLacunaryType(LacunaryType& lacunaryType, unsigned int ln, unsigned int pos);
-
-   /**
-    * Reads an output form from the <tt>pos</tt>-th token of the
-    * <tt>ln</tt>-th line into `field`.
-    */
-   void readOutputType (LatticeTester::OutputType & field, unsigned int ln,
-                        unsigned int pos);
 
    /**
     * Reads an implementation condition from the <tt>pos</tt>-th token of

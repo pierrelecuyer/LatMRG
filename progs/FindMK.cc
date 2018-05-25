@@ -1,5 +1,5 @@
 #include "latmrg/Primes.h"
-#include "latmrg/ParamReader.h"
+#include "latmrg/ParamReaderExt.h"
 
 #include <string>
 
@@ -25,7 +25,7 @@ typedef struct {
 
 //===========================================================================
 
-void read (ParamReader & reader, ParamType & par)
+void read (ParamReaderExt & reader, ParamType & par)
 {
    reader.getLines ();
    int ln = 0;
@@ -50,7 +50,7 @@ int main(int argc, char** argv)
    }
    string fname(argv[1]);
    fname += ".dat";
-   ParamReader reader (fname);
+   ParamReaderExt reader (fname);
    ParamType par;
    read (reader, par);
 
