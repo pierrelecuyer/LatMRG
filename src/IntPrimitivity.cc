@@ -32,7 +32,7 @@ namespace LatMRG
 
   //===========================================================================
 
-  IntPrimitivity::IntPrimitivity (const IntFactorization & f,
+  IntPrimitivity::IntPrimitivity (const IntFactorization<MScal> & f,
       const MScal & p, long e) : m_f(f)
   {
     setpe(p, e);

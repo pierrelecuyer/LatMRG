@@ -184,7 +184,7 @@ namespace LatMRG
 
   /*=========================================================================*/
 
-  bool PolyPE::isPrimitive (const IntFactorization & r)
+  bool PolyPE::isPrimitive (const IntFactorization<MScal> & r)
   {
     if (1 == getK())
       return true;
@@ -234,7 +234,7 @@ namespace LatMRG
   /*=========================================================================*/
 
   bool PolyPE::isPrimitive (const IntPrimitivity & fm,
-      const IntFactorization & fr)
+      const IntFactorization<MScal> & fr)
   {
     MScal a0;
     a0 = -rep (ConstTerm (getF ()));

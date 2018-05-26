@@ -70,7 +70,7 @@ namespace LatMRG {
       void find (int k, int e, int s, const MScal & S1, const MScal & S2, bool safe,
           bool facto, std::ofstream & fout);
       Chrono timer;
-      IntFactorization ifac;
+      IntFactorization<MScal> ifac;
       void nextM (MScal & m) {
         m -= 2;
         if (0 == m % 5)

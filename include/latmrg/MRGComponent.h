@@ -112,13 +112,13 @@ namespace LatMRG {
       /**
        * The prime factor decomposition of \f$m-1\f$.
        */
-      IntFactorization ifm1;
+      IntFactorization<MScal> ifm1;
 
       /**
        * The prime factor decomposition of \f$r=(m^k-1)/(m-1)\f$, where
        * \f$k\f$ is the order of the recurrence.
        */
-      IntFactorization ifr;
+      IntFactorization<MScal> ifr;
 
       /**
        * The modulus \f$m\f$ of the recurrence.

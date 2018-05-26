@@ -4,10 +4,12 @@
 #include <list>
 #include <string>
 #include <stdexcept>
+#include <fstream>
+#include <sstream>
+#include <cassert>
 
 #include "latticetester/Const.h"
 #include "latticetester/IntFactor.h"
-
 
 namespace LatMRG {
 
@@ -37,8 +39,8 @@ namespace LatMRG {
       public:
 
         /**
-         * Integer \f$x\f$ is the number whose "prime" factors decomposition is kept
-         * in this object.
+         * Integer \f$x\f$ is the number whose "prime" factors decomposition is
+         * kept in this object.
          */
         explicit IntFactorization (const Int & x);
 
@@ -125,12 +127,14 @@ namespace LatMRG {
         /**
          * Returns a non-mutable list of the factors.
          */
-        const std::list<LatticeTester::IntFactor> & getFactorList () const { return m_factorList; }
+        const std::list<LatticeTester::IntFactor> & getFactorList () const
+        { return m_factorList; }
 
         /**
          * Returns a non-mutable list of the inverse factors.
          */
-        const std::vector<Int> & getInvFactorList () const { return m_invFactorList; }
+        const std::vector<Int> & getInvFactorList () const
+        { return m_invFactorList; }
 
         /**
          * Sets the value of this number to \f$x\f$.
@@ -186,7 +190,8 @@ namespace LatMRG {
          */
         class CompFactor {
           public:
-            bool operator() (const LatticeTester::IntFactor & f1, const LatticeTester::IntFactor & f2) {
+            bool operator() (const LatticeTester::IntFactor & f1,
+                const LatticeTester::IntFactor & f2) {
               return f1.getFactor() < f2.getFactor(); }
         };
 
@@ -196,6 +201,307 @@ namespace LatMRG {
          */
         void sort () { CompFactor comp; m_factorList.sort (comp); }
     };
+
+  //IMPLEMENTATIONS
+
+  template<typename Int>
+  IntFactorization<Int>::IntFactorization (const char *name):
+    m_status(LatticeTester::UNKNOWN)
+  {
+    if (name != 0)
+      read(name);
+    else
+      m_number = 0;
+  }
+
+
+  //===========================================================================
+
+  template <typename Int>
+    IntFactorization<Int>::IntFactorization (const Int & n):
+      m_number (n), m_status(LatticeTester::UNKNOWN)
+  {}
+
+
+  //===========================================================================
+
+  template<typename Int>
+  IntFactorization<Int>::IntFactorization (const IntFactorization & f)
+    : m_number(f.m_number), m_status(f.m_status), m_factorList(f.m_factorList),
+    m_invFactorList(f.m_invFactorList)
+  {}
+
+
+  //===========================================================================
+
+  template<typename Int>
+  IntFactorization<Int> & IntFactorization<Int>::operator= (
+      const IntFactorization & f)
+  {
+    if (this != &f) {
+      m_factorList = f.m_factorList;
+      m_invFactorList = f.m_invFactorList;
+      m_number = f.m_number;
+      m_status = f.m_status;
+    }
+    return *this;
+  }
+
+
+  //===========================================================================
+
+  template<typename Int>
+  void IntFactorization<Int>::clear ()
+  {
+    m_status = LatticeTester::UNKNOWN;
+    m_number = 0;
+    m_factorList.clear ();
+    m_invFactorList.clear ();
+  }
+
+  //===========================================================================
+
+  template<typename Int>
+  IntFactorization<Int>::~IntFactorization ()
+  {
+    clear ();
+  }
+
+
+  //===========================================================================
+
+  template<typename Int>
+  void IntFactorization<Int>::addFactor (const Int & x, int mult,
+      LatticeTester::PrimeType st)
+  {
+    LatticeTester::IntFactor f (x, mult, st);
+    m_factorList.push_back (f);
+  }
+
+
+  //===========================================================================
+
+  template<typename Int>
+  void IntFactorization<Int>::read (const char *name) throw (std::invalid_argument)
+  {
+    std::ifstream in (name);
+
+    if (!(in.is_open())) {
+      std::string str("IntFactorization::read:   Unable to open input file  ");
+      str += name;
+      throw std::invalid_argument(str);
+    }
+    std::string tampon;
+
+    in.ignore (100, '\n'); // drop rest of line
+
+    int vsize = 0;
+
+
+
+    while (in >> tampon) {
+      Int x;
+      int k;
+      char c;
+      LatticeTester::PrimeType stat;
+      NTL::ZZ f;
+
+      f = NTL::to_ZZ (tampon.c_str ());
+      conv (x, f);
+      in >> k;
+      in >> c;
+      switch (c) {
+
+        case 'P':
+          stat = LatticeTester::PRIME;
+          break;
+        case 'Q':
+          stat = LatticeTester::PROB_PRIME;
+          break;
+        case 'C':
+          stat = LatticeTester::COMPOSITE;
+          break;
+        default:
+          stat = LatticeTester::UNKNOWN;
+      }
+
+      addFactor (x, k, stat);
+      ++vsize;
+    }
+
+    //unique ();
+    assert (checkProduct ());
+
+    m_invFactorList.reserve (vsize);
+  }
+
+  //===========================================================================
+
+  template<typename Int>
+  void IntFactorization<Int>::unique ()
+  {
+    sort ();
+    int j = 1;
+
+    std::list<LatticeTester::IntFactor>::iterator it = m_factorList.begin ();
+    std::list<LatticeTester::IntFactor>::iterator it2 = m_factorList.begin ();
+    if (it2 != m_factorList.end ())
+      ++it2;
+    while (it2 != m_factorList.end ()) {
+      if (it->getFactor () == it2->getFactor ()) {
+        it->setMultiplicity (++j);
+        it2 = m_factorList.erase (it2);
+      } else {
+        j = 1;
+        ++it;
+        ++it2;
+      }
+    }
+  }
+
+
+  //===========================================================================
+
+  template<typename Int>
+  std::string IntFactorization<Int>::toString () const
+  {
+    std::list<LatticeTester::IntFactor>::const_iterator it =
+      m_factorList.begin ();
+    std::ostringstream out;
+    out << m_number << std::endl;
+    //   out << "its factors:\n";
+    while (it != m_factorList.end ()) {
+      out << "\t" << (*it).toString () << std::endl;
+      ++it;
+    }
+    out << std::endl;
+    /*
+       if (!m_invFactorList.empty()) {
+       out << "the inverse factors:\n";
+       for (unsigned int i = 0; i < m_invFactorList.size(); ++i) {
+       out << m_invFactorList[i] << std::endl;
+       }
+       }
+       */
+    return out.str ();
+  }
+
+
+  //===========================================================================
+
+  template<typename Int>
+  void IntFactorization<Int>::factorize ()
+  {
+
+    char *prog;          // Home of factorizing program
+    prog = getenv ("FACTORHOME");
+    if (!prog) {
+      NTL::Error (
+          "IntFactorization::factorize -->   FACTORHOME is not defined");
+    }
+    std::string S(prog);
+    S += "/factorm ";
+    std::ostringstream num;
+    num << m_number;
+    S += num.str();
+
+    // Choose a temporary name for the file
+    const char *filename = "temp938573291";
+
+    S += " > ";
+    S += filename;
+    // factorize and set output to filename
+    std::system (S.c_str ());
+    // Now read the result file and extract the prime factors from the
+    // lines PRIME FACTOR xxx
+    std::ifstream in (filename);
+
+    if (!(in.is_open())) {
+      std::cerr << "Error:   cannot open file   filename\n";
+      exit(8);
+    }
+    std::string line;
+    std::string::size_type pos;
+    Int z;
+    getline (in, line, '\n');
+    pos = line.find ("this number is prime");
+    if (pos != std::string::npos) {
+      addFactor (m_number, 1, LatticeTester::PRIME);
+      remove
+        (filename);
+      return;
+    }
+    while (getline (in, line, '\n')) {
+      pos = line.find ("PRIME FACTOR");
+      if (pos != std::string::npos) {
+        // Found a prime factor
+        S = line.substr (pos + 12);
+        conv(z, S.c_str ());
+        addFactor (z, 1, LatticeTester::PRIME);
+      }
+      pos = line.find ("COMPOSITE FACTOR");
+      if (pos != std::string::npos) {
+        // The program gave up: last factor is composite
+        S = line.substr (pos + 16);
+        conv(z, S.c_str ());
+        addFactor(z, 1, LatticeTester::COMPOSITE);
+      }
+      pos = line.find ("MIRACL error");
+      if (pos != std::string::npos) {
+        // error in factorizing
+        Error ("MIRACL error in IntFactorization::factorize:   Number too big");
+      }
+    }
+
+    unique ();
+    remove (filename);
+  }
+
+
+  //===========================================================================
+
+  template<typename Int>
+  bool IntFactorization<Int>::checkProduct () const
+  {
+    Int temp;
+    temp = 1;
+
+    std::list<LatticeTester::IntFactor >::const_iterator it =
+      m_factorList.begin ();
+
+    while (it != m_factorList.end ()) {
+      for (int j = it->getMultiplicity (); j > 0; --j)
+        temp *= it->getFactor ();
+      ++it;
+    }
+    if (temp != m_number) {
+      std::cout << "checkProduct:   ERROR -->  " << m_number
+        << " != " << temp << std::endl;
+    }
+    return (temp == m_number);
+  }
+
+
+  //===========================================================================
+
+  template<typename Int>
+  void IntFactorization<Int>::calcInvFactors ()
+  {
+    //   sort ();
+    unsigned int j = 0;
+    std::list<LatticeTester::IntFactor>::reverse_iterator it =
+      m_factorList.rbegin ();
+
+    while (it != m_factorList.rend ()) {
+      ++j;
+      if (m_invFactorList.capacity () < j) {
+        m_invFactorList.clear ();
+        m_invFactorList.reserve (j + 10);
+      }
+      m_invFactorList.push_back (m_number / it->getFactor ());
+      ++it;
+    }
+  }
 
 }
 #endif

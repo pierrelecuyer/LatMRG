@@ -31,7 +31,7 @@ namespace LatMRG
   //===========================================================================
 
   template <typename Int>
-    IntFactorization::IntFactorization (const Int & n):
+    IntFactorization<Int>::IntFactorization (const Int & n):
       m_number (n), m_status(LatticeTester::UNKNOWN)
   {}
 

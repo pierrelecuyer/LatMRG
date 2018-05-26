@@ -146,14 +146,14 @@ namespace LatMRG {
        * primitive root of \f$m\f$. Condition 3 is automatically satisfied
        * when \f$r\f$ is prime.
        */
-      bool isPrimitive (const IntPrimitivity & fm, const IntFactorization & fr);
+      bool isPrimitive (const IntPrimitivity & fm, const IntFactorization<MScal> & fr);
 
       /**
        * Given the factorization of \f$r\f$, this method returns `true` if
        * conditions 2 and 3 above are satisfied by the modulus \f$f(x)\f$. It
        * does not check condition 1, assuming it to be `true`.
        */
-      bool isPrimitive (const IntFactorization & r);
+      bool isPrimitive (const IntFactorization<MScal> & r);
 
       /**
        * Returns this object as a string.

@@ -39,7 +39,7 @@ namespace LatMRG {
        * argument \f$f\f$ must contain the prime factor decomposition of
        * \f$p-1\f$ and its inverse factors.
        */
-      IntPrimitivity (const IntFactorization & f, const MScal & p, long e = 1);
+      IntPrimitivity (const IntFactorization<MScal> & f, const MScal & p, long e = 1);
 
       /**
        * Returns `true` if \f$a\f$ is a primitive element modulo \f$p^e\f$.
@@ -73,12 +73,12 @@ namespace LatMRG {
       /**
        * Sets the value of \f$f\f$.
        */
-      void setF (const IntFactorization & f) { m_f = f; }
+      void setF (const IntFactorization<MScal> & f) { m_f = f; }
 
       /**
        * Gets the value of \f$f\f$.
        */
-      IntFactorization getF () { return m_f; }
+      IntFactorization<MScal> getF () { return m_f; }
 
       /**
        * Returns this object as a string.
@@ -104,7 +104,7 @@ namespace LatMRG {
       /**
        * Factorization of \f$p-1\f$.
        */
-      IntFactorization m_f;
+      IntFactorization<MScal> m_f;
   };
 
 }
