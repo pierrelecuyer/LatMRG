@@ -111,9 +111,9 @@ namespace LatMRG
 
     //PW_TODO pourquoi c'est commenté ?
     //PalphaLCG palpha (*m_config);
-    const int alpha = m_config->alpha;
-    double x;
-    int dim;
+    //const int alpha = m_config->alpha;
+    //double x;
+    //int dim;
     /*
        if (m_config->calcPalpha == PAL || m_config->calcPalpha == NORMPAL) {
 

@@ -214,7 +214,7 @@ namespace LatMRG
     PolyPE::reverse (a, k, 2);
     PolyPE::setF(a);
     PolyPE pol;
-    IntPrimitivity privfm(ifm1, getM(), 1);
+    IntPrimitivity<MScal> privfm(ifm1, getM(), 1);
     return pol.isPrimitive(privfm, ifr);
   }
 

@@ -1,7 +1,6 @@
 #ifndef INTPRIMITIVITY_H
 #define INTPRIMITIVITY_H
-#include <stdexcept>
-#include "latticetester/Types.h"
+
 #include "IntFactorization.h"
 
 
@@ -29,83 +28,164 @@ namespace LatMRG {
    *    p^{e-1}(p - 1), \qquad p > 2.
    * \f}
    */
-  class IntPrimitivity {
-    public:
+  template<typename Int>
+    class IntPrimitivity {
+      public:
 
-      IntPrimitivity ();
+        IntPrimitivity ();
 
-      /**
-       * Constructor fixing the modulus of congruence as \f$m = p^e\f$. The
-       * argument \f$f\f$ must contain the prime factor decomposition of
-       * \f$p-1\f$ and its inverse factors.
-       */
-      IntPrimitivity (const IntFactorization<MScal> & f, const MScal & p, long e = 1);
+        /**
+         * Constructor fixing the modulus of congruence as \f$m = p^e\f$. The
+         * argument \f$f\f$ must contain the prime factor decomposition of
+         * \f$p-1\f$ and its inverse factors.
+         */
+        IntPrimitivity (const IntFactorization<Int> & f, const Int & p, long e = 1);
 
-      /**
-       * Returns `true` if \f$a\f$ is a primitive element modulo \f$p^e\f$.
-       * This method uses the prime factor decomposition of \f$p-1\f$ and its
-       * inverse factors.
-       */
-      bool isPrimitiveElement (const MScal & a) const throw(std::range_error);
+        /**
+         * Returns `true` if \f$a\f$ is a primitive element modulo \f$p^e\f$.
+         * This method uses the prime factor decomposition of \f$p-1\f$ and its
+         * inverse factors.
+         */
+        bool isPrimitiveElement (const Int & a) const;
 
-      /**
-       * Returns `true` if \f$(-1)^{k+1}V[k]\f$ is a primitive element modulo
-       * \f$p^e\f$. This method uses the prime factor decomposition of
-       * \f$p-1\f$ and its inverse factors.
-       */
-      bool isPrimitiveElement (const MVect &V, int k) const throw(std::range_error);
+        /**
+         * Returns `true` if \f$(-1)^{k+1}V[k]\f$ is a primitive element modulo
+         * \f$p^e\f$. This method uses the prime factor decomposition of
+         * \f$p-1\f$ and its inverse factors.
+         */
+        bool isPrimitiveElement (const MVect &V, int k) const ;
 
-      /**
-       * Sets the value of \f$p\f$, \f$e\f$ and \f$m = p^e\f$.
-       */
-      void setpe (const MScal & p, long e);
+        /**
+         * Sets the value of \f$p\f$, \f$e\f$ and \f$m = p^e\f$.
+         */
+        void setpe (const Int & p, long e);
 
-      /**
-       * Gets the value of \f$p\f$.
-       */
-      MScal getP () { return m_p; }
+        /**
+         * Gets the value of \f$p\f$.
+         */
+        Int getP () { return m_p; }
 
-      /**
-       * Gets the value of \f$e\f$.
-       */
-      long getE () { return m_e; }
+        /**
+         * Gets the value of \f$e\f$.
+         */
+        long getE () { return m_e; }
 
-      /**
-       * Sets the value of \f$f\f$.
-       */
-      void setF (const IntFactorization<MScal> & f) { m_f = f; }
+        /**
+         * Sets the value of \f$f\f$.
+         */
+        void setF (const IntFactorization<Int> & f) { m_f = f; }
 
-      /**
-       * Gets the value of \f$f\f$.
-       */
-      IntFactorization<MScal> getF () { return m_f; }
+        /**
+         * Gets the value of \f$f\f$.
+         */
+        IntFactorization<Int> getF () { return m_f; }
 
-      /**
-       * Returns this object as a string.
-       */
-      std::string toString () const;
-    private:
+        /**
+         * Returns this object as a string.
+         */
+        std::string toString () const;
+      private:
 
-      /**
-       * Prime number \f$p\f$.
-       */
-      MScal m_p;
+        /**
+         * Prime number \f$p\f$.
+         */
+        Int m_p;
 
-      /**
-       * Exponent used to compute the modulus \f$m = p^e\f$.
-       */
-      long m_e;
+        /**
+         * Exponent used to compute the modulus \f$m = p^e\f$.
+         */
+        long m_e;
 
-      /**
-       * The modulus \f$m = p^e\f$.
-       */
-      MScal m_m;
+        /**
+         * The modulus \f$m = p^e\f$.
+         */
+        Int m_m;
 
-      /**
-       * Factorization of \f$p-1\f$.
-       */
-      IntFactorization<MScal> m_f;
-  };
+        /**
+         * Factorization of \f$p-1\f$.
+         */
+        IntFactorization<Int> m_f;
+    };
 
+  template<typename Int>
+    IntPrimitivity<Int>::IntPrimitivity () : m_e(1)
+  {
+    m_p = 0;
+    m_m = 0;
+  }
+
+
+  //===========================================================================
+
+  template<typename Int>
+    void IntPrimitivity<Int>::setpe (const Int & p, long e)
+    {
+      m_p = p;
+      m_e = e;
+      m_m = power (m_p, m_e);
+    }
+
+  //===========================================================================
+
+  template<typename Int>
+    IntPrimitivity<Int>::IntPrimitivity (const IntFactorization<Int> & f,
+        const Int & p, long e) : m_f(f)
+  {
+    setpe(p, e);
+  }
+
+  //===========================================================================
+
+  template<typename Int>
+    std::string IntPrimitivity<Int>::toString () const
+    {
+      std::ostringstream out;
+      out << "p = " << m_p << std::endl;
+      out << "e = " << m_e << std::endl;
+      out << "m = " << m_m << std::endl;
+      out << "\nf is the factorization of  " << m_f.toString () << std::endl;
+      return out.str ();
+    }
+
+  //===========================================================================
+
+  template<typename Int>
+    bool IntPrimitivity<Int>::isPrimitiveElement (const Int & a) const
+    {
+      if (0 == m_p)
+        throw std::range_error("IntPrimitivity::isPrimitiveElement:   p = 0");
+      if (0 == a)
+        return false;
+
+      Int t1, t2;
+      t1 = a;
+      if (t1 < 0)
+        t1 += m_m;
+
+      const std::vector<Int> invList = m_f.getInvFactorList();
+      //   assert (!(invList.empty ()));
+      auto it = invList.begin();
+      while (it != invList.end()) {
+        t2 = PowerMod (t1, *it, m_m);
+        if (t2 == 1)
+          return false;
+        ++it;
+      }
+      return true;
+    }
+
+
+  //===========================================================================
+
+  template<typename Int>
+    bool IntPrimitivity<Int>::isPrimitiveElement (const MVect & V, int k) const
+    {
+      Int a;
+      if (k & 1)
+        a = V[k];
+      else
+        a = -V[k];
+      return isPrimitiveElement (a);
+    }
 }
 #endif

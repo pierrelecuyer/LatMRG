@@ -189,7 +189,7 @@ namespace LatMRG
         }
 
       } else if (config.genType[0] == KOROBOV) {
-        lattice = new KorobovLattice (config.comp[0]->getM (),
+        lattice = new KorobovLattice<MScal> (config.comp[0]->getM (),
             config.comp[0]->a[1], toDim, config.norm);
       } else if (config.genType[0] == RANK1) {
         stationary = false;
@@ -257,7 +257,7 @@ namespace LatMRG
                          if (config.genType[0] == MRG || config.genType[0] == LCG)
                            master = new MRGLattice (*(MRGLattice *) lattice);
                          else if (config.genType[0] == KOROBOV)
-                           master = new KorobovLattice (*(KorobovLattice *) lattice);
+                           master = new KorobovLattice<MScal> (*(KorobovLattice<MScal> *) lattice);
                          else if (config.genType[0] == RANK1)
                            master = new Rank1Lattice (*(Rank1Lattice *) lattice);
 

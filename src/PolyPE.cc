@@ -233,7 +233,7 @@ namespace LatMRG
 
   /*=========================================================================*/
 
-  bool PolyPE::isPrimitive (const IntPrimitivity & fm,
+  bool PolyPE::isPrimitive (const IntPrimitivity<MScal> & fm,
       const IntFactorization<MScal> & fr)
   {
     MScal a0;

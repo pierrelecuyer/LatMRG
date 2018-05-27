@@ -36,7 +36,7 @@ namespace LatMRG
     m_latType = lat;
     m_lacunaryFlag = false;
     m_lacunaryType = NONE;
-    m_ip = new bool[1];
+    //m_ip = new bool[1];
     init();
     //PW_TODO attention m_ip aussi initialisé dans init()
 
@@ -48,13 +48,12 @@ namespace LatMRG
   MMRGLattice::MMRGLattice(const MScal & m, const MMat & A, int maxDim, int r,
       LacunaryType & lacunaryType, BVect & lac, NormType norm, 
       LatticeType lat):
-
-    IntLattice::IntLattice (m, r, maxDim, norm),
-    m_ip(0), 
-    m_lac(lac, maxDim)
+    IntLattice::IntLattice (m, r, maxDim, norm)
       //m_lac(lac, r)
       //PW_TODO r ou maxDim?
     {
+      m_ip=0;
+      m_lac = LatticeTester::Lacunary(lac, maxDim);
       m_A = A;
       m_latType = lat;
       m_lacunaryFlag = true;

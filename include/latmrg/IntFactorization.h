@@ -87,7 +87,7 @@ namespace LatMRG {
          * </div> </div>
          * </center>
          */
-        void read (const char *f) throw (std::invalid_argument);
+        void read (const char *f);
 
         /**
          * Adds factor \f$p\f$ with multiplicity `mult` and prime status `st`
@@ -282,7 +282,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-  void IntFactorization<Int>::read (const char *name) throw (std::invalid_argument)
+  void IntFactorization<Int>::read (const char *name)
   {
     std::ifstream in (name);
 
