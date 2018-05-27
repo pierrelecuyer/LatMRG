@@ -16,7 +16,7 @@ using namespace LatticeTester;
 
 namespace LatMRG
 {
-  ReportLat::ReportLat(Writer* writer, LatConfig* config, ReportHeader* header,
+  ReportLat::ReportLat(Writer* writer, LatConfig<MScal>* config, ReportHeader* header,
       ReportFooter* footer): m_dFormat(6)
 
   {

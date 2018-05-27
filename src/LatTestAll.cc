@@ -143,7 +143,7 @@ namespace LatMRG
     ParamReaderLat paramRdr (fname.c_str ());
     fname.clear ();
 
-    LatConfig config;
+    LatConfig<MScal> config;
     paramRdr.read (config);
     //config.write();
 
@@ -159,7 +159,7 @@ namespace LatMRG
     //memLacF = false; // Lacunary with all lines-columns of bases
 
     if (config.J > 1) { //Several MRG
-      lattice = MRGLatticeFactory::fromCombMRG (config.comp, config.J,
+      lattice = MRGLatticeFactory<MScal>::fromCombMRG (config.comp, config.J,
           toDim, 0, config.latType, config.norm);
 
     } else {
@@ -170,7 +170,7 @@ namespace LatMRG
               config.comp[0]->a, toDim, config.comp[0]->k, config.Lac,
               config.latType, config.norm);
         else{
-          lattice = new MRGLattice (config.comp[0]->module.mRed,
+          lattice = new MRGLattice<MScal> (config.comp[0]->module.mRed,
               config.comp[0]->a, toDim, config.comp[0]->k,
               config.latType, config.norm);
 
@@ -183,7 +183,7 @@ namespace LatMRG
               config.latType, config.norm);
         }
         else{
-          lattice = new MRGLattice (config.comp[0]->module.mRed,
+          lattice = new MRGLattice<MScal> (config.comp[0]->module.mRed,
               config.comp[0]->a, toDim, config.comp[0]->k,
               config.latType, config.norm);
         }
@@ -200,11 +200,11 @@ namespace LatMRG
       } else if (config.genType[0] == MMRG) {
 
         if (memLacF && config.lacunary) {
-          lattice = new MMRGLattice (config.comp[0]->getM(), config.comp[0]->A,
+          lattice = new MMRGLattice<MScal> (config.comp[0]->getM(), config.comp[0]->A,
               toDim,config.comp[0]->k, config.lacunaryType,
               config.Lac, config.norm);           
         } else {
-          lattice = new MMRGLattice (config.comp[0]->getM(), config.comp[0]->A,
+          lattice = new MMRGLattice<MScal> (config.comp[0]->getM(), config.comp[0]->A,
               toDim,config.comp[0]->k, config.norm);
         }
       }
@@ -255,7 +255,7 @@ namespace LatMRG
 
                        } else {
                          if (config.genType[0] == MRG || config.genType[0] == LCG)
-                           master = new MRGLattice (*(MRGLattice *) lattice);
+                           master = new MRGLattice<MScal> (*(MRGLattice<MScal> *) lattice);
                          else if (config.genType[0] == KOROBOV)
                            master = new KorobovLattice<MScal> (*(KorobovLattice<MScal> *) lattice);
                          else if (config.genType[0] == RANK1)
@@ -300,7 +300,7 @@ namespace LatMRG
                   break;
 
       case PALPHA: {
-                     LatTestPalpha palphaTest (normal, lattice);
+                     LatTestPalpha<MScal> palphaTest (normal, lattice);
                      palphaTest.setConfig (&config);
                      palphaTest.attach (&report);
                      report.printHeader ();
@@ -310,7 +310,7 @@ namespace LatMRG
                        report.printTable ();
                        report.printFooter ();
                      } else {
-                       MRGLattice master = MRGLattice (*(MRGLattice *) lattice);
+                       MRGLattice<MScal> master = MRGLattice<MScal> (*(MRGLattice<MScal> *) lattice);
                        master.buildBasis (toDim);
                        TestProjections proj (&master, lattice, &palphaTest, config.td,
                            config.d);

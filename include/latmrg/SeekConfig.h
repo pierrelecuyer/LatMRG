@@ -14,7 +14,7 @@ namespace LatMRG {
 
   struct Component {
     GenType genType;        // Generator type: MRG, MWC
-    Modulus modulus;        // Modulus m
+    Modulus<MScal> modulus;        // Modulus m
     int k;                  // Generator order
     bool PerMax;            // True if maximal period is required, else false
     ImplemCond implemCond;

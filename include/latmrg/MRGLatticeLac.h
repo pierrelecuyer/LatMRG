@@ -15,7 +15,7 @@ namespace LatMRG {
    * indices*.
    *
    */
-  class MRGLatticeLac:   public MRGLattice {
+  class MRGLatticeLac:   public MRGLattice<MScal> {
     public:
 
       /**

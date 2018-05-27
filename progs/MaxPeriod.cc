@@ -75,7 +75,7 @@ int main(int argc, char** argv)
    ParamType par;
    read (reader, par);
 
-   MRGComponent mrg (par.m, par.k, par.decom1, par.filem1.c_str(),
+   MRGComponent<MScal> mrg (par.m, par.k, par.decom1, par.filem1.c_str(),
                                    par.decor,  par.filer.c_str());
 
    cout << "   \nThe generator with" << endl;

@@ -92,7 +92,7 @@ namespace LatMRG {
        * \f$j\f$-th component. On exiting this method, the line number is
        * reset to `ln` + \f$J\f$.
        */
-      void readOrbit (int J, MRGComponent **comp, unsigned int & ln);
+      void readOrbit (int J, MRGComponent<MScal> **comp, unsigned int & ln);
 
       /**
        * In the case where `lat = PRIMEPOWER`, checks that the modulus

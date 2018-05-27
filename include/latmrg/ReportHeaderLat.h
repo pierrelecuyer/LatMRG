@@ -25,7 +25,7 @@ namespace LatMRG {
        * the result of a combination of MRG components, a MWC transformed into a
        * MRG, and so on.
        */
-      ReportHeaderLat (Writer *writer, LatConfig *config, LatticeTester::IntLattice *lattice);
+      ReportHeaderLat (Writer *writer, LatConfig<MScal> *config, LatticeTester::IntLattice *lattice);
 
       /**
        * Does the actual writing of the report header with the `Writer`
@@ -37,7 +37,7 @@ namespace LatMRG {
       /**
        * Pointer to the configuration of the lattice test.
        */
-      LatConfig* m_config;
+      LatConfig<MScal>* m_config;
 
       /**
        * Pointer to the final MRG lattice on which the lattice test will be

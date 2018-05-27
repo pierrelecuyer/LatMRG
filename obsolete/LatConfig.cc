@@ -27,7 +27,7 @@ namespace LatMRG
   {
     kill();
     genType = new GenType[j];
-    comp = new MRGComponent * [j];
+    comp = new MRGComponent<MScal> * [j];
   }
 
   void LatConfig::kill()

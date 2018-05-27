@@ -171,7 +171,7 @@ namespace LatMRG
 
   //===========================================================================
 
-  MRGComponent::MRGComponent (Modulus & modu, int k, DecompType decom1,
+  MRGComponent::MRGComponent (Modulus<MScal> & modu, int k, DecompType decom1,
       const char *filem1, DecompType decor, const char *filer)
   {
     init (modu.m, k, decom1, filem1, decor, filer);

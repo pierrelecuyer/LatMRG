@@ -32,7 +32,7 @@ namespace LatMRG {
        * Reads the configuration file into `config` for the Beyer and the
        * spectral tests.
        */
-      void read (LatConfig & config);
+      void read (LatConfig<MScal> & config);
   };
 
 }

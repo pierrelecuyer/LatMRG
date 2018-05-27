@@ -184,7 +184,7 @@ namespace LatMRG
 
   //===========================================================================
 
-  void ParamReaderExt::readOrbit (int J, MRGComponent **comp, unsigned int & ln)
+  void ParamReaderExt::readOrbit (int J, MRGComponent<MScal> **comp, unsigned int & ln)
   {
     for (int j = 0; j < J; j++) {
       unsigned int k = comp[j]->k;

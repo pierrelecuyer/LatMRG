@@ -25,7 +25,7 @@ namespace LatMRG {
       /**
        * Constructor.
        */
-      ReportLat (Writer* writer, LatConfig* config, ReportHeader* header,
+      ReportLat (Writer* writer, LatConfig<MScal>* config, ReportHeader* header,
           ReportFooter* footer);
 
       /**
@@ -131,7 +131,7 @@ namespace LatMRG {
       /**
        * The configuration of the lattice test(s).
        */
-      LatConfig * m_config;
+      LatConfig<MScal> * m_config;
 
       /**
        * Formatter used to format the results in the table when writing the

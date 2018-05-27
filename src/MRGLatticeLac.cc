@@ -20,7 +20,7 @@ namespace LatMRG
 
   //===========================================================================
 
-  MRGLatticeLac::MRGLatticeLac (const MRGLatticeLac & lat): MRGLattice::
+  MRGLatticeLac::MRGLatticeLac (const MRGLatticeLac & lat): MRGLattice<MScal>::
                                                             MRGLattice (lat.m_modulo, lat.m_aCoef, lat.getDim (), lat.getOrder (),
                                                                 lat.m_latType, lat.getNorm ()), m_lac (lat.m_lac)
   {
@@ -46,7 +46,7 @@ namespace LatMRG
   MRGLatticeLac::MRGLatticeLac (const MScal & m, const MVect & a, int maxDim,
       int k, BVect & Lac, LatticeType lat,
       NormType norm):
-    MRGLattice::MRGLattice (m, a, maxDim, k, lat, norm),
+    MRGLattice<MScal>::MRGLattice (m, a, maxDim, k, lat, norm),
     m_lac (Lac, maxDim)
   {
     m_lacunaryFlag = true;
@@ -157,7 +157,7 @@ namespace LatMRG
 
   void MRGLatticeLac::incDimBasis (int IMax)
   {
-    MRGLattice::incDimLaBasis(IMax);
+    MRGLattice<MScal>::incDimLaBasis(IMax);
   }
 
 

@@ -16,7 +16,7 @@ using namespace LatticeTester;
 namespace LatMRG
 {
 
-  MRGLattice *MRGLatticeFactory::fromCombMRG (MRGComponent ** comp, int J,
+  MRGLattice *MRGLatticeFactory::fromCombMRG (MRGComponent<MScal> ** comp, int J,
       int maxDim, BVect * I, LatticeType type, NormType norm)
   {
     MScal _m;
@@ -102,9 +102,9 @@ with _n[].
     DeleteVect (_a);
     lat->comp.clear();
     lat->comp.reserve(J);
-    MRGComponent *mycomp;
+    MRGComponent<MScal> *mycomp;
     for (int j = 0; j < J; j++) {
-      mycomp = new MRGComponent (*comp[j]);
+      mycomp = new MRGComponent<MScal> (*comp[j]);
       lat->comp.push_back(mycomp);
     }
     return lat;

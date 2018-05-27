@@ -98,7 +98,7 @@ namespace LatMRG
     }
 
     if (m_config->verifyP) {
-      MRGComponent mrg (m_config->comp[0]->getM(), 1, DECOMP, 0, DECOMP_PRIME,  0);
+      MRGComponent<MScal> mrg (m_config->comp[0]->getM(), 1, DECOMP, 0, DECOMP_PRIME,  0);
       if (mrg.maxPeriod (m_config->comp[0]->a)) {
         cout << "Verify maximal period:   true" << endl;
         m_config->maxPeriod = true;

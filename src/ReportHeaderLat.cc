@@ -16,7 +16,7 @@ using namespace LatticeTester;
 namespace LatMRG
 {
 
-  ReportHeaderLat::ReportHeaderLat (Writer * writer, LatConfig * config,
+  ReportHeaderLat::ReportHeaderLat (Writer * writer, LatConfig<MScal> * config,
       LatticeTester::IntLattice * lattice): ReportHeader (writer)
   {
     m_config = config;

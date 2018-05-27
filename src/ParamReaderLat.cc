@@ -46,7 +46,7 @@ namespace LatMRG
 
   //===========================================================================
 
-  void ParamReaderLat::read (LatConfig & config)
+  void ParamReaderLat::read (LatConfig<MScal> & config)
   {
     getLines ();
     unsigned int ln = 1;
@@ -134,18 +134,18 @@ namespace LatMRG
       if (config.genType[i] == KOROBOV) {
         if (1 != k)
           MyExit(1, "KOROBOV must have k = 1");
-        config.comp[i] = new MRGComponent (m, a, 1);
+        config.comp[i] = new MRGComponent<MScal> (m, a, 1);
       } else if (config.genType[i] == RANK1) {
-        config.comp[i] = new MRGComponent (m, a, k);
+        config.comp[i] = new MRGComponent<MScal> (m, a, k);
       } else if (config.genType[i] == MRG || config.genType[i] == LCG) {
-        config.comp[i] = new MRGComponent (m1, m2, m3, a, k);
+        config.comp[i] = new MRGComponent<MScal> (m1, m2, m3, a, k);
         if (1 == k)
           config.comp[i]->module.reduceM (config.comp[i]->a[0]);
       } else if (config.genType[i] == MWC) {
-        config.comp[i] = MRGComponentFactory::fromMWC (m, a, k);
+        config.comp[i] = MRGComponentFactory<MScal>::fromMWC (m, a, k);
       }
       else if (config.genType[i] == MMRG){
-        config.comp[i] = new MRGComponent(m, A, k);
+        config.comp[i] = new MRGComponent<MScal>(m, A, k);
       } else
         assert(0);
     }
