@@ -69,7 +69,7 @@ latticetester:
 	cp latticetester/lib/liblatticetester.a $(LIB_DIR)
 
 #==============================================================================
-clean: clean_objects clean_bin clean_lib #clean_lattice
+clean: clean_objects clean_bin clean_lib clean_doc #clean_lattice
 
 clean_objects:
 	rm -rf $(OBJ_DIR)
@@ -80,6 +80,10 @@ clean_bin:
 
 clean_lib:
 	rm -rf $(LIB_DIR)
+
+clean_doc:
+	rm -rf doc/html
+	rm -rf doc/latex
 
 clean_lattice:
 	cd latticetester; make clean
