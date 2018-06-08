@@ -19,7 +19,7 @@ namespace LatMRG {
    * comments and discarded.
    *
    */
-  class ParamReaderExt: public LatticeTester::ParamReader {
+  class ParamReaderExt: public LatticeTester::ParamReader<MScal, MVect, BScal, BMat, RScal> {
     public:
       static const int MAX_WORD_SIZE = 64;
 

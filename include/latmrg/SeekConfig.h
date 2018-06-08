@@ -12,28 +12,50 @@
 
 namespace LatMRG {
 
+  /** This structure contains the information necessary to search an MRG 
+   * component to a multiple MRG.
+   * */
   struct Component {
-    GenType genType;        // Generator type: MRG, MWC
-    Modulus<MScal> modulus;        // Modulus m
-    int k;                  // Generator order
-    bool PerMax;            // True if maximal period is required, else false
+    /// Type of the generator. Either MRG or MWC.
+    GenType genType;
+    /// The modulus m of this component.
+    Modulus<MScal> modulus;
+    /// The order of the component.
+    int k;
+    /** `bool` describing if the component has maximal period. It has to be 
+     * `true` if the compenent has maximal period, and `false` otherwise.
+     * */
+    bool PerMax;
+    /// \todo this
     ImplemCond implemCond;
+    /// \todo this
     int NumBits;
+    /// \todo this
     int HighestBit;
+    /// \todo this
     int ncoef;
+    /// \todo this
     int *Icoef;
+    /// \todo this
     DecompType F1;
+    /// \todo this
     std::string file1;
+    /// \todo this
     DecompType F2;
+    /// \todo this
     std::string file2;
+    /// \todo this
     SearchMethod searchMethod;
+    /// \todo this
     int numReg, H, Hk;
-    MVect b, c;             // intervals where to search the coefs
+    /// \todo this
+    MVect b, c;
+    /// \todo this
     bool ApproxTotGen;
   };
 
   /**
-   * \f$\clubsuit\f$ Compléter la description de la classe
+   * \todo Compléter la description de la classe
    *
    * <strong> À EXAMINER:</strong> il pourrrait y avoir des avantages à inclure
    * une variable `LatConfig` à l’intérieur de `SeekConfig`. Plusieurs

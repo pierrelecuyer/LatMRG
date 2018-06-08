@@ -21,8 +21,8 @@ namespace LatMRG
 
   //===========================================================================
 
-  LatTestSpectral::LatTestSpectral (Normalizer * normal,
-      LatticeTester::IntLattice * lat): LatticeTest (lat)
+  LatTestSpectral::LatTestSpectral (Normalizer<RScal> * normal,
+      LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> * lat): LatticeTest (lat)
   {
     m_criter = SPECTRAL;
     m_normalizer = normal;
@@ -172,7 +172,7 @@ namespace LatMRG
     while (m_lat->getDim () < fromDim)
       m_lat->incDim ();
 
-    Reducer red (*m_lat);
+    Reducer<MScal, BScal, BVect, BMat, NScal, NVect, RScal, RVect, RMat> red (*m_lat);
 
     if (m_S2toL2[fromDim] <= 0.0)
       initLowerBoundL2 (fromDim, toDim);
@@ -322,7 +322,7 @@ namespace LatMRG
       if (m_dualF)
         m_lat->dualize ();
       m_lat->incDim ();
-      red = Reducer(*m_lat);
+      red = Reducer<MScal, BScal, BVect, BMat, NScal, NVect, RScal, RVect, RMat>(*m_lat);
     }
 
     return true;

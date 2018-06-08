@@ -55,14 +55,14 @@ namespace LatMRG
     m_writer->writeTable(m_results, "llllllllll");
   }
 
-  void ReportLat::latUpdate(IntLattice & lat)
+  void ReportLat::latUpdate(IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> & lat)
   {
     m_writer->writeString (lat.toStringBasis());
     m_writer->writeString (lat.toStringDualBasis());
     //FIX ME
   }
 
-  void ReportLat::latUpdate(IntLattice & lat, int i)
+  void ReportLat::latUpdate(IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> & lat, int i)
   {
     m_writer->writeString (lat.toStringBasis());
     //FIX ME

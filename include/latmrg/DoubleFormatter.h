@@ -7,15 +7,15 @@
 namespace LatMRG {
 
   /**
-   * This class is an implementation of the `Formatter` interface which formats
-   * a `double` into a string.
+   * This class is an implementation of the `Formatter` interface to format
+   * a `double` into a `string`.
    *
    */
   class DoubleFormatter : public Formatter {
     public:
 
       /**
-       * Constructor. This object is initialized to format <tt>double</tt>’s with
+       * Constructor initializing the object to format <tt>double</tt>’s with
        * `precision` decimals.
        */
       DoubleFormatter (int precision);

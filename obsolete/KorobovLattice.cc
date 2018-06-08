@@ -12,7 +12,7 @@ namespace LatMRG
 
   KorobovLattice::KorobovLattice (const MScal & n, const MScal & a, int maxDim,
       NormType norm) :
-    LatticeTester::IntLattice::IntLattice(n, 0, maxDim, norm)
+    LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice(n, 0, maxDim, norm)
   {
     m_a = a;
     m_shift = 0;
@@ -24,7 +24,7 @@ namespace LatMRG
 
   KorobovLattice::KorobovLattice (const MScal & n, const MScal & a, int maxDim,
       int t, NormType norm) :
-    IntLattice::IntLattice(n, 0, maxDim, norm)
+    IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice(n, 0, maxDim, norm)
   {
     m_a = a;
     m_shift = t;
@@ -42,7 +42,7 @@ namespace LatMRG
   //=========================================================================
 
   KorobovLattice::KorobovLattice (const KorobovLattice & lat):
-    IntLattice::IntLattice(lat.m_modulo, 0, lat.getDim (), lat.getNorm ())
+    IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice(lat.m_modulo, 0, lat.getDim (), lat.getNorm ())
   {
     m_a = lat.m_a;
     m_shift = lat.m_shift;
@@ -140,7 +140,7 @@ namespace LatMRG
   void KorobovLattice::incDim()
   {
     MScal tmp1, tmp2, tmp3; MVect vectmp1;// working variables
-    IntLattice::incDim(); //Increment the dimenson of the lattice by 1
+    IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::incDim(); //Increment the dimenson of the lattice by 1
     const int dim = getDim(); //New dimension
 
     vectmp1.resize(dim);

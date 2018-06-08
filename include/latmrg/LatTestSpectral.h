@@ -2,11 +2,11 @@
 #define LATTESTSPECTRAL_H
 #include "latticetester/IntLattice.h"
 #include "latticetester/Weights.h"
-#include "LatticeTest.h"
 #include "latticetester/Reducer.h"
 #include "latticetester/Normalizer.h"
 #include "latticetester/Const.h"
 
+#include "latmrg/LatticeTest.h"
 
 namespace LatMRG {
 
@@ -35,8 +35,8 @@ namespace LatMRG {
        * Constructor. The *spectral* test will be applied to the lattice `lat`
        * using normalizer `normal` to normalize the figure of merit.
        */
-      LatTestSpectral (LatticeTester::Normalizer * normal,
-          LatticeTester::IntLattice * lat);
+      LatTestSpectral (LatticeTester::Normalizer<RScal> * normal,
+          LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> * lat);
 
       /**
        * Destructor.
@@ -81,14 +81,14 @@ namespace LatMRG {
       /**
        * Returns the normalizer used in this test.
        */
-      const LatticeTester::Normalizer* getNormalizer() { return m_normalizer; }
+      const LatticeTester::Normalizer<RScal>* getNormalizer() { return m_normalizer; }
 
     private:
 
       /**
        * The normalizer used to normalize the figure of merit.
        */
-      LatticeTester::Normalizer* m_normalizer;
+      LatticeTester::Normalizer<RScal>* m_normalizer;
 
       /**
        * The lower bound on the square length of the shortest vector in each

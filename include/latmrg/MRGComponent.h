@@ -315,7 +315,7 @@ namespace LatMRG {
         ifm1.factorize();
       else if (decom1 == DECOMP_WRITE) {
         ifm1.factorize();
-        ofstream fout(filem1);
+        std::ofstream fout(filem1);
 
         fout << ifm1.toString();
       }
@@ -331,7 +331,7 @@ namespace LatMRG {
         ifr.factorize();
       else if (decor == DECOMP_WRITE) {
         ifr.factorize();
-        ofstream fout(filer);
+        std::ofstream fout(filer);
         fout << ifr.toString();
       } else if (decor == DECOMP_PRIME)
         ifr.setStatus (LatticeTester::PRIME);
@@ -359,13 +359,13 @@ namespace LatMRG {
     {
       init (modu.m, k, decom1, filem1, decor, filer);
 
-      LatticeTester::PrimeType status = LatticeTester::IntFactor::isPrime (
+      LatticeTester::PrimeType status = LatticeTester::IntFactor<Int>::isPrime (
           modu.m, 100);
       if (status == LatticeTester::PRIME 
           || LatticeTester::PROB_PRIME == status) {
         modu.primeF = true;
       } else {
-        cout << " WARNING:  m is NOT prime" << endl;
+        std::cout << " WARNING:  m is NOT prime" << std::endl;
         modu.primeF = false;
       }
       module = modu;
@@ -425,16 +425,16 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    string MRGComponent<Int>::toString ()
+    std::string MRGComponent<Int>::toString ()
     {
-      ostringstream os;
+      std::ostringstream os;
       os << "MRGComponent:";
       Int mm = getM();
       os << "\n   m = " << mm;
       os << "\n   k = " << k;
       os << "\n   a = ";
-      string str (os.str ());
-      string s2 = LatticeTester::toString(a, k);
+      std::string str (os.str ());
+      std::string s2 = LatticeTester::toString(a, k);
       str += s2;
       str += "\n";
       return str;

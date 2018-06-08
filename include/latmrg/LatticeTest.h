@@ -5,11 +5,13 @@
 #include "latticetester/Const.h"
 #include "latticetester/IntLatticeBasis.h"
 #include "latticetester/IntLattice.h"
+#include "latticetester/Weights.h"
+
+#include "latmrg/Chrono.h"
 #include "latmrg/Merit.h"
 #include "latmrg/Subject.h"
 #include "latmrg/LatticeTestObserver.h"
-#include "latticetester/Weights.h"
-#include "latmrg/Chrono.h"
+
 #include <string>
 #include <list>
 
@@ -40,7 +42,7 @@ namespace LatMRG {
       /**
        * Constructor. The test will be applied on `lattice`.
        */
-      explicit LatticeTest (LatticeTester::IntLattice * lattice);
+      explicit LatticeTest (LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> * lattice);
 
       /**
        * Destructor.
@@ -108,7 +110,7 @@ namespace LatMRG {
       /**
        * Gets the lattice on which the test is applied.
        */
-      LatticeTester::IntLattice * getLattice () const { return m_lat; }
+      LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> * getLattice () const { return m_lat; }
 
       /**
        * Returns the lowest dimension on which the test is performed.
@@ -188,7 +190,7 @@ namespace LatMRG {
       /**
        * The lattice on which the test is applied.
        */
-      LatticeTester::IntLattice* m_lat;
+      LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>* m_lat;
 
       /**
        * The dimension parameters.
@@ -203,13 +205,13 @@ namespace LatMRG {
       /**
        * Dispatches a `baseUpdate` signal to all observers.
        */
-      void dispatchLatUpdate (LatticeTester::IntLattice &);
+      void dispatchLatUpdate (LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> &);
 
       /**
        * Dispatches a `baseUpdate(V, i)` signal to all observers. Only base
        * vector \f$i\f$ will be sent.
        */
-      void dispatchLatUpdate (LatticeTester::IntLattice & lat, int i);
+      void dispatchLatUpdate (LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> & lat, int i);
 
       /**
        * Dispatches a `resultUpdate` signal to all observers.

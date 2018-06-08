@@ -85,7 +85,7 @@ namespace LatMRG
 
   //===========================================================================
 
-  TestProjections::TestProjections (LatticeTester::IntLattice * master, LatticeTester::IntLattice * lattice,
+  TestProjections::TestProjections (LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> * master, LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> * lattice,
       LatticeTest * test, int td[], int d)
   {
     if (d <= 0)

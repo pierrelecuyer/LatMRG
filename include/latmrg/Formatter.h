@@ -6,15 +6,16 @@
 namespace LatMRG {
 
   /**
-   * This class is an interface that must implemented to format values in a
-   * `TableColumn` which composes a `Table`.
+   * This class is an interface that can be implemented to format diffenrent 
+   * types into a `string`. It is used, therefore it must be implemented, to 
+   * format values in a `TableColumn` which composes a `Table`.
    *
    */
   class Formatter {
     public:
 
       /**
-       * Destructor. Does nothing for now.
+       * Destructor.
        */
       virtual ~Formatter() {}
 

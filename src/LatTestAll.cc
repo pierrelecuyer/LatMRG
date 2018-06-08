@@ -149,9 +149,9 @@ namespace LatMRG
 
     Writer* rw = createWriter (infile, config.outputType);
 
-    LatticeTester::IntLattice *lattice = 0;
-    LatticeTester::IntLattice *master = 0;
-    Lacunary *plac = 0;
+    LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> *lattice = 0;
+    LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> *master = 0;
+    Lacunary<BScal, BVect> *plac = 0;
     bool stationary = true;
     int toDim = config.td[1];
     int fromDim = config.td[0];
@@ -166,7 +166,7 @@ namespace LatMRG
       if (config.latType == PRIMEPOWER) {
         config.comp[0]->module.reduceM (config.comp[0]->a[0]);
         if (memLacF && config.lacunary)
-          lattice = new MRGLatticeLac (config.comp[0]->module.mRed,
+          lattice = new MRGLatticeLac<MScal> (config.comp[0]->module.mRed,
               config.comp[0]->a, toDim, config.comp[0]->k, config.Lac,
               config.latType, config.norm);
         else{
@@ -178,7 +178,7 @@ namespace LatMRG
 
       } else if (config.genType[0] == MRG || config.genType[0] == LCG) {
         if (memLacF && config.lacunary){
-          lattice = new MRGLatticeLac (config.comp[0]->module.mRed,
+          lattice = new MRGLatticeLac<MScal> (config.comp[0]->module.mRed,
               config.comp[0]->a, toDim, config.comp[0]->k, config.Lac,
               config.latType, config.norm);
         }
@@ -193,7 +193,7 @@ namespace LatMRG
             config.comp[0]->a[1], toDim, config.norm);
       } else if (config.genType[0] == RANK1) {
         stationary = false;
-        lattice = new Rank1Lattice (config.comp[0]->getM (),
+        lattice = new Rank1Lattice<MScal, MVect, BScal, BVect, BMat, NScal, NVect, RScal> (config.comp[0]->getM (),
             config.comp[0]->a, config.comp[0]->k, config.norm);
 
 
@@ -217,7 +217,7 @@ namespace LatMRG
     double minVal[1 + toDim];
     SetZero (minVal, toDim);
 
-    Normalizer *normal = 0;
+    Normalizer<RScal> *normal = 0;
 
     if (config.criter == SPECTRAL) {
       normal = lattice->getNormalizer (config.norma, 0, config.dualF);
@@ -225,11 +225,11 @@ namespace LatMRG
       normal->setNorm (config.norm);
     } else if (config.criter == PALPHA &&
         (config.calcPalpha == NORMPAL || config.calcPalpha == BAL)) {
-      normal = new NormaPalpha (lattice->getModulo(), config.alpha, toDim);
+      normal = new NormaPalpha<MScal, RScal> (lattice->getModulo(), config.alpha, toDim);
     }
 
     if (!memLacF && config.lacunary) {
-      plac = new Lacunary (config.Lac, toDim);
+      plac = new Lacunary<BScal, BVect> (config.Lac, toDim);
       lattice->setLac (*plac);
     }
 
@@ -259,7 +259,7 @@ namespace LatMRG
                          else if (config.genType[0] == KOROBOV)
                            master = new KorobovLattice<MScal> (*(KorobovLattice<MScal> *) lattice);
                          else if (config.genType[0] == RANK1)
-                           master = new Rank1Lattice (*(Rank1Lattice *) lattice);
+                           master = new Rank1Lattice<MScal, MVect, BScal, BVect, BMat, NScal, NVect, RScal> (*(Rank1Lattice<MScal, MVect, BScal, BVect, BMat, NScal, NVect, RScal> *) lattice);
 
                          master->buildBasis (toDim);
                          TestProjections proj (master, lattice, &spectralTest, config.td,

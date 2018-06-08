@@ -26,7 +26,7 @@ namespace LatMRG {
    * \f]
    */
   template<typename Int>
-    class MRGLattice: public LatticeTester::IntLattice {
+    class MRGLattice: public LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> {
       public:
 
         /**
@@ -96,7 +96,7 @@ namespace LatMRG {
         /**
          * Sets the lacunary indices for this lattice to `lat`.
          */
-        virtual void setLac (const LatticeTester::Lacunary & lat);
+        virtual void setLac (const LatticeTester::Lacunary<BScal, BVect> & lat);
 
         /**
          * \name Sets and gets the values of <tt>m_rho</tt> and <tt>m_lossRho</tt>.
@@ -208,7 +208,7 @@ namespace LatMRG {
          * Contains the lacunary indices when `LacunaryFlag` is `true`,
          * otherwise is undefined.
          */
-        LatticeTester::Lacunary m_lac;
+        LatticeTester::Lacunary<BScal, BVect> m_lac;
 
 
         /**
@@ -249,9 +249,9 @@ namespace LatMRG {
   template<typename Int>
     void MRGLattice<Int>::trace (char *mess, int d)
     {
-      cout << "---------------------------------------------------------------"
-        << "----" << endl;
-      cout << mess << endl;
+      std::cout << "---------------------------------------------------------------"
+        << "----" << std::endl;
+      std::cout << mess << std::endl;
       setNegativeNorm();
       setDualNegativeNorm();
       updateVecNorm ();
@@ -260,10 +260,10 @@ namespace LatMRG {
       //m_w.write();
       /*
          for (int i = 0; i <= d; i++)
-         cout << " VSI " << i << "    " << m_vSI[i] << endl;
-         cout << endl;
+         std::cout << " VSI " << i << "    " << m_vSI[i] << std::endl;
+         std::cout << std::endl;
          for (int i = 0; i <= d; i++)
-         cout << " WSI " << i << "    " << m_wSI[i] << endl;
+         std::cout << " WSI " << i << "    " << m_wSI[i] << std::endl;
          */
       //checkDuality ();
       d = -1;  // compiler warning
@@ -274,7 +274,7 @@ namespace LatMRG {
 
   template<typename Int>
     MRGLattice<Int>::MRGLattice(const MRGLattice<Int> &lat):
-      IntLattice::IntLattice (lat.m_modulo, lat.m_order,
+      IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice (lat.m_modulo, lat.m_order,
           lat.getDim(), lat.getNorm ()), m_lac(lat.m_lac)
   {
     m_lossRho = lat.m_lossRho;
@@ -288,7 +288,7 @@ namespace LatMRG {
     m_sta.SetDims (m_order, m_order);
 
     int dim = getDim();
-    int rmax = max(m_order, dim);
+    int rmax = std::max(m_order, dim);
     m_wSI.SetDims (rmax, dim);
 
     int i;
@@ -336,7 +336,7 @@ namespace LatMRG {
   template<typename Int>
     MRGLattice<Int>::MRGLattice(const Int & m, const MVect & a, int maxDim, 
         int k, LatticeType lat, LatticeTester::NormType norm):
-      IntLattice::IntLattice(m, k, maxDim, norm)
+      IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice(m, k, maxDim, norm)
   {
     m_latType = lat;
     m_lacunaryFlag = false;
@@ -354,7 +354,7 @@ namespace LatMRG {
   template<typename Int>
     MRGLattice<Int>::MRGLattice(const Int & m, const MVect & a, int maxDim, 
         int k, BVect & I, LatticeType lat, LatticeTester::NormType norm):
-      IntLattice::IntLattice (m, k, maxDim, norm), m_lac(I, maxDim), m_ip(0)
+      IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice (m, k, maxDim, norm), m_lac(I, maxDim), m_ip(0)
   {
     m_latType = lat;
     m_lacunaryFlag = true;
@@ -370,7 +370,7 @@ namespace LatMRG {
     void MRGLattice<Int>::init()
     {
       kill();
-      IntLattice::init();
+      IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::init();
       m_xi.SetLength(m_order);
       m_aCoef.SetLength(m_order);
       if (m_order > ORDERMAX) {
@@ -380,7 +380,7 @@ namespace LatMRG {
         m_ip = new bool[m_order];
         m_sta.SetDims(m_order, m_order);
       }
-      int rmax = max(m_order, getDim());
+      int rmax = std::max(m_order, getDim());
       m_wSI.SetDims(rmax, getDim());
 
       if (m_latType == ORBIT)
@@ -401,7 +401,7 @@ namespace LatMRG {
   template<typename Int>
     void MRGLattice<Int>::kill()
     {
-      IntLattice::kill();
+      IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::kill();
       if (0 != m_ip)
         delete[] m_ip;
       m_ip = 0;
@@ -424,7 +424,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    void MRGLattice<Int>::setLac(const LatticeTester::Lacunary & lac)
+    void MRGLattice<Int>::setLac(const LatticeTester::Lacunary<BScal, BVect> & lac)
     {
       m_lac = lac;
       m_lacunaryFlag = true;
@@ -433,7 +433,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    string MRGLattice<Int>::toStringCoef () const
+    std::string MRGLattice<Int>::toStringCoef () const
     {
       std::ostringstream out;
       out << "[ ";
@@ -518,7 +518,7 @@ namespace LatMRG {
     {
       // trace( "=================================AVANT incDimBasis", -10);
 
-      IntLattice::incDim();
+      IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::incDim();
 
 
       const int dim = getDim();
@@ -645,7 +645,7 @@ namespace LatMRG {
     void MRGLattice<Int>::incDimLaBasis(int IMax)
     {
 
-      IntLattice::incDim();
+      IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::incDim();
       const int dim = getDim (); // new dimension (dim++)
 
       /*
@@ -667,7 +667,7 @@ namespace LatMRG {
         for (int i1 = 0; i1 < dim-1; i1++) {
 
           BScal tempScalDual;
-          LatticeTester::ProdScal (tempLineBasis, m_wSI[i1], dim, 
+          LatticeTester::ProdScal<Int> (tempLineBasis, m_wSI[i1], dim, 
               tempScalDual);
           LatticeTester::Quotient (tempScalDual, m_modulo, tempScalDual);
           m_t1 = tempScalDual * m_vSI[i1][dim - 1];
@@ -854,7 +854,7 @@ namespace LatMRG {
         } else
           m_lgVolDual2[0] = 0.0;
 
-        int rmax = min(m_order, maxDim);
+        int rmax = std::min(m_order, maxDim);
         for (int r = 2; r <= rmax; r++) {
           if (m_ip[r]) {
             conv(x, m_modulo / m_sta[r][r]);

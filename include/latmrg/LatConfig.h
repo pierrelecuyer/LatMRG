@@ -287,40 +287,40 @@ namespace LatMRG {
   template<typename Int>
     void LatConfig<Int>::write()
     {
-      cout << "readGenFile: " << boolalpha << readGenFile << endl;
+      std::cout << "readGenFile: " << std::boolalpha << readGenFile << std::endl;
       if (readGenFile)
-        cout << "fileName: " << fileName << endl;
-      cout << "J: " << J << endl << endl;
+        std::cout << "fileName: " << fileName << std::endl;
+      std::cout << "J: " << J << std::endl << std::endl;
 
       for (int i = 0; i < J; i++) {
         if (J > 1)
-          cout << "================ Component " << i+1 
+          std::cout << "================ Component " << i+1 
             << " =================\n";
-        cout << "   genType: " << toStringGen (genType[i]) << endl;
-        cout << "   m: " << comp[i]->getM() << endl;
-        cout << "   verifyM: " << boolalpha << verifyM << endl;
-        cout << "   k: " << comp[i]->k << endl;
-        cout << "   a: " << LatticeTester::toString<MVect>(comp[i]->a,
-            comp[i]->k) << endl << endl;
+        std::cout << "   genType: " << toStringGen (genType[i]) << std::endl;
+        std::cout << "   m: " << comp[i]->getM() << std::endl;
+        std::cout << "   verifyM: " << std::boolalpha << verifyM << std::endl;
+        std::cout << "   k: " << comp[i]->k << std::endl;
+        std::cout << "   a: " << LatticeTester::toString<MVect>(comp[i]->a,
+            comp[i]->k) << std::endl << std::endl;
       }
 
-      //   cout << "fromDim: " << fromDim << endl;
-      //   cout << "toDim:   " << toDim << endl;
-      cout << "td:   " << LatticeTester::toString (td, 0, d) << endl;
-      cout << "criter: " << LatticeTester::toStringCriterion(criter) << endl;
-      cout << "norma: " << LatticeTester::toStringNorma (norma) << endl;
-      cout << "latType: " << toStringLattice (latType) << endl;
+      //   std::cout << "fromDim: " << fromDim << std::endl;
+      //   std::cout << "toDim:   " << toDim << std::endl;
+      std::cout << "td:   " << LatticeTester::toString (td, 0, d) << std::endl;
+      std::cout << "criter: " << LatticeTester::toStringCriterion(criter) << std::endl;
+      std::cout << "norma: " << LatticeTester::toStringNorma (norma) << std::endl;
+      std::cout << "latType: " << toStringLattice (latType) << std::endl;
       if (dualF)
-        cout << "lattice: DUAL" << endl;
+        std::cout << "lattice: DUAL" << std::endl;
       else
-        cout << "lattice: PRIMAL" << endl;
-      cout << "lacGroupSize: " << lacGroupSize << endl;
-      cout << "lacSpacing: " << lacSpacing << endl;
-      cout << "maxPeriod: " << boolalpha << maxPeriod << endl;
-      cout << "verifyP: " << boolalpha << verifyP << endl;
-      cout << "maxNodesBB: " << maxNodesBB << endl;
-      cout << "outputType: " << LatticeTester::toStringOutput (outputType) 
-        << endl;
+        std::cout << "lattice: PRIMAL" << std::endl;
+      std::cout << "lacGroupSize: " << lacGroupSize << std::endl;
+      std::cout << "lacSpacing: " << lacSpacing << std::endl;
+      std::cout << "maxPeriod: " << std::boolalpha << maxPeriod << std::endl;
+      std::cout << "verifyP: " << std::boolalpha << verifyP << std::endl;
+      std::cout << "maxNodesBB: " << maxNodesBB << std::endl;
+      std::cout << "outputType: " << LatticeTester::toStringOutput (outputType) 
+        << std::endl;
 
     }
 

@@ -2,6 +2,7 @@
 #define LatticeTester__KOROBOVLATTICE_H
 #include "latticetester/Const.h"
 #include "latticetester/IntLattice.h"
+#include "latticetester/ntlwrap.h"
 
 
 namespace LatMRG {
@@ -20,7 +21,7 @@ namespace LatMRG {
    *
    */
   template<typename Int>
-    class KorobovLattice: public LatticeTester::IntLattice {
+    class KorobovLattice: public LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> {
       public:
 
         /**
@@ -98,7 +99,7 @@ namespace LatMRG {
   template<typename Int>
     KorobovLattice<Int>::KorobovLattice (const Int & n, const Int & a,
         int maxDim, LatticeTester::NormType norm) :
-      LatticeTester::IntLattice::IntLattice(n, 0, maxDim, norm)
+      LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice(n, 0, maxDim, norm)
   {
     m_a = a;
     m_shift = 0;
@@ -111,7 +112,7 @@ namespace LatMRG {
   template<typename Int>
     KorobovLattice<Int>::KorobovLattice (const Int & n, const Int & a,
         int maxDim, int t, LatticeTester::NormType norm) :
-      IntLattice::IntLattice(n, 0, maxDim, norm)
+      IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice(n, 0, maxDim, norm)
   {
     m_a = a;
     m_shift = t;
@@ -131,7 +132,7 @@ namespace LatMRG {
 
   template<typename Int>
     KorobovLattice<Int>::KorobovLattice (const KorobovLattice & lat):
-      IntLattice::IntLattice(lat.m_modulo, 0, lat.getDim (), lat.getNorm ())
+      IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice(lat.m_modulo, 0, lat.getDim (), lat.getNorm ())
   {
     m_a = lat.m_a;
     m_shift = lat.m_shift;
@@ -236,7 +237,7 @@ namespace LatMRG {
     void KorobovLattice<Int>::incDim()
     {
       Int tmp1, tmp2, tmp3; MVect vectmp1;// working variables
-      IntLattice::incDim(); //Increment the dimenson of the lattice by 1
+      IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::incDim(); //Increment the dimenson of the lattice by 1
       const int dim = getDim(); //New dimension
 
       vectmp1.resize(dim);
@@ -247,7 +248,7 @@ namespace LatMRG {
         m_basis (i, dim) = vectmp1(i) =  tmp1; //Erwan m_vSI (0, i) = tmp1;
       }
 
-      matrix_row<BMat> row1(m_basis, dim - 2);
+      NTL::matrix_row<BMat> row1(m_basis, dim - 2);
       LatticeTester::SetZero (row1, dim - 2);
 
       for (int i = 0; i < dim-1; i++)

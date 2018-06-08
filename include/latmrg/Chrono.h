@@ -6,18 +6,6 @@
  * \file Chrono.h
  */
 
-/**
- * On a MS-Windows platform, the MS-Windows function `GetProcessTimes` will
- * be used to measure the CPU time used by programs. On Linux\f$|\f$Unix
- * platforms, if the macro <tt>USE_ANSI_CLOCK</tt> is defined, the timers
- * will call the ANSI C `clock` function. When <tt>USE_ANSI_CLOCK</tt> is
- * left undefined, class `Chrono` gets the CPU time used by a program via an
- * alternate non-ANSI C timer based on the POSIX (The Portable Operating
- * System Interface) function `times`, assuming this function is available.
- * The POSIX standard is described in the IEEE Std 1003.1-2001 document (see
- * The Open Group web site at
- * [http://www.opengroup.org/onlinepubs/007904975/toc.htm](http://www.opengroup.org/onlinepubs/007904975/toc.htm)).
- */
 #undef USE_ANSI_CLOCK
 namespace LatMRG {
 
@@ -33,9 +21,17 @@ namespace LatMRG {
    * clock may wrap around to 0 after about 72 minutes. When the macro
    * <tt>USE_ANSI_CLOCK</tt> is undefined, a non-ANSI-C clock is used. On
    * Linux-Unix systems, it calls the POSIX function `times` to get the CPU
-   * time used by a program.   On a Windows platform (when the macro
+   * time used by a program. On a Windows platform (when the macro
    * <tt>HAVE_WINDOWS_H</tt> is defined), the Windows function
    * `GetProcessTimes` will be used to measure the CPU time used by programs.
+   * On Linux\f$|\f$Unix platforms, if the macro <tt>USE_ANSI_CLOCK</tt> is 
+   * defined, the timers will call the ANSI C `clock` function. When 
+   * <tt>USE_ANSI_CLOCK</tt> is left undefined, class `Chrono` gets the CPU 
+   * time used by a program via an alternate non-ANSI C timer based on the 
+   * POSIX (The Portable Operating System Interface) function `times`, assuming 
+   * this function is available. The POSIX standard is described in the IEEE 
+   * Std 1003.1-2001 document (see The Open Group web site at
+   * [http://www.opengroup.org/onlinepubs/007904975/toc.htm](http://www.opengroup.org/onlinepubs/007904975/toc.htm)).
    *
    * Every object `Chrono` acts as an independent *stopwatch*. Several such
    * stopwatchs can run at any given time. An object of type `Chrono` must be
@@ -55,7 +51,7 @@ namespace LatMRG {
    * here</em>.)<br> double t = timer.val (Chrono::SEC); // Here, t =
    * 2.1 <br>timer.init(); <br> \f$\vdots\f$ (<em>suppose 330 CPU seconds are
    * used here</em>.) <br> t = timer.val (Chrono::MIN); // Here, t = 5.5
-   * <br>timer.write (Chrono::HMS); // Prints: 00:05:30.00 <br></tt>
+   * <br>timer.write (Chrono::HMS); // Prints: 00:05:30.00 </br></tt>
    *
    */
   class Chrono {
@@ -81,7 +77,7 @@ namespace LatMRG {
       ~Chrono() {}
 
       /**
-       * Initializes this stopwatch to zero.
+       * (Re)Initializes this stopwatch to zero.
        */
       void init ();
 
@@ -113,9 +109,16 @@ namespace LatMRG {
       bool timeOver (double limit);
     private:
 
-      unsigned long microsec;         // microseconds
-      unsigned long second;           // seconds
+      /// Microseconds
+      unsigned long microsec;
 
+      /// Seconds
+      unsigned long second;
+
+      /** Function returning the CPU time used by the program since it was
+       * started. This function depends on the operation system and is not 
+       * intended to be manipulated directly.
+       * */
       void tick();
   };
 

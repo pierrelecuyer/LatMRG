@@ -1,7 +1,7 @@
 #ifndef LATTESTALL_H
 #define LATTESTALL_H
-#include "Writer.h"
-#include "LatConfig.h"
+#include "latmrg/Writer.h"
+#include "latmrg/LatConfig.h"
 #include "latmrg/Const.h"
 
 

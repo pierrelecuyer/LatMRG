@@ -1,8 +1,3 @@
-/**
- * This class is a template that implements the interface `Formatter`.
- *
- */
-
 #ifndef FORMATTERIMPL_H
 #define FORMATTERIMPL_H
 #include "Formatter.h"
@@ -13,12 +8,17 @@
 namespace LatMRG {
 
   /**
-   * Formats `value`, which is supposed to be of type `T`, into a string.
+   * This class is a template that implements the interface `Formatter`. It can
+   * format any type with the `<<` operator defined.
    */
+
   template <typename T>
     class FormatterImpl: public Formatter {
       public:
 
+        /**
+         * Formats `value`, which is supposed to be of type `T`, into a string.
+         */
         std::string format (void* value);
     };
   template <typename T>

@@ -1,9 +1,10 @@
-#include "latmrg/LatTestBeyer.h"
 #include "latticetester/IntLattice.h"
 #include "latticetester/Reducer.h"
-#include "latmrg/Merit.h"
 #include "latticetester/Const.h"
 #include "latticetester/Util.h"
+
+#include "latmrg/LatTestBeyer.h"
+#include "latmrg/Merit.h"
 #include "latmrg/PolyPE.h"
 #include "latmrg/LatticeTest.h"
 
@@ -27,7 +28,7 @@ namespace LatMRG
 
   //===========================================================================
 
-  LatTestBeyer::LatTestBeyer (LatticeTester::IntLattice * lat): LatticeTest (lat)
+  LatTestBeyer::LatTestBeyer (LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> * lat): LatticeTest (lat)
   {
     m_criter = BEYER;
   }
@@ -43,7 +44,7 @@ namespace LatMRG
     resetFromDim (m_lat->getOrder (), fromDim);
     while (m_lat->getDim () < fromDim)
       m_lat->incDim ();
-    Reducer red (*m_lat);
+    Reducer<MScal, BScal, BVect, BMat, NScal, NVect, RScal, RVect, RMat> red (*m_lat);
 
     m_lat->dualize ();
     red.preRedDieter (0);
@@ -100,7 +101,7 @@ namespace LatMRG
       if (dim == toDim)
         break;
       m_lat->incDim();
-      red = Reducer(*m_lat);
+      red = Reducer<MScal, BScal, BVect, BMat, NScal, NVect, RScal, RVect, RMat>(*m_lat);
     }
 
     return true;

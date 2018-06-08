@@ -66,7 +66,7 @@ namespace LatMRG
       // m1 = m-1
       // m1s2 = (m-1)/2
       // r = (m^k-1)/(m-1)
-      PrimeType status = IntFactor::isPrime (m, KTRIALS);
+      PrimeType status = IntFactor<MScal>::isPrime (m, KTRIALS);
       if (status == PRIME || status == PROB_PRIME) {
         m1 = m - One;
         if (safe) {
@@ -75,7 +75,7 @@ namespace LatMRG
             continue;
           }
           Quotient (m1, Two, m1s2);
-          status = IntFactor::isPrime (m1s2, KTRIALS);
+          status = IntFactor<MScal>::isPrime (m1s2, KTRIALS);
           if (status != PRIME && status != PROB_PRIME) {
             nextM(m);
             continue;
@@ -85,7 +85,7 @@ namespace LatMRG
           r = power (m, k);
           --r;
           Quotient (r, m1, r);
-          status = IntFactor::isPrime (r, KTRIALS);
+          status = IntFactor<MScal>::isPrime (r, KTRIALS);
         }
         if (k == 1 || status == PRIME || status == PROB_PRIME) {
           i++;

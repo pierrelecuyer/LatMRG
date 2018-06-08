@@ -52,7 +52,7 @@ namespace LatMRG
   //===========================================================================
 
   MRGLattice::MRGLattice(const MRGLattice &lat):
-    IntLattice::IntLattice (lat.m_modulo, lat.m_order,
+    IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice (lat.m_modulo, lat.m_order,
         lat.getDim(), lat.getNorm ()), m_lac(lat.m_lac)
   {
     m_lossRho = lat.m_lossRho;
@@ -112,7 +112,7 @@ namespace LatMRG
 
   MRGLattice::MRGLattice(const MScal & m, const MVect & a, int maxDim, int k,
       LatticeType lat, NormType norm):
-    IntLattice::IntLattice(m, k, maxDim, norm)
+    IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice(m, k, maxDim, norm)
   {
     m_latType = lat;
     m_lacunaryFlag = false;
@@ -129,7 +129,7 @@ namespace LatMRG
 
   MRGLattice::MRGLattice(const MScal & m, const MVect & a, int maxDim, int k,
       BVect & I, LatticeType lat, NormType norm):
-    IntLattice::IntLattice (m, k, maxDim, norm), m_lac(I, maxDim), m_ip(0)
+    IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice (m, k, maxDim, norm), m_lac(I, maxDim), m_ip(0)
   {
     m_latType = lat;
     m_lacunaryFlag = true;
@@ -288,7 +288,7 @@ namespace LatMRG
   {
     // trace( "=================================AVANT incDimBasis", -10);
 
-    IntLattice::incDim();
+    IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::incDim();
 
 
     const int dim = getDim();
@@ -411,7 +411,7 @@ namespace LatMRG
   void MRGLattice::incDimLaBasis(int IMax)
   {
 
-    IntLattice::incDim();
+    IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::incDim();
     const int dim = getDim (); // new dimension (dim++)
 
     /*

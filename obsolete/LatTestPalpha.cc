@@ -59,7 +59,7 @@ namespace LatMRG
 
   //===========================================================================
 
-  LatTestPalpha::LatTestPalpha (Normalizer * normal, LatticeTester::IntLattice * lat): LatticeTest (lat)
+  LatTestPalpha::LatTestPalpha (Normalizer * normal, LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> * lat): LatticeTest (lat)
   {
     m_criter = PALPHA;
     m_bound = normal;

@@ -14,6 +14,14 @@
 namespace LatMRG {
 
   /**
+   * The class `IntFactorization` implements the decomposition of integers in
+   * factors, preferably prime (see class <tt>IntFactor</tt>). It contains
+   * functions to factorize an integer in prime factors, to sort and print the
+   * list of its factors. \anchor REF__IntFactorization_IntFactorization_class
+   * Integers are factorized by calling the MIRACL software
+   * \cite iSCO03a&thinsp;, which uses many different methods in succession to
+   * effect the factorization.
+   *
    * Given any natural integer \f$n\f$, there is a unique decomposition in
    * prime factors of the form
    * \f[
@@ -24,14 +32,6 @@ namespace LatMRG {
    * large integers, it may not be possible to find all the prime factors
    * within a reasonable amount of time. In that case, a similar decomposition
    * to the above may be used with some of the factors composite.
-   *
-   * The class `IntFactorization` implements the decomposition of integers in
-   * factors, preferably prime (see class <tt>IntFactor</tt>). It contains
-   * functions to factorize an integer in prime factors, to sort and print the
-   * list of its factors. \anchor REF__IntFactorization_IntFactorization_class
-   * Integers are factorized by calling the MIRACL software
-   * \cite iSCO03a&thinsp;, which uses many different methods in succession to
-   * effect the factorization.
    *
    */
   template <typename Int>
@@ -127,7 +127,7 @@ namespace LatMRG {
         /**
          * Returns a non-mutable list of the factors.
          */
-        const std::list<LatticeTester::IntFactor> & getFactorList () const
+        const std::list<LatticeTester::IntFactor<Int>> & getFactorList () const
         { return m_factorList; }
 
         /**
@@ -171,7 +171,7 @@ namespace LatMRG {
         /**
          * The list of the "prime" factors in the decomposition of `number`.
          */
-        std::list<LatticeTester::IntFactor> m_factorList;
+        std::list<LatticeTester::IntFactor<Int>> m_factorList;
 
         /**
          * Given the list of prime factors \f$p\f$ of `number`, `invFactorList`
@@ -190,8 +190,8 @@ namespace LatMRG {
          */
         class CompFactor {
           public:
-            bool operator() (const LatticeTester::IntFactor & f1,
-                const LatticeTester::IntFactor & f2) {
+            bool operator() (const LatticeTester::IntFactor<Int> & f1,
+                const LatticeTester::IntFactor<Int> & f2) {
               return f1.getFactor() < f2.getFactor(); }
         };
 
@@ -200,7 +200,7 @@ namespace LatMRG {
          * first.
          */
         void sort () { CompFactor comp; m_factorList.sort (comp); }
-    };
+    }; // End class IntFactorization
 
   //IMPLEMENTATIONS
 
@@ -274,7 +274,7 @@ namespace LatMRG {
   void IntFactorization<Int>::addFactor (const Int & x, int mult,
       LatticeTester::PrimeType st)
   {
-    LatticeTester::IntFactor f (x, mult, st);
+    LatticeTester::IntFactor<Int> f (x, mult, st);
     m_factorList.push_back (f);
   }
 
@@ -343,8 +343,8 @@ namespace LatMRG {
     sort ();
     int j = 1;
 
-    std::list<LatticeTester::IntFactor>::iterator it = m_factorList.begin ();
-    std::list<LatticeTester::IntFactor>::iterator it2 = m_factorList.begin ();
+    typename std::list<LatticeTester::IntFactor<Int>>::iterator it = m_factorList.begin ();
+    typename std::list<LatticeTester::IntFactor<Int>>::iterator it2 = m_factorList.begin ();
     if (it2 != m_factorList.end ())
       ++it2;
     while (it2 != m_factorList.end ()) {
@@ -365,7 +365,7 @@ namespace LatMRG {
   template<typename Int>
   std::string IntFactorization<Int>::toString () const
   {
-    std::list<LatticeTester::IntFactor>::const_iterator it =
+    typename std::list<LatticeTester::IntFactor<Int>>::const_iterator it =
       m_factorList.begin ();
     std::ostringstream out;
     out << m_number << std::endl;
@@ -449,7 +449,7 @@ namespace LatMRG {
       pos = line.find ("MIRACL error");
       if (pos != std::string::npos) {
         // error in factorizing
-        Error ("MIRACL error in IntFactorization::factorize:   Number too big");
+        NTL::Error ("MIRACL error in IntFactorization::factorize:   Number too big");
       }
     }
 
@@ -466,7 +466,7 @@ namespace LatMRG {
     Int temp;
     temp = 1;
 
-    std::list<LatticeTester::IntFactor >::const_iterator it =
+    typename std::list<LatticeTester::IntFactor<Int>>::const_iterator it =
       m_factorList.begin ();
 
     while (it != m_factorList.end ()) {
@@ -489,7 +489,7 @@ namespace LatMRG {
   {
     //   sort ();
     unsigned int j = 0;
-    std::list<LatticeTester::IntFactor>::reverse_iterator it =
+    typename std::list<LatticeTester::IntFactor<Int>>::reverse_iterator it =
       m_factorList.rbegin ();
 
     while (it != m_factorList.rend ()) {

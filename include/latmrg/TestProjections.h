@@ -170,7 +170,7 @@ namespace LatMRG {
          * for dimensions \f$\le12\f$. The results of the tests will be outputted on
          * `Writer`.
          */
-        TestProjections (LatticeTester::IntLattice *master, LatticeTester::IntLattice *lattice,
+        TestProjections (LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> *master, LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> *lattice,
             LatticeTest *test, int td[], int d);
 
         /**
@@ -262,12 +262,12 @@ namespace LatMRG {
         /**
          * Lattice on which the \f$M_{t_1, …, t_d}\f$ merit will be calculated.
          */
-        LatticeTester::IntLattice* m_master;
+        LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>* m_master;
 
         /**
          * Working lattice which is used to test the different projections.
          */
-        LatticeTester::IntLattice* m_lattice;
+        LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>* m_lattice;
 
         /**
          * The lattice test used to calculate the merit.

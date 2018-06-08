@@ -1,8 +1,9 @@
 #ifndef LATTESTPALPHA_H
 #define LATTESTPALPHA_H
-#include "LatConfig.h"
-#include "LatticeTest.h"
 #include "latticetester/Normalizer.h"
+
+#include "latmrg/LatConfig.h"
+#include "latmrg/LatticeTest.h"
 
 
 namespace LatMRG {
@@ -26,7 +27,7 @@ namespace LatMRG {
          * parameters are in `config`. The `bounds` \f$B_{\alpha}(s)\f$ may be used
          * to normalize the \f$P_{\alpha}(s)\f$ values.
          */
-        LatTestPalpha (LatticeTester::Normalizer * bounds, LatticeTester::IntLattice * lat);
+        LatTestPalpha (LatticeTester::Normalizer<RScal> * bounds, LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> * lat);
 
         /**
          * Destructor.
@@ -55,7 +56,7 @@ namespace LatMRG {
          * The \f$B_{\alpha}\f$ bounds used to normalize the
          * \f$P_{\alpha}\f$.
          */
-        LatticeTester::Normalizer *m_bound;
+        LatticeTester::Normalizer<RScal> *m_bound;
 
         /**
          * Prepares and dispatches the results for dimension `dim` to all
@@ -77,7 +78,7 @@ namespace LatMRG {
     {
       m_merit.setDim(m_toDim);
       const int N = 3;
-      string header[N];
+      std::string header[N];
       if (m_config->calcPalpha == LatticeTester::NORMPAL) {
         header[0] = "P_a";
         header[1] = "P_a/B_a";
@@ -115,7 +116,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    LatTestPalpha<Int>::LatTestPalpha (LatticeTester::Normalizer * normal, LatticeTester::IntLattice * lat): LatticeTest (lat)
+    LatTestPalpha<Int>::LatTestPalpha (LatticeTester::Normalizer<RScal> * normal, LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> * lat): LatticeTest (lat)
   {
     m_criter = LatticeTester::PALPHA;
     m_bound = normal;
@@ -145,11 +146,11 @@ namespace LatMRG {
       init ();
 
       if (m_config->verifyM) {
-        if (LatticeTester::PRIME == LatticeTester::IntFactor::isPrime (m_config->comp[0]->getM(), 50)) {
-          cout << "Verify prime m:   true" << endl;
+        if (LatticeTester::PRIME == LatticeTester::IntFactor<Int>::isPrime (m_config->comp[0]->getM(), 50)) {
+          std::cout << "Verify prime m:   true" << std::endl;
           m_config->primeM = true;
         } else {
-          cout << "Verify prime m:   false" << endl;
+          std::cout << "Verify prime m:   false" << std::endl;
           m_config->primeM = false;
         }
       }
@@ -157,13 +158,13 @@ namespace LatMRG {
       if (m_config->verifyP) {
         MRGComponent<Int> mrg (m_config->comp[0]->getM(), 1, DECOMP, 0, DECOMP_PRIME,  0);
         if (mrg.maxPeriod (m_config->comp[0]->a)) {
-          cout << "Verify maximal period:   true" << endl;
+          std::cout << "Verify maximal period:   true" << std::endl;
           m_config->maxPeriod = true;
         } else {
-          cout << "Verify maximal period:   false" << endl;
+          std::cout << "Verify maximal period:   false" << std::endl;
           m_config->maxPeriod = false;
         }
-        cout << endl;
+        std::cout << std::endl;
       }
 
       //PW_TODO pourquoi c'est commenté ?
@@ -191,7 +192,7 @@ namespace LatMRG {
       x = palpha.calcPalpha8 (dim);
       break;
       default:
-      cerr << " Valeur de alpha invalide" << endl;
+      cerr << " Valeur de alpha invalide" << std::endl;
       return false;
       }
 
@@ -223,7 +224,7 @@ namespace LatMRG {
       x = palpha.calcPalpha8PerNonMax (dim);
       break;
       default:
-      cerr << " Valeur de alpha invalide" << endl;
+      cerr << " Valeur de alpha invalide" << std::endl;
       return false;
       }
       if (m_config->calcPalpha == PAL)

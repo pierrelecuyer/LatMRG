@@ -30,7 +30,7 @@ namespace LatMRG
 
   MMRGLattice::MMRGLattice(const MScal & m, const MMat & A, int maxDim, int r,
       NormType norm, LatticeType lat):
-    IntLattice::IntLattice(m, r, maxDim, norm)
+    IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice(m, r, maxDim, norm)
   {
     m_A = A;
     m_latType = lat;
@@ -48,7 +48,7 @@ namespace LatMRG
   MMRGLattice::MMRGLattice(const MScal & m, const MMat & A, int maxDim, int r,
       LacunaryType & lacunaryType, BVect & lac, NormType norm, 
       LatticeType lat):
-    IntLattice::IntLattice (m, r, maxDim, norm)
+    IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice (m, r, maxDim, norm)
       //m_lac(lac, r)
       //PW_TODO r ou maxDim?
     {
@@ -66,7 +66,7 @@ namespace LatMRG
   //===========================================================================
 
   MMRGLattice::MMRGLattice(const MMRGLattice & lat):
-    IntLattice::IntLattice (lat.m_modulo, lat.m_order,
+    IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice (lat.m_modulo, lat.m_order,
         lat.getDim(), lat.getNorm ()), m_lac(lat.m_lac)
   {
     m_A = lat.m_A;
@@ -111,7 +111,7 @@ namespace LatMRG
 
   void MMRGLattice::kill()
   {
-    IntLattice::kill();
+    IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::kill();
     if (0 != m_ip)
       delete[] m_ip;
     m_ip = 0;
@@ -149,7 +149,7 @@ namespace LatMRG
   void MMRGLattice::init()
   {
     kill(); //PW_TODO : wzf ?
-    IntLattice::init();
+    IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::init();
     m_xi.SetLength(m_order);
     m_A.SetDims(m_order, m_order);
     if (m_order > ORDERMAX) {
@@ -413,7 +413,7 @@ namespace LatMRG
   void MMRGLattice::incrementDimNonLacunaryBasis()
     // X_n = A X_{n-1} mod m. We have: dimension >= order.
   {
-    IntLattice::incDim();
+    IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::incDim();
     int newDimension = getDim();
     int sizeA = getOrder();
 
@@ -479,7 +479,7 @@ namespace LatMRG
 
   void MMRGLattice::incrementDimLacunaryBasis(int Imax)
   {
-    IntLattice::incDim();
+    IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::incDim();
     const int dim = getDim (); // new dimension (dim++)
 
     //PW_TODO
