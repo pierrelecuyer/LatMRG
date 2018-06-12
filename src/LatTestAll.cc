@@ -283,7 +283,7 @@ namespace LatMRG
                      break;
 
       case BEYER: {
-                    LatTestBeyer beyerTest (lattice);
+                    LatTestBeyer<MScal, BScal, BVect, BMat, NScal, NVect, RScal> beyerTest (lattice);
                     lattice->buildBasis (fromDim - 1);
                     beyerTest.attach (&report);
                     report.printHeader ();

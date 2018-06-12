@@ -3,6 +3,7 @@
 #include "latticetester/Const.h"
 #include "latticetester/IntLattice.h"
 #include "latticetester/ntlwrap.h"
+#include "latticetester/Types.h"
 
 
 namespace LatMRG {
@@ -21,7 +22,7 @@ namespace LatMRG {
    *
    */
   template<typename Int>
-    class KorobovLattice: public LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> {
+    class KorobovLattice: public LatticeTester::IntLattice<Int, BScal, BVect, BMat, NScal, NVect, RScal> {
       public:
 
         /**
@@ -99,7 +100,7 @@ namespace LatMRG {
   template<typename Int>
     KorobovLattice<Int>::KorobovLattice (const Int & n, const Int & a,
         int maxDim, LatticeTester::NormType norm) :
-      LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice(n, 0, maxDim, norm)
+      LatticeTester::IntLattice<Int, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice(n, 0, maxDim, norm)
   {
     m_a = a;
     m_shift = 0;
@@ -112,7 +113,7 @@ namespace LatMRG {
   template<typename Int>
     KorobovLattice<Int>::KorobovLattice (const Int & n, const Int & a,
         int maxDim, int t, LatticeTester::NormType norm) :
-      IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice(n, 0, maxDim, norm)
+      LatticeTester::IntLattice<Int, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice(n, 0, maxDim, norm)
   {
     m_a = a;
     m_shift = t;
@@ -132,7 +133,7 @@ namespace LatMRG {
 
   template<typename Int>
     KorobovLattice<Int>::KorobovLattice (const KorobovLattice & lat):
-      IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice(lat.m_modulo, 0, lat.getDim (), lat.getNorm ())
+      LatticeTester::IntLattice<Int, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice(lat.m_modulo, 0, lat.getDim (), lat.getNorm ())
   {
     m_a = lat.m_a;
     m_shift = lat.m_shift;
@@ -147,9 +148,9 @@ namespace LatMRG {
     {
       if (this == &lat)
         return *this;
-      m_dim = lat.m_dim;
+      this->m_dim = lat.m_dim;
       copyBasis(lat);
-      m_order = lat.m_order;
+      this->m_order = lat.m_order;
       m_a = lat.m_a;
       m_shift = lat.m_shift;
       return *this;
@@ -188,33 +189,33 @@ namespace LatMRG {
     void KorobovLattice<Int>::buildBasis(int d)
     {
       //assert(d <= getMaxDim());
-      setDim(d);
+      this->setDim(d);
       Int tmp;
       conv(tmp, 1);
 
       for (int i = 0; i < m_shift; i++) {
         tmp *= m_a;
-        tmp %= m_modulo;
+        tmp %= this->m_modulo;
       }
 
       for (int j = 1; j <= d; j++) {
         // V[1][j] = tmp % m;
-        m_basis (0, j) = tmp;
+        this->m_basis (0, j) = tmp;
         tmp *= m_a;
-        tmp %= m_modulo;
+        tmp %= this->m_modulo;
       }
 
       for (int i = 2; i <= d; i++) {
         for (int j = 1; j <= d; j++) {
           if (i == j)
-            m_basis (i, j) = m_modulo;
+            this->m_basis (i, j) = this->m_modulo;
           else
-            m_basis (i, j) = 0;
+            this->m_basis (i, j) = 0;
         }
       }
 
       // Build dual basis
-      LatticeTester::CalcDual<BMat>(m_basis, m_dualbasis, d, m_modulo);
+      LatticeTester::CalcDual<BMat>(this->m_basis, this->m_dualbasis, d, this->m_modulo);
     }
 
 
@@ -224,10 +225,10 @@ namespace LatMRG {
     void KorobovLattice<Int>::incDimSlow()
     {
       // Temporaire: très lent. Reprogrammer.
-      int d = getDim();
+      int d = this->getDim();
       buildBasis(d + 1);
-      setNegativeNorm();
-      setDualNegativeNorm();
+      this->setNegativeNorm();
+      this->setDualNegativeNorm();
     }
 
 
@@ -237,41 +238,41 @@ namespace LatMRG {
     void KorobovLattice<Int>::incDim()
     {
       Int tmp1, tmp2, tmp3; MVect vectmp1;// working variables
-      IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::incDim(); //Increment the dimenson of the lattice by 1
-      const int dim = getDim(); //New dimension
+      LatticeTester::IntLattice<Int, BScal, BVect, BMat, NScal, NVect, RScal>::incDim(); //Increment the dimenson of the lattice by 1
+      const int dim = this->getDim(); //New dimension
 
       vectmp1.resize(dim);
       for (int i = 1; i < dim-1; i++) {
-        conv (tmp2, m_basis (i, dim - 2));
+        conv (tmp2, this->m_basis (i, dim - 2));
         tmp1 = tmp2 * m_a;
-        LatticeTester::Modulo (tmp1, m_modulo, tmp1);
-        m_basis (i, dim) = vectmp1(i) =  tmp1; //Erwan m_vSI (0, i) = tmp1;
+        LatticeTester::Modulo (tmp1, this->m_modulo, tmp1);
+        this->m_basis (i, dim) = vectmp1(i) =  tmp1; //Erwan m_vSI (0, i) = tmp1;
       }
 
-      NTL::matrix_row<BMat> row1(m_basis, dim - 2);
+      NTL::matrix_row<BMat> row1(this->m_basis, dim - 2);
       LatticeTester::SetZero (row1, dim - 2);
 
       for (int i = 0; i < dim-1; i++)
-        m_basis (dim-1, i) = 0;
-      m_basis (dim-1, dim-1) = m_modulo;
+        this->m_basis (dim-1, i) = 0;
+      this->m_basis (dim-1, dim-1) = this->m_modulo;
 
       for (int i = 0; i < dim-1; i++)
-        m_dualbasis (i, dim-1) = 0;
-      m_dualbasis (dim-1, dim-1) = 1;
+        this->m_dualbasis (i, dim-1) = 0;
+      this->m_dualbasis (dim-1, dim-1) = 1;
 
       for (int j = 1; j < dim; j++) {
         clear (tmp1);
         for (int i = 1; i < dim; i++) {
-          tmp2 = m_dualbasis (i, j);
+          tmp2 = this->m_dualbasis (i, j);
           tmp2 *= vectmp1 (i);
           tmp1 -= tmp2;
         }
-        LatticeTester::Quotient (tmp1, m_modulo, tmp3);
-        m_dualbasis (dim, j) = tmp3;
+        LatticeTester::Quotient (tmp1, this->m_modulo, tmp3);
+        this->m_dualbasis (dim, j) = tmp3;
       }
 
-      setNegativeNorm();
-      setDualNegativeNorm();
+      this->setNegativeNorm();
+      this->setDualNegativeNorm();
     }
 
 } // End namespace LatMRG

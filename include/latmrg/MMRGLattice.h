@@ -1,11 +1,11 @@
 #ifndef MMRGLATTICE_H
 #define MMRGLATTICE_H
-//#include "latticetester/Types.h"
+#include "latticetester/Types.h"
 //#include "latticetester/Const.h"
 //#include "latticetester/Lacunary.h"
-//#include "latticetester/IntLattice.h"
+#include "latticetester/IntLattice.h"
 
-//#include "latmrg/Const.h"
+#include "latmrg/Const.h"
 
 //#include <string>
 
@@ -25,7 +25,7 @@ namespace LatMRG {
    * \f]
    */
   template<typename Int>
-    class MMRGLattice: public LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> {
+    class MMRGLattice: public LatticeTester::IntLattice<Int, BScal, BVect, BMat, NScal, NVect, RScal> {
       public:
 
         /**
@@ -215,7 +215,7 @@ namespace LatMRG {
   template<typename Int>
     MMRGLattice<Int>::MMRGLattice(const Int & m, const MMat & A, int maxDim, 
         int r, LatticeTester::NormType norm, LatticeType lat):
-      IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice(m, r, maxDim, norm)
+      LatticeTester::IntLattice<Int, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice(m, r, maxDim, norm)
   {
     m_A = A;
     m_latType = lat;
@@ -233,7 +233,7 @@ namespace LatMRG {
     MMRGLattice<Int>::MMRGLattice(const Int & m, const MMat & A, int maxDim, 
         int r, LacunaryType & lacunaryType, BVect & lac, 
         LatticeTester::NormType norm, LatticeType lat):
-      IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice (m, r, maxDim, norm)
+      LatticeTester::IntLattice<Int, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice (m, r, maxDim, norm)
       //m_lac(lac, r)
       //PW_TODO r ou maxDim?
   {
@@ -252,36 +252,36 @@ namespace LatMRG {
 
   template<typename Int>
     MMRGLattice<Int>::MMRGLattice(const MMRGLattice & lat):
-      IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice (lat.m_modulo, lat.m_order,
+      LatticeTester::IntLattice<Int, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice (lat.m_modulo, lat.m_order,
           lat.getDim(), lat.getNorm ()), m_lac(lat.m_lac)
   {
     m_A = lat.m_A;
     m_latType = lat.m_latType;
     m_lacunaryFlag = lat.m_lacunaryFlag;
 
-    m_ip = new bool[m_order];
-    m_xi.SetLength (m_order);
-    m_A.SetDims (m_order, m_order);
-    m_sta.SetDims (m_order, m_order);
+    m_ip = new bool[this->m_order];
+    m_xi.SetLength (this->m_order);
+    m_A.SetDims (this->m_order, this->m_order);
+    m_sta.SetDims (this->m_order, this->m_order);
 
-    int dim = getDim();
-    int rmax = std::max(m_order, dim);
-    m_wSI.SetDims (rmax, dim);
+    int dim = this->getDim();
+    int rmax = std::max(this->m_order, dim);
+    this->m_wSI.SetDims (rmax, dim);
 
     /*
-       for (i = 0; i <= m_order; i++)
+       for (i = 0; i <= this->m_order; i++)
        m_xi[i] = lat.m_xi[i];
-       for (i = 0; i <= m_order; i++)
+       for (i = 0; i <= this->m_order; i++)
        m_ip[i] = lat.m_ip[i];
 
        int j;
-       for (i = 0; i <= m_order; i++)
-       for (j = 0; j <= m_order; j++)
+       for (i = 0; i <= this->m_order; i++)
+       for (j = 0; j <= this->m_order; j++)
        m_sta[i][j] = lat.m_sta[i][j];
 
        for (i = 0; i <= maxDim; i++)
        for (j = 0; j <= maxDim; j++)
-       m_wSI[i][j] = lat.m_wSI[i][j];
+       this->m_wSI[i][j] = lat.m_wSI[i][j];
        */
     //PW_TODO : ça doit vraiment rester commenté ?
   }
@@ -299,7 +299,7 @@ namespace LatMRG {
   template<typename Int>
     void MMRGLattice<Int>::kill()
     {
-      IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::kill();
+      LatticeTester::IntLattice<Int, BScal, BVect, BMat, NScal, NVect, RScal>::kill();
       if (0 != m_ip)
         delete[] m_ip;
       m_ip = 0;
@@ -311,8 +311,8 @@ namespace LatMRG {
 
       // PW_TODO à quoi ça sert de killer ça ?
       m_sta.kill();
-      m_wSI.kill();
-      //m_vSI.kill(); ??
+      this->m_wSI.kill();
+      //this->m_vSI.kill(); ??
     }
 
   //===========================================================================
@@ -323,9 +323,9 @@ namespace LatMRG {
     {
       if (this == &lat)
         return *this;
-      m_dim = lat.m_dim;
+      this->m_dim = lat.m_dim;
       copyBasis(lat);
-      m_order = lat.m_order;
+      this->m_order = lat.m_order;
       m_ip = lat.m_ip;
       //m_shift = lat.m_shift;
       return *this;
@@ -340,23 +340,23 @@ namespace LatMRG {
     void MMRGLattice<Int>::init()
     {
       kill(); //PW_TODO : wzf ?
-      IntLattice::init();
-      m_xi.SetLength(m_order);
-      m_A.SetDims(m_order, m_order);
-      if (m_order > ORDERMAX) {
+      LatticeTester::IntLattice<Int, BScal, BVect, BMat, NScal, NVect, RScal>::init();
+      m_xi.SetLength(this->m_order);
+      m_A.SetDims(this->m_order, this->m_order);
+      if (this->m_order > ORDERMAX) {
         m_ip = new bool[1];
         m_sta.SetDims(1, 1);
       } else {
-        m_ip = new bool[m_order];
-        m_sta.SetDims(m_order, m_order);
+        m_ip = new bool[this->m_order];
+        m_sta.SetDims(this->m_order, this->m_order);
       }
-      int rmax = std::max(m_order, getDim());
-      m_wSI.SetDims(rmax, getDim());
+      int rmax = std::max(this->m_order, this->getDim());
+      this->m_wSI.SetDims(rmax, this->getDim());
 
       double temp;
-      NTL::conv(temp, m_modulo);
+      NTL::conv(temp, this->m_modulo);
       double lgm2 = 2.0 * LatticeTester::Lg (temp);
-      calcLgVolDual2 (lgm2);
+      this->calcLgVolDual2 (lgm2);
       //if (m_latType == ORBIT)
       //   initOrbit();
       //PW_TODO
@@ -392,15 +392,15 @@ namespace LatMRG {
     {
       std::ostringstream out;
       out << "[";
-      for (int i = 0; i < m_order; i++) {
+      for (int i = 0; i < this->m_order; i++) {
         out << "[";
-        for (int j = 0; j < (m_order-1); j++) {
+        for (int j = 0; j < (this->m_order-1); j++) {
           out << m_A[i][j] << " ";
         }
-        if (i == (m_order-1))
-          out << m_A[i][m_order-1] << "]";
+        if (i == (this->m_order-1))
+          out << m_A[i][this->m_order-1] << "]";
         else
-          out << m_A[i][m_order-1] << "]" << std::endl;
+          out << m_A[i][this->m_order-1] << "]" << std::endl;
       }
       out << "]" << std::endl;
 
@@ -426,23 +426,23 @@ namespace LatMRG {
     // a basis is built in dimension d
 
     {
-      setDim(dimension);
-      int sizeA = getOrder();
-      m_basis.resize(dimension, dimension);
-      m_vecNorm.resize(dimension);
-      m_dualvecNorm.resize(dimension);
-      setNegativeNorm ();
-      setDualNegativeNorm ();
+      this->setDim(dimension);
+      int sizeA = this->getOrder();
+      this->m_basis.resize(dimension, dimension);
+      this->m_vecNorm.resize(dimension);
+      this->m_dualvecNorm.resize(dimension);
+      this->setNegativeNorm ();
+      this->setDualNegativeNorm ();
 
       // filling in the diagonal of m_basis
       for (int i = 0; i < sizeA; i++)
-        m_basis[i][i] = 1;
+        this->m_basis[i][i] = 1;
       for (int i = sizeA; i < dimension; i++)
-        m_basis[i][i] = m_modulo;
+        this->m_basis[i][i] = this->m_modulo;
 
-      // using genrator matrix A to complete the first lines of m_basis
+      // using genrator matrix A to complete the first lines of this->m_basis
       // with values generated by the recurrence
-      NTL::ZZ_p::init(m_modulo);
+      NTL::ZZ_p::init(this->m_modulo);
       MMatP temp;
       temp.SetDims(sizeA, sizeA);
       for (int i = 0; i < sizeA; i++)
@@ -458,21 +458,21 @@ namespace LatMRG {
           int residu = dimension - maxIter * sizeA;
           for (int i = 0; i < sizeA; i++) {
             for (int j = 0; j < residu; j ++)
-              m_basis[i][k*sizeA +j] = NTL::conv<Int>(temp[i][j]);
+              this->m_basis[i][k*sizeA +j] = NTL::conv<Int>(temp[i][j]);
           }
         } else {
           for (int i = 0; i < sizeA; i++) {
             for (int j = 0; j < sizeA; j ++)
-              m_basis[i][k*sizeA +j] = NTL::conv<Int>(temp[i][j]);
+              this->m_basis[i][k*sizeA +j] = NTL::conv<Int>(temp[i][j]);
           }
         }
       }
 
       // we create the dual lattice associated
-      m_dualbasis.resize(dimension, dimension);
-      LatticeTester::CalcDual<BMat>(m_basis, m_dualbasis, dimension, m_modulo);
+      this->m_dualbasis.resize(dimension, dimension);
+      LatticeTester::CalcDual<BMat>(this->m_basis, this->m_dualbasis, dimension, this->m_modulo);
 
-      if (!checkDuality())
+      if (!this->checkDuality())
         LatticeTester::MyExit (1, "BUG in MMRGLattice::buildNonLacunaryBasis");
     }
 
@@ -494,9 +494,9 @@ namespace LatMRG {
   template<typename Int>
     void MMRGLattice<Int>::buildLacunaryBasis (int dimension)
     {
-      int sizeA = getOrder();
-      m_vecNorm.resize(dimension);
-      m_dualvecNorm.resize(dimension);
+      int sizeA = this->getOrder();
+      this->m_vecNorm.resize(dimension);
+      this->m_dualvecNorm.resize(dimension);
 
       int maxIndiceLac = NTL::conv<int>(m_lac[m_lac.getSize()-1]); 
 
@@ -504,7 +504,7 @@ namespace LatMRG {
       //-----------------------------------------------------------------------
       BMat tempBasis;
       //PW_TODO
-      tempBasis.resize(m_order, maxIndiceLac+1);
+      tempBasis.resize(this->m_order, maxIndiceLac+1);
       // PW_TODO meilleurs size à trouver
       // +1 because lacunary indices start at 0
 
@@ -512,11 +512,11 @@ namespace LatMRG {
       for (int i = 0; i < sizeA; i++)
         tempBasis[i][i] = 1;
       //for (int i = sizeA; i < maxIndiceLac; i++)
-      //   tempBasis[i][i] = m_modulo;
+      //   tempBasis[i][i] = this->m_modulo;
 
       // using genrator matrix A to complete the first lines of tempBasis
       // with values generated by the recurrence
-      NTL::ZZ_p::init(m_modulo);
+      NTL::ZZ_p::init(this->m_modulo);
       MMatP temp;
       temp.SetDims(sizeA, sizeA);
       for (int i = 0; i < sizeA; i++)
@@ -544,56 +544,56 @@ namespace LatMRG {
 
       // projecting over the columns of interest (lacunary indices)
       //-----------------------------------------------------------------------
-      m_wSI.resize(std::max(m_order, m_numberLacIndices), m_numberLacIndices);
-      m_vSI.resize(std::max(m_order, m_numberLacIndices), m_numberLacIndices);
+      this->m_wSI.resize(std::max(this->m_order, m_numberLacIndices), m_numberLacIndices);
+      this->m_vSI.resize(std::max(this->m_order, m_numberLacIndices), m_numberLacIndices);
       // PW_TODO meilleurs size à trouver
 
       for (int j = 0; j < m_numberLacIndices; j++) {
-        for (int i = 0; i < m_order; i++)
-          m_wSI[i][j] = tempBasis[ i ][ NTL::conv<int>(m_lac[j]) ];
+        for (int i = 0; i < this->m_order; i++)
+          this->m_wSI[i][j] = tempBasis[ i ][ NTL::conv<int>(m_lac[j]) ];
       }
 
       /*
          std::cout << "tempBasis = \n" << tempBasis << std::endl;
-         std::cout << "projection = \n" << m_wSI << std::endl;
+         std::cout << "projection = \n" << this->m_wSI << std::endl;
          std::cout << "\n******************************************\n" << std::endl;
          std::cout << "\nAVANT TRIANGULARIZATION" << std::endl;
-         std::cout << "m_vSI = \n" << m_vSI << std::endl;
-         std::cout << "m_wSI = \n" << m_wSI << std::endl;
+         std::cout << "m_vSI = \n" << this->m_vSI << std::endl;
+         std::cout << "m_wSI = \n" << this->m_wSI << std::endl;
          */
 
       // transforming this generating familly into a basis of the lattice
       //-----------------------------------------------------------------------
-      LatticeTester::Triangularization <BMat> (m_wSI, m_vSI, m_order,
-          m_numberLacIndices, m_modulo);
+      LatticeTester::Triangularization <BMat> (this->m_wSI, this->m_vSI, this->m_order,
+          m_numberLacIndices, this->m_modulo);
 
       //std::cout << "\nAPRES TRIANGULARIZATION, AVANT CALCDUAL" << std::endl;
-      //std::cout << "m_vSI = \n" << m_vSI << std::endl;
-      //std::cout << "m_wSI = \n" << m_wSI << std::endl;
+      //std::cout << "m_vSI = \n" << this->m_vSI << std::endl;
+      //std::cout << "m_wSI = \n" << this->m_wSI << std::endl;
 
-      LatticeTester::CalcDual <BMat> (m_vSI, m_wSI, m_numberLacIndices,
-          m_modulo);
+      LatticeTester::CalcDual <BMat> (this->m_vSI, this->m_wSI, m_numberLacIndices,
+          this->m_modulo);
 
       /*
          std::cout << "\nAPRES CALCDUAL" << std::endl;
-         std::cout << "m_vSI = \n" << m_vSI << std::endl;
-         std::cout << "m_wSI = \n" << m_wSI << std::endl;
+         std::cout << "m_vSI = \n" << this->m_vSI << std::endl;
+         std::cout << "m_wSI = \n" << this->m_wSI << std::endl;
          std::cout << "\n******************************************\n" << std::endl;
          */
 
       //building the basis in dimension 1
-      m_basis[0][0] = m_vSI[0][0];
-      m_dualbasis[0][0] = m_wSI[0][0];
-      setDim (1);
+      this->m_basis[0][0] = this->m_vSI[0][0];
+      this->m_dualbasis[0][0] = this->m_wSI[0][0];
+      this->setDim (1);
 
-      setNegativeNorm();
-      setDualNegativeNorm();
+      this->setNegativeNorm();
+      this->setDualNegativeNorm();
 
 
       for (int i = 1; i < dimension; i++)
         incDim ();
 
-      if (!checkDuality())
+      if (!this->checkDuality())
         LatticeTester::MyExit (1, "BUG in MMRGLattice::buildNonLacunaryBasis");
 
     }
@@ -616,9 +616,9 @@ namespace LatMRG {
     void MMRGLattice<Int>::incrementDimNonLacunaryBasis()
     // X_n = A X_{n-1} mod m. We have: dimension >= order.
     {
-      IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::incDim();
-      int newDimension = getDim();
-      int sizeA = getOrder();
+      LatticeTester::IntLattice<Int, BScal, BVect, BMat, NScal, NVect, RScal>::incDim();
+      int newDimension = this->getDim();
+      int sizeA = this->getOrder();
 
       // ************* update of the primal lattice *************
       //  - we add a new coordinate to each vector v_i, this value being 
@@ -631,7 +631,7 @@ namespace LatMRG {
       // we compute the number of steps required to reach the current state of
       // the generator for the considered dimension.
       int n = floor((newDimension-1) / sizeA);
-      NTL::ZZ_p::init(m_modulo);
+      NTL::ZZ_p::init(this->m_modulo);
       MMatP temp;
       temp.SetDims(sizeA, sizeA);
       for (int i = 0; i < sizeA; i++)
@@ -646,12 +646,12 @@ namespace LatMRG {
       // values generated by the MMRG for the considered dimension.
       MVect initialState;
       for (int i = 0; i < (newDimension-1); i++) {
-        getSubLine(initialState, m_basis, i, 0, sizeA-1);
+        getSubLine(initialState, this->m_basis, i, 0, sizeA-1);
         initialState = NTL::conv<MVect>( 
             transpose(temp) * NTL::conv<MVectP>(initialState));
-        m_basis[i][newDimension-1] = initialState[newDimension - n*sizeA -1];
+        this->m_basis[i][newDimension-1] = initialState[newDimension - n*sizeA -1];
       }
-      m_basis[newDimension-1][newDimension-1] = m_modulo;
+      this->m_basis[newDimension-1][newDimension-1] = this->m_modulo;
 
 
       // ************* update of the dual basis *************
@@ -664,17 +664,17 @@ namespace LatMRG {
       lastLine.SetLength(newDimension);
 
       for (int i = 0; i < (newDimension-1); i++) {
-        NTL::matrix_row<const BMat> row(m_dualbasis, i);
-        lastLine -= m_basis[i][newDimension-1] * row;
+        NTL::matrix_row<const BMat> row(this->m_dualbasis, i);
+        lastLine -= this->m_basis[i][newDimension-1] * row;
       }
       for (int i = 0; i < (newDimension-1); i++)
-        m_dualbasis[newDimension-1][i] = lastLine[i] / m_modulo;
-      m_dualbasis[newDimension-1][newDimension-1] = 1;
+        this->m_dualbasis[newDimension-1][i] = lastLine[i] / this->m_modulo;
+      this->m_dualbasis[newDimension-1][newDimension-1] = 1;
 
-      setNegativeNorm();
-      setDualNegativeNorm();
+      this->setNegativeNorm();
+      this->setDualNegativeNorm();
 
-      if (!checkDuality())
+      if (!this->checkDuality())
         LatticeTester::MyExit (1, "BUG in MMRGLattice::incrementDimBasis");
 
     }
@@ -684,8 +684,8 @@ namespace LatMRG {
   template<typename Int>
     void MMRGLattice<Int>::incrementDimLacunaryBasis(int Imax)
     {
-      IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>::incDim();
-      const int dim = getDim (); // new dimension (dim++)
+      LatticeTester::IntLattice<Int, BScal, BVect, BMat, NScal, NVect, RScal>::incDim();
+      const int dim = this->getDim (); // new dimension (dim++)
 
       //PW_TODO
       /*
@@ -702,59 +702,59 @@ namespace LatMRG {
 
         // tempLineBasis <- m_basis[i]
         for (int k = 0; k < dim-1; k++)
-          tempLineBasis[k] = m_basis[i][k];
+          tempLineBasis[k] = this->m_basis[i][k];
 
         // v[i] -> VSI[0].
         // for (int j = 0; j < dim; j++)
-        //    m_vSI[0][j] = m_basis[i][j];
+        //    this->m_vSI[0][j] = this->m_basis[i][j];
 
-        //clear (m_vSI[i][0]);
+        //clear (this->m_vSI[i][0]);
 
         for (int i1 = 0; i1 < dim-1; i1++) {
 
           BScal tempScalDual;
 
-          LatticeTester::ProdScal<Int> (tempLineBasis, m_wSI[i1], dim,
+          LatticeTester::ProdScal<Int> (tempLineBasis, this->m_wSI[i1], dim,
               tempScalDual);
-          LatticeTester::Quotient (tempScalDual, m_modulo, tempScalDual);
-          m_t1 = tempScalDual * m_vSI[i1][dim - 1];
-          tempColBasis[i] += m_t1;
+          LatticeTester::Quotient (tempScalDual, this->m_modulo, tempScalDual);
+          this->m_t1 = tempScalDual * this->m_vSI[i1][dim - 1];
+          tempColBasis[i] += this->m_t1;
         }
-        LatticeTester::Modulo (tempColBasis[i], m_modulo, tempColBasis[i]);
-        m_basis[i][dim-1] = tempColBasis[i];
+        LatticeTester::Modulo (tempColBasis[i], this->m_modulo, tempColBasis[i]);
+        this->m_basis[i][dim-1] = tempColBasis[i];
       }
 
       for (int j = 0; j < dim-1; j++)
-        m_basis[dim - 1][j] = 0;
-      m_basis[dim -1][dim - 1] = m_vSI[dim -1][dim - 1];
+        this->m_basis[dim - 1][j] = 0;
+      this->m_basis[dim -1][dim - 1] = this->m_vSI[dim -1][dim - 1];
 
       for (int i = 0; i < dim-1; i++)
-        m_dualbasis[i][dim - 1] = 0;
+        this->m_dualbasis[i][dim - 1] = 0;
 
       for (int j = 0; j < dim-1; j++) {
 
-        //clear (m_wSI[0][j]);
+        //clear (this->m_wSI[0][j]);
         BScal tempScalDualBis;
 
         for (int i = 0; i < dim-1; i++) {
-          m_t1 = m_dualbasis[i][j];
-          m_t1 *= tempColBasis[i];
-          tempScalDualBis += m_t1;
+          this->m_t1 = this->m_dualbasis[i][j];
+          this->m_t1 *= tempColBasis[i];
+          tempScalDualBis += this->m_t1;
         }
         if (tempScalDualBis != 0)
           tempScalDualBis = -tempScalDualBis;
 
-        LatticeTester::Quotient (tempScalDualBis, m_vSI[dim - 1][dim - 1],
+        LatticeTester::Quotient (tempScalDualBis, this->m_vSI[dim - 1][dim - 1],
             tempScalDualBis);
-        m_dualbasis[dim - 1][j] = tempScalDualBis;
+        this->m_dualbasis[dim - 1][j] = tempScalDualBis;
       }
 
-      LatticeTester::Quotient (m_modulo, m_vSI[dim - 1][dim - 1], m_t1);
-      m_dualbasis[dim - 1][dim - 1] = m_t1;
+      LatticeTester::Quotient (this->m_modulo, this->m_vSI[dim - 1][dim - 1], this->m_t1);
+      this->m_dualbasis[dim - 1][dim - 1] = this->m_t1;
 
-      //setDim (dim + 1);
-      setNegativeNorm ();
-      setDualNegativeNorm ();
+      //this->setDim (dim + 1);
+      this->setNegativeNorm ();
+      this->setDualNegativeNorm ();
 
     }
 

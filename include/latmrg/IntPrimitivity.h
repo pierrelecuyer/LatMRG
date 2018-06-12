@@ -1,7 +1,9 @@
 #ifndef INTPRIMITIVITY_H
 #define INTPRIMITIVITY_H
 
-#include "IntFactorization.h"
+#include "latticetester/Types.h"
+
+#include "latmrg/IntFactorization.h"
 
 
 namespace LatMRG {
