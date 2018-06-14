@@ -148,7 +148,7 @@ namespace LatMRG
   {
 
     //BOOST_DISPLAY
-    boost::progress_display show_progress( toDim-fromDim+1 );
+    boost::progress_display show_progress(toDim-fromDim+1);
 
     m_merit.setDim(toDim);
     m_fromDim = fromDim;
@@ -264,7 +264,6 @@ namespace LatMRG
 
           //cout << "density APRES = " << exp(m_normalizer->getLogDensity()) << endl;
           //cout << "m_normalizer->getBound = " << m_normalizer->getBound(dim) << endl;
-
 
           if (m_lat->getNorm () == L2NORM) {
 

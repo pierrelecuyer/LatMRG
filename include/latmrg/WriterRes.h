@@ -13,7 +13,6 @@ namespace LatMRG {
   /**
    * This class implements the `Writer` abstract class to write basic elements
    * in plain text format.
-   *
    */
   class WriterRes : public Writer {
     public:

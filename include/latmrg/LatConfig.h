@@ -89,6 +89,7 @@ namespace LatMRG {
          * 2-dimensional projections, `td[3]` is the maximal dimension for
          * 3-dimensional projections, and so on. The value of `td[0]` is the
          * minimal dimension for the case of successive dimensions.
+         * \todo this is very unclear.
          */
         int *td;
 

@@ -123,7 +123,9 @@ namespace LatMRG {
       int getMaxDim () const { return m_toDim; }
 
       /**
-       * Ensures that `fromDim` is larger than `order`.
+       * Ensured that `fromDim` is larger than `order`. The current implementation
+       * does nothing because we could want to do tests on dimensions smaller than
+       * the order of a generator.
        */
       void resetFromDim (int order, int & fromDim);
 
