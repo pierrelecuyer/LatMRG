@@ -5,7 +5,7 @@ CC = g++
 CFLAGS = -std=c++14 -Wall -O2
 DEBUG_FLAGS = -std=c++14 -g -Wall -O2
 
-# define any directories containing header files other than /usr/include
+# The header files of the LatMRG library and the LatticeTester library
 INCLUDES = -I./include -I./latticetester/include
 
 # This is included for backwards compatibility
@@ -14,7 +14,7 @@ DEF_ZZDD = -DNTL_TYPES_CODE=2
 DEF_ZZRR = -DNTL_TYPES_CODE=3
 NUM_TYPES = $(DEF_ZZDD)
 
-# define library paths in addition to /usr/lib
+# Library path. This assumes NTL is in /usr/local/lib (its default path).
 STAT_LIBS_PATH = -Wl,-Bstatic -L$(LIB_DIR)
 STAT_LIBS = -llatmrg -llatticetester 
 DYN_LIBS_PATH = -Wl,-Bdynamic -L/usr/local/lib 
@@ -27,10 +27,18 @@ LIB_DIR = ./lib
 BIN_DIR = ./bin
 PRO_DIR = ./progs
 
+EX_DIR = ./examples
+EX_BUILD = ./bin/examples
 
-# define the C source files
-SRCS = $(wildcard $(SRC_DIR)/*.cc)
+# Other source files locations
+MRG_HIGH  = ./src/latmrg-high
+MRG_TYPES = ./src/mrgtypes
+
+# The source files are in SRC_DIR. This grabs subdirectories
+SRCS = $(wildcard $(SRC_DIR)/*.cc) $(wildcard $(MRG_HIGH)/*.cc) \
+       $(wildcard $(MRG_TYPES)/*.cc)
 PROGS_CC = $(wildcard $(PRO_DIR)/*.cc)
+EX_CC = $(wildcard $(EX_DIR)/*.cc)
 
 # define the C object files
 #
@@ -42,57 +50,107 @@ PROGS_CC = $(wildcard $(PRO_DIR)/*.cc)
 #
 OBJS = $(SRCS:$(SRC_DIR)/%.cc=$(OBJ_DIR)/%.o)
 PROGS_O = $(PROGS_CC:$(PRO_DIR)/%.cc=$(PRO_DIR)/%.o)
+EX_O = $(EX_CC:%.cc=%.o)
 
-all: mkdir lib bin
+default: lib progs
 
-lib: latticetester lib_objects
+all: clean_all lib bin examples doc
+
+bin: lib progs
+
+#==============================================================================
+# Building the API
+
+lib: latticetester $(LIB_DIR)/ lib_objects
+	cp latticetester/lib/liblatticetester.a $(LIB_DIR)
 	rm -f $(LIB_DIR)/liblatmrg.a
 	ar rcs $(LIB_DIR)/liblatmrg.a $(OBJS)
 
-lib_objects: $(OBJS)
+$(LIB_DIR)/:
+	mkdir -p $(LIB_DIR)
 
-bin: lib progs_objects
+$(OBJ_DIR)/:
+	mkdir -p $(OBJ_DIR)
+	mkdir -p $(OBJ_DIR)/latmrg-high
+	mkdir -p $(OBJ_DIR)/mrgtypes
 
-progs_objects: $(PROGS_O)
+lib_objects: $(OBJ_DIR)/ $(OBJS)
 
 $(OBJ_DIR)/%.o:$(SRC_DIR)/%.cc
 	$(CC) $(CFLAGS) $(INCLUDES) $(NUM_TYPES) -c $< -o $@
 
+#==============================================================================
+# Building the programs of ./progs
+
+progs: $(BIN_DIR)/ progs_objects
+
+$(BIN_DIR)/:
+	mkdir -p $(BIN_DIR)
+
+# Builds objects and binaries for every of the programs of LatMRG
+progs_objects: $(PROGS_O)
+
 $(PRO_DIR)/%.o:$(PRO_DIR)/%.cc
 	$(CC) $(CFLAGS) $(INCLUDES) $(NUM_TYPES) -c $< -o $@
-	$(CC) $@ $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) -o $(BIN_DIR)/$(@:progs/%.o=%) 
+	$(CC) $@ $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
+	  -o $(BIN_DIR)/$(@:progs/%.o=%) 
 
 #==============================================================================
+# Building the documentation
+
+doc:
+	doxygen doc-gen
+
+#==============================================================================
+# Building the examples
+
+examples:$(EX_BUILD)/ build_ex
+
+$(EX_BUILD)/:
+	mkdir -p $(EX_BUILD)
+
+build_ex:$(EX_O)
+
+$(EX_DIR)/%.o:$(EX_DIR)/%.cc
+	$(CC) $< $(INCLUDES) $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) \
+	  $(DYN_LIBS) -o $(EX_BUILD)/$(<:examples/%.cc=%) 
+
+#==============================================================================
+# Installation/removal of LatMRG 
+
+#==============================================================================
+# LatticeTester related considerations
 
 latticetester:
 	cd latticetester; make
-	cp latticetester/lib/liblatticetester.a $(LIB_DIR)
-
-#==============================================================================
-clean: clean_objects clean_bin clean_lib clean_doc #clean_lattice
-
-clean_objects:
-	rm -rf $(OBJ_DIR)
-	rm -f $(PRO_DIR)/*.o
-
-clean_bin:
-	rm -rf $(BIN_DIR)
-
-clean_lib:
-	rm -rf $(LIB_DIR)
-
-clean_doc:
-	rm -rf doc/html
-	rm -rf doc/latex
 
 clean_lattice:
 	cd latticetester; make clean
 
-mkdir:
-	mkdir -p bin
-	mkdir -p obj
-	mkdir -p lib
+#==============================================================================
+# Cleaning stuff
+
+clean: clean_lib clean_progs clean_doc
+
+clean_all: clean_lattice clean
+
+clean_lib:
+	rm -rf $(LIB_DIR)
+	rm -rf $(OBJ_DIR)
+
+clean_progs:
+	rm -rf $(BIN_DIR)
+	rm -f $(PRO_DIR)/*.o
+
+clean_doc:
+	rm -rf ./doc/html
+	rm -rf ./doc/latex
+
+clean_examples:
+	rm -rf $(BIN_DIR)/examples
 
 #==============================================================================
+# PHONY targets
 
-.PHONY: clean latticetester
+.PHONY: latticetester $(LIB_DIR)/ $(OBJ_DIR)/ $(BIN_DIR)/ $(OBJ_DIR)/ doc clean\
+  clean_all examples $(EX_BUILD)/ $(EX_CC)
