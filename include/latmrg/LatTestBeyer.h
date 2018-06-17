@@ -1,5 +1,6 @@
 #ifndef LATTESTBEYER_H
 #define LATTESTBEYER_H
+
 #include "latticetester/IntLattice.h"
 #include "latticetester/Reducer.h"
 

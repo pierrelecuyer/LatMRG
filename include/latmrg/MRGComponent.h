@@ -1,7 +1,7 @@
 #ifndef	MRGCOMPONENT_H
 #define	MRGCOMPONENT_H
+
 #include "latticetester/Types.h"
-#include "latticetester/Const.h"
 
 #include "latmrg/Const.h"
 #include "latmrg/PolyPE.h"

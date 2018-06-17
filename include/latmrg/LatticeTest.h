@@ -1,11 +1,8 @@
 #ifndef LATTICETEST_H
 #define LATTICETEST_H
+
 #include "latticetester/Types.h"
-#include "latticetester/Util.h"
 #include "latticetester/Const.h"
-#include "latticetester/IntLatticeBasis.h"
-#include "latticetester/IntLattice.h"
-#include "latticetester/Weights.h"
 
 #include "latmrg/Chrono.h"
 #include "latmrg/Merit.h"

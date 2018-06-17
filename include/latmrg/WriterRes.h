@@ -1,7 +1,7 @@
 #ifndef WRITERRES_H
 #define WRITERRES_H
-#include "Writer.h"
-#include "Table.h"
+
+#include "latmrg/Writer.h"
 
 #include <iostream>
 #include <fstream>

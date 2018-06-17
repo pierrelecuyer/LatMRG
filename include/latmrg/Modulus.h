@@ -1,5 +1,6 @@
 #ifndef MODULUS_H
 #define MODULUS_H
+
 #include "latticetester/Util.h"
 
 #include <cassert>

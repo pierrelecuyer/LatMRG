@@ -2,8 +2,6 @@
 #ifndef LATMRGROUTINES_H
 #define LATMRGROUTINES_H
 
-#include "latmrg/LatConfig.h"
-
 namespace LatMRG {
 
 /**

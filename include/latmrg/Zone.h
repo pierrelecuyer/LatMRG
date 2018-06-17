@@ -1,8 +1,8 @@
 /* Zone.h for ISO C++ */
 #ifndef ZONE_H
 #define ZONE_H
-#include "SeekConfig.h"
 
+#include "SeekConfig.h"
 
 namespace LatMRG {
 

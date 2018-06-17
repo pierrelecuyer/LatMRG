@@ -1,8 +1,8 @@
 #ifndef MERIT_H
 #define MERIT_H
+
 #include <vector>
 #include <string>
-#include "latticetester/Const.h"
 
 
 namespace LatMRG {

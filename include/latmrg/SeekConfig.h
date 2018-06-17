@@ -1,12 +1,13 @@
 #ifndef SEEK_CONFIG_H
 #define SEEK_CONFIG_H
+
 #include <string>
 #include <vector>
 
 #include "latticetester/Types.h"
 #include "latticetester/Const.h"
-#include "Modulus.h"
-#include "latticetester/Util.h"
+
+#include "latmrg/Modulus.h"
 #include "latmrg/Const.h"
 
 

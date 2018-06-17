@@ -1,11 +1,13 @@
 #ifndef TESTPROJECTIONS_H
 #define TESTPROJECTIONS_H
+
 #include "latticetester/IntLattice.h"
-#include "latmrg/LatticeTest.h"
+#include "latticetester/Types.h"
 #include "latticetester/Weights.h"
-#include "latmrg/ProjIterator.h"
-#include "latticetester/CoordinateSets.h"
+
 #include "latmrg/Writer.h"
+#include "latmrg/LatticeTest.h"
+#include "latmrg/ProjIterator.h"
 
 
 namespace LatMRG {

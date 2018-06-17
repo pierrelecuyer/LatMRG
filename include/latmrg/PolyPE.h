@@ -1,8 +1,9 @@
 #ifndef POLY_H
 #define POLY_H
+
 #include "latticetester/Types.h"
-#include "IntFactorization.h"
 #include "IntPrimitivity.h"
+
 #include <string>
 
 

@@ -1,8 +1,8 @@
 #ifndef MRGLATTICELAC_H
 #define MRGLATTICELAC_H
+
 #include "latticetester/Const.h"
 #include "latticetester/Lacunary.h"
-#include "latticetester/IntLattice.h"
 
 #include "latmrg/Const.h"
 #include "latmrg/MRGLattice.h"

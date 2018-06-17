@@ -1,8 +1,7 @@
 #ifndef PROJ_ITERATOR_H
 #define PROJ_ITERATOR_H
-#include "latticetester/Weights.h"
-#include "latticetester/CoordinateSets.h"
 
+#include "latticetester/CoordinateSets.h"
 
 namespace LatMRG {
 

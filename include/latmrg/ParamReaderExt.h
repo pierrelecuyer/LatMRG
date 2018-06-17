@@ -1,12 +1,15 @@
 #ifndef PARAMREADEREXT_H
 #define PARAMREADEREXT_H
+
 #include "NTL/ZZ.h"
+
 #include "latticetester/Types.h"
-#include "latticetester/Util.h"
 #include "latticetester/Const.h"
 #include "latticetester/ParamReader.h"
+
 #include "latmrg/Const.h"
 #include "latmrg/MRGComponent.h"
+
 #include <string>
 #include <vector>
 

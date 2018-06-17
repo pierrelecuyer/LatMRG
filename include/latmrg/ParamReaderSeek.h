@@ -1,5 +1,6 @@
 #ifndef PARAMREADERSEEK_H
 #define PARAMREADERSEEK_H
+
 #include "ParamReaderExt.h"
 #include "SeekConfig.h"
 

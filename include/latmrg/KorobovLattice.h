@@ -1,8 +1,8 @@
 #ifndef LatticeTester__KOROBOVLATTICE_H
 #define LatticeTester__KOROBOVLATTICE_H
+
 #include "latticetester/Const.h"
 #include "latticetester/IntLattice.h"
-#include "latticetester/ntlwrap.h"
 #include "latticetester/Types.h"
 
 

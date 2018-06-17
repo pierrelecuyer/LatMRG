@@ -1,6 +1,7 @@
 #ifndef TABLE_H
 #define TABLE_H
-#include "TableColumn.h"
+
+#include "latmrg/TableColumn.h"
 #include <vector>
 
 

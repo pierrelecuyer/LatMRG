@@ -1,8 +1,8 @@
 #ifndef REPORTFOOTERLAT_H
 #define REPORTFOOTERLAT_H
-#include "ReportFooter.h"
-#include "Writer.h"
-#include "LatticeTest.h"
+
+#include "latmrg/ReportFooter.h"
+#include "latmrg/LatticeTest.h"
 
 
 namespace LatMRG {

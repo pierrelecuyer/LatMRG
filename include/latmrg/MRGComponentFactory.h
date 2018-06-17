@@ -1,7 +1,8 @@
 #ifndef MRGCOMPONENTFACTORY_H
 #define MRGCOMPONENTFACTORY_H
+
 #include "latmrg/MRGComponent.h"
-#include "latticetester/Util.h"
+
 
 
 namespace LatMRG {

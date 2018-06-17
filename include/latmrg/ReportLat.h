@@ -1,12 +1,12 @@
 #ifndef REPORTLAT_H
 #define REPORTLAT_H
-#include "LatticeTestObserver.h"
-#include "ReportHeader.h"
-#include "ReportFooter.h"
-#include "DoubleFormatter.h"
-#include "FormatterImpl.h"
-#include "Writer.h"
-#include "LatConfig.h"
+
+#include "latmrg/LatticeTestObserver.h"
+#include "latmrg/ReportHeader.h"
+#include "latmrg/ReportFooter.h"
+#include "latmrg/DoubleFormatter.h"
+#include "latmrg/FormatterImpl.h"
+#include "latmrg/LatConfig.h"
 
 #include <string>
 

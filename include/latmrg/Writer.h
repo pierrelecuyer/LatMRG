@@ -1,7 +1,9 @@
 #ifndef WRITER_H
 #define WRITER_H
+
 #include "latticetester/Types.h"
-#include "Table.h"
+
+#include "latmrg/Table.h"
 
 #include <iostream>
 #include <string>

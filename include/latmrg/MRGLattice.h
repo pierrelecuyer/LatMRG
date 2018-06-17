@@ -1,6 +1,6 @@
 #ifndef MRGLATTICE_H
 #define MRGLATTICE_H
-#include "latticetester/Util.h"
+
 #include "latticetester/Const.h"
 #include "latticetester/Lacunary.h"
 #include "latticetester/IntLattice.h"

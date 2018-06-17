@@ -1,9 +1,9 @@
 #ifndef LATTESTALL_H
 #define LATTESTALL_H
-#include "latmrg/Writer.h"
-#include "latmrg/LatConfig.h"
-#include "latmrg/Const.h"
 
+#include "latticetester/Const.h"
+
+#include "latmrg/Writer.h"
 
 namespace LatMRG {
 

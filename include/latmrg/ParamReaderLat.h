@@ -1,5 +1,6 @@
 #ifndef PARAMREADERLAT_H
 #define PARAMREADERLAT_H
+
 #include "ParamReaderExt.h"
 #include "LatConfig.h"
 

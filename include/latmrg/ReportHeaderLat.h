@@ -1,10 +1,10 @@
 #ifndef	REPORTHEADERLAT_H
 #define	REPORTHEADERLAT_H
-#include "ReportHeader.h"
-#include "LatConfig.h"
-#include "latticetester/IntLattice.h"
-#include "Writer.h"
 
+#include "latmrg/ReportHeader.h"
+#include "latmrg/LatConfig.h"
+
+#include "latticetester/IntLattice.h"
 
 namespace LatMRG {
 

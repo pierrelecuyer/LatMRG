@@ -1,7 +1,7 @@
 #ifndef LATCONFIG_H
 #define LATCONFIG_H
+
 #include "latticetester/Const.h"
-#include "latticetester/Util.h"
 
 #include "latmrg/Const.h"
 #include "latmrg/MRGComponent.h"

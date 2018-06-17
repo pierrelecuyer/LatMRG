@@ -1,4 +1,5 @@
 #include "latmrg/mrgtypes/MixmaxMMRG.h"
+#include "latticetester/Util.h"
 
 using namespace std;
 using namespace LatticeTester;
