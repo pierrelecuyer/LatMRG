@@ -19,7 +19,7 @@ namespace LatMRG {
    * given congruence modulus \f$m\f$, a given order \f$k\f$ for the
    * recurrence, and a maximal dimension for the basis. One must then build the
    * lattice basis associated to a vector of multipliers for a given dimension.
-   * Each MRG is defined by a vector of multipliers \f$A\f$, where \f$A[i]\f$
+   * Each MRG is defined by a vector of multipliers \f$A\f$, where \f$A[i-1]\f$
    * represents \f$a_i\f$. This MRG satisfies the recurrence
    * \f[
    *   x_n = (a_1 x_{n-1} + \cdots+ a_k x_{n-k}) \mod m.
@@ -32,10 +32,11 @@ namespace LatMRG {
         /**
          * Constructor with modulus of congruence \f$m\f$, order of the 
          * recurrence \f$k\f$, multipliers \f$a\f$, maximal dimension `MaxDim`, 
-         * and lattice type `Latt`. Vectors and (square) matrices of the basis 
-         * have maximal dimension `maxDim`, and the indices of vectors and 
-         * matrices vary from dimension 1 to `maxDim`. The norm to be used for 
-         * the basis vectors is `norm`.
+         * and lattice type `Latt`. `a` has to be a vector of k+1 components 
+         * with `a[i]`=\f$a_i\f$ for compatibility with other classes. Vectors 
+         * and (square) matrices of the basis have maximal dimension `maxDim`, 
+         * and the indices of vectors and matrices vary from dimension 1 to 
+         * `maxDim`. The norm to be used for the basis vectors is `norm`.
          */
         MRGLattice (const Int & m, const MVect & a, int maxDim, int k, 
             LatticeType latt, 
@@ -43,7 +44,8 @@ namespace LatMRG {
 
         /**
          * As in the constructor above but the basis is built for the lacunary
-         * indices `lac`.
+         * indices `lac`. `a` has to be a vector of k+1 components 
+         * with `a[i]`=\f$a_i\f$ for compatibility with other classes.
          */
         MRGLattice (const Int & m, const MVect & a, int maxDim, int k, 
             BVect & lac, LatticeType latt, 
@@ -223,16 +225,19 @@ namespace LatMRG {
          */
 
         /**
-         * \f$\clubsuit\f$ Seems to be use as working variables. To be 
-         * completed. Erwan
+         * Matrix that contains the vectors that can be used to generate the
+         * basis for an arbitrary dimension. This matrix is of order k and if
+         * we want to build the full lattice, this matrix is the identity 
+         * matrix. **Marc-Antoine** This matrix is different in some way that I
+         * don't quite understand if we use lacunary indices.
          */
         BMat m_sta;
 
         /**
-         * When the flag <tt>m_ip[i]</tt> is `true`, the \f$i\f$-th diagonal
-         * element of matrix <tt>m_sta</tt> is non-zero (modulo \f$m\f$) and
-         * divides \f$m\f$. Otherwise (when <tt>m_ip[i]</tt> is
-         * <tt>false</tt>), the \f$i\f$-th line of matrix <tt>m_sta</tt> is
+         * When the flag `m_ip[i]` is `true`, the \f$i\f$-th diagonal
+         * element of matrix `m_sta` is non-zero (modulo \f$m\f$) and
+         * divides \f$m\f$. Otherwise (when `m_ip[i]` is
+         * `false`), the \f$i\f$-th line of matrix `m_sta` is
          * identically 0.
          */
         bool *m_ip;
@@ -345,7 +350,7 @@ namespace LatMRG {
 
 
     for (int i = 0; i < this->m_order; i++)
-      m_aCoef[i] = a[i];
+      m_aCoef[i] = a[i+1];
   }
 
 
@@ -361,7 +366,7 @@ namespace LatMRG {
     init();
 
     for (int i = 0; i < this->m_order; i++)
-      m_aCoef[i] = a[i];
+      m_aCoef[i] = a[i+1];
   }
 
   //===========================================================================
@@ -465,7 +470,6 @@ namespace LatMRG {
       //trace( "=====================================AVANT buildNaBasis", -10);
       initStates();
 
-
       int dk = d;
       if (dk > this->m_order)
         dk = this->m_order;
@@ -473,9 +477,9 @@ namespace LatMRG {
       int i, j;
       for (i = 0; i < dk; i++) {
         if (m_ip[i]) {
-          for (j = 0; j < dk; j++)
+          for (j = 0; j < dk; j++) {
             this->m_basis[i][j] = m_sta[i][j];
-
+          }
         } else {
           for (j = 0; j < dk; j++) {
             if (i != j)

@@ -7,8 +7,12 @@ obscure_files/
 unused/
 .*
 *.o
+*.res
 !.gitignore
 !.gitmodules
 waf
 makefile_
 NOTES
+
+# The next few lines are files that are local working files
+MixMaxSearch*

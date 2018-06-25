@@ -261,10 +261,10 @@ namespace LatMRG {
     nj = lat.nj;
     rho = lat.rho;
     //   a.kill();
-    a.resize(k + 1);
+    a.resize(k);
     LatticeTester::CopyVect(a, lat.a, k);
     //   orbitSeed.kill();
-    orbitSeed.resize(k + 1);
+    orbitSeed.resize(k);
     LatticeTester::CopyVect(orbitSeed, lat.orbitSeed, k);
   }
 
@@ -281,10 +281,10 @@ namespace LatMRG {
         nj = lat.nj;
         rho = lat.rho;
         //    a.kill();
-        a.resize(k + 1);
+        a.resize(k);
         LatticeTester::CopyVect(a, lat.a, k);
         //     orbitSeed.kill();
-        orbitSeed.resize(k + 1);
+        orbitSeed.resize(k);
         LatticeTester::CopyVect(orbitSeed, lat.orbitSeed, k);
         //      ifm1 = lat.ifm1;
         //      ifr = lat.ifr;
@@ -302,8 +302,8 @@ namespace LatMRG {
       PolyPE::setM(m0);
       module.init(m0);
       k = k0;
-      a.resize(k + 1);
-      orbitSeed.resize(k + 1);
+      a.resize(k);
+      orbitSeed.resize(k);
 
       Int m1;
       m1 = getM() - 1;

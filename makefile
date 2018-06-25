@@ -25,17 +25,19 @@ SRC_DIR = ./src
 OBJ_DIR = ./obj
 LIB_DIR = ./lib
 BIN_DIR = ./bin
+INC_DIR = ./include
 PRO_DIR = ./progs
 
 EX_DIR = ./examples
 EX_BUILD = ./bin/examples
 
 # Other source files locations
-MRG_HIGH  = ./src/latmrg-high
-MRG_TYPES = ./src/mrgtypes
+MRG_LOW = $(SRC_DIR)/latmrg
+MRG_HIGH  = $(SRC_DIR)/latmrg-high
+MRG_TYPES = $(SRC_DIR)/latmrg/mrgtypes
 
 # The source files are in SRC_DIR. This grabs subdirectories
-SRCS = $(wildcard $(SRC_DIR)/*.cc) $(wildcard $(MRG_HIGH)/*.cc) \
+SRCS = $(wildcard $(MRG_LOW)/*.cc) $(wildcard $(MRG_HIGH)/*.cc) \
        $(wildcard $(MRG_TYPES)/*.cc)
 PROGS_CC = $(wildcard $(PRO_DIR)/*.cc)
 EX_CC = $(wildcard $(EX_DIR)/*.cc)
@@ -71,12 +73,13 @@ $(LIB_DIR)/:
 
 $(OBJ_DIR)/:
 	mkdir -p $(OBJ_DIR)
+	mkdir -p $(OBJ_DIR)/latmrg
+	mkdir -p $(OBJ_DIR)/latmrg/mrgtypes
 	mkdir -p $(OBJ_DIR)/latmrg-high
-	mkdir -p $(OBJ_DIR)/mrgtypes
 
 lib_objects: $(OBJ_DIR)/ $(OBJS)
 
-$(OBJ_DIR)/%.o:$(SRC_DIR)/%.cc
+$(OBJ_DIR)/%.o:$(SRC_DIR)/%.cc $(INC_DIR)/%.h
 	$(CC) $(CFLAGS) $(INCLUDES) $(NUM_TYPES) -c $< -o $@
 
 #==============================================================================
@@ -99,7 +102,7 @@ $(PRO_DIR)/%.o:$(PRO_DIR)/%.cc
 # Building the documentation
 
 doc:
-	doxygen doc-gen
+	doxygen doc/doc-gen
 
 #==============================================================================
 # Building the examples

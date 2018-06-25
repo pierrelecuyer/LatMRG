@@ -21,15 +21,17 @@ namespace LatMRG
 
   Zone::Zone ()
   {
-    inf = 0;
-    sup = 0;
+    // inf and sup at 1 is more logical since we will never really want zones at
+    //0
+    inf = 1;
+    sup = 1;
     No = ZONE3;
     frac = 0.0;
     smallF = false;
     supMsH = 0;
     T1 = 0;
     T2 = 0;
-    nextZone = 0;
+    nextZone = NULL;
   }
 
   //===========================================================================
@@ -73,7 +75,7 @@ namespace LatMRG
     MScal h, Eb, Ec;
     // Calcul des bornes pour a[j][i] ou q (ZONE 1 ou 3) dans chaque zone
     if (comp.searchMethod != EXHAUST) {
-      if (i == comp.k - 1)
+      if (i+1 == comp.k)
         h = comp.Hk;
       else
         h = comp.H;         // Taille des regions pour a[j][i]
@@ -275,19 +277,17 @@ Borne = (m DIV (c+1)) + 1. */
 
   //===========================================================================
 
-  void Zone::chooseBoundaries (const Component & comp, Zone *zone)
+  void Zone::chooseBoundaries (const Component & comp, Zone *zone, long h)
   {
     /* Choisir une region au hasard et en initialiser les bornes.
-       On fouillera ensuite completement cette region.
-       Utilise avec la methode de recherche RANDOM seulement. */
+     * On fouillera ensuite completement cette region.
+     * Utilise avec la methode de recherche RANDOM seulement. */
 
-    Zone *Z;
+    Zone *Z = zone;
     double p, u;
-    Zone *R;
-    long h;
+    Zone *R = this;
 
-    for (int i = 0; i < comp.k; ++i) {
-      Z = i + zone;
+    //for (int i = 0; i < comp.k; ++i) {
       if (Z->nextZone != 0) {
         // Choisir d'abord l'une des zones selon les probabilites Z->frac
         u = RandU01();
@@ -297,29 +297,30 @@ Borne = (m DIV (c+1)) + 1. */
           p += Z->getFrac();
         }
       }
+     
 
       // Z pointe a la zone choisie
-      R = i + this;
       if (Z->smallF) {
         // On prends toute la zone
-        R->getInf() = Z->getInf();
-        R->getSup() = Z->getSup();
+        R->setInf(Z->getInf());
+        R->setSup(Z->getSup());
       } else {
         // On prends un intervalle de taille h, au hasard, dans la zone
+        /*
         if (i == comp.k)
           h = comp.Hk - 1;
         else
-          h = comp.H - 1;
+          h = comp.H - 1;*/
         T1 = Z->getSupMsH() - Z->getInf() + 1;
         conv (p, T1);
         p *= RandU01();
         conv (T1, p);
         T1 = Z->getInf() + T1;
-        R->getInf() = T1;
-        R->getSup() = T1 + h;
+        R->setInf(T1);
+        R->setSup(T1 + h);
       }
       R->No = Z->getNo();
-    }
+    //}
   }
 
 

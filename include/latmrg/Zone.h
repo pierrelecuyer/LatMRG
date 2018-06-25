@@ -71,6 +71,9 @@ namespace LatMRG {
       MScal & getSup() { return sup; }
       MScal & getSupMsH() { return supMsH; }
 
+      void setSup(MScal sup) { this->sup = sup;}
+      void setInf(MScal inf) { this->inf = inf;}
+
       /**
        * Returns the value of `frac`.
        */
@@ -91,7 +94,7 @@ namespace LatMRG {
        * Selects a random region and initializes its boundaries. The program
        * will search this region exhaustively.
        */
-      void chooseBoundaries (const Component & comp, Zone *zone);
+      void chooseBoundaries (const Component & comp, Zone *zone, long h);
 
       /**
        * Sets the values of the upper boundaries in the three zones based on
@@ -144,8 +147,7 @@ namespace LatMRG {
       double frac;
 
       /**
-       * When <tt>small</tt> is <tt>true</tt>, <tt>supMsH</tt> is equal to
-       * <tt>sup\f${}+1-{}\f$H</tt> (or <tt>sup\f${}+1-{}\f$Hk</tt>).
+       * When `small` is `true`, `supMsH` is equal to `sup+1-H` (or `sup+1-Hk`).
        */
       MScal supMsH;
 

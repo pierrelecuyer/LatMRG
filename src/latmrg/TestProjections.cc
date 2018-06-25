@@ -222,7 +222,7 @@ namespace LatMRG
   }
 
 
-  double TestProjections::run (bool stationary, bool forceLast, double minVal[], const Weights& weights)
+  double TestProjections::run (bool stationary, bool forceLast, double minVal[], const LatticeTester::Weights& weights)
   {
     // we assume that m_td[1] >= m_td[i] for all i
     int maxDim = m_td[1];
@@ -314,7 +314,8 @@ namespace LatMRG
 
   //===========================================================================
 
-  double TestProjections::run (ProjIterator& projit, double minVal[], const Weights& weights)
+  double TestProjections::run (ProjIterator& projit, double minVal[], 
+      const LatticeTester::Weights& weights)
   {
     double minMerit = 1.0e100;
     int cpt = 0;

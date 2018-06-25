@@ -27,7 +27,7 @@ namespace LatMRG
 
   //===========================================================================
 
-  WriterRes::WriterRes (ostream * stream, unsigned int margins): Writer (stream)
+  WriterRes::WriterRes (std::ostream * stream, unsigned int margins): Writer (stream)
   {
     m_margins = margins;
   }

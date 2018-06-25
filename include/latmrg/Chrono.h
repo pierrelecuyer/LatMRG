@@ -47,12 +47,13 @@ namespace LatMRG {
    * seconds (or 5.5 minutes) of CPU time the stopwatch is read again, printed
    * to the output and deleted.
    *
-   * <tt>Chrono timer; <br> \f$\vdots\f$ (<em>suppose 2.1 CPU seconds are used
-   * here</em>.)<br> double t = timer.val (Chrono::SEC); // Here, t =
-   * 2.1 <br>timer.init(); <br> \f$\vdots\f$ (<em>suppose 330 CPU seconds are
-   * used here</em>.) <br> t = timer.val (Chrono::MIN); // Here, t = 5.5
-   * <br>timer.write (Chrono::HMS); // Prints: 00:05:30.00 </br></tt>
-   *
+   * <tt>Chrono timer; <br>
+   * (...) (<em>suppose 2.1 CPU seconds are used here</em>.)<br>
+   * double t = timer.val (Chrono::SEC); // Here, t = 2.1 <br>
+   * timer.init(); <br>
+   * (...) (<em>suppose 330 CPU seconds are used here</em>.) <br> 
+   * t = timer.val (Chrono::MIN); // Here, t = 5.5 <br>
+   * timer.write (Chrono::HMS); // Prints: 00:05:30.00 </tt>
    */
   class Chrono {
     public:

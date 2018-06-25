@@ -52,7 +52,7 @@ namespace LatMRG
   //===========================================================================
 
   void Primes::find (int k, int e, int s, const MScal & S1, const MScal & S2,
-      bool safe, bool facto, ofstream & fout)
+      bool safe, bool facto, std::ofstream & fout)
   {
     set9 (r);
     if (IsOdd (S2))
@@ -145,7 +145,7 @@ namespace LatMRG
   //===========================================================================
 
   void Primes::find (int k, int e, long c1, long c2, bool safe,
-      bool facto, ofstream & fout)
+      bool facto, std::ofstream & fout)
   {
     writeHeader (k, e, c1, c2, safe, facto, fout);
     timer.init();

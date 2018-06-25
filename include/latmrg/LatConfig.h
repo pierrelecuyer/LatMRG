@@ -13,7 +13,6 @@ namespace LatMRG {
    * This class is used to save the configuration of a lattice test. It is used
    * to keep all the parameters read in the data file and passed to different
    * methods for the spectral, Beyer or \f$P_{\alpha}\f$ tests.
-   *
    */
   template<typename Int>
     class LatConfig {

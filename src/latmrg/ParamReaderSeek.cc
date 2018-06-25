@@ -33,7 +33,7 @@ namespace LatMRG
 
   //===========================================================================
 
-  ParamReaderSeek::ParamReaderSeek (string fileName): ParamReaderExt (fileName)
+  ParamReaderSeek::ParamReaderSeek (std::string fileName): ParamReaderExt (fileName)
   {}
 
 

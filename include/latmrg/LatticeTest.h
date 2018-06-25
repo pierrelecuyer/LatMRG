@@ -132,7 +132,7 @@ namespace LatMRG {
        * for any dimension, the method returns `false` immediately. The
        * method returns `false` if the test was interrupted for any reason
        * before completion, and it returns `true` upon success. The results
-       * of the test are kept in <tt>m_merit</tt>.
+       * of the test are kept in `m_merit`.
        */
       virtual bool test (int minDim, int maxDim, double minVal[]) = 0;
 

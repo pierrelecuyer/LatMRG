@@ -32,7 +32,7 @@ namespace LatMRG
     m_clean = true;
   }
 
-  Writer::Writer(ostream* stream)
+  Writer::Writer(std::ostream* stream)
   {
     m_stream = stream;
     m_clean = false;

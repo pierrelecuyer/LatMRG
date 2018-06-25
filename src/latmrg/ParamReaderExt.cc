@@ -35,7 +35,7 @@ namespace LatMRG
 
   //===========================================================================
 
-  ParamReaderExt::ParamReaderExt(string fileName) :ParamReader(fileName)
+  ParamReaderExt::ParamReaderExt(std::string fileName) :ParamReader(fileName)
   {}
 
 
