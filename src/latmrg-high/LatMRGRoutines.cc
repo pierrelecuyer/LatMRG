@@ -58,8 +58,9 @@ namespace LatMRG {
   void printResult(const std::vector<double> & result, const int & fromDim)
   {
     cout << "Result: " << endl;
-    for (unsigned int i = 0; i < result.size(); ++i)
+    for (unsigned int i = 0; i < result.size(); ++i) {
       cout << "  dim " << fromDim+i << " = " << sqrt(result[i]) << endl;
+    }
 
   }
 }

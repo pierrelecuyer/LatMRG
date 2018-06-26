@@ -289,7 +289,7 @@ int main ()
                                     spectralTest.setMaxAllDimFlag (true);
                                     spectralTest.setMaxNodesBB (config.maxNodesBB);
                                     spectralTest.test (fromDim, toDim, minVal);
-                                    // lattice->write();
+                                    lattice->write();
                                     footer.setLatticeTest (&spectralTest);
                                     report.printTable ();
                                     report.printFooter ();

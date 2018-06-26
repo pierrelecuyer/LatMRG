@@ -89,7 +89,7 @@ void doTests(MScal m, int k, MScal d, MScal c) {
    latconfig.Lac[4]=k+5;
 
    std::vector<double> FoM;
-   FoM = ComputeFigureOfMerit(latconfig);
+   FoM = ComputeFigureOfMerit<MScal, BScal, BVect, BMat, NScal, NVect, RScal>(latconfig);
 
    printResult(FoM, latconfig.td[0]);
 
@@ -105,7 +105,7 @@ void doTests(MScal m, int k, MScal d, MScal c) {
    latconfig.Lac[5]=k+5;
    latconfig.Lac[6]=k+6;
    
-   FoM = ComputeFigureOfMerit(latconfig);
+   FoM = ComputeFigureOfMerit<MScal, BScal, BVect, BMat, NScal, NVect, RScal>(latconfig);
 
    printResult(FoM, latconfig.td[0]);
 }

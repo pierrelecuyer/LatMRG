@@ -4,6 +4,15 @@
 #include "latticetester/Rank1Lattice.h"
 #include "latticetester/NormaPalpha.h"
 
+#include "latmrg/MMRGLattice.h"
+#include "latmrg/KorobovLattice.h"
+#include "latmrg/MRGLatticeLac.h"
+#include "latmrg/MRGLatticeFactory.h"
+#include "latmrg/LatTestSpectral.h"
+#include "latmrg/LatTestBeyer.h"
+#include "latmrg/LatTestPalpha.h"
+#include "latmrg/TestProjections.h"
+
 namespace LatMRG {
   /** \file LatMRGRoutines.h
    * This file contains high level routines that allow the user to performed all
@@ -87,7 +96,7 @@ namespace LatMRG {
         }
 
         double minVal[1 + toDim];
-        SetZero (minVal, toDim);
+        LatticeTester::SetZero (minVal, toDim);
 
         LatticeTester::Normalizer<RedDbl> *normal = 0;
 
