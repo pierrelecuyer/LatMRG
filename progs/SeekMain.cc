@@ -53,6 +53,7 @@ namespace
 
   SeekConfig config;
   ofstream fout;
+  string outfile;
   // streambuf *psbuf;
   Chrono timer;
 
@@ -128,7 +129,7 @@ namespace
         //fname = "./inputTestFiles/seekZZDD_test1";
         fname += ".res";
         // rw = new WriterRes (fname.c_str());
-        fout.open (fname.c_str ());
+        outfile = fname;
         break;
       case TEX:
         fname = argv[1];
@@ -144,6 +145,10 @@ namespace
         // psbuf = cout.rdbuf(); // get cout streambuf
         // fout.rdbuf(psbuf); // assign streambuf to fout
         break;
+      case GEN:
+        fname = argv[1];
+        fname += ".gen";
+        outfile = fname;
       default:
         cerr << "\n*** outputType:   no such case" << endl;
         return -2;
@@ -273,6 +278,7 @@ namespace
 
   void PrintResults ()
   {
+    fout.open (outfile.c_str());
     Component & comp0 = config.compon[0];
 
     fout << "SEARCH for good ";
@@ -315,6 +321,7 @@ namespace
       fout << "DUAL" << endl;
     else
       fout << "PRIMAL" << endl;
+    fout << "   Speed option                       : " << config.speed << endl;
     fout << "\n\nRESULTS" << endl;
     fout << "-----------------------------------------------\n";
     for (int j = 0; j < -config.J; j++)
@@ -386,6 +393,7 @@ namespace
           << endl;
       }
     }
+    fout.close();
   }
 
 
@@ -433,8 +441,16 @@ namespace
         latTest->setInvertFlag (config.invertF);
         latTest->setMaxAllDimFlag (true);
         if (1 == config.d) {
-          latTest->test (config.td[0], config.td[1], minVal);
-          latTest->getMerit ().getST (config.td[0], config.td[1]);
+          if (config.speed == 0) {
+            latTest->test (config.td[0], config.td[1], minVal);
+            latTest->getMerit ().getST (config.td[0], config.td[1]);
+          } else if (config.speed == 1) {
+            latTest->quicktest (config.td[0], config.td[1], minVal, 1);
+            latTest->getMerit ().getST (config.td[0], config.td[1]);
+          } else if (config.speed == 2) {
+            latTest->quicktest (config.td[0], config.td[1], minVal, 2);
+            latTest->getMerit ().getST (config.td[0], config.td[1]);
+          }
         } else {
           if (comp0.genType == MRG || comp0.genType == LCG)
             master = new MRGLattice<MScal> (*(MRGLattice<MScal> *) lattice);
