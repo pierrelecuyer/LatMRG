@@ -63,6 +63,18 @@ namespace LatMRG {
       bool test (int fromDim, int toDim, double minVal[], const double* weights);
 
       /**
+       * Performs the spetral test exactly as LatTestSpectral::test, except it
+       * does not perform branch and bound. There are currently two options for
+       * `speed`. If `speed==1` then the figures of merit are approximated with
+       * the BKZ pre-reduction and if `speed==2` the figures of merit are 
+       * approximated with the LLL pre-reduction. The point of this method is 
+       * to speed up research of good RNGs. RNGs that have okay-ish figures of
+       * merit after using only an approximated spectral test can then be tested
+       * more extensively on many projections and dimensions.
+       * */
+      bool quicktest(int fromDim, int toDim, double minVal[], int speed);
+
+      /**
        * Sets the lower bound on the square length of the shortest vector in
        * each dimension, based on the spectral value `S2`.
        */

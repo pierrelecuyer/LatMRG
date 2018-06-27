@@ -119,6 +119,16 @@ namespace LatMRG {
       bool dualF;
 
       /**
+       * This flag applies specificaly to the spectral test by specifying at
+       * what speed (and precision) it should be done. If it is set to `0` the
+       * test is done normally without approximations. If it is set to `1`, the
+       * test is done without Branch-and-Bound using only BKZ pre-reduction. 
+       * Finaly, if it is set to `2` the test is done without Branch-and-Bound
+       * using only LLL pre-reduction.
+       * */
+      int speed;
+
+      /**
        * If `invertF` is `true`, the inverse of the length of the shortest
        * vector will be printed in the results. Otherwise, the length itself
        * will be printed.

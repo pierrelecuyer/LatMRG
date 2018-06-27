@@ -131,7 +131,7 @@ namespace LatMRG {
 
               if (1 == config.d) {
                 spectralTest.test (fromDim, toDim, minVal);
-                // lattice->write();
+                lattice->write();
                 //footer.setLatticeTest (&spectralTest);
                 //report.printTable ();
                 //report.printFooter ();

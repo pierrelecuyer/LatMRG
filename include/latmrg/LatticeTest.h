@@ -141,6 +141,13 @@ namespace LatMRG {
        */
       virtual bool test (int minDim, int maxDim, double minVal[],
           const double* weights);
+
+      /**
+       * Allows for implementations of the test methods with various speed
+       * upgrades at the cost of precision.
+       * */
+      virtual bool quicktest (int minDim, int maxDim, double minVal[], int speed);
+
     protected:
 
       /**

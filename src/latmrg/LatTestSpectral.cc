@@ -144,6 +144,170 @@ namespace LatMRG
 
   //===========================================================================
 
+  bool LatTestSpectral::quicktest (int fromDim, int toDim, double minVal[],
+      int speed)
+  {
+    double* weights = NULL;
+    //BOOST_DISPLAY
+    boost::progress_display show_progress(toDim-fromDim+1);
+
+    m_merit.setDim(toDim);
+    m_fromDim = fromDim;
+    m_toDim = toDim;
+    init ();
+    resetFromDim (m_lat->getOrder (), fromDim);
+    if (m_normalizer->getNorm () != m_lat->getNorm ()) {
+      cout << "SpectralTest: conflict between NormType and Normalizer" <<
+        endl;
+      exit (EXIT_FAILURE);
+    }
+
+    double mr;
+    conv (mr, m_lat->getModulo ());
+    double temp;
+
+    //NScal te;
+    //double lgvv1 = 0.0;
+    // "unused variables" according to the compiler
+
+    while (m_lat->getDim () < fromDim)
+      m_lat->incDim ();
+
+    Reducer<MScal, BScal, BVect, BMat, NScal, NVect, RScal, RVect, RMat> red (*m_lat);
+
+    if (m_S2toL2[fromDim] <= 0.0)
+      initLowerBoundL2 (fromDim, toDim);
+    setLowerBoundL2 (minVal[toDim], weights);   // same S2 for all dim
+    red.setBoundL2 (m_boundL2, fromDim, toDim);
+
+    while (true) {
+
+      //BOOST_DISPLAY
+      ++show_progress;
+
+      if (m_dualF)
+        m_lat->dualize ();
+
+      int dim = m_lat->getDim ();
+
+      // pre-reduction step before BB with default parameters
+      if (speed == 1) {
+        red.redBKZ(0.999999, 10, QUADRUPLE, dim);
+      } else if (speed == 2) {
+        red.redLLLNTL(0.999999, QUADRUPLE, dim);
+      } else {
+        std::cout << "Wrong speed selection\n";
+        return false;
+      }
+      //PW_TODO: hard coding?
+
+      //cout << "dual basis = \n" << m_lat->getBasis() << endl;
+      //cout << "primal basis = \n" << m_lat->getDualBasis() << endl;
+
+
+      // Calcul de D2. Pour Norm # L2NORM, suppose que VV est a jour.
+      if (m_lat->getNorm () == L2NORM) {
+        m_lat->updateScalL2Norm (0);
+        conv (temp, m_lat->getVecNorm (0));
+      } else {
+        conv (temp, red.getMinLength ());
+      }
+      if (3 == m_detailF) {
+        dispatchLatUpdate(*m_lat);
+      }
+      // weight factor:
+      // require a higher merit for more important projections by dividing
+      // their merit by the weight of the projection
+      double weight = weights ? weights[dim] : 1.0;
+
+      m_merit.getMerit (dim) = temp / weight;
+
+      if (dim <= toDim) { // Calcul de S2.
+
+        //cout << "dim = " << dim << endl;
+        //cout << "order = " << m_lat->getOrder() << endl;
+        //cout << "density AVANT = " << exp(m_normalizer->getLogDensity()) << endl;
+
+        //updating value of matrix density.
+
+#if NTL_TYPES_CODE == 3
+        if (dim <= m_lat->getOrder()) {
+          if (m_dualF) // dual basis
+            m_normalizer->setLogDensity(conv<RScal>( - dim * log(m_lat->getModulo()) ));
+          else // primal basis
+            m_normalizer->setLogDensity(conv<RScal>( dim * log(m_lat->getModulo())  ));
+        }
+#else
+        if (dim <= m_lat->getOrder()) {
+          if (m_dualF) // dual basis
+            m_normalizer->setLogDensity( - dim * log(m_lat->getModulo()) );
+          else // primal basis
+            m_normalizer->setLogDensity( dim * log(m_lat->getModulo()) );
+        }
+#endif
+
+        //cout << "density APRES = " << exp(m_normalizer->getLogDensity()) << endl;
+        //cout << "m_normalizer->getBound = " << m_normalizer->getBound(dim) << endl;
+
+        if (m_lat->getNorm () == L2NORM) {
+
+          if (!m_dualF) { // in case we work with rescaled values
+            double normalizer = m_normalizer->getBound(dim);
+            m_merit[dim] = log(temp) - 2*log(normalizer) - 2*log(mr);
+            m_merit[dim] = exp(m_merit[dim]);
+          } else { // general case
+            double normalizer = m_normalizer->getBound(dim);
+            m_merit[dim] = log(temp) - 2*log(normalizer);
+            m_merit[dim] = exp(m_merit[dim]);
+          }
+
+        } else if (m_lat->getNorm () == L1NORM) {
+
+          if (!m_dualF) { // in case we work with rescaled values
+            double normalizer = m_normalizer->getBound(dim);
+            m_merit[dim] = log(temp) - log(normalizer) - log(mr);
+            m_merit[dim] = exp(m_merit[dim]);
+          } else { // general case
+            double normalizer = m_normalizer->getBound(dim);
+            m_merit[dim] = log(temp) - log(normalizer);
+            m_merit[dim] = exp(m_merit[dim]);
+          }
+
+        } else
+          m_merit[dim] = temp;
+
+        m_merit[dim] /= weight;
+
+
+        //cout << "m_merit[" << dim << "] = " << m_merit[dim] << endl;
+
+        // Si on sait deja que ce gen. ne pourra etre retenu,
+        // on le rejette tout de suite et on arrete le test.
+        if ((m_maxAllDimFlag && m_merit[dim] < minVal[toDim])
+            || m_merit[dim] < minVal[dim]) {
+          //    m_merit[dim] = 0.0;
+          return false;
+        }
+      }
+      else
+        m_merit[dim] /= weight;
+
+      prepAndDisp (dim);
+
+      if (dim == toDim)
+        break;
+
+      if (m_dualF)
+        m_lat->dualize ();
+      m_lat->incDim ();
+      red = Reducer<MScal, BScal, BVect, BMat, NScal, NVect, RScal, RVect, RMat>(*m_lat);
+    }
+
+    return true;
+  }
+
+  //===========================================================================
+
   bool LatTestSpectral::test (int fromDim, int toDim, double minVal[], const double* weights)
   {
 

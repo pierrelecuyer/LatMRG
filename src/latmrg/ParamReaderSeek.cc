@@ -177,6 +177,7 @@ namespace LatMRG
       config.td[0] = maxOrder + 1;
 
     readBool (config.dualF, ++ln, 0);
+    readInt (config.speed, ++ln, 0);
     readLatticeType (config.latType, ++ln, 0);
 
     readInt (config.lacGroupSize, ++ln, 0);

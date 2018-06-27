@@ -58,6 +58,13 @@ namespace LatMRG
     //minVal[0] =  weights[0];
   }
 
+  //===========================================================================
+
+  bool LatticeTest::quicktest (int minDim, int maxDim, double minVal[],
+      int speed)
+  {
+    throw "quicktest not implemented in this class.";
+  }
 
   //===========================================================================
 

@@ -78,6 +78,19 @@ void doTests(MScal m, int k, MScal d, MScal c) {
    latconfig.numberLacIndices = 7;
    latconfig.maxNodesBB = 1000000;
 
+   // Proposition 1
+   latconfig.td[0] = 3;
+   latconfig.td[1] = 3;
+   latconfig.Lac.resize(3);
+   latconfig.Lac[0]=1;
+   latconfig.Lac[1]=k;
+   latconfig.Lac[2]=k+1;
+
+   std::vector<double> FoM;
+   FoM = ComputeFigureOfMerit<MScal, BScal, BVect, BMat, NScal, NVect, RScal>(latconfig);
+
+   printResult(FoM, latconfig.td[0]);
+
    // Proposition 4
    latconfig.td[0] = 5;
    latconfig.td[1] = 5;
@@ -88,7 +101,6 @@ void doTests(MScal m, int k, MScal d, MScal c) {
    latconfig.Lac[3]=k+4;
    latconfig.Lac[4]=k+5;
 
-   std::vector<double> FoM;
    FoM = ComputeFigureOfMerit<MScal, BScal, BVect, BMat, NScal, NVect, RScal>(latconfig);
 
    printResult(FoM, latconfig.td[0]);
