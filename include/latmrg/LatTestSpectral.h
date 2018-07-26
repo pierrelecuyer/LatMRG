@@ -31,7 +31,7 @@ namespace LatMRG {
        * using normalizer `normal` to normalize the figure of merit.
        */
       LatTestSpectral (LatticeTester::Normalizer<RScal> * normal,
-          LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> * lat);
+          LatticeTester::IntLattice<MScal, BScal, NScal, RScal> * lat);
 
       /**
        * Destructor.

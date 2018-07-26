@@ -27,7 +27,8 @@ namespace LatMRG {
          * parameters are in `config`. The `bounds` \f$B_{\alpha}(s)\f$ may be used
          * to normalize the \f$P_{\alpha}(s)\f$ values.
          */
-        LatTestPalpha (LatticeTester::Normalizer<RScal> * bounds, LatticeTester::IntLattice<Int, BScal, BVect, BMat, NScal, NVect, RScal> * lat);
+        LatTestPalpha (LatticeTester::Normalizer<RScal> * bounds,
+            LatticeTester::IntLattice<Int, BScal, NScal, RScal> * lat);
 
         /**
          * Destructor.
@@ -116,7 +117,9 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    LatTestPalpha<Int>::LatTestPalpha (LatticeTester::Normalizer<RScal> * normal, LatticeTester::IntLattice<Int, BScal, BVect, BMat, NScal, NVect, RScal> * lat): LatticeTest (lat)
+    LatTestPalpha<Int>::LatTestPalpha (LatticeTester::Normalizer<RScal> * 
+        normal, LatticeTester::IntLattice<Int, BScal, NScal, RScal> * lat):
+      LatticeTest (lat)
   {
     m_criter = LatticeTester::PALPHA;
     m_bound = normal;

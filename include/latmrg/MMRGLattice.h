@@ -25,7 +25,7 @@ namespace LatMRG {
    * \f]
    */
   template<typename Int>
-    class MMRGLattice: public LatticeTester::IntLattice<Int, BScal, BVect, BMat, NScal, NVect, RScal> {
+    class MMRGLattice: public LatticeTester::IntLattice<Int, BScal, NScal, RScal> {
       public:
 
         /**
@@ -80,7 +80,7 @@ namespace LatMRG {
         /**
          * Sets the lacunary indices for this lattice to `lat`.
          */
-        virtual void setLac (const LatticeTester::Lacunary<BScal, BVect> & lat);
+        virtual void setLac (const LatticeTester::Lacunary<BScal> & lat);
 
         /**
          * Returns the generator matrix \f$A\f$ as a string.
@@ -166,7 +166,7 @@ namespace LatMRG {
          * Contains the lacunary indices when `LacunaryFlag` is `true`,
          * otherwise is undefined.
          */
-        LatticeTester::Lacunary<BScal, BVect> m_lac;
+        LatticeTester::Lacunary<BScal> m_lac;
 
         /**
          * Contains the number of lacunary indices
@@ -215,7 +215,7 @@ namespace LatMRG {
   template<typename Int>
     MMRGLattice<Int>::MMRGLattice(const Int & m, const MMat & A, int maxDim, 
         int r, LatticeTester::NormType norm, LatticeType lat):
-      LatticeTester::IntLattice<Int, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice(m, r, maxDim, norm)
+      LatticeTester::IntLattice<Int, BScal, NScal, RScal>::IntLattice(m, r, maxDim, norm)
   {
     m_A = A;
     m_latType = lat;
@@ -233,12 +233,12 @@ namespace LatMRG {
     MMRGLattice<Int>::MMRGLattice(const Int & m, const MMat & A, int maxDim, 
         int r, LacunaryType & lacunaryType, BVect & lac, 
         LatticeTester::NormType norm, LatticeType lat):
-      LatticeTester::IntLattice<Int, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice (m, r, maxDim, norm)
+      LatticeTester::IntLattice<Int, BScal, NScal, RScal>::IntLattice (m, r, maxDim, norm)
       //m_lac(lac, r)
       //PW_TODO r ou maxDim?
   {
     m_ip=0;
-    m_lac = LatticeTester::Lacunary<BScal, BVect>(lac, maxDim);
+    m_lac = LatticeTester::Lacunary<BScal>(lac, maxDim);
     m_A = A;
     m_latType = lat;
     m_lacunaryFlag = true;
@@ -252,7 +252,7 @@ namespace LatMRG {
 
   template<typename Int>
     MMRGLattice<Int>::MMRGLattice(const MMRGLattice & lat):
-      LatticeTester::IntLattice<Int, BScal, BVect, BMat, NScal, NVect, RScal>::IntLattice (lat.m_modulo, lat.m_order,
+      LatticeTester::IntLattice<Int, BScal, NScal, RScal>::IntLattice (lat.m_modulo, lat.m_order,
           lat.getDim(), lat.getNorm ()), m_lac(lat.m_lac)
   {
     m_A = lat.m_A;
@@ -299,7 +299,7 @@ namespace LatMRG {
   template<typename Int>
     void MMRGLattice<Int>::kill()
     {
-      LatticeTester::IntLattice<Int, BScal, BVect, BMat, NScal, NVect, RScal>::kill();
+      LatticeTester::IntLattice<Int, BScal, NScal, RScal>::kill();
       if (0 != m_ip)
         delete[] m_ip;
       m_ip = 0;
@@ -340,7 +340,7 @@ namespace LatMRG {
     void MMRGLattice<Int>::init()
     {
       kill(); //PW_TODO : wzf ? M-A : Indeed wzf...?
-      LatticeTester::IntLattice<Int, BScal, BVect, BMat, NScal, NVect, RScal>::init();
+      LatticeTester::IntLattice<Int, BScal, NScal, RScal>::init();
       // This should not be needed
       m_xi.SetLength(this->m_order);
       m_A.SetDims(this->m_order, this->m_order);
@@ -377,7 +377,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    void MMRGLattice<Int>::setLac(const LatticeTester::Lacunary<BScal, BVect> & lac)
+    void MMRGLattice<Int>::setLac(const LatticeTester::Lacunary<BScal> & lac)
     {
       m_lac = lac;
       m_lacunaryFlag = true;
@@ -620,7 +620,7 @@ namespace LatMRG {
     void MMRGLattice<Int>::incrementDimNonLacunaryBasis()
     // X_n = A X_{n-1} mod m. We have: dimension >= order.
     {
-      LatticeTester::IntLattice<Int, BScal, BVect, BMat, NScal, NVect, RScal>::incDim();
+      LatticeTester::IntLattice<Int, BScal, NScal, RScal>::incDim();
       int newDimension = this->getDim();
       int sizeA = this->getOrder();
 
@@ -696,7 +696,7 @@ namespace LatMRG {
   template<typename Int>
     void MMRGLattice<Int>::incrementDimLacunaryBasis(int Imax)
     {
-      LatticeTester::IntLattice<Int, BScal, BVect, BMat, NScal, NVect, RScal>::incDim();
+      LatticeTester::IntLattice<Int, BScal, NScal, RScal>::incDim();
       const int dim = this->getDim (); // new dimension (dim++)
 
       //PW_TODO

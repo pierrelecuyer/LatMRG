@@ -58,8 +58,10 @@ namespace LatMRG
       readNormaType (config.normaType, ln, 1);
 
     readBool (config.readGenFile, ++ln, 0);
-    if (config.readGenFile)
+    if (config.readGenFile) {
       readString (config.fileName, ln, 1);
+      config.fileName += ".gen";
+    }
     readInt (config.J, ++ln, 0);
 
     config.Ms = new MScal[config.J];

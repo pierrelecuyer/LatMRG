@@ -3,27 +3,15 @@
 #include <vector>
 #include <string>
 
-#include "latticetester/Types.h"
-#include "latticetester/Util.h"
-#include "latticetester/Const.h"
-#include "latmrg/Chrono.h"
-
-#include "latmrg/Const.h"
-#include "latmrg/SeekConfig.h"
-#include "latmrg/ParamReaderSeek.h"
-#include "latmrg/IntPrimitivity.h"
-
-#include "latmrg/MRGLattice.h"
-#include "latmrg/KorobovLattice.h"
 #include "latticetester/Rank1Lattice.h"
-#include "latmrg/MRGLatticeFactory.h"
-#include "latmrg/MRGComponent.h"
-
 #include "latticetester/NormaBestLat.h"
 #include "latticetester/NormaLaminated.h"
 #include "latticetester/NormaRogers.h"
 #include "latticetester/NormaMinkL1.h"
 #include "latticetester/NormaMinkowski.h"
+#include "latticetester/Types.h"
+#include "latticetester/Util.h"
+#include "latticetester/Const.h"
 
 #include "latmrg/LatTestBeyer.h"
 #include "latmrg/LatTestSpectral.h"
@@ -32,8 +20,16 @@
 #include "latmrg/Merit.h"
 #include "latmrg/WriterRes.h"
 #include "latmrg/TestProjections.h"
-
 #include "latmrg/Zone.h"
+#include "latmrg/Chrono.h"
+#include "latmrg/Const.h"
+#include "latmrg/SeekConfig.h"
+#include "latmrg/ParamReaderSeek.h"
+#include "latmrg/IntPrimitivity.h"
+#include "latmrg/MRGLattice.h"
+#include "latmrg/KorobovLattice.h"
+#include "latmrg/MRGLatticeFactory.h"
+#include "latmrg/MRGComponent.h"
 
 using namespace std;
 // using namespace NTL;
@@ -59,8 +55,8 @@ namespace
 
   MRGComponent<MScal> **compJ;
   MMat coef;
-  LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> *lattice;
-  LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> *master;
+  LatticeTester::IntLattice<MScal, BScal, NScal, RScal> *lattice;
+  LatticeTester::IntLattice<MScal, BScal, NScal, RScal> *master;
   LatticeTest *latTest;
   LatticeTest **pool;            // vecteur de LatticeTest*
   int poolLen = 0;               // longueur du vecteur pool <= numGen
@@ -149,6 +145,7 @@ namespace
         fname = argv[1];
         fname += ".gen";
         outfile = fname;
+        break;
       default:
         cerr << "\n*** outputType:   no such case" << endl;
         return -2;
@@ -356,7 +353,7 @@ namespace
         << endl;
       for (int s = 0; s < poolLen; s++) {
         LatticeTest *latTest = pool[s];
-        LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> *lat = latTest->getLattice ();
+        LatticeTester::IntLattice<MScal, BScal, NScal, RScal> *lat = latTest->getLattice ();
         int dimWorst = latTest->getMerit ().getDimWorst ();
         double S_T = latTest->getMerit ().getWorstMerit ();
         if (rac)
@@ -373,9 +370,9 @@ namespace
              }
              */
         } else {
-          fout << " " << lat->toStringCoef ();
+          fout << " [" << lat->toStringCoef ();
         }
-        fout << "\n S_";
+        fout << "]\n S_";
         if (1 == config.d)
           fout << dimWorst;
         else
@@ -396,9 +393,44 @@ namespace
     fout.close();
   }
 
+  //===========================================================================
+  
+  // The output function for the outputType GEN. This function prints the 
+  // coefficients of the retained generators in a .gen file. One generator is
+  // printed per line, coefficients are separeted by a blank caracter. No 
+  // figure of merit is printed.
+  //
+  // This currently do not support J > 1
+  void PrintGen () {
+    fout.open (outfile.c_str());
+    MVect coefs;
+    fout << poolLen << std::endl;
+    for (int i = 0; i < config.C; i++) {
+      for (int s = 0; s < poolLen; s++) {
+        LatticeTest *latTest = pool[s];
+        LatticeTester::IntLattice<MScal, BScal, NScal, RScal> *lat = latTest->getLattice ();
+        if (config.J > 1) {
+          fout << "Cannot print components because things have been done \
+            badly\n";
+          /*
+             for (int j = 0; j < config.J; j++) {
+             fout << " " << toString (lat->comp[j]->a, 1,
+             lat->comp[j]->k);
+             if (j < config.J - 1)
+             fout << endl;
+             }
+             */
+        } else {
+          fout << lat->toStringCoef () << std::endl;
+        }
+      }
+    }
+    fout.close();
+  }
 
   //===========================================================================
 
+  // This will perform the tests specified by the user in the .dat file.
   void Test ()
   {
     bool stationary = true;
@@ -457,12 +489,15 @@ namespace
           else if (comp0.genType == KOROBOV)
             master = new KorobovLattice<MScal> (*(KorobovLattice<MScal> *) lattice);
           else if (comp0.genType == RANK1)
-            master = new LatticeTester::Rank1Lattice<MScal, MVect, BScal, BVect, BMat, NScal, NVect, RScal> (*(LatticeTester::Rank1Lattice<MScal, MVect, BScal, BVect, BMat, NScal, NVect, RScal> *) lattice);
+            master = new LatticeTester::Rank1Lattice<MScal, MVect, BScal,
+                   BVect, BMat, NScal, NVect, RScal> (
+                       *(LatticeTester::Rank1Lattice<MScal, MVect, BScal,
+                         BVect, BMat, NScal, NVect, RScal> *) lattice);
 
           master->buildBasis (config.td[1]);
           TestProjections proj (master, lattice, latTest, config.td, config.d);
           proj.setDualFlag (config.dualF);
-          proj.setPrintF (false);
+          //proj.setPrintF (true);
           double merit = proj.run (stationary, false, minVal);
           latTest->getMerit ().setWorstMerit (merit);
           delete master;
@@ -494,6 +529,7 @@ namespace
 
 
   //===========================================================================
+  // I don't know what purpose this had.
 #if 0
 
   void VerifyCategories (BVect & Me2)
@@ -532,11 +568,11 @@ namespace
 
   //===========================================================================
 
+  /* Find the minimum merit amongst the gen in category 0, i.e. in pool.
+   * Returns this merit.
+   * Side effect: swap that gen with the gen in element 0, so that on return,
+   * the worst gen is in pool[0] */
   double FindMinMerit ()
-    /* Find the minimum merit amongst the gen in category 0, i.e. in pool.
-       Returns this merit.
-       Side effect: swap that gen with the gen in element 0, so that on return,
-       the worst gen is in pool[0] */
   {
     double minMerit = 1.0e300;
     int minj = -1;
@@ -560,6 +596,8 @@ namespace
 
   //===========================================================================
 
+  // It think tries to fit a new generator that succeeded in the tests in the 
+  // table of the best generators we found and orders it.
   void CompareMerit ()
   {
     int s;
@@ -573,7 +611,7 @@ namespace
       double curMerit = latTest->getMerit ().getWorstMerit ();
 
       if (minMerit < curMerit) {
-        LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> *lat = pool[0]->getLattice ();
+        LatticeTester::IntLattice<MScal, BScal, NScal, RScal> *lat = pool[0]->getLattice ();
         delete lat;
         delete pool[0];
         pool[0] = latTest;
@@ -585,7 +623,7 @@ namespace
           minVal[s] = minMerit;
 
       } else {
-        LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> *lat = latTest->getLattice ();
+        LatticeTester::IntLattice<MScal, BScal, NScal, RScal> *lat = latTest->getLattice ();
         delete lat;
         delete latTest;
       }
@@ -595,6 +633,12 @@ namespace
 
   //===========================================================================
 
+  // This should be called ExamThisai but w/e. This examines the component a_i
+  // (that was just set by the function that called this one) of the j-th MRG.
+  // If 1<i<k this will call a function that will increment a_{i-1}. If i=1, if
+  // j<J we call a function that will examine the next MRG component. If j=J, we
+  // call a function that will perform the spectral test with the set of 
+  // components currently in place.
   void ExamThisaj (int j, int i, bool Pow2, ProcII Exam)
   {
     // Called by InsideExam.  Examines the current a_j
@@ -663,6 +707,7 @@ namespace
 
   //===========================================================================
 
+  // ??
   void ExamBits (MScal q, int j, int i, int b0, int b1, int NbBits,
       bool Pow2, ProcII Exam)
   {
@@ -689,6 +734,9 @@ namespace
 
   //===========================================================================
 
+  // Increments the coefficient that Z refers to. At each step this calls a 
+  // function that will look at the next coefficient, or that will call a method
+  // to test the current state of the generator.
   void InsideExam (Zone * Z, int j, int i, ProcII exam)
   {
     /*
@@ -741,6 +789,8 @@ namespace
 
   //===========================================================================
 
+  // Builds random subregions of the research zones. This is only called for the
+  // Random search.
   void ChoisirBornes (int j)
   {
     long h;
@@ -760,6 +810,8 @@ namespace
 
   //===========================================================================
 
+  // Exhaustive search in reg, a subset of zone, for the i-th coefficient of the
+  // j-th component. InsideExam will call this recursively if i < k.
   void ExamRegion (int j, int i)
   {
     // Used in the "Random search" case
@@ -772,6 +824,8 @@ namespace
 
   //===========================================================================
 
+  // Exhaustive search in the zone defined for the i-th coefficient of the j-th
+  // component. InsideExam will call this recursively if i < k.
   void ExamAllZones (int j, int i)
   {
     // This method is used in the {\em exhaustive search} case.
@@ -853,6 +907,7 @@ namespace
 
   //===========================================================================
 
+  // Frees memory allocated to execute SeekMain
   void Finalize ()
   {
     int s;
@@ -888,6 +943,8 @@ namespace
 
   //===========================================================================
 
+  // Initializes research zones. This fills the fields of the Zone objects in
+  // the zone array so that zones can then be used without errors.
   void InitZones ()
   {
     for (int s = 0; s < config.J; s++) {
@@ -911,6 +968,9 @@ namespace
       Test ();
       CompareMerit ();
       ++numATried;
+      if(!(numATried%1000)) {
+        std::cout << numATried << " generators tested.\n";
+      }
       return ;
     }
 
@@ -926,8 +986,32 @@ namespace
     }
   }
 
-
   //===========================================================================
+
+  // Tests the generators that are in config.fileName. This simply performs the
+  // tests as usual but does not go through the trouble of configuring
+  // generators in a complicated way to work.
+  void TestGen ()
+  {
+    int numGen, ln = 0;
+    ParamReaderExt reader(config.fileName);
+    reader.getLines();
+    reader.readInt(numGen, ++ln, 0);
+    int k = config.compon[0].k;
+    for (int i = 0; i < numGen; i++) {
+      ln++;
+      for (int j = 0; j < k; j++) {
+        reader.readMScal(coef[0][j+1], ln, j);
+      }
+      Test ();
+      CompareMerit ();
+      ++numATried;
+      if(!(numATried%1000)) {
+        std::cout << numATried << " generators tested.\n";
+      }
+    }
+    return ;
+  }
 
 }   // namespace
 
@@ -936,8 +1020,6 @@ namespace
 
 int main (int argc, char **argv)
 {
-
-
   if (readConfigFile (argc, argv))
     return -1;
   //config.write ();
@@ -945,8 +1027,20 @@ int main (int argc, char **argv)
   timer.init ();
   Zone::initFrontieres (config);
   InitZones ();
-  SeekGen (0);
+  if (config.readGenFile) {
+    TestGen();
+  } else {
+    SeekGen (0);
+  }
   SortBestGen ();
-  PrintResults ();
+  if (config.outputType == RES) {
+    PrintResults ();
+  } else if (config.outputType == GEN) {
+    PrintGen();
+  } else {
+    std::cout << "\nCould not print results as requested, tried to output using\
+      standard method.\n";
+    PrintResults ();
+  }
   Finalize ();
 }

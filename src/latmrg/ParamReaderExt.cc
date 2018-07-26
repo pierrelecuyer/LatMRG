@@ -49,7 +49,6 @@ namespace LatMRG
     m_lines.clear();
   }
 
-
   //===========================================================================
 
   void ParamReaderExt::readGenType(GenType& field, unsigned int ln, unsigned int pos)
@@ -72,7 +71,6 @@ namespace LatMRG
     else
       LatticeTester::MyExit(1, "readGenType:   NO SUCH CASE");
   }
-
 
   //===========================================================================
 

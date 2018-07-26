@@ -33,11 +33,9 @@ namespace LatMRG {
 
         std::vector<double> result;
 
-        LatticeTester::IntLattice<Int, BasInt, BasVec, BasMat, Dbl, DblVec,
-          RedDbl> *lattice = 0;
-        LatticeTester::IntLattice<Int, BasInt, BasVec, BasMat, Dbl, DblVec,
-          RedDbl> *master = 0;
-        LatticeTester::Lacunary<BasInt, BasVec> *plac = 0;
+        LatticeTester::IntLattice<Int, BasInt, Dbl, RedDbl> *lattice = 0;
+        LatticeTester::IntLattice<Int, BasInt, Dbl, RedDbl> *master = 0;
+        LatticeTester::Lacunary<BasInt> *plac = 0;
         int toDim = config.td[1];
         int fromDim = config.td[0];
         bool memLacF = true; // Lacunary with only used lines-columns of bases
@@ -112,7 +110,7 @@ namespace LatMRG {
         }
 
         if (!memLacF && config.lacunary) {
-          plac = new LatticeTester::Lacunary<BasInt, BasVec> (config.Lac, toDim);
+          plac = new LatticeTester::Lacunary<BasInt> (config.Lac, toDim);
           lattice->setLac (*plac);
         }
 
@@ -146,13 +144,23 @@ namespace LatMRG {
                          BasVec, BasMat, Dbl, DblVec, RedDbl> (
                              *(LatticeTester::Rank1Lattice<Int, MVect, BasInt,
                                BasVec, BasMat, Dbl, DblVec, RedDbl> *) lattice);
+                else if (config.genType[0] == MMRG)
+                  master = new MMRGLattice<Int> (*(MMRGLattice<Int> *) lattice);
+                else {
+                  std::cout << "GenType has not been specified correctly in config.\n";
+                }
 
                 master->buildBasis (toDim);
                 TestProjections proj (master, lattice, &spectralTest, config.td,
                     config.d);
                 //proj. setOutput (rw);
                 proj.setDualFlag (config.dualF);
-                proj.setPrintF (true);
+                proj.setPrintF (false);
+                double minVal[config.td[0]];
+                if (config.genType[0] == MMRG)
+                  proj.run(false, false, minVal);
+                else
+                  proj.run(true, false, minVal);
                 /*rw->writeString ("\nMin merit:   ");
                   rw->writeDouble (sqrt (merit));
                   rw->newLine ();

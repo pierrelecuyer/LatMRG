@@ -67,7 +67,7 @@ namespace LatMRG {
         /**
          * Sets the lacunary indices for this lattice to `lat`.
          */
-        void setLac (const LatticeTester::Lacunary<BScal, BVect> & lat);
+        void setLac (const LatticeTester::Lacunary<BScal> & lat);
 
       protected:
 
@@ -81,7 +81,7 @@ namespace LatMRG {
         /**
          * The lacunary indices.
          */
-        LatticeTester::Lacunary<BScal, BVect> m_lac;
+        LatticeTester::Lacunary<BScal> m_lac;
     }; // End class declaration
 
   //===========================================================================
@@ -147,7 +147,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    void MRGLatticeLac<Int>::setLac (const LatticeTester::Lacunary<BScal, BVect> & lac)
+    void MRGLatticeLac<Int>::setLac (const LatticeTester::Lacunary<BScal> & lac)
     {
       this->m_lac = lac;
       this->m_lacunaryFlag = true;

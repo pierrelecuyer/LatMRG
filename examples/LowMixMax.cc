@@ -247,8 +247,8 @@ int main ()
   LatTestAll latTestAll;
   Writer* rw = latTestAll.createWriter (infile.c_str(), config.outputType);
 
-  LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> *lattice = 0;
-  LatticeTester::Lacunary<BScal, BVect> *plac = 0;
+  LatticeTester::IntLattice<MScal, BScal, NScal, RScal> *lattice = 0;
+  LatticeTester::Lacunary<BScal> *plac = 0;
   bool memLacF = true; 
 
 
@@ -273,7 +273,7 @@ int main ()
   normal->setNorm (config.norm);
 
   if (!memLacF && config.lacunary) {
-    plac = new LatticeTester::Lacunary<BScal, BVect> (config.Lac, toDim);
+    plac = new LatticeTester::Lacunary<BScal> (config.Lac, toDim);
     lattice->setLac (*plac);
   }
 

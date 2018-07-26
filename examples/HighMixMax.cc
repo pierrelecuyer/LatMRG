@@ -120,6 +120,27 @@ void doTests(MScal m, int k, MScal d, MScal c) {
    FoM = ComputeFigureOfMerit<MScal, BScal, BVect, BMat, NScal, NVect, RScal>(latconfig);
 
    printResult(FoM, latconfig.td[0]);
+
+   // Getting a bound on M_s
+   latconfig.d = 10;
+   delete[] latconfig.td;
+   latconfig.lacunary = false;
+   latconfig.td = new int[latconfig.d];
+   latconfig.td[0] = 10;
+   latconfig.td[1] = 10;
+   latconfig.td[2] = 10;
+   latconfig.td[3] = 10;
+   latconfig.td[4] = 10;
+   latconfig.td[5] = 10;
+   latconfig.td[6] = 10;
+   latconfig.td[7] = 10;
+   latconfig.td[8] = 10;
+   latconfig.td[9] = 10;
+
+   FoM = ComputeFigureOfMerit<MScal, BScal, BVect, BMat, NScal, NVect, RScal>(latconfig);
+
+   printResult(FoM, latconfig.td[0]);
+
 }
 //==================================================================================
 
@@ -140,7 +161,7 @@ int main ()
    c = power_ZZ(2,51) + 1; //m
    doTests(m, k, d, c);
    //
-   // four-family parameters DIMENSION 240
+   // four-family parameters DIMENSION 17
    m = power_ZZ(2,61) - 1; // p
    k = 17; // N
    d = NTL::ZZ(0); // s

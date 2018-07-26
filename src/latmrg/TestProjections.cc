@@ -1,15 +1,16 @@
 #include "latmrg/TestProjections.h"
 #include "latmrg/LatticeTest.h"
-#include "latticetester/Util.h"
 #include "latmrg/Writer.h"
 #include "latmrg/WriterRes.h"
-#include "latticetester/UniformWeights.h"
 #include "latmrg/ProjIteratorSuccCoords.h"
 #include "latmrg/ProjIteratorNonSuccCoords.h"
 
+#include "latticetester/UniformWeights.h"
+#include "latticetester/CoordinateSets.h"
+#include "latticetester/Util.h"
+
 #include <cstring>
 #include <sstream>
-#include "latticetester/CoordinateSets.h"
 
 using namespace std;
 using namespace LatticeTester;
@@ -53,7 +54,7 @@ namespace
     rw->newLine ();
   }
 
-
+  // Prints `len` and `merit` on the output of `rw`.
   void printMerLen (bool invF, bool racF, double len, double merit,
       LatMRG::Writer * rw)
   {
@@ -85,8 +86,9 @@ namespace LatMRG
 
   //===========================================================================
 
-  TestProjections::TestProjections (LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> * master, LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> * lattice,
-      LatticeTest * test, int td[], int d)
+  TestProjections::TestProjections (LatticeTester::IntLattice<MScal, BScal, 
+      NScal, RScal> * master, LatticeTester::IntLattice<MScal, BScal, NScal,
+      RScal> * lattice, LatticeTest * test, int td[], int d)
   {
     if (d <= 0)
       MyExit(1, "   TestProjections:   d <= 0");
@@ -127,6 +129,7 @@ namespace LatMRG
     delete[] m_weightsTemp;
     if (m_wrFlag)
       delete m_writer;
+    delete m_meritproj;
   }
 
 
@@ -170,6 +173,8 @@ namespace LatMRG
     // Les projections sur dimensions successives
     m_numproj = m_td[1] - m_td[0] + 1;
 
+    // Les projections sur des dimensions successives qui ne contiennent pas 0
+    //comme indice
     if (!stationary) {
       for (int order = 2; order <= m_d; order++) {
         int maxCoord = min (m_td[order], m_master->getDim ());
@@ -214,16 +219,19 @@ namespace LatMRG
   }
 
 
-  //=========================================================================
+  //===========================================================================
 
   double TestProjections::run (bool stationary, bool forceLast, double minVal[])
   {
     return run(stationary, forceLast, minVal, unitWeights);
   }
 
+  //===========================================================================
 
-  double TestProjections::run (bool stationary, bool forceLast, double minVal[], const LatticeTester::Weights& weights)
+  double TestProjections::run (bool stationary, bool forceLast, double minVal[],
+      const LatticeTester::Weights& weights)
   {
+    m_meritproj = new MeritProj(calcNumProjections(stationary, forceLast));
     // we assume that m_td[1] >= m_td[i] for all i
     int maxDim = m_td[1];
     double merit = 1.0e100;
@@ -240,7 +248,8 @@ namespace LatMRG
     m_test->setMaxAllDimFlag (true);
 
     // set the temporary weights for successive dimensions
-    for (ProjIteratorSuccCoords projit(0, maxDim-1, 0, maxDim-1, true, false); projit; ++projit) {
+    for (ProjIteratorSuccCoords projit(0, maxDim-1, 0, maxDim-1, true, false);
+        projit; ++projit) {
       if ((int)projit->size() >= minDim)
         m_weightsTemp[projit->size()] = weights.getWeight(*projit);
       else
@@ -252,6 +261,18 @@ namespace LatMRG
     // est mauvais, les valeurs de mérites ci-après sont n'importe quoi.
     merit = m_test->getMerit().getST (minDim, maxDim);
     m_numproj = maxDim - minDim + 1;
+    for (int i = 0; i < m_numproj; i++) {
+      (*m_meritproj)[i] = m_test->getMerit()[minDim+i];
+      m_meritproj->getMerit(i) = m_test->getMerit().getMerit(minDim+i);
+      std::string a("{");
+      for (int j = 0; j < minDim; j++) {
+        if (j != 0) a += ",";
+        a += std::to_string(j);
+      }
+      for (int j = 0; j < i; j++) a += "," + std::to_string(j+minDim);
+      a += "}";
+      m_meritproj->setCoord(i, a);
+    } 
 
     if (m_printF) {
       //cout << "------------------------------------------" << endl;
@@ -266,6 +287,7 @@ namespace LatMRG
     if (merit < minVal[maxDim] || m_d <= 1)
       return merit;
 
+    /*
     if (!stationary) {
       // test for successive coordinates
       // loop over projection orders
@@ -277,7 +299,8 @@ namespace LatMRG
         if (maxCoord <= order)
           continue;
 
-        ProjIteratorSuccCoords projit(1, maxCoord-1, order, order, stationary, forceLast);
+        ProjIteratorSuccCoords projit(1, maxCoord-1, order, order, stationary,
+            forceLast);
         merit = std::min(merit, run(projit, minVal, weights));
 
         if (merit < minVal[order])
@@ -287,18 +310,30 @@ namespace LatMRG
           printMerit (m_racF, merit, m_writer);
       }
     }
+    */
 
-    // test for non-successive coordinates
-    // loop over projection orders
+    // Testing projections of size order
     for (int order = 2; order <= m_d; order++) {
 
       int maxCoord = min (m_td[order], m_master->getDim ());
-      // if maxCoord <= order, there are no projections with non-successive indices to consider
+      // if maxCoord <= order, there are no projections with non-successive
+      // indices to consider
       if (maxCoord <= order)
         continue;
 
-      ProjIteratorNonSuccCoords projit(0, maxCoord-1, order, order, stationary, forceLast);
+      // Iterates over sets of `order` non successive coordinates between `0` 
+      // and `maxCoord - 1`
+      ProjIteratorNonSuccCoords projit(0, maxCoord-1, order, order, stationary,
+          forceLast);
       merit = std::min(merit, run(projit, minVal, weights));
+
+      // If the lattice is not dimension stationary, we look for successive
+      // coordinates projections too
+      if (!stationary) {
+        ProjIteratorSuccCoords projit(1, maxCoord-1, order, order, stationary,
+            forceLast);
+        merit = std::min(merit, run(projit, minVal, weights));
+      }
 
       if (merit < minVal[order])
         return merit;
@@ -311,20 +346,19 @@ namespace LatMRG
     return merit;
   }
 
-
   //===========================================================================
 
   double TestProjections::run (ProjIterator& projit, double minVal[], 
       const LatticeTester::Weights& weights)
   {
+    std::ostringstream os;
     double minMerit = 1.0e100;
-    int cpt = 0;
     while (projit) {
-      cpt++;
       int dim = (int)projit->size();
       int maxCoord = min (m_td[dim], m_master->getDim ());
       if (maxCoord <= dim) // if equal, already computed
         continue;
+
       if (m_printF)
         m_writer->writeString (formatIndices(*projit));
 
@@ -336,8 +370,6 @@ namespace LatMRG
 
       m_test->test (dim, dim, minVal, m_weightsTemp);
 
-
-
       double len = m_test->getMerit ().getMerit (dim);
 
       double curMerit = m_test->getMerit ().getNormVal (dim);
@@ -346,13 +378,18 @@ namespace LatMRG
       if (curMerit < minVal[dim])
         return curMerit;
 
-      minMerit = std::min (minMerit, curMerit);
-      ++projit;
+      os.str(std::string());
+      os << *projit;
+      (*m_meritproj)[m_numproj-1] = m_test->getMerit()[dim];
+      m_meritproj->getMerit(m_numproj-1) = m_test->getMerit().getMerit(dim);
+      m_meritproj->getCoord(m_numproj-1) = os.str();
 
+      minMerit = std::min (minMerit, curMerit);
+
+      // incrementing stuff
+      ++projit;
     }
     return minMerit;
   }
-
-  //===========================================================================
 
 }

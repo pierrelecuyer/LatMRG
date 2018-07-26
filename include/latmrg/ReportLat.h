@@ -56,13 +56,13 @@ namespace LatMRG {
        * Defined in interface `LatticeTestObserver`. Prints the base directly
        * in the report.
        */
-      void latUpdate (LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> & lat);
+      void latUpdate (LatticeTester::IntLattice<MScal, BScal, NScal, RScal> & lat);
 
       /**
        * Defined in interface `LatticeTestObserver`. Prints basis vector
        * \f$V[i]\f$ directly in the report.
        */
-      void latUpdate (LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> & lat, int i);
+      void latUpdate (LatticeTester::IntLattice<MScal, BScal, NScal, RScal> & lat, int i);
 
       /**
        * Defined in interface `LatticeTestObserver`. The results are stacked

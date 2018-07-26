@@ -8,6 +8,7 @@
 #include "latmrg/Writer.h"
 #include "latmrg/LatticeTest.h"
 #include "latmrg/ProjIterator.h"
+#include "latmrg/MeritProj.h"
 
 
 namespace LatMRG {
@@ -24,7 +25,9 @@ namespace LatMRG {
    * \le t_1\f$, and over the \f$r\f$ nonsuccessive dimensions of the lattice
    * of dimension \f$t_r\f$ for all \f$2 \le r \le d\f$. For *dimension
    * stationary* lattices, for example Korobov lattices, only the sets of
-   * dimensions whose first coordinate is 1 need to be considered.
+   * dimensions whose first coordinate is 1 need to be considered because being
+   * dimension stationary means that shifting the lattice by a constant does not
+   * change the projection.
    *
    * Here is an example of the spectral test with different projections for a
    * Korobov lattice with \f$m=1021\f$ and \f$a=333\f$, when we consider the
@@ -172,8 +175,9 @@ namespace LatMRG {
          * for dimensions \f$\le12\f$. The results of the tests will be outputted on
          * `Writer`.
          */
-        TestProjections (LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> *master, LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> *lattice,
-            LatticeTest *test, int td[], int d);
+        TestProjections (LatticeTester::IntLattice<MScal, BScal, NScal,RScal>
+            *master, LatticeTester::IntLattice<MScal, BScal, NScal, RScal> 
+            *lattice, LatticeTest *test, int td[], int d);
 
         /**
          * Destructor.
@@ -253,6 +257,11 @@ namespace LatMRG {
          */
         int getNumProjections () { return m_numproj; }
 
+        /**
+         * Returns a pointer to the MeritProj pointed by m_meritproj.
+         * */
+        MeritProj * getMeritProj () { return m_meritproj; }
+
       protected:
 
         /**
@@ -264,12 +273,12 @@ namespace LatMRG {
         /**
          * Lattice on which the \f$M_{t_1, …, t_d}\f$ merit will be calculated.
          */
-        LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>* m_master;
+        LatticeTester::IntLattice<MScal, BScal, NScal, RScal>* m_master;
 
         /**
          * Working lattice which is used to test the different projections.
          */
-        LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>* m_lattice;
+        LatticeTester::IntLattice<MScal, BScal, NScal, RScal>* m_lattice;
 
         /**
          * The lattice test used to calculate the merit.
@@ -327,6 +336,7 @@ namespace LatMRG {
          * The number of projections.
          */
         int m_numproj;
+
       private:
 
         /**
@@ -335,6 +345,11 @@ namespace LatMRG {
          */
         Writer *m_writer;
         bool m_wrFlag;
+
+        /**
+         * Stores the figures of merit after `run` is executed.
+         * */
+        MeritProj* m_meritproj;
     };
 
 }

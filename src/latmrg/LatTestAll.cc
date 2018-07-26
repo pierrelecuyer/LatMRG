@@ -149,9 +149,9 @@ namespace LatMRG
 
     Writer* rw = createWriter (infile, config.outputType);
 
-    LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> *lattice = 0;
-    LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> *master = 0;
-    Lacunary<BScal, BVect> *plac = 0;
+    LatticeTester::IntLattice<MScal, BScal, NScal, RScal> *lattice = 0;
+    LatticeTester::IntLattice<MScal, BScal, NScal, RScal> *master = 0;
+    Lacunary<BScal> *plac = 0;
     bool stationary = true;
     int toDim = config.td[1];
     int fromDim = config.td[0];
@@ -229,7 +229,7 @@ namespace LatMRG
     }
 
     if (!memLacF && config.lacunary) {
-      plac = new Lacunary<BScal, BVect> (config.Lac, toDim);
+      plac = new Lacunary<BScal> (config.Lac, toDim);
       lattice->setLac (*plac);
     }
 

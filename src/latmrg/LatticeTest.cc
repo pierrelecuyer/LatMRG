@@ -28,14 +28,15 @@ using namespace LatticeTester;
 namespace LatMRG
 {
 
-  LatticeTest::LatticeTest (LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> * lat): m_merit()
+  LatticeTest::LatticeTest (LatticeTester::IntLattice<MScal, BScal, NScal, RScal>
+      * lat): m_merit()
   {
     m_lat = lat;
     m_dualF = true;
     m_invertF = false;
     m_maxAllDimFlag = true;
     m_detailF = 0;
-    Reducer<MScal, BScal, BVect, BMat, NScal, NVect, RScal, RVect, RMat>::maxNodesBB = m_maxNodesBB = 10000000;
+    Reducer<MScal, BScal, NScal, RScal>::maxNodesBB = m_maxNodesBB = 10000000;
     timer.init ();
   }
 
@@ -115,13 +116,13 @@ namespace LatMRG
 
   void LatticeTest::setMaxNodesBB (long maxNodesBB)
   {
-    Reducer<MScal, BScal, BVect, BMat, NScal, NVect, RScal, RVect, RMat>::maxNodesBB = m_maxNodesBB = maxNodesBB;
+    Reducer<MScal, BScal, NScal, RScal>::maxNodesBB = m_maxNodesBB = maxNodesBB;
   }
 
 
   //===========================================================================
 
-  void LatticeTest::dispatchLatUpdate(IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> & lat)
+  void LatticeTest::dispatchLatUpdate(IntLattice<MScal, BScal, NScal, RScal> & lat)
   {
     ob_list::const_iterator it;
     LatticeTestObserver *ob;
@@ -133,7 +134,7 @@ namespace LatMRG
   }
 
 
-  void LatticeTest::dispatchLatUpdate(IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> & lat, int i)
+  void LatticeTest::dispatchLatUpdate(IntLattice<MScal, BScal, NScal, RScal> & lat, int i)
   {
     ob_list::const_iterator it;
     LatticeTestObserver *ob;

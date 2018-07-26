@@ -26,13 +26,15 @@ namespace LatMRG {
        * Called when the base is incremented in a lattice test. `base` is a
        * copy of the base used in the test.
        */
-      virtual void latUpdate (LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> & lat) = 0;
+      virtual void latUpdate (
+          LatticeTester::IntLattice<MScal, BScal, NScal, RScal> & lat) = 0;
 
       /**
        * Called when the base is incremented in a lattice test. `V[i]` is a
        * copy of basis vector \f$i\f$ used in the test.
        */
-      virtual void latUpdate (LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> & lat, int i) = 0;
+      virtual void latUpdate (
+          LatticeTester::IntLattice<MScal, BScal, NScal, RScal> & lat, int i) = 0;
 
       /**
        * Called when new results have been calculated for one dimension. The

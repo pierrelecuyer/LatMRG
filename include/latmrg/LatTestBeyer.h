@@ -28,7 +28,7 @@ namespace LatMRG {
           /**
            * Constructor. The *Beyer* test will be applied on lattice `lat`.
            */
-          LatTestBeyer (LatticeTester::IntLattice<Int, BasInt, BasIntVec, BasIntMat, Dbl, DblVec, RedDbl> * lat);
+          LatTestBeyer (LatticeTester::IntLattice<Int, BasInt, Dbl, RedDbl> * lat);
 
           /**
            * Destructor.
@@ -65,7 +65,7 @@ namespace LatMRG {
 
   template<typename Int, typename BasInt, typename BasIntVec,
     typename BasIntMat, typename Dbl, typename DblVec, typename RedDbl>
-      LatTestBeyer<Int, BasInt, BasIntVec, BasIntMat, Dbl, DblVec, RedDbl>::LatTestBeyer (LatticeTester::IntLattice<Int, BasInt, BasIntVec, BasIntMat, Dbl, DblVec, RedDbl> * lat): LatticeTest (lat)
+      LatTestBeyer<Int, BasInt, BasIntVec, BasIntMat, Dbl, DblVec, RedDbl>::LatTestBeyer (LatticeTester::IntLattice<Int, BasInt, Dbl, RedDbl> * lat): LatticeTest (lat)
     {
       m_criter = LatticeTester::BEYER;
     }
@@ -83,7 +83,7 @@ namespace LatMRG {
         resetFromDim (m_lat->getOrder (), fromDim);
         while (m_lat->getDim () < fromDim)
           m_lat->incDim ();
-        LatticeTester::Reducer<Int, BasInt, BasIntVec, BasIntMat, Dbl, DblVec, RedDbl, RVect, RMat> red (*m_lat);
+        LatticeTester::Reducer<Int, BasInt, Dbl, RedDbl> red (*m_lat);
 
         m_lat->dualize ();
         red.preRedDieter (0);
@@ -140,7 +140,7 @@ namespace LatMRG {
           if (dim == toDim)
             break;
           m_lat->incDim();
-          red = LatticeTester::Reducer<Int, BasInt, BasIntVec, BasIntMat, Dbl, DblVec, RedDbl, RVect, RMat>(*m_lat);
+          red = LatticeTester::Reducer<Int, BasInt, Dbl, RedDbl>(*m_lat);
         }
 
         return true;

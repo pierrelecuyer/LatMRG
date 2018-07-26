@@ -178,7 +178,7 @@ namespace LatMRG {
          * Returns the smallest *normalized* value of the merit in the
          * dimension range `from` to `T` (inclusive). As a side effect, the
          * dimension where the smallest value occurs is set in the private
-         * variable <tt>m_dimWorst</tt>.
+         * variable `m_dimWorst`.
          */
         double getST (int from, int T){return getST(from, T, m_dimWorst);}
 

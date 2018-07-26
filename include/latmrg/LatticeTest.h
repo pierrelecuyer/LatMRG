@@ -6,6 +6,7 @@
 
 #include "latmrg/Chrono.h"
 #include "latmrg/Merit.h"
+#include "latmrg/MeritProj.h"
 #include "latmrg/Subject.h"
 #include "latmrg/LatticeTestObserver.h"
 
@@ -39,7 +40,8 @@ namespace LatMRG {
       /**
        * Constructor. The test will be applied on `lattice`.
        */
-      explicit LatticeTest (LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> * lattice);
+      explicit LatticeTest (LatticeTester::IntLattice<MScal, BScal, NScal,
+          RScal> * lattice);
 
       /**
        * Destructor.
@@ -100,6 +102,11 @@ namespace LatMRG {
       Merit & getMerit () { return m_merit; }
 
       /**
+       * Gets the results of the last applied test with multiple projections.
+       */
+      MeritProj * getMeritProj () { return m_meritproj; }
+
+      /**
        * Returns the criterion used for the test.
        */
       LatticeTester::CriterionType getCriterion() const { return m_criter; }
@@ -107,7 +114,8 @@ namespace LatMRG {
       /**
        * Gets the lattice on which the test is applied.
        */
-      LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> * getLattice () const { return m_lat; }
+      LatticeTester::IntLattice<MScal, BScal, NScal, RScal>
+        * getLattice () const { return m_lat; }
 
       /**
        * Returns the lowest dimension on which the test is performed.
@@ -161,6 +169,12 @@ namespace LatMRG {
       Merit m_merit;
 
       /**
+       * Contains the results of the last test in the case of multiple 
+       * projections.
+       */
+      MeritProj * m_meritproj;
+
+      /**
        * The criterion used to evaluate the figure of merit.
        */
       LatticeTester::CriterionType m_criter;
@@ -196,7 +210,7 @@ namespace LatMRG {
       /**
        * The lattice on which the test is applied.
        */
-      LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal>* m_lat;
+      LatticeTester::IntLattice<MScal, BScal, NScal, RScal>* m_lat;
 
       /**
        * The dimension parameters.
@@ -211,13 +225,15 @@ namespace LatMRG {
       /**
        * Dispatches a `baseUpdate` signal to all observers.
        */
-      void dispatchLatUpdate (LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> &);
+      void dispatchLatUpdate (LatticeTester::IntLattice<MScal, BScal, NScal,
+          RScal> &);
 
       /**
        * Dispatches a `baseUpdate(V, i)` signal to all observers. Only base
        * vector \f$i\f$ will be sent.
        */
-      void dispatchLatUpdate (LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> & lat, int i);
+      void dispatchLatUpdate (LatticeTester::IntLattice<MScal, BScal, NScal,
+          RScal> & lat, int i);
 
       /**
        * Dispatches a `resultUpdate` signal to all observers.

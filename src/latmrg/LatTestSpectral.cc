@@ -22,7 +22,7 @@ namespace LatMRG
   //===========================================================================
 
   LatTestSpectral::LatTestSpectral (Normalizer<RScal> * normal,
-      LatticeTester::IntLattice<MScal, BScal, BVect, BMat, NScal, NVect, RScal> * lat): LatticeTest (lat)
+      LatticeTester::IntLattice<MScal, BScal, NScal, RScal> * lat): LatticeTest (lat)
   {
     m_criter = SPECTRAL;
     m_normalizer = normal;
@@ -149,7 +149,6 @@ namespace LatMRG
   {
     double* weights = NULL;
     //BOOST_DISPLAY
-    boost::progress_display show_progress(toDim-fromDim+1);
 
     m_merit.setDim(toDim);
     m_fromDim = fromDim;
@@ -173,7 +172,7 @@ namespace LatMRG
     while (m_lat->getDim () < fromDim)
       m_lat->incDim ();
 
-    Reducer<MScal, BScal, BVect, BMat, NScal, NVect, RScal, RVect, RMat> red (*m_lat);
+    Reducer<MScal, BScal, NScal, RScal> red (*m_lat);
 
     if (m_S2toL2[fromDim] <= 0.0)
       initLowerBoundL2 (fromDim, toDim);
@@ -181,9 +180,6 @@ namespace LatMRG
     red.setBoundL2 (m_boundL2, fromDim, toDim);
 
     while (true) {
-
-      //BOOST_DISPLAY
-      ++show_progress;
 
       if (m_dualF)
         m_lat->dualize ();
@@ -300,7 +296,7 @@ namespace LatMRG
       if (m_dualF)
         m_lat->dualize ();
       m_lat->incDim ();
-      red = Reducer<MScal, BScal, BVect, BMat, NScal, NVect, RScal, RVect, RMat>(*m_lat);
+      red = Reducer<MScal, BScal, NScal, RScal>(*m_lat);
     }
 
     return true;
@@ -312,7 +308,7 @@ namespace LatMRG
   {
 
     //BOOST_DISPLAY
-    boost::progress_display show_progress(toDim-fromDim+1);
+    //boost::progress_display show_progress(toDim-fromDim+1);
 
     m_merit.setDim(toDim);
     m_fromDim = fromDim;
@@ -336,7 +332,7 @@ namespace LatMRG
     while (m_lat->getDim () < fromDim)
       m_lat->incDim ();
 
-    Reducer<MScal, BScal, BVect, BMat, NScal, NVect, RScal, RVect, RMat> red (*m_lat);
+    Reducer<MScal, BScal, NScal, RScal> red (*m_lat);
 
     if (m_S2toL2[fromDim] <= 0.0)
       initLowerBoundL2 (fromDim, toDim);
@@ -346,7 +342,7 @@ namespace LatMRG
     while (true) {
 
       //BOOST_DISPLAY
-      ++show_progress;
+      //++show_progress;
 
       if (m_dualF)
         m_lat->dualize ();
@@ -485,7 +481,7 @@ namespace LatMRG
       if (m_dualF)
         m_lat->dualize ();
       m_lat->incDim ();
-      red = Reducer<MScal, BScal, BVect, BMat, NScal, NVect, RScal, RVect, RMat>(*m_lat);
+      red = Reducer<MScal, BScal, NScal, RScal>(*m_lat);
     }
 
     return true;
