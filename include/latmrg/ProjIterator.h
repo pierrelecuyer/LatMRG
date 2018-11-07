@@ -8,7 +8,6 @@ namespace LatMRG {
   /**
    * This abstract class is the basis for different kinds of projection
    * iterators used to walk through sets of projections.
-   *
    */
   class ProjIterator {
     public:

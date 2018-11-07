@@ -16,7 +16,7 @@ using namespace LatticeTester;
 namespace LatMRG
 {
 
-  ReportHeaderLat::ReportHeaderLat (Writer * writer, LatConfig<MScal> * config,
+  ReportHeaderLat::ReportHeaderLat (LatticeTester::Writer<MScal> * writer, LatConfig<MScal> * config,
       LatticeTester::IntLattice<MScal, BScal, NScal, RScal> * lattice): ReportHeader (writer)
   {
     m_config = config;
@@ -55,7 +55,7 @@ namespace LatMRG
       m_writer->newLine ();
 
       m_writer->writeString ("   m = ");
-      m_writer->writeMScal (m_config->comp[i]->getM ());
+      m_writer->writeIntScal (m_config->comp[i]->getM ());
 
       m_writer->newLine ();
 
@@ -80,7 +80,7 @@ namespace LatMRG
             m_writer->writeString ("      a_");
             m_writer->writeInt (ii);
             m_writer->writeString (" = ");
-            m_writer->writeMScal (m_config->comp[i]->a[ii]);
+            m_writer->writeIntScal (m_config->comp[i]->a[ii]);
             m_writer->newLine ();
           }
         } else {
@@ -90,7 +90,7 @@ namespace LatMRG
               m_writer->writeString ("      a_");
               m_writer->writeInt (ii);
               m_writer->writeString (" = ");
-              m_writer->writeMScal (m_config->comp[i]->a[ii]);
+              m_writer->writeIntScal (m_config->comp[i]->a[ii]);
               m_writer->newLine ();
             }
           }
@@ -101,10 +101,10 @@ namespace LatMRG
 
       if (m_config->J > 1) {
         m_writer->writeString ("   nj = ");
-        m_writer->writeMScal (m_config->comp[i]->nj);
+        m_writer->writeIntScal (m_config->comp[i]->nj);
         m_writer->newLine ();
         m_writer->writeString ("   rho = ");
-        m_writer->writeMScal (m_config->comp[i]->rho);
+        m_writer->writeIntScal (m_config->comp[i]->rho);
         m_writer->newLine ();
       }
     }
@@ -114,7 +114,7 @@ namespace LatMRG
       m_writer->writeString ("Combined MRG:");
       m_writer->newLine ();
       m_writer->writeString ("   m = ");
-      m_writer->writeMScal (m_lattice->getModulo());
+      m_writer->writeIntScal (m_lattice->getModulo());
       m_writer->newLine ();
       m_writer->writeString ("   k = ");
       m_writer->writeInt (m_lattice->getOrder ());
@@ -124,14 +124,14 @@ namespace LatMRG
         m_writer->writeString ("      a_");
         m_writer->writeInt (i);
         m_writer->writeString (" = ");
-        //m_writer->writeMScal (m_lattice->getCoef ()[i]);
+        //m_writer->writeIntScal (m_lattice->getCoef ()[i]);
         m_writer->newLine ();
       }
       m_writer->writeString ("   rho = ");
-      //m_writer->writeMScal (m_lattice->getRho ());
+      //m_writer->writeIntScal (m_lattice->getRho ());
       m_writer->newLine ();
       m_writer->writeString ("   lossRho = ");
-      //m_writer->writeMScal (m_lattice->getLossRho ());
+      //m_writer->writeIntScal (m_lattice->getLossRho ());
       m_writer->newLine ();
     }
 
@@ -206,12 +206,12 @@ namespace LatMRG
           m_writer->writeString ("\n\nLacunary indices = {   ");
 
         MScal pre;
-        conv (pre, -9);
+        NTL::conv (pre, -9);
         for (int i = 0; i < m_config->numberLacIndices; i++) {
           MScal r = m_config->Lac[i];
           if (pre < r - 1)
             m_writer->writeString ("\n   ");
-          m_writer->writeMScal (r);
+          m_writer->writeIntScal (r);
           m_writer->writeString ("    ");
           pre = r;
         }
@@ -220,12 +220,12 @@ namespace LatMRG
         m_writer->writeString ("\n\nLacunary = {   ");
         // Print indices by group of s
         MScal pre;
-        conv (pre, -9);
+        NTL::conv (pre, -9);
         for (int i = 0; i < dim; i++) {
           MScal r = m_config->Lac[i];
           if (pre < r - 1)
             m_writer->writeString ("\n   ");
-          m_writer->writeMScal (r);
+          m_writer->writeIntScal (r);
           m_writer->writeString ("    ");
           pre = r;
         }

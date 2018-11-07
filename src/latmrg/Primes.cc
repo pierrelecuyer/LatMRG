@@ -26,7 +26,7 @@ namespace LatMRG
 
   Primes::Primes ()
   {
-    set9(One);
+    NTL::set(One);
     conv (Two, 2);
     timer.init();
   }
@@ -54,7 +54,7 @@ namespace LatMRG
   void Primes::find (int k, int e, int s, const MScal & S1, const MScal & S2,
       bool safe, bool facto, std::ofstream & fout)
   {
-    set9 (r);
+    NTL::set (r);
     if (IsOdd (S2))
       m = S2;
     else

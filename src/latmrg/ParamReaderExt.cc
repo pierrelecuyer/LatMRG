@@ -237,7 +237,7 @@ namespace LatMRG
     readInt (lacGroupSize, ++ln, 0);
     const int t = lacGroupSize;
     if (t > 0)
-      readZZ(lacSpacing, ln, 1);
+      readBScal(lacSpacing, ln, 1);
 
     if (((t == 1) && (lacSpacing == 1)) || (t > toDim)) {
       lacunary = false;

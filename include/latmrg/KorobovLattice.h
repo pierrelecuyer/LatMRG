@@ -191,7 +191,7 @@ namespace LatMRG {
       //assert(d <= getMaxDim());
       this->setDim(d);
       Int tmp;
-      conv(tmp, 1);
+      NTL::conv(tmp, 1);
 
       for (int i = 0; i < m_shift; i++) {
         tmp *= m_a;
@@ -243,7 +243,7 @@ namespace LatMRG {
 
       vectmp1.resize(dim);
       for (int i = 1; i < dim-1; i++) {
-        conv (tmp2, this->m_basis (i, dim - 2));
+        NTL::conv (tmp2, this->m_basis (i, dim - 2));
         tmp1 = tmp2 * m_a;
         LatticeTester::Modulo (tmp1, this->m_modulo, tmp1);
         this->m_basis (i, dim) = vectmp1(i) =  tmp1; //Erwan m_vSI (0, i) = tmp1;
@@ -261,7 +261,7 @@ namespace LatMRG {
       this->m_dualbasis (dim-1, dim-1) = 1;
 
       for (int j = 1; j < dim; j++) {
-        clear (tmp1);
+        NTL::clear (tmp1);
         for (int i = 1; i < dim; i++) {
           tmp2 = this->m_dualbasis (i, j);
           tmp2 *= vectmp1 (i);

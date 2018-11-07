@@ -2,6 +2,7 @@
 #define POLY_H
 
 #include "latticetester/Types.h"
+
 #include "IntPrimitivity.h"
 
 #include <string>

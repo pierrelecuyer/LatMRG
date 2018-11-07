@@ -37,9 +37,10 @@
 
 #include <iostream>
 
+#include "latticetester/Writer.h"
+#include "latticetester/WriterRes.h"
+
 #include "latmrg/LatConfig.h"
-#include "latmrg/Writer.h"
-#include "latmrg/WriterRes.h"
 #include "latmrg/ReportLat.h"
 #include "latmrg/ReportHeaderLat.h"
 #include "latmrg/ReportFooterLat.h"
@@ -184,7 +185,7 @@ int main ()
   // The amount of detail printed. 0 is the least and the default.
   int detailF = 0;
   // We will print on the terminal.
-  LatticeTester::OutputType outputType = LatticeTester::TERMINAL;
+  LatticeTester::OutputType outputType = LatticeTester::TERM;
 
   //---------------------------------------------------------------------------
   // Creating a LatConfig object to store all the parameters
@@ -245,7 +246,7 @@ int main ()
 
   string infile = "name";
   LatTestAll latTestAll;
-  Writer* rw = latTestAll.createWriter (infile.c_str(), config.outputType);
+  LatticeTester::Writer<MScal>* rw = latTestAll.createWriter (infile.c_str(), config.outputType);
 
   LatticeTester::IntLattice<MScal, BScal, NScal, RScal> *lattice = 0;
   LatticeTester::Lacunary<BScal> *plac = 0;

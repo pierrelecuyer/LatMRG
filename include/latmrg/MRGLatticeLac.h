@@ -176,7 +176,7 @@ namespace LatMRG {
       // Construction d'un systeme generateur modulo m.
       for (int k = 0; k < IMax; k++) {
         // pour chaque indice lacunaire
-        conv (this->m_e, this->m_lac[k]);
+        NTL::conv (this->m_e, this->m_lac[k]);
 
         // x^m_e Mod f(x) Mod m
         pol.powerMod (this->m_e);
@@ -245,13 +245,13 @@ namespace LatMRG {
        * générateur. Elle contient un système de générateurs pour le groupe d'états
        * considérés.
        */
-      clear (this->m_t2);
+      NTL::clear (this->m_t2);
 
       if (this->m_latType == RECURRENT) {
         // check if a_k is relatively prime with m ==> m_t1 = 1
-        this->m_t1 = GCD (this->m_aCoef[this->m_order], this->m_modulo);
+        this->m_t1 = NTL::GCD (this->m_aCoef[this->m_order], this->m_modulo);
         this->m_t1 = abs (this->m_t1);
-        LatticeTester::set9 (this->m_t2);
+        NTL::set (this->m_t2);
       }
 
       if (this->m_latType == FULL || this->m_latType == PRIMEPOWER || (this->m_t1 == this->m_t2)) {

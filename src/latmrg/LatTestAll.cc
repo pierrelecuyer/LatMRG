@@ -9,10 +9,14 @@
 #include "latticetester/Types.h"
 #include "latticetester/Util.h"
 #include "latticetester/Const.h"
+#include "latticetester/Rank1Lattice.h"
+#include "latticetester/WriterRes.h"
+#include "latticetester/Normalizer.h"
+#include "latticetester/NormaPalpha.h"
+
 #include "latmrg/LatConfig.h"
 #include "latmrg/ParamReaderLat.h"
 #include "latmrg/KorobovLattice.h"
-#include "latticetester/Rank1Lattice.h"
 #include "latmrg/MRGLatticeFactory.h"
 #include "latmrg/MRGLattice.h"
 #include "latmrg/MRGLatticeLac.h"
@@ -22,12 +26,9 @@
 #include "latmrg/LatTestSpectral.h"
 #include "latmrg/LatTestPalpha.h"
 #include "latmrg/Formatter.h"
-#include "latmrg/WriterRes.h"
 #include "latmrg/ReportHeaderLat.h"
 #include "latmrg/ReportFooterLat.h"
 #include "latmrg/ReportLat.h"
-#include "latticetester/Normalizer.h"
-#include "latticetester/NormaPalpha.h"
 #include "latmrg/TestProjections.h"
 
 using namespace std;
@@ -97,16 +98,16 @@ namespace LatMRG
 
   //==========================================================================
 
-  Writer* LatTestAll::createWriter (const char *infile, OutputType ot)
+  LatticeTester::Writer<MScal>* LatTestAll::createWriter (const char *infile, OutputType ot)
   {
-    Writer *rw = 0;
+    LatticeTester::Writer<MScal> *rw = 0;
     string fname;
 
     switch (ot) {
       case RES:
         fname = infile;
         fname += ".res";
-        rw = new WriterRes (fname.c_str ());
+        rw = new LatticeTester::WriterRes<MScal> (fname.c_str ());
         break;
 
       case TEX:
@@ -115,8 +116,8 @@ namespace LatMRG
         // rw = new WriterTex(fname.c_str()); //EB Ne permet pas d'écrire en Tex
         break;
 
-      case TERMINAL:
-        rw = new WriterRes (&cout);
+      case TERM:
+        rw = new LatticeTester::WriterRes<MScal> (&cout);
         break;
 
       default:
@@ -147,7 +148,7 @@ namespace LatMRG
     paramRdr.read (config);
     //config.write();
 
-    Writer* rw = createWriter (infile, config.outputType);
+    LatticeTester::Writer<MScal>* rw = createWriter (infile, config.outputType);
 
     LatticeTester::IntLattice<MScal, BScal, NScal, RScal> *lattice = 0;
     LatticeTester::IntLattice<MScal, BScal, NScal, RScal> *master = 0;
@@ -193,7 +194,7 @@ namespace LatMRG
             config.comp[0]->a[1], toDim, config.norm);
       } else if (config.genType[0] == RANK1) {
         stationary = false;
-        lattice = new Rank1Lattice<MScal, MVect, BScal, BVect, BMat, NScal, NVect, RScal> (config.comp[0]->getM (),
+        lattice = new Rank1Lattice<MScal, BScal, NScal, RScal> (config.comp[0]->getM (),
             config.comp[0]->a, config.comp[0]->k, config.norm);
 
 
@@ -259,7 +260,7 @@ namespace LatMRG
                          else if (config.genType[0] == KOROBOV)
                            master = new KorobovLattice<MScal> (*(KorobovLattice<MScal> *) lattice);
                          else if (config.genType[0] == RANK1)
-                           master = new Rank1Lattice<MScal, MVect, BScal, BVect, BMat, NScal, NVect, RScal> (*(Rank1Lattice<MScal, MVect, BScal, BVect, BMat, NScal, NVect, RScal> *) lattice);
+                           master = new Rank1Lattice<MScal, BScal, NScal, RScal> (*(Rank1Lattice<MScal, BScal, NScal, RScal> *) lattice);
 
                          master->buildBasis (toDim);
                          TestProjections proj (master, lattice, &spectralTest, config.td,

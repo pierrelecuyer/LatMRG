@@ -76,10 +76,9 @@ namespace LatMRG {
             lattice = new KorobovLattice<Int> (config.comp[0]->getM (),
                 config.comp[0]->a[1], toDim, config.norm);
           } else if (config.genType[0] == RANK1) {
-            lattice = new LatticeTester::Rank1Lattice<Int, MVect, BasInt, BasVec,
-                    BasMat, Dbl, DblVec, RedDbl> (config.comp[0]->getM (), 
-                        config.comp[0]->a, config.comp[0]->k, config.norm);
-
+            lattice = new LatticeTester::Rank1Lattice<Int, BasInt, Dbl, RedDbl>
+              (config.comp[0]->getM (), config.comp[0]->a, config.comp[0]->k,
+               config.norm);
 
           } else if (config.genType[0] == MMRG) {
             if (memLacF && config.lacunary) {
@@ -140,10 +139,8 @@ namespace LatMRG {
                   master = new KorobovLattice<Int> (
                       *(KorobovLattice<Int> *) lattice);
                 else if (config.genType[0] == RANK1)
-                  master = new LatticeTester::Rank1Lattice<Int, MVect, BasInt,
-                         BasVec, BasMat, Dbl, DblVec, RedDbl> (
-                             *(LatticeTester::Rank1Lattice<Int, MVect, BasInt,
-                               BasVec, BasMat, Dbl, DblVec, RedDbl> *) lattice);
+                  master = new LatticeTester::Rank1Lattice<Int, BasInt, Dbl, RedDbl>
+                    (*(LatticeTester::Rank1Lattice<Int, BasInt, Dbl, RedDbl> *) lattice);
                 else if (config.genType[0] == MMRG)
                   master = new MMRGLattice<Int> (*(MMRGLattice<Int> *) lattice);
                 else {

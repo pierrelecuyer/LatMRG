@@ -1,10 +1,3 @@
-/**
- * This template class is used as a base class for any class that needs to
- * have observers attached or detached from it. It was created to avoid
- * recoding the attaching and detaching code of observers more than once.
- *
- */
-
 #ifndef SUBJECT_H
 #define SUBJECT_H
 #include <list>
@@ -13,12 +6,17 @@
 namespace LatMRG {
 
   /**
-   * Constructor.
+   * This template class is used as a base class for any class that needs to
+   * have observers attached or detached from it. It was created to avoid
+   * recoding the attaching and detaching code of observers more than once.
    */
   template <typename T>
     class Subject {
       public:
 
+        /**
+         * Constructor.
+         */
         Subject() {}
 
         /**

@@ -1,7 +1,8 @@
 #ifndef	REPORTFOOTER_H
 #define REPORTFOOTER_H
-#include "Writer.h"
 
+#include "latticetester/Writer.h"
+#include "latticetester/Types.h"
 
 namespace LatMRG {
 
@@ -16,7 +17,7 @@ namespace LatMRG {
       /**
        * Constructor. See the module `Writer` for more information.
        */
-      ReportFooter (Writer *writer) {m_writer = writer;}
+      ReportFooter (LatticeTester::Writer<MScal> *writer) {m_writer = writer;}
 
       /**
        * Destructor.
@@ -33,7 +34,7 @@ namespace LatMRG {
       /**
        * The `Writer` to be used to write the report footer.
        */
-      Writer* m_writer;
+      LatticeTester::Writer<MScal>* m_writer;
   };
 
 }

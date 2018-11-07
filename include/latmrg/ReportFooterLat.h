@@ -1,6 +1,9 @@
 #ifndef REPORTFOOTERLAT_H
 #define REPORTFOOTERLAT_H
 
+#include "latticetester/Writer.h"
+#include "latticetester/Types.h"
+
 #include "latmrg/ReportFooter.h"
 #include "latmrg/LatticeTest.h"
 
@@ -20,7 +23,7 @@ namespace LatMRG {
        * footer. `test` is the lattice test thas was performed and for which the
        * results are to be written.
        */
-      ReportFooterLat (Writer *, LatticeTest * test = 0);
+      ReportFooterLat (LatticeTester::Writer<MScal> * writer, LatticeTest * test = 0);
 
       /**
        * `test` is the lattice test thas was performed and for which the

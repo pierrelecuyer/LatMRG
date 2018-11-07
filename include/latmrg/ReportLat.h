@@ -1,14 +1,19 @@
 #ifndef REPORTLAT_H
 #define REPORTLAT_H
 
+#include "latticetester/Writer.h"
+#include "latticetester/Types.h"
+
 #include "latmrg/LatticeTestObserver.h"
 #include "latmrg/ReportHeader.h"
 #include "latmrg/ReportFooter.h"
 #include "latmrg/DoubleFormatter.h"
 #include "latmrg/FormatterImpl.h"
 #include "latmrg/LatConfig.h"
+#include "latmrg/Table.h"
 
 #include <string>
+#include <iostream>
 
 
 namespace LatMRG {
@@ -17,7 +22,6 @@ namespace LatMRG {
    * This class formats and prints the actual report for a lattice test for the
    * program `lat*`. It implements the interface `LatticeTestObserver` to be
    * able to receive information and results from the lattice test.
-   *
    */
   class ReportLat : public LatticeTestObserver {
     public:
@@ -25,7 +29,7 @@ namespace LatMRG {
       /**
        * Constructor.
        */
-      ReportLat (Writer* writer, LatConfig<MScal>* config, ReportHeader* header,
+      ReportLat (LatticeTester::Writer<MScal>* writer, LatConfig<MScal>* config, ReportHeader* header,
           ReportFooter* footer);
 
       /**
@@ -93,13 +97,13 @@ namespace LatMRG {
       /**
        * Returns the writing engine used in this class
        */
-      Writer * getWriter() { return m_writer; }
+      LatticeTester::Writer<MScal> * getWriter() { return m_writer; }
     private:
 
       /**
        * Writing engine used to print the report.
        */
-      Writer * m_writer;
+      LatticeTester::Writer<MScal> * m_writer;
 
       /**
        * Report header used to print the report.

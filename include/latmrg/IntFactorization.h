@@ -17,9 +17,9 @@ namespace LatMRG {
    * The class `IntFactorization` implements the decomposition of integers in
    * factors, preferably prime (see class <tt>IntFactor</tt>). It contains
    * functions to factorize an integer in prime factors, to sort and print the
-   * list of its factors. \anchor REF__IntFactorization_IntFactorization_class
+   * list of its factors. `IntFactorization
    * Integers are factorized by calling the MIRACL software
-   * \cite iSCO03a&thinsp;, which uses many different methods in succession to
+   * \cite iSCO03a, which uses many different methods in succession to
    * effect the factorization.
    *
    * Given any natural integer \f$n\f$, there is a unique decomposition in
@@ -32,7 +32,6 @@ namespace LatMRG {
    * large integers, it may not be possible to find all the prime factors
    * within a reasonable amount of time. In that case, a similar decomposition
    * to the above may be used with some of the factors composite.
-   *
    */
   template <typename Int>
     class IntFactorization {
@@ -309,7 +308,7 @@ namespace LatMRG {
         NTL::ZZ f;
 
         f = NTL::to_ZZ (tampon.c_str ());
-        conv (x, f);
+        NTL::conv (x, f);
         in >> k;
         in >> c;
         switch (c) {
@@ -434,14 +433,14 @@ namespace LatMRG {
         if (pos != std::string::npos) {
           // Found a prime factor
           S = line.substr (pos + 12);
-          conv(z, S.c_str ());
+          NTL::conv(z, S.c_str ());
           addFactor (z, 1, LatticeTester::PRIME);
         }
         pos = line.find ("COMPOSITE FACTOR");
         if (pos != std::string::npos) {
           // The program gave up: last factor is composite
           S = line.substr (pos + 16);
-          conv(z, S.c_str ());
+          NTL::conv(z, S.c_str ());
           addFactor(z, 1, LatticeTester::COMPOSITE);
         }
         pos = line.find ("MIRACL error");

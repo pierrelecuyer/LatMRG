@@ -53,7 +53,7 @@ namespace LatMRG
     unsigned int lnu;
     int s;
 
-    readCriterionType (config.criter, ++ln, 0);
+    readCriterionType (config.criter, ln, 0);
     if (config.criter == SPECTRAL)
       readNormaType (config.normaType, ln, 1);
 

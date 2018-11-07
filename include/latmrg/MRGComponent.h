@@ -322,7 +322,7 @@ namespace LatMRG {
       ifm1.calcInvFactors();
 
       Int r;
-      r = (power(m0, k) - 1) / (m0 - 1);
+      r = (NTL::power(m0, k) - 1) / (m0 - 1);
       ifr.setNumber(r);
 
       if (decor == DECOMP_READ)

@@ -72,7 +72,7 @@ namespace LatMRG
 
   void Zone::init (const Component & comp, int j, int i)
   {
-    MScal h, Eb, Ec;
+    MScal h(0), Eb, Ec;
     // Calcul des bornes pour a[j][i] ou q (ZONE 1 ou 3) dans chaque zone
     if (comp.searchMethod != EXHAUST) {
       if (i+1 == comp.k)
@@ -148,8 +148,8 @@ namespace LatMRG
       double LRE, TotLR;
       while (Z != 0) {
         T1 = Z->sup - Z->inf + 1;
-        conv (LRE, T1);
-        conv (TotLR, Tot);
+        NTL::conv (LRE, T1);
+        NTL::conv (TotLR, Tot);
         Z->frac = LRE / TotLR;
         Z = Z->nextZone;
       }
@@ -173,7 +173,7 @@ namespace LatMRG
           T1 = comp.modulus.m - 1;
           T2 = c + 1;
           Divide (T1, T2, inf, T1);
-          if (!IsZero (T1))
+          if (!NTL::IsZero (T1))
             inf += 1;
           if (inf < (comp.modulus.mRacNeg))
             inf = comp.modulus.mRacNeg;
@@ -312,9 +312,9 @@ Borne = (m DIV (c+1)) + 1. */
         else
           h = comp.H - 1;*/
         T1 = Z->getSupMsH() - Z->getInf() + 1;
-        conv (p, T1);
+        NTL::conv (p, T1);
         p *= RandU01();
-        conv (T1, p);
+        NTL::conv (T1, p);
         T1 = Z->getInf() + T1;
         R->setInf(T1);
         R->setSup(T1 + h);

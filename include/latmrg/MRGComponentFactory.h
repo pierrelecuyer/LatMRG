@@ -53,8 +53,8 @@ namespace LatMRG {
 
       Int d, e, f, g;
 
-      conv(_m, 0);
-      conv(_b, 1);
+      NTL::conv(_m, 0);
+      NTL::conv(_b, 1);
       LatticeTester::CreateVect(_a, 1);
 
       //Calcul de m

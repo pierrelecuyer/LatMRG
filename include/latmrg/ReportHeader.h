@@ -1,7 +1,8 @@
 #ifndef	REPORTHEADER_H
 #define REPORTHEADER_H
-#include "Writer.h"
 
+#include "latticetester/Writer.h"
+#include "latticetester/Types.h"
 
 namespace LatMRG {
 
@@ -16,7 +17,7 @@ namespace LatMRG {
       /**
        * Constructor. See the module `Writer` for more information.
        */
-      ReportHeader (Writer *writer) { m_writer = writer; }
+      ReportHeader (LatticeTester::Writer<MScal> *writer) { m_writer = writer; }
 
       /**
        * Destructor.
@@ -33,7 +34,7 @@ namespace LatMRG {
       /**
        * The `Writer` used to write the report header.
        */
-      Writer* m_writer;
+      LatticeTester::Writer<MScal>* m_writer;
   };
 
 }

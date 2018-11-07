@@ -5,6 +5,8 @@
 #include "latmrg/LatConfig.h"
 
 #include "latticetester/IntLattice.h"
+#include "latticetester/Writer.h"
+#include "latticetester/Types.h"
 
 namespace LatMRG {
 
@@ -25,7 +27,7 @@ namespace LatMRG {
        * the result of a combination of MRG components, a MWC transformed into a
        * MRG, and so on.
        */
-      ReportHeaderLat (Writer *writer, LatConfig<MScal> *config,
+      ReportHeaderLat (LatticeTester::Writer<MScal> *writer, LatConfig<MScal> *config,
           LatticeTester::IntLattice<MScal, BScal, NScal, RScal> *lattice);
 
       /**

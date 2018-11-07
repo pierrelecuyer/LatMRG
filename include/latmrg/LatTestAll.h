@@ -3,19 +3,19 @@
 
 #include "latticetester/Const.h"
 
-#include "latmrg/Writer.h"
+#include "latticetester/Writer.h"
+#include "latticetester/Types.h"
 
 namespace LatMRG {
 
   /**
    * This class is just an auxiliary class that allows launching the spectral,
    * Beyer, or Palpha test on several different generators successively, each
-   * one associated with its own data file. One can launch these tests on all
-   * the data files (with extension <tt>".dat"</tt>) in a directory also. The
+   * one associated with its own data file. One can also launch these tests on all
+   * the data files (with extension <tt>".dat"</tt>) in a directory. The
    * test and generator parameters in the data files must be as described in
    * program `LatMain` (see page (FIXME: page#) of this guide). In fact, the
    * `LatMain` program simply calls the methods of this class.
-   *
    */
   class LatTestAll {
     public:
@@ -46,7 +46,7 @@ namespace LatMRG {
        * Returns a `Writer` created from the input file `infile` and the given
        * `OutputType`.
        */
-      Writer* createWriter (const char *infile, LatticeTester::OutputType ot);
+      LatticeTester::Writer<MScal>* createWriter (const char *infile, LatticeTester::OutputType ot);
   };
 
 }

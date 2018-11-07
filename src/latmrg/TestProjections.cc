@@ -1,13 +1,14 @@
 #include "latmrg/TestProjections.h"
 #include "latmrg/LatticeTest.h"
-#include "latmrg/Writer.h"
-#include "latmrg/WriterRes.h"
 #include "latmrg/ProjIteratorSuccCoords.h"
 #include "latmrg/ProjIteratorNonSuccCoords.h"
 
+#include "latticetester/Writer.h"
+#include "latticetester/WriterRes.h"
 #include "latticetester/UniformWeights.h"
 #include "latticetester/CoordinateSets.h"
 #include "latticetester/Util.h"
+#include "latticetester/Types.h"
 
 #include <cstring>
 #include <sstream>
@@ -39,7 +40,7 @@ namespace
   }
 
 
-  void printMerit (bool racF, double merit, LatMRG::Writer * rw)
+  void printMerit (bool racF, double merit, LatticeTester::Writer<MScal> * rw)
   {
     if (racF) {
       rw->writeString (espaceG);
@@ -56,7 +57,7 @@ namespace
 
   // Prints `len` and `merit` on the output of `rw`.
   void printMerLen (bool invF, bool racF, double len, double merit,
-      LatMRG::Writer * rw)
+      LatticeTester::Writer<MScal> * rw)
   {
     double x = len;
     if (racF)
@@ -116,7 +117,7 @@ namespace LatMRG
       m_racF = true;
     else
       m_racF = false;
-    m_writer = new WriterRes (&cout);
+    m_writer = new WriterRes<MScal> (&cout);
     m_wrFlag = true;
   }
 
@@ -135,7 +136,7 @@ namespace LatMRG
 
   //===========================================================================
 
-  void TestProjections::setOutput (Writer * rw)
+  void TestProjections::setOutput (Writer<MScal> * rw)
   {
     delete m_writer;
     m_wrFlag = false;

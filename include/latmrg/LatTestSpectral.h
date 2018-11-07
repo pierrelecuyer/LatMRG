@@ -23,12 +23,22 @@ namespace LatMRG {
    * program).
    *
    */
+  /**
+   * Currently, when the spectral test is applied in multiple dimensions, the
+   * dual is switched with the primal at each step, expanded re switched to get
+   * the dual into the reducer and the figure of merit is calculated. There is
+   * no check to see if the dual is present even though it is needed. LatTestSpectral
+   * asks for an IntLattice even though the incDim method in the IntLattice base
+   * class is very primitive. This is kind of a miracle that this works.
+   * */
   class LatTestSpectral : public LatticeTest {
     public:
 
       /**
        * Constructor. The *spectral* test will be applied to the lattice `lat`
        * using normalizer `normal` to normalize the figure of merit.
+       * 
+       * `lat` should point to a subclass of IntLattice!!!
        */
       LatTestSpectral (LatticeTester::Normalizer<RScal> * normal,
           LatticeTester::IntLattice<MScal, BScal, NScal, RScal> * lat);

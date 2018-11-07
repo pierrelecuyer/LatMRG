@@ -12,13 +12,13 @@
 #include "latticetester/Types.h"
 #include "latticetester/Util.h"
 #include "latticetester/Const.h"
+#include "latticetester/WriterRes.h"
 
 #include "latmrg/LatTestBeyer.h"
 #include "latmrg/LatTestSpectral.h"
 #include "latmrg/LatTestPalpha.h"
 #include "latmrg/ReportHeader.h"
 #include "latmrg/Merit.h"
-#include "latmrg/WriterRes.h"
 #include "latmrg/TestProjections.h"
 #include "latmrg/Zone.h"
 #include "latmrg/Chrono.h"
@@ -133,9 +133,9 @@ namespace
         return -2;
         // rw = new WriterTex(fname.c_str());
         break;
-      case TERMINAL:
+      case TERM:
         cerr << "\n*** SeekMain::readConfigFile::outputType: " <<
-          "TERMINAL is not implemented." << endl;
+          "TERM is not implemented." << endl;
         throw std::invalid_argument ("SeekMain::readConfigFile");
         // rw = new WriterRes (&cout);
         // psbuf = cout.rdbuf(); // get cout streambuf
@@ -394,7 +394,7 @@ namespace
   }
 
   //===========================================================================
-  
+
   // The output function for the outputType GEN. This function prints the 
   // coefficients of the retained generators in a .gen file. One generator is
   // printed per line, coefficients are separeted by a blank caracter. No 
@@ -453,9 +453,8 @@ namespace
               config.getMaxDim (), config.latType, Norm);
       else if (comp0.genType == RANK1) {
         stationary = false;
-        lattice = new LatticeTester::Rank1Lattice<MScal, MVect, BScal,
-                BVect, BMat, NScal, NVect, RScal> (comp0.modulus.m, coef[0], 
-                    config.getMaxDim (), Norm);
+        lattice = new LatticeTester::Rank1Lattice<MScal, BScal, NScal, RScal> (
+            comp0.modulus.m, coef[0], config.getMaxDim (), Norm);
       }
     }
 
@@ -489,10 +488,8 @@ namespace
           else if (comp0.genType == KOROBOV)
             master = new KorobovLattice<MScal> (*(KorobovLattice<MScal> *) lattice);
           else if (comp0.genType == RANK1)
-            master = new LatticeTester::Rank1Lattice<MScal, MVect, BScal,
-                   BVect, BMat, NScal, NVect, RScal> (
-                       *(LatticeTester::Rank1Lattice<MScal, MVect, BScal,
-                         BVect, BMat, NScal, NVect, RScal> *) lattice);
+            master = new LatticeTester::Rank1Lattice<MScal, BScal, NScal, RScal>
+              (*(LatticeTester::Rank1Lattice<MScal, BScal, NScal, RScal> *) lattice);
 
           master->buildBasis (config.td[1]);
           TestProjections proj (master, lattice, latTest, config.td, config.d);

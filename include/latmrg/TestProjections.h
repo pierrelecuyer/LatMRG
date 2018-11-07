@@ -4,8 +4,8 @@
 #include "latticetester/IntLattice.h"
 #include "latticetester/Types.h"
 #include "latticetester/Weights.h"
+#include "latticetester/Writer.h"
 
-#include "latmrg/Writer.h"
 #include "latmrg/LatticeTest.h"
 #include "latmrg/ProjIterator.h"
 #include "latmrg/MeritProj.h"
@@ -188,7 +188,7 @@ namespace LatMRG {
          * Sends the output to `rw`. If this method is not called, output will
          * be sent to standard output.
          */
-        void setOutput (Writer * rw);
+        void setOutput (LatticeTester::Writer<MScal> * rw);
 
         /**
          * If `flag` is `true`, the tests will be applied on the *dual*
@@ -343,7 +343,7 @@ namespace LatMRG {
          * Output will be written on <tt>m_writer</tt>. By default, it is written on
          * standard output.
          */
-        Writer *m_writer;
+        LatticeTester::Writer<MScal> *m_writer;
         bool m_wrFlag;
 
         /**

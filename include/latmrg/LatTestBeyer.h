@@ -86,7 +86,7 @@ namespace LatMRG {
         LatticeTester::Reducer<Int, BasInt, Dbl, RedDbl> red (*m_lat);
 
         m_lat->dualize ();
-        red.preRedDieter (0);
+        red.redDieter (0);
         m_lat->dualize ();
 
         while (true) {

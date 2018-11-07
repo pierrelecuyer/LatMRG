@@ -9,10 +9,10 @@ namespace LatMRG {
 
   /**
    * A class storing the merit information when projections in multiple
-   * dimesions are considered. This behaves slightly differently then Merit in
+   * dimensions are considered. This behaves slightly differently then Merit in
    * the sense that instead of storing the merit of a LatticeTest after a call
    * of `test`, it stores the merit for all the projections considered when
-   * calling TestProjections.run. Currently, this class does not segment the 
+   * calling TestProjections.run(). Currently, this class does not segment the 
    * figures of merit depending on dimension because it is solely used for 
    * printing.
    * */

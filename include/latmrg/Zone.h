@@ -1,4 +1,3 @@
-/* Zone.h for ISO C++ */
 #ifndef ZONE_H
 #define ZONE_H
 
@@ -9,7 +8,6 @@ namespace LatMRG {
   /**
    * This class implements search zones in parameter space for the coefficients
    * of the recurrences defining generators or lattices.
-   *
    */
   class Zone {
     public:

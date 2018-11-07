@@ -8,7 +8,6 @@ namespace LatMRG {
   /**
    * This projection iterator walks through all projections composed of
    * successive coordinate indices.
-   *
    */
   class ProjIteratorSuccCoords : public ProjIteratorDefault {
     public:

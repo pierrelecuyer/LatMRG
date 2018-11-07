@@ -49,7 +49,7 @@ namespace LatMRG
   void ParamReaderLat::read (LatConfig<MScal> & config)
   {
     getLines ();
-    unsigned int ln = 1;
+    unsigned int ln = 0;
 
     readCriterionType (config.criter, ln, 0);
     if (config.criter == SPECTRAL)

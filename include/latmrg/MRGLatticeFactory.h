@@ -23,7 +23,7 @@ namespace LatMRG {
          * <tt>MRGComponent</tt>’s, with maximal dimension `maxDim`, lacunary 
          * indices `Lac`, lattice type `lat` and vector norm `norm`. `Lac` can 
          * be `NULL` if no lacunary indices are to be used. The combined MRG is 
-         * calculated as described in \cite rLEC96b&thinsp;.
+         * calculated as described in \cite rLEC96b.
          */
         static MRGLattice<Int> * fromCombMRG (MRGComponent<Int> **comp, int J,
             int maxDim, BVect * Lac, LatticeType lat,
@@ -89,7 +89,7 @@ with _n[].
 
       Int d, e, f, g;
 
-      conv (_m, 1);
+      NTL::conv (_m, 1);
       for (int j = 0; j < J; j++) {
         _k = std::max (_k, comp[j]->k);
         _m *= comp[j]->getM();
@@ -111,7 +111,7 @@ with _n[].
 
       // Calcul de ai
       for (int i = 1; i <= _k; ++i) {
-        clear (_a[i]);
+        NTL::clear (_a[i]);
         for (int j = 0; j < J; ++j) {
           if (comp[j]->k >= i) {
             tmp = comp[j]->a[i] * _n[j];
@@ -133,7 +133,7 @@ with _n[].
       lossRho = 1;
 
       for (int j = 0; j < J; j++) {
-        comp[j]->rho = power (comp[j]->getM(), comp[j]->k) - 1;
+        comp[j]->rho = NTL::power (comp[j]->getM(), comp[j]->k) - 1;
         //      LatticeTester::Euclide (g, rho, tmp, d, e, f, comp[j]->rho);
         LatticeTester::Euclide (comp[j]->rho, rho, tmp, d, e, f, g);
         lossRho *= g;
@@ -178,7 +178,7 @@ with _n[].
 
     Int d, e, f, g;
 
-    conv (_m, 1);
+    NTL::conv (_m, 1);
 
     // Calcul de m et k;
     for (int i = 0; i < J; ++i) {
@@ -257,8 +257,8 @@ with _n[].
 
       Int d, e, f, g;
 
-      conv (_m, 0);
-      conv (_b, 1);
+      NTL::conv (_m, 0);
+      NTL::conv (_b, 1);
       LatticeTester::CreateVect (_a, 1);
 
       // Calcul de m

@@ -536,9 +536,9 @@ namespace LatMRG {
       //write();
 
       for (int i = 0; i < dim; i++) {
-        clear (this->m_vSI[0][i]);
+        NTL::clear (this->m_vSI[0][i]);
         for (int j = 0; j < this->m_order; j++) {
-          conv (this->m_t1, this->m_basis[i][dim - j - 2]);
+          NTL::conv (this->m_t1, this->m_basis[i][dim - j - 2]);
           this->m_t1 = this->m_t1 * m_aCoef[j];
           this->m_vSI[0][i] = this->m_vSI[0][i] + this->m_t1;
         }
@@ -556,7 +556,7 @@ namespace LatMRG {
 
       for (int j = 0; j < dim-1; j++) {
 
-        clear (this->m_t1);
+        NTL::clear (this->m_t1);
         for (int i = 0; i < dim-1; i++) {
           this->m_t2 = this->m_dualbasis[i][j];
           this->m_t2 *= this->m_vSI[0][i];
@@ -603,7 +603,7 @@ namespace LatMRG {
       // Construction d'un systeme generateur modulo m.
       for (int k = 0; k < IMax; k++) {
         // pour chaque indice lacunaire
-        conv (m_e, m_lac[k]);
+        NTL::conv (m_e, m_lac[k]);
 
         // x^m_e Mod f(x) Mod m
         pol.powerMod(m_e);
@@ -734,9 +734,9 @@ namespace LatMRG {
 
       if (m_latType == RECURRENT) {
         // check if a_k is relatively prime to m --> m_t1 = 1
-        this->m_t1 = GCD (m_aCoef[this->m_order], this->m_modulo);
+        this->m_t1 = NTL::GCD (m_aCoef[this->m_order], this->m_modulo);
         this->m_t1 = abs(this->m_t1);
-        LatticeTester::set9 (this->m_t2);
+        NTL::set (this->m_t2);
       }
 
       if (m_latType == FULL || m_latType == PRIMEPOWER || (this->m_t1 == this->m_t2)) {
@@ -744,14 +744,14 @@ namespace LatMRG {
         for (int i = 0; i < this->m_order; i++) {
           for (int j = 0; j < this->m_order; j++) {
             if (i != j)
-              clear (m_sta[i][j]);
+              NTL::clear (m_sta[i][j]);
             else
-              LatticeTester::set9 (m_sta[i][j]);
+              NTL::set (m_sta[i][j]);
           }
           m_ip[i] = true;
         }
         double temp;
-        conv(temp, this->m_modulo);
+        NTL::conv(temp, this->m_modulo);
         double lgm2 = 2.0 * LatticeTester::Lg (temp);
         this->calcLgVolDual2 (lgm2);
 
@@ -760,9 +760,8 @@ namespace LatMRG {
           LatticeTester::MyExit (1, "case ORBIT is not finished");
 
           MVect InSta;
-          Int inStatmp;
           InSta.SetLength (this->m_order);
-          clear (statmp[this->m_order-1]);
+          NTL::clear (statmp[this->m_order-1]);
           for (int i = 0; i < this->m_order; i++) {
             InSta[0] = m_aCoef[i] * InSta[this->m_order - i - 1];
             statmp[this->m_order-1] += InSta[0];
@@ -815,19 +814,19 @@ namespace LatMRG {
               // ********* ATTENTION: MulMod (a, b, c, d) est très différent
               // pour les types long et ZZ (voir ZZ.txt). C'est pourquoi on
               // utilise MulMod (a, b, c) même s'il est plus lent. *********
-              m_xi[this->m_order - j - 1] = MulMod (m_xi[this->m_order], m_aCoef[j], 
+              m_xi[this->m_order - j - 1] = NTL::MulMod (m_xi[this->m_order], m_aCoef[j], 
                   this->m_modulo);
               m_xi[this->m_order - j] += m_xi[this->m_order - j - 1];
             }
             // Coeff. constant.
-            m_xi[0] = MulMod (m_xi[this->m_order], m_aCoef[this->m_order], this->m_modulo);
+            m_xi[0] = NTL::MulMod (m_xi[this->m_order], m_aCoef[this->m_order], this->m_modulo);
             statmp[i] = m_xi[this->m_order - 1];
           }
         }
 
         for (int i = 0; i < this->m_order; i++) {
           for (int j = 0; j < this->m_order; j++)
-            clear (m_sta[i][j]);
+            NTL::clear (m_sta[i][j]);
           m_ip[i] = false;
           m_sta[i][0] = statmp[i];
         }
@@ -837,7 +836,7 @@ namespace LatMRG {
           // On passe a l'etat suivant.
           for (int j = 0; j < this->m_order-1; j++)
             statmp[j] = m_sta[j + 1][0];
-          clear (statmp[this->m_order-1]);
+          NTL::clear (statmp[this->m_order-1]);
           for (int i = 0; i < this->m_order; i++) {
             this->m_t1 = m_aCoef[i] * m_sta[this->m_order - i + 1][0];
             statmp[this->m_order-1] += this->m_t1;
@@ -846,7 +845,7 @@ namespace LatMRG {
               statmp[this->m_order-1]);
           // On memorise l'etat suivant.
           for (int i = 0; i < this->m_order-1; i++)
-            swap (m_sta[i][0], m_sta[i + 1][0]);
+            NTL::swap (m_sta[i][0], m_sta[i + 1][0]);
           m_sta[this->m_order-1][0] = statmp[this->m_order-1];
           insertion (statmp);
         }
@@ -856,7 +855,7 @@ namespace LatMRG {
         // Calcul de lgVolDual2
         double x;
         if (m_ip[1]) {
-          conv(x, this->m_modulo / m_sta[0][0]);
+          NTL::conv(x, this->m_modulo / m_sta[0][0]);
           this->m_lgVolDual2[0] = 2.0 * LatticeTester::Lg (x);
         } else
           this->m_lgVolDual2[0] = 0.0;
@@ -864,7 +863,7 @@ namespace LatMRG {
         int rmax = std::min(this->m_order, maxDim);
         for (int r = 2; r <= rmax; r++) {
           if (m_ip[r]) {
-            conv(x, this->m_modulo / m_sta[r][r]);
+            NTL::conv(x, this->m_modulo / m_sta[r][r]);
             this->m_lgVolDual2[r] = this->m_lgVolDual2[r-1] + 2.0 * LatticeTester::Lg (x);
           } else
             this->m_lgVolDual2[r] = this->m_lgVolDual2[r - 1];
@@ -890,7 +889,7 @@ namespace LatMRG {
     {
       for (int j = 0; j < this->m_order; j++) {
         LatticeTester::Modulo (statmp[j], this->m_modulo, statmp[j]);
-        if (!IsZero (statmp[j])) {
+        if (!NTL::IsZero (statmp[j])) {
           if (!m_ip[j]) {
             LatticeTester::Euclide (statmp[j], this->m_modulo, this->m_t1, this->m_t2, this->m_t3, 
                 m_t4, m_sta[j][j]);
@@ -904,7 +903,7 @@ namespace LatMRG {
           } else {
             LatticeTester::Euclide (m_sta[j][j], statmp[j], this->m_t1, this->m_t2, this->m_t3, 
                 m_t4, m_sta[j][j]);
-            clear (statmp[j]);
+            NTL::clear (statmp[j]);
             for (int i = j + 1; i < this->m_order; i++) {
               m_t5 = this->m_t1 * m_sta[j][i];
               m_t6 = this->m_t2 * statmp[i];
@@ -938,7 +937,7 @@ namespace LatMRG {
           if (this->m_t1 < this->m_modulo) {
             for (int j = 0; j < i; j++)
               statmp[j] = m_sta[i][j];
-            clear (m_sta[0][i]);
+            NTL::clear (m_sta[0][i]);
             for (int j = i + 1; j < this->m_order; j++)
               statmp[j] = this->m_t1 * m_sta[i][j];
             insertion (statmp);
@@ -959,7 +958,7 @@ namespace LatMRG {
          for (int j = 0; j < J; j++) {
          for (int i = 1; i <= k; i++) {
          if (j == 0)
-         clear(InSta[i]);
+         NTL::clear(InSta[i]);
          for (int i1 = 1; i1 <= kj; i1++) {
          Multiply (aj [j,i1], VectSup [i-i1], SupT3);
          Add (SupT3, VectSup [i], VectSup [i])

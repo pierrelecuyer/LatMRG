@@ -13,7 +13,6 @@ namespace LatMRG {
    * congruence. Using it, it will not be necessary to recalculate the square
    * roots of large integers, which are used repeatedly in searches for good
    * generators.
-   *
    */
   template<typename Int>
     class Modulus {
@@ -160,7 +159,7 @@ namespace LatMRG {
       b = 0;
       e = 0;
       c = 0;
-      mRac = (Int) SqrRoot (m);
+      mRac = (Int) NTL::SqrRoot (m);
       mRacNeg = -mRac;
       Eight = 8;
       Four = 4;
@@ -179,14 +178,14 @@ namespace LatMRG {
         return;
       }
 
-      m = power (m, m2) + m3;
+      m = NTL::power (m, m2) + m3;
       init (m);
       b = m1;
       e = m2;
       c = m3;
       threeF = true;
       bm1 = b - 1;
-      conv (Y, b);
+      NTL::conv (Y, b);
       b2 = Y*Y;
     }
 
@@ -206,7 +205,7 @@ namespace LatMRG {
         return (Y == 5) || (Y == 3);
       } else {
         Y = A % b2;
-        Y = PowerMod (Y, bm1, b2);
+        Y = NTL::PowerMod (Y, bm1, b2);
         return (Y != 1);
       }
     }
@@ -248,7 +247,7 @@ namespace LatMRG {
 
       } else {
         // mj is a power of a prime b > 2
-        conv (Y3, b);
+        NTL::conv (Y3, b);
         if (perMaxPowPrime (a))
           LatticeTester::Divide (mRed, Y4, m, Y3);
         else {
@@ -256,7 +255,7 @@ namespace LatMRG {
           do {
             Y2 *= b;        // Y = b^e
             Y = a % Y2;
-            Y = PowerMod (Y, bm1, Y2);
+            Y = NTL::PowerMod (Y, bm1, Y2);
           } while (Y == 1);
           LatticeTester::Divide (Y2, Y4, Y2, Y3);
           LatticeTester::Quotient (m, Y2, mRed);

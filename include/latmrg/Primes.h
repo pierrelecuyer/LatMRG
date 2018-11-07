@@ -13,7 +13,6 @@ namespace LatMRG {
    * for which the integer \f$r = (m^k-1)/(m-1)\f$ is also prime for a given
    * \f$k\f$, and possibly for which \f$(m-1)/2\f$ is also prime.
    * \anchor REF__Primes_clas_Primes
-   *
    */
   class Primes {
     public:
