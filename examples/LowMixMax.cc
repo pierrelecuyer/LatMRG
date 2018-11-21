@@ -245,7 +245,7 @@ int main ()
   // building the MMRGLattice and LatTestSpectral objects
 
   string infile = "name";
-  LatTestAll latTestAll;
+  LatTestAll<MScal, NScal> latTestAll;
   LatticeTester::Writer<MScal>* rw = latTestAll.createWriter (infile.c_str(), config.outputType);
 
   LatticeTester::IntLattice<MScal, BScal, NScal, RScal> *lattice = 0;
@@ -254,16 +254,16 @@ int main ()
 
 
   if (memLacF && config.lacunary) {
-    lattice = new MMRGLattice<MScal> (config.comp[0]->getM(), config.comp[0]->A,
+    lattice = new MMRGLattice<MScal, NScal> (config.comp[0]->getM(), config.comp[0]->A,
         toDim, config.comp[0]->k, config.lacunaryType, config.Lac, config.norm);           
   } else {
-    lattice = new MMRGLattice<MScal> (config.comp[0]->getM(), config.comp[0]->A,
+    lattice = new MMRGLattice<MScal, NScal> (config.comp[0]->getM(), config.comp[0]->A,
         toDim, config.comp[0]->k, config.norm);
   }
 
-  ReportHeaderLat header (rw, &config, lattice);
-  ReportFooterLat footer (rw);
-  ReportLat report (rw, &config, &header, &footer);
+  ReportHeaderLat<MScal, NScal> header (rw, &config, lattice);
+  ReportFooterLat<MScal, NScal> footer (rw);
+  ReportLat<MScal, NScal> report (rw, &config, &header, &footer);
 
   double minVal[1 + toDim];
   LatticeTester::SetZero (minVal, toDim);
@@ -280,7 +280,7 @@ int main ()
 
   switch (config.criter) {
     case LatticeTester::SPECTRAL: {
-                                    LatTestSpectral spectralTest (normal, lattice);
+                                    LatTestSpectral<MScal, NScal> spectralTest (normal, lattice);
                                     lattice->buildBasis (fromDim);
                                     spectralTest.attach (&report);
                                     //report.printHeader ();
@@ -298,7 +298,7 @@ int main ()
                                   break;
 
     case LatticeTester::BEYER: {
-                                 LatTestBeyer<MScal, BScal, BVect, BMat, NScal, NVect, RScal> beyerTest (lattice);
+                                 LatTestBeyer<MScal, NScal> beyerTest (lattice);
                                  lattice->buildBasis (fromDim);
                                  beyerTest.attach (&report);
                                  report.printHeader ();

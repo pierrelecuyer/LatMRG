@@ -20,8 +20,8 @@ namespace LatMRG {
    *   X_n = A X_{n-1} \mod m.
    * \f]
    */
-  template<typename Int>
-    class MMRGLattice: public LatticeTester::IntLattice<Int, BScal, NScal, RScal> {
+  template<typename Int, typename Dbl>
+    class MMRGLattice: public LatticeTester::IntLattice<Int, Int, Dbl, Dbl> {
       public:
 
         /**
@@ -50,7 +50,7 @@ namespace LatMRG {
          * Copy constructor. The maximal dimension of the created basis is set
          * equal to <tt>Lat</tt>’s current dimension.
          */
-        MMRGLattice (const MMRGLattice<Int> & Lat);
+        MMRGLattice (const MMRGLattice<Int, Dbl> & Lat);
 
         /**
          * Destructor.
@@ -66,17 +66,17 @@ namespace LatMRG {
          * Assigns `Lat` to this object. The maximal dimension of this basis is
          * set equal to <tt>Lat</tt>’s current dimension.
          */
-        MMRGLattice<Int> & operator= (const MMRGLattice<Int> & Lat);
+        MMRGLattice<Int, Dbl> & operator= (const MMRGLattice<Int, Dbl> & Lat);
 
         /**
          * Returns the \f$j\f$-th lacunary index.
          */
-        BScal & getLac (int j);
+        Int & getLac (int j);
 
         /**
          * Sets the lacunary indices for this lattice to `lat`.
          */
-        virtual void setLac (const LatticeTester::Lacunary<BScal> & lat);
+        virtual void setLac (const LatticeTester::Lacunary<Int> & lat);
 
         /**
          * Returns the generator matrix \f$A\f$ as a string.
@@ -162,7 +162,7 @@ namespace LatMRG {
          * Contains the lacunary indices when `LacunaryFlag` is `true`,
          * otherwise is undefined.
          */
-        LatticeTester::Lacunary<BScal> m_lac;
+        LatticeTester::Lacunary<Int> m_lac;
 
         /**
          * Contains the number of lacunary indices
@@ -208,10 +208,10 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int>
-    MMRGLattice<Int>::MMRGLattice(const Int & m, const MMat & A, int maxDim, 
+  template<typename Int, typename Dbl>
+    MMRGLattice<Int, Dbl>::MMRGLattice(const Int & m, const MMat & A, int maxDim, 
         int r, LatticeTester::NormType norm, LatticeType lat):
-      LatticeTester::IntLattice<Int, BScal, NScal, RScal>::IntLattice(m, r, maxDim, norm)
+      LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::IntLattice(m, r, maxDim, norm)
   {
     m_A = A;
     m_latType = lat;
@@ -225,16 +225,16 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int>
-    MMRGLattice<Int>::MMRGLattice(const Int & m, const MMat & A, int maxDim, 
+  template<typename Int, typename Dbl>
+    MMRGLattice<Int, Dbl>::MMRGLattice(const Int & m, const MMat & A, int maxDim, 
         int r, LacunaryType & lacunaryType, BVect & lac, 
         LatticeTester::NormType norm, LatticeType lat):
-      LatticeTester::IntLattice<Int, BScal, NScal, RScal>::IntLattice (m, r, maxDim, norm)
+      LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::IntLattice (m, r, maxDim, norm)
       //m_lac(lac, r)
       //PW_TODO r ou maxDim?
   {
     m_ip=0;
-    m_lac = LatticeTester::Lacunary<BScal>(lac, maxDim);
+    m_lac = LatticeTester::Lacunary<Int>(lac, maxDim);
     m_A = A;
     m_latType = lat;
     m_lacunaryFlag = true;
@@ -246,9 +246,9 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int>
-    MMRGLattice<Int>::MMRGLattice(const MMRGLattice & lat):
-      LatticeTester::IntLattice<Int, BScal, NScal, RScal>::IntLattice (lat.m_modulo, lat.m_order,
+  template<typename Int, typename Dbl>
+    MMRGLattice<Int, Dbl>::MMRGLattice(const MMRGLattice & lat):
+      LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::IntLattice (lat.m_modulo, lat.m_order,
           lat.getDim(), lat.getNorm ()), m_lac(lat.m_lac)
   {
     m_A = lat.m_A;
@@ -284,18 +284,18 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int>
-    MMRGLattice<Int>::~MMRGLattice ()
+  template<typename Int, typename Dbl>
+    MMRGLattice<Int, Dbl>::~MMRGLattice ()
     {
       kill();
     }
 
   //===========================================================================
 
-  template<typename Int>
-    void MMRGLattice<Int>::kill()
+  template<typename Int, typename Dbl>
+    void MMRGLattice<Int, Dbl>::kill()
     {
-      LatticeTester::IntLattice<Int, BScal, NScal, RScal>::kill();
+      LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::kill();
       if (0 != m_ip)
         delete[] m_ip;
       m_ip = 0;
@@ -313,9 +313,9 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int>
-    MMRGLattice<Int> & MMRGLattice<Int>::operator= 
-    (const MMRGLattice<Int> & lat)
+  template<typename Int, typename Dbl>
+    MMRGLattice<Int, Dbl> & MMRGLattice<Int, Dbl>::operator= 
+    (const MMRGLattice<Int, Dbl> & lat)
     {
       if (this == &lat)
         return *this;
@@ -332,11 +332,11 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int>
-    void MMRGLattice<Int>::init()
+  template<typename Int, typename Dbl>
+    void MMRGLattice<Int, Dbl>::init()
     {
       kill(); //PW_TODO : wzf ? M-A : Indeed wzf...?
-      LatticeTester::IntLattice<Int, BScal, NScal, RScal>::init();
+      LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::init();
       // This should not be needed
       m_xi.SetLength(this->m_order);
       m_A.SetDims(this->m_order, this->m_order);
@@ -361,8 +361,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int>
-    BScal & MMRGLattice<Int>::getLac (int j)
+  template<typename Int, typename Dbl>
+    Int & MMRGLattice<Int, Dbl>::getLac (int j)
     {
       if (isLacunary() && j <= m_lac.getSize() && j > 0)
         return m_lac.getLac(j);
@@ -372,8 +372,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int>
-    void MMRGLattice<Int>::setLac(const LatticeTester::Lacunary<BScal> & lac)
+  template<typename Int, typename Dbl>
+    void MMRGLattice<Int, Dbl>::setLac(const LatticeTester::Lacunary<Int> & lac)
     {
       m_lac = lac;
       m_lacunaryFlag = true;
@@ -384,8 +384,8 @@ namespace LatMRG {
 
   //PW_TODO merdasse à tester
 
-  template<typename Int>
-    std::string MMRGLattice<Int>::toStringGeneratorMatrix () const
+  template<typename Int, typename Dbl>
+    std::string MMRGLattice<Int, Dbl>::toStringGeneratorMatrix () const
     {
       std::ostringstream out;
       out << "[";
@@ -407,8 +407,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int>
-    void MMRGLattice<Int>::buildBasis (int d)
+  template<typename Int, typename Dbl>
+    void MMRGLattice<Int, Dbl>::buildBasis (int d)
     {
       if (m_lacunaryFlag)
         buildLacunaryBasis(d);
@@ -418,8 +418,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int>
-    void MMRGLattice<Int>::buildNonLacunaryBasis (int dimension)
+  template<typename Int, typename Dbl>
+    void MMRGLattice<Int, Dbl>::buildNonLacunaryBasis (int dimension)
     // a basis is built in dimension d
     {
       this->setDim(dimension);
@@ -479,8 +479,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int>
-    void MMRGLattice<Int>::getSubLine(MVect & vec, MMat& B, int lign, int jMin,
+  template<typename Int, typename Dbl>
+    void MMRGLattice<Int, Dbl>::getSubLine(MVect & vec, MMat& B, int lign, int jMin,
         int jMax)
     {
       // both jMin and jMax are included
@@ -491,8 +491,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int>
-    void MMRGLattice<Int>::buildLacunaryBasis (int dimension)
+  template<typename Int, typename Dbl>
+    void MMRGLattice<Int, Dbl>::buildLacunaryBasis (int dimension)
     {
       int sizeA = this->getOrder();
       this->m_vecNorm.resize(dimension);
@@ -601,8 +601,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int>
-    void MMRGLattice<Int>::incDim()
+  template<typename Int, typename Dbl>
+    void MMRGLattice<Int, Dbl>::incDim()
     {
       if (m_lacunaryFlag)
         incrementDimLacunaryBasis(m_numberLacIndices);
@@ -612,11 +612,11 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int>
-    void MMRGLattice<Int>::incrementDimNonLacunaryBasis()
+  template<typename Int, typename Dbl>
+    void MMRGLattice<Int, Dbl>::incrementDimNonLacunaryBasis()
     // X_n = A X_{n-1} mod m. We have: dimension >= order.
     {
-      LatticeTester::IntLattice<Int, BScal, NScal, RScal>::incDim();
+      LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::incDim();
       int newDimension = this->getDim();
       int sizeA = this->getOrder();
 
@@ -689,10 +689,10 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int>
-    void MMRGLattice<Int>::incrementDimLacunaryBasis(int Imax)
+  template<typename Int, typename Dbl>
+    void MMRGLattice<Int, Dbl>::incrementDimLacunaryBasis(int Imax)
     {
-      LatticeTester::IntLattice<Int, BScal, NScal, RScal>::incDim();
+      LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::incDim();
       const int dim = this->getDim (); // new dimension (dim++)
 
       //PW_TODO
@@ -720,7 +720,7 @@ namespace LatMRG {
 
         for (int i1 = 0; i1 < dim-1; i1++) {
 
-          BScal tempScalDual;
+          Int tempScalDual;
 
           LatticeTester::ProdScal<Int> (tempLineBasis, this->m_wSI[i1], dim,
               tempScalDual);
@@ -742,7 +742,7 @@ namespace LatMRG {
       for (int j = 0; j < dim-1; j++) {
 
         //clear (this->m_wSI[0][j]);
-        BScal tempScalDualBis;
+        Int tempScalDualBis;
 
         for (int i = 0; i < dim-1; i++) {
           this->m_t1 = this->m_dualbasis[i][j];

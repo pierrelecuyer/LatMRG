@@ -141,7 +141,7 @@ namespace LatMRG
     // Lecture des paramètres
     string fname (infile);
     fname += ".dat";
-    ParamReaderLat paramRdr (fname.c_str ());
+    ParamReaderLat<MScal> paramRdr (fname.c_str ());
     fname.clear ();
 
     LatConfig<MScal> config;
@@ -211,9 +211,9 @@ namespace LatMRG
       }
     }
 
-    ReportHeaderLat header (rw, &config, lattice);
+    ReportHeaderLat<MScal> header (rw, &config, lattice);
     ReportFooterLat footer (rw);
-    ReportLat report (rw, &config, &header, &footer);
+    ReportLat<MScal> report (rw, &config, &header, &footer);
 
     double minVal[1 + toDim];
     SetZero (minVal, toDim);
@@ -236,7 +236,7 @@ namespace LatMRG
 
     switch (config.criter) {
       case SPECTRAL: {
-                       LatTestSpectral spectralTest (normal, lattice);
+                       LatTestSpectral<MScal> spectralTest (normal, lattice);
                        lattice->buildBasis (fromDim - 1);
                        spectralTest.attach (&report);
 
@@ -284,7 +284,7 @@ namespace LatMRG
                      break;
 
       case BEYER: {
-                    LatTestBeyer<MScal, BScal, BVect, BMat, NScal, NVect, RScal> beyerTest (lattice);
+                    LatTestBeyer<MScal, NScal> beyerTest (lattice);
                     lattice->buildBasis (fromDim - 1);
                     beyerTest.attach (&report);
                     report.printHeader ();

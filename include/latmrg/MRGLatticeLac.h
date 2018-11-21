@@ -16,8 +16,8 @@ namespace LatMRG {
    * indices*.
    *
    */
-  template<typename Int>
-    class MRGLatticeLac:   public MRGLattice<Int> {
+  template<typename Int, typename Dbl>
+    class MRGLatticeLac:   public MRGLattice<Int, Dbl> {
       public:
 
         /**
@@ -35,13 +35,13 @@ namespace LatMRG {
          * Copy constructor. The maximal dimension of the new basis is set to
          * <tt>Lat</tt>’s current dimension.
          */
-        MRGLatticeLac (const MRGLatticeLac<Int> & Lat);
+        MRGLatticeLac (const MRGLatticeLac<Int, Dbl> & Lat);
 
         /**
          * Assigns `Lat` to this object. The maximal dimension of this basis is
          * set to <tt>Lat</tt>’s current dimension.
          */
-        MRGLatticeLac<Int> & operator= (const MRGLatticeLac<Int> & Lat);
+        MRGLatticeLac<Int, Dbl> & operator= (const MRGLatticeLac<Int, Dbl> & Lat);
 
         /**
          * Destructor.
@@ -62,12 +62,12 @@ namespace LatMRG {
         /**
          * Returns the \f$j\f$-th lacunary index.
          */
-        BScal & getLac (int j);
+        Int & getLac (int j);
 
         /**
          * Sets the lacunary indices for this lattice to `lat`.
          */
-        void setLac (const LatticeTester::Lacunary<BScal> & lat);
+        void setLac (const LatticeTester::Lacunary<Int> & lat);
 
       protected:
 
@@ -81,13 +81,13 @@ namespace LatMRG {
         /**
          * The lacunary indices.
          */
-        LatticeTester::Lacunary<BScal> m_lac;
+        LatticeTester::Lacunary<Int> m_lac;
     }; // End class declaration
 
   //===========================================================================
 
-  template<typename Int>
-    MRGLatticeLac<Int>::MRGLatticeLac (const MRGLatticeLac<Int> & lat): MRGLattice<Int>::
+  template<typename Int, typename Dbl>
+    MRGLatticeLac<Int, Dbl>::MRGLatticeLac (const MRGLatticeLac<Int, Dbl> & lat): MRGLattice<Int, Dbl>::
                                                                         MRGLattice (lat.m_modulo, lat.m_aCoef, lat.getDim (), lat.getOrder (),
                                                                             lat.m_latType, lat.getNorm ()), m_lac (lat.m_lac)
   {
@@ -98,8 +98,8 @@ namespace LatMRG {
 
   //=========================================================================
 
-  template<typename Int>
-    MRGLatticeLac<Int> & MRGLatticeLac<Int>::operator= (const MRGLatticeLac<Int> & lat)
+  template<typename Int, typename Dbl>
+    MRGLatticeLac<Int, Dbl> & MRGLatticeLac<Int, Dbl>::operator= (const MRGLatticeLac<Int, Dbl> & lat)
     {
       if (this == &lat)
         return * this;
@@ -111,11 +111,11 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int>
-    MRGLatticeLac<Int>::MRGLatticeLac (const Int & m, const MVect & a, int maxDim,
+  template<typename Int, typename Dbl>
+    MRGLatticeLac<Int, Dbl>::MRGLatticeLac (const Int & m, const MVect & a, int maxDim,
         int k, BVect & Lac, LatticeType lat,
         LatticeTester::NormType norm):
-      MRGLattice<Int>::MRGLattice (m, a, maxDim, k, lat, norm),
+      MRGLattice<Int, Dbl>::MRGLattice (m, a, maxDim, k, lat, norm),
       m_lac (Lac, maxDim)
   {
     this->m_lacunaryFlag = true;
@@ -127,16 +127,16 @@ namespace LatMRG {
 
   //============================================================================
 
-  template<typename Int>
-    MRGLatticeLac<Int>::~MRGLatticeLac ()
+  template<typename Int, typename Dbl>
+    MRGLatticeLac<Int, Dbl>::~MRGLatticeLac ()
     {
     }
 
 
   //=========================================================================
 
-  template<typename Int>
-    BScal & MRGLatticeLac<Int>::getLac (int j)
+  template<typename Int, typename Dbl>
+    Int & MRGLatticeLac<Int, Dbl>::getLac (int j)
     {
       if (j <= this->m_lac.getSize () && j > 0)
         return this->m_lac.getLac (j);
@@ -146,8 +146,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int>
-    void MRGLatticeLac<Int>::setLac (const LatticeTester::Lacunary<BScal> & lac)
+  template<typename Int, typename Dbl>
+    void MRGLatticeLac<Int, Dbl>::setLac (const LatticeTester::Lacunary<Int> & lac)
     {
       this->m_lac = lac;
       this->m_lacunaryFlag = true;
@@ -156,8 +156,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int>
-    void MRGLatticeLac<Int>::buildBasis (int d)
+  template<typename Int, typename Dbl>
+    void MRGLatticeLac<Int, Dbl>::buildBasis (int d)
     {
       int ord = this->m_order;
 
@@ -169,9 +169,9 @@ namespace LatMRG {
       LatticeTester::Invert (this->m_aCoef, b, this->m_order);
 
       // b is the characteristic polynomial
-      PolyPE::setM (this->m_modulo);
-      PolyPE::setF (b);
-      PolyPE pol;
+      PolyPE<Int>::setM (this->m_modulo);
+      PolyPE<Int>::setF (b);
+      PolyPE<Int> pol;
 
       // Construction d'un systeme generateur modulo m.
       for (int k = 0; k < IMax; k++) {
@@ -228,17 +228,17 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int>
-    void MRGLatticeLac<Int>::incDimBasis (int IMax)
+  template<typename Int, typename Dbl>
+    void MRGLatticeLac<Int, Dbl>::incDimBasis (int IMax)
     {
-      MRGLattice<Int>::incDimLaBasis(IMax);
+      MRGLattice<Int, Dbl>::incDimLaBasis(IMax);
     }
 
 
   //===========================================================================
 
-  template<typename Int>
-    void MRGLatticeLac<Int>::initStates ()
+  template<typename Int, typename Dbl>
+    void MRGLatticeLac<Int, Dbl>::initStates ()
     {
       /*
        * Initialise la matrice carrée Sta. La matrice Sta est d'ordre égal à l'ordre du

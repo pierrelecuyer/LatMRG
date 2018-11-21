@@ -176,7 +176,7 @@ namespace LatMRG {
         /**
          * \copydoc lacGroupSize
          */
-        BScal lacSpacing;
+        Int lacSpacing;
 
         /**
          * The lacunary indices, either read explicitly or computed from

@@ -42,7 +42,7 @@ int main(int argc, char** argv)
   string fname(argv[1]);
   fname += ".dat";
   ofstream fout (fname);
-  Primes primes;
+  Primes<MScal> primes;
 
   //   primes.find (3, 39, 3, true, false, fout);
 

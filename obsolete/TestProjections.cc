@@ -89,7 +89,7 @@ namespace LatMRG
 
   TestProjections::TestProjections (LatticeTester::IntLattice<MScal, BScal, 
       NScal, RScal> * master, LatticeTester::IntLattice<MScal, BScal, NScal,
-      RScal> * lattice, LatticeTest * test, int td[], int d)
+      RScal> * lattice, LatticeTest<MScal> * test, int td[], int d)
   {
     if (d <= 0)
       MyExit(1, "   TestProjections:   d <= 0");

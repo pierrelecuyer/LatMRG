@@ -40,7 +40,8 @@
 // Include LatMRG Header
 #include "latmrg/LatConfig.h"
 #include "latmrg-high/LatMRGRoutines.h"
-#include "latmrg/mrgtypes/MixmaxMMRG.h"
+//#include "latmrg/mrgtypes/MixmaxMMRG.h"
+#include "src/latmrg/mrgtypes/MixmaxMMRG.cc"
 
 using namespace std;
 using namespace NTL;
@@ -49,7 +50,7 @@ using namespace LatMRG;
 
 
 void doTests(MScal m, int k, MScal d, MScal c) {
-   MixmaxMMRG mixmax (m, k, d, c);
+   MixmaxMMRG<MScal> mixmax (m, k, d, c);
    //cout << "A = \n" << mixmax.getMatrix() << endl;
 
    LatConfig<MScal> latconfig;

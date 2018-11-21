@@ -200,7 +200,7 @@ namespace LatMRG {
   template<typename Int>
     MRGComponent<Int>::MRGComponent (const Int & m, const MVect & a0, int k0)
     {
-      PolyPE::setM(m);
+      PolyPE<Int>::setM(m);
       module.init(m);
       k = k0;
       a.resize(k);
@@ -214,7 +214,7 @@ namespace LatMRG {
   template<typename Int>
     MRGComponent<Int>::MRGComponent (const Int & m, const MMat & A0, int k0)
     {
-      PolyPE::setM(m);
+      PolyPE<Int>::setM(m);
       module.init(m);
       k = k0;
       A.resize(k, k);
@@ -229,7 +229,7 @@ namespace LatMRG {
         int k0)
     {
       module.init(p, e, c);
-      PolyPE::setM(getM());
+      PolyPE<Int>::setM(getM());
       k = k0;
       A.resize(k, k);
       LatticeTester::CopyMatr(A, A0, k);
@@ -243,7 +243,7 @@ namespace LatMRG {
         int k0)
     {
       module.init(p, e, c);
-      PolyPE::setM(getM());
+      PolyPE<Int>::setM(getM());
       k = k0;
       a.resize(k);
       LatticeTester::CopyVect(a, a0, k);
@@ -299,7 +299,7 @@ namespace LatMRG {
     void MRGComponent<Int>::init (const Int & m0, int k0, DecompType decom1,
         const char *filem1, DecompType decor, const char *filer)
     {
-      PolyPE::setM(m0);
+      PolyPE<Int>::setM(m0);
       module.init(m0);
       k = k0;
       a.resize(k);
@@ -397,11 +397,11 @@ namespace LatMRG {
   template<typename Int>
     bool MRGComponent<Int>::maxPeriod (const MVect & a0)
     {
-      PolyPE::setM(getM());
+      PolyPE<Int>::setM(getM());
       a = a0;
-      PolyPE::reverse (a, k, 2);
-      PolyPE::setF(a);
-      PolyPE pol;
+      PolyPE<Int>::reverse (a, k, 2);
+      PolyPE<Int>::setF(a);
+      PolyPE<Int> pol;
       IntPrimitivity<Int> privfm(ifm1, getM(), 1);
       return pol.isPrimitive(privfm, ifr);
     }
@@ -412,11 +412,11 @@ namespace LatMRG {
   template<typename Int>
     bool MRGComponent<Int>::maxPeriod23 (const MVect & a0)
     {
-      PolyPE::setM(getM());
+      PolyPE<Int>::setM(getM());
       a = a0;
-      PolyPE::reverse (a, k, 2);
-      PolyPE::setF(a);
-      PolyPE pol;
+      PolyPE<Int>::reverse (a, k, 2);
+      PolyPE<Int>::setF(a);
+      PolyPE<Int> pol;
       // La condition 1 a déjà été vérifiée dans SeekMain
       return pol.isPrimitive(ifr);
     }

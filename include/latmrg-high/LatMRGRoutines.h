@@ -42,18 +42,18 @@ namespace LatMRG {
         //memLacF = false; // Lacunary with all lines-columns of bases
 
         if (config.J > 1) { //Several MRG
-          lattice = MRGLatticeFactory<Int>::fromCombMRG (config.comp, config.J,
+          lattice = MRGLatticeFactory<Int, Dbl>::fromCombMRG (config.comp, config.J,
               toDim, 0, config.latType, config.norm);
 
         } else {
           if (config.latType == PRIMEPOWER) {
             config.comp[0]->module.reduceM (config.comp[0]->a[0]);
             if (memLacF && config.lacunary)
-              lattice = new MRGLatticeLac<Int> (config.comp[0]->module.mRed,
+              lattice = new MRGLatticeLac<Int, Dbl> (config.comp[0]->module.mRed,
                   config.comp[0]->a, toDim, config.comp[0]->k, config.Lac,
                   config.latType, config.norm);
             else{
-              lattice = new MRGLattice<Int> (config.comp[0]->module.mRed,
+              lattice = new MRGLattice<Int, Dbl> (config.comp[0]->module.mRed,
                   config.comp[0]->a, toDim, config.comp[0]->k,
                   config.latType, config.norm);
 
@@ -62,18 +62,18 @@ namespace LatMRG {
           } else if (config.genType[0] == MRG || config.genType[0] == LCG) {
 
             if (memLacF && config.lacunary){            
-              lattice = new MRGLatticeLac<Int> (config.comp[0]->module.mRed,
+              lattice = new MRGLatticeLac<Int, Dbl> (config.comp[0]->module.mRed,
                   config.comp[0]->a, toDim, config.comp[0]->k, config.Lac,
                   config.latType, config.norm);
             }
             else{
-              lattice = new MRGLattice<Int> (config.comp[0]->module.mRed,
+              lattice = new MRGLattice<Int, Dbl> (config.comp[0]->module.mRed,
                   config.comp[0]->a, toDim, config.comp[0]->k,
                   config.latType, config.norm);
             }
 
           } else if (config.genType[0] == KOROBOV) {
-            lattice = new KorobovLattice<Int> (config.comp[0]->getM (),
+            lattice = new KorobovLattice<Int, Dbl> (config.comp[0]->getM (),
                 config.comp[0]->a[1], toDim, config.norm);
           } else if (config.genType[0] == RANK1) {
             lattice = new LatticeTester::Rank1Lattice<Int, BasInt, Dbl, RedDbl>
@@ -82,11 +82,11 @@ namespace LatMRG {
 
           } else if (config.genType[0] == MMRG) {
             if (memLacF && config.lacunary) {
-              lattice = new MMRGLattice<Int> (config.comp[0]->getM(),
+              lattice = new MMRGLattice<Int, Dbl> (config.comp[0]->getM(),
                   config.comp[0]->A, toDim,config.comp[0]->k, config.lacunaryType,
                   config.Lac, config.norm);           
             } else {
-              lattice = new MMRGLattice<Int> (config.comp[0]->getM(), 
+              lattice = new MMRGLattice<Int, Dbl> (config.comp[0]->getM(), 
                   config.comp[0]->A, toDim,config.comp[0]->k, config.norm);
             }
           }
@@ -116,7 +116,7 @@ namespace LatMRG {
         switch (config.criter) {
           case LatticeTester::SPECTRAL: 
             {
-              LatTestSpectral spectralTest (normal, lattice);
+              LatTestSpectral<Int, Dbl> spectralTest (normal, lattice);
               lattice->buildBasis (fromDim - 1);
               //spectralTest.attach (&report);
               //report.printHeader ();
@@ -134,21 +134,21 @@ namespace LatMRG {
                 //report.printFooter ();
               } else {
                 if (config.genType[0] == MRG || config.genType[0] == LCG)
-                  master = new MRGLattice<Int> (*(MRGLattice<Int> *) lattice);
+                  master = new MRGLattice<Int, Dbl> (*(MRGLattice<Int, Dbl> *) lattice);
                 else if (config.genType[0] == KOROBOV)
-                  master = new KorobovLattice<Int> (
-                      *(KorobovLattice<Int> *) lattice);
+                  master = new KorobovLattice<Int, Dbl> (
+                      *(KorobovLattice<Int, Dbl> *) lattice);
                 else if (config.genType[0] == RANK1)
                   master = new LatticeTester::Rank1Lattice<Int, BasInt, Dbl, RedDbl>
                     (*(LatticeTester::Rank1Lattice<Int, BasInt, Dbl, RedDbl> *) lattice);
                 else if (config.genType[0] == MMRG)
-                  master = new MMRGLattice<Int> (*(MMRGLattice<Int> *) lattice);
+                  master = new MMRGLattice<Int, Dbl> (*(MMRGLattice<Int, Dbl> *) lattice);
                 else {
                   std::cout << "GenType has not been specified correctly in config.\n";
                 }
 
                 master->buildBasis (toDim);
-                TestProjections proj (master, lattice, &spectralTest, config.td,
+                TestProjections<Int, Dbl> proj (master, lattice, &spectralTest, config.td,
                     config.d);
                 //proj. setOutput (rw);
                 proj.setDualFlag (config.dualF);
@@ -178,7 +178,7 @@ namespace LatMRG {
 
           case LatticeTester::BEYER: 
             {
-              LatTestBeyer<Int, BasInt, BasVec, BasMat, Dbl, DblVec, RedDbl>
+              LatTestBeyer<Int, Dbl>
                 beyerTest (lattice);
               lattice->buildBasis (fromDim - 1);
               //beyerTest.attach (&report);
@@ -201,7 +201,7 @@ namespace LatMRG {
 
           case LatticeTester::PALPHA: 
             {
-              LatTestPalpha<Int> palphaTest (normal, lattice);
+              LatTestPalpha<Int, Dbl> palphaTest (normal, lattice);
               palphaTest.setConfig (&config);
               //palphaTest.attach (&report);
               //report.printHeader ();
@@ -211,10 +211,10 @@ namespace LatMRG {
                 //report.printTable ();
                 //report.printFooter ();
               } else {
-                MRGLattice<Int> master = MRGLattice<Int> (*(MRGLattice<Int> *) 
+                MRGLattice<Int, Dbl> master = MRGLattice<Int, Dbl> (*(MRGLattice<Int, Dbl> *) 
                     lattice);
                 master.buildBasis (toDim);
-                TestProjections proj (&master, lattice, &palphaTest, config.td,
+                TestProjections<Int, Dbl> proj (&master, lattice, &palphaTest, config.td,
                     config.d);
                 //proj. setOutput (rw);
                 /*rw->writeString ("\n\nMin merit:   ");

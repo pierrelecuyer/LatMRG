@@ -13,7 +13,7 @@ Richard Simard
 
 namespace LatMRG
 {
-  ReportFooterLat::ReportFooterLat (LatticeTester::Writer<MScal> * writer, LatticeTest * test):
+  ReportFooterLat::ReportFooterLat (LatticeTester::Writer<MScal> * writer, LatticeTest<MScal> * test):
     ReportFooter(writer)
   {
     m_test = test;

@@ -13,6 +13,7 @@
 #include "latticetester/Util.h"
 #include "latticetester/Const.h"
 #include "latticetester/WriterRes.h"
+#include "latticetester/Types.h"
 
 #include "latmrg/LatTestBeyer.h"
 #include "latmrg/LatTestSpectral.h"
@@ -47,7 +48,7 @@ namespace
   bool isFirstTest = true;
   NormType Norm = L2NORM;
 
-  SeekConfig config;
+  SeekConfig<MScal> config;
   ofstream fout;
   string outfile;
   // streambuf *psbuf;
@@ -57,13 +58,13 @@ namespace
   MMat coef;
   LatticeTester::IntLattice<MScal, BScal, NScal, RScal> *lattice;
   LatticeTester::IntLattice<MScal, BScal, NScal, RScal> *master;
-  LatticeTest *latTest;
-  LatticeTest **pool;            // vecteur de LatticeTest*
+  LatticeTest<MScal, NScal> *latTest;
+  LatticeTest<MScal, NScal> **pool;            // vecteur de LatticeTest*
   int poolLen = 0;               // longueur du vecteur pool <= numGen
 
   // What are those? Nobody knows.
-  Zone **zone;
-  Zone **reg;
+  Zone<MScal> **zone;
+  Zone<MScal> **reg;
   IntPrimitivity<MScal> **primJ;
 
   long numATried = 0;
@@ -87,10 +88,10 @@ namespace
   void SortBestGen ()
   {
     for (int r = 0; r < poolLen - 1; r++) {
-      LatticeTest *latTest1 = pool[r];
+      LatticeTest<MScal, NScal> *latTest1 = pool[r];
       double merit1 = latTest1->getMerit ().getWorstMerit ();
       for (int s = r + 1; s < poolLen; s++) {
-        LatticeTest *latTest2 = pool[s];
+        LatticeTest<MScal, NScal> *latTest2 = pool[s];
         double merit2 = latTest2->getMerit ().getWorstMerit ();
         if (merit2 > merit1) {
           latTest = pool[s];
@@ -115,7 +116,7 @@ namespace
     string fname (argv[1]);
     //string fname ("./inputTestFiles/seekZZDD_test1");
     fname += ".dat";
-    ParamReaderSeek paramRdr (fname.c_str ());
+    ParamReaderSeek<MScal, NScal> paramRdr (fname.c_str ());
     paramRdr.read (config);
 
     // Writer *rw;
@@ -211,7 +212,7 @@ namespace
 */
   //===========================================================================
 
-  void PrintComponentData (const Component & comp, int j)
+  void PrintComponentData (const Component<MScal> & comp, int j)
   {
     // Prints parameter of component j of combined generator
     fout << "Component " << j + 1 << endl;
@@ -251,7 +252,7 @@ namespace
 
   //===========================================================================
 
-  void PrintPolyStats (const Component & comp, int j)
+  void PrintPolyStats (const Component<MScal> & comp, int j)
   {
     fout << "Component " << j + 1 << endl;
     fout << "-----------\n";
@@ -276,7 +277,7 @@ namespace
   void PrintResults ()
   {
     fout.open (outfile.c_str());
-    Component & comp0 = config.compon[0];
+    Component<MScal> & comp0 = config.compon[0];
 
     fout << "SEARCH for good ";
     if (comp0.genType == KOROBOV)
@@ -352,7 +353,7 @@ namespace
         "+--------------------------------------------------------------------"
         << endl;
       for (int s = 0; s < poolLen; s++) {
-        LatticeTest *latTest = pool[s];
+        LatticeTest<MScal, NScal> *latTest = pool[s];
         LatticeTester::IntLattice<MScal, BScal, NScal, RScal> *lat = latTest->getLattice ();
         int dimWorst = latTest->getMerit ().getDimWorst ();
         double S_T = latTest->getMerit ().getWorstMerit ();
@@ -407,7 +408,7 @@ namespace
     fout << poolLen << std::endl;
     for (int i = 0; i < config.C; i++) {
       for (int s = 0; s < poolLen; s++) {
-        LatticeTest *latTest = pool[s];
+        LatticeTest<MScal, NScal> *latTest = pool[s];
         LatticeTester::IntLattice<MScal, BScal, NScal, RScal> *lat = latTest->getLattice ();
         if (config.J > 1) {
           fout << "Cannot print components because things have been done \
@@ -434,22 +435,22 @@ namespace
   void Test ()
   {
     bool stationary = true;
-    Component & comp0 = config.compon[0];
+    Component<MScal> & comp0 = config.compon[0];
 
     if (config.J > 1) {         // On doit faire la combinaison des MRG
       for (int s = 0; s < config.J; s++)
         compJ[s]->setA (coef[s]);
-      lattice = MRGLatticeFactory<MScal>::fromCombMRG (compJ, config.J,
+      lattice = MRGLatticeFactory<MScal, NScal>::fromCombMRG (compJ, config.J,
           config.getMaxDim (), 0, config.latType, Norm);
 
     } else {
       if (comp0.genType == MRG || comp0.genType == LCG)
         lattice =
-          new MRGLattice<MScal> (comp0.modulus.m, coef[0],
+          new MRGLattice<MScal, NScal> (comp0.modulus.m, coef[0],
               config.getMaxDim (), comp0.k, config.latType, Norm);
       else if (comp0.genType == KOROBOV)
         lattice =
-          new KorobovLattice<MScal> (comp0.modulus.m, coef[0][0],
+          new KorobovLattice<MScal, NScal> (comp0.modulus.m, coef[0][0],
               config.getMaxDim (), config.latType, Norm);
       else if (comp0.genType == RANK1) {
         stationary = false;
@@ -467,7 +468,7 @@ namespace
 
     switch (config.criter) {
       case SPECTRAL:
-        latTest = new LatTestSpectral (normal, lattice);
+        latTest = new LatTestSpectral<MScal, NScal> (normal, lattice);
         latTest->setDualFlag (config.dualF);
         latTest->setInvertFlag (config.invertF);
         latTest->setMaxAllDimFlag (true);
@@ -484,15 +485,15 @@ namespace
           }
         } else {
           if (comp0.genType == MRG || comp0.genType == LCG)
-            master = new MRGLattice<MScal> (*(MRGLattice<MScal> *) lattice);
+            master = new MRGLattice<MScal, NScal> (*(MRGLattice<MScal, NScal> *) lattice);
           else if (comp0.genType == KOROBOV)
-            master = new KorobovLattice<MScal> (*(KorobovLattice<MScal> *) lattice);
+            master = new KorobovLattice<MScal, NScal> (*(KorobovLattice<MScal, NScal> *) lattice);
           else if (comp0.genType == RANK1)
             master = new LatticeTester::Rank1Lattice<MScal, BScal, NScal, RScal>
               (*(LatticeTester::Rank1Lattice<MScal, BScal, NScal, RScal> *) lattice);
 
           master->buildBasis (config.td[1]);
-          TestProjections proj (master, lattice, latTest, config.td, config.d);
+          TestProjections<MScal, NScal> proj (master, lattice, latTest, config.td, config.d);
           proj.setDualFlag (config.dualF);
           //proj.setPrintF (true);
           double merit = proj.run (stationary, false, minVal);
@@ -502,7 +503,7 @@ namespace
         break;
 
       case BEYER:
-        latTest = new LatTestBeyer<MScal, BScal, BVect, BMat, NScal, NVect, RScal>  (lattice);
+        latTest = new LatTestBeyer<MScal, NScal>  (lattice);
         latTest->setDualFlag (config.dualF);
         latTest->setInvertFlag (config.invertF);
         latTest->setMaxAllDimFlag (true);
@@ -510,7 +511,7 @@ namespace
         break;
 
       case PALPHA:
-        latTest = new LatTestPalpha<MScal> (normal, lattice);
+        latTest = new LatTestPalpha<MScal, NScal> (normal, lattice);
         latTest->setDualFlag (config.dualF);
         latTest->setMaxAllDimFlag (true);
         latTest->test (config.td[0], config.td[1], minVal);
@@ -582,7 +583,7 @@ namespace
     }
 
     if (minj > 0) {
-      LatticeTest *t = pool[minj];
+      LatticeTest<MScal, NScal> *t = pool[minj];
       pool[minj] = pool[0];
       pool[0] = t;
     }
@@ -639,7 +640,7 @@ namespace
   void ExamThisaj (int j, int i, bool Pow2, ProcII Exam)
   {
     // Called by InsideExam.  Examines the current a_j
-    Component & comp = config.compon[j];
+    Component<MScal> & comp = config.compon[j];
     if ((i == comp.k) && (coef[j][i] == 0))
       return ;
 
@@ -712,7 +713,7 @@ namespace
        bit patterns with less than NbMaxBits [j] in total, that can be
        obtained by switching from 0 to 1 some of the bits of q from bit b0
        to bit b1. */
-    Component & comp = config.compon[j];
+    Component<MScal> & comp = config.compon[j];
 
     for (int b = b0; b <= b1; b++) {
       coef[j][i] = q + TWO_EXP[b];
@@ -734,14 +735,14 @@ namespace
   // Increments the coefficient that Z refers to. At each step this calls a 
   // function that will look at the next coefficient, or that will call a method
   // to test the current state of the generator.
-  void InsideExam (Zone * Z, int j, int i, ProcII exam)
+  void InsideExam (Zone<MScal> * Z, int j, int i, ProcII exam)
   {
     /*
      *  Examines all the possible values for coefficient $a_i$ of component
      *  `j` in this region according to the chosen criteria, and
      *  calls different methods depending on the criteria. \texttt{exam} is
      *  the (recursive) method that called \texttt{InsideExam}. */
-    Component & comp = config.compon[j];
+    Component<MScal> & comp = config.compon[j];
     MScal q, Temp;
     bool Pow2 = false;
     MScal Eight;
@@ -764,7 +765,7 @@ namespace
       return ;
     }
 
-    Zone::ZoneType No = Z->getNo ();
+    Zone<MScal>::ZoneType No = Z->getNo ();
     MScal sup;
     sup = Z->getSup ();
     // if (q == 1)
@@ -797,8 +798,8 @@ namespace
         h = config.compon[j].Hk-1;
       else
         h = config.compon[j].H-1;
-      Zone *Z = zone[j] + i;
-      Zone *R = reg[j] + i;
+      Zone<MScal> *Z = zone[j] + i;
+      Zone<MScal> *R = reg[j] + i;
       ++CoRegions[j];
       R->chooseBoundaries (config.compon[j], Z, h);
       // cout << (R + 1)->toString();
@@ -814,7 +815,7 @@ namespace
     // Used in the "Random search" case
     if (timer.timeOver (config.duration))
       return ;
-    Zone *R;
+    Zone<MScal> *R;
     R = i + reg[j];             // On va examiner toute cette region
     InsideExam (R, j, i, ExamRegion);
   }
@@ -828,7 +829,7 @@ namespace
     // This method is used in the {\em exhaustive search} case.
     if (timer.timeOver (config.duration))
       return ;
-    Zone *Z;
+    Zone<MScal> *Z;
     Z = i + zone[j];
 
     while (Z != 0) {
@@ -847,7 +848,7 @@ namespace
     if (MINKL1 == config.normaType)
       Norm = L1NORM;
 
-    pool = new LatticeTest * [config.numGen[0]];
+    pool = new LatticeTest<MScal, NScal> * [config.numGen[0]];
     // memset (pool, 0, config.numGen[0] * sizeof (LatticeTest *));
 
     coef.SetDims (config.J, config.getMaxK ()+1);
@@ -868,7 +869,7 @@ namespace
 
     int s;
     for (s = 0; s < config.J; s++) {
-      Component & comps = config.compon[s];
+      Component<MScal> & comps = config.compon[s];
       CoNoElemPrim[s] = 0;
       CoElemPrim[s] = 0;
       TotEP[s] = 0;
@@ -887,13 +888,13 @@ namespace
         compJ[s] = new MRGComponent<MScal> (comps.modulus.m, coef[s],  comps.k);
     }
 
-    zone = new Zone * [config.J];
+    zone = new Zone<MScal> * [config.J];
     for (s = 0; s < config.J; s++)
-      zone[s] = new Zone[config.compon[s].k+1];
+      zone[s] = new Zone<MScal>[config.compon[s].k+1];
 
-    reg = new Zone * [config.J];
+    reg = new Zone<MScal> * [config.J];
     for (s = 0; s < config.J; s++)
-      reg[s] = new Zone[config.compon[s].k+1];
+      reg[s] = new Zone<MScal>[config.compon[s].k+1];
 
     for (s = 0; s < config.J; s++) {
       for (int i = 0; i < config.compon[s].k; i++)
@@ -991,7 +992,7 @@ namespace
   void TestGen ()
   {
     int numGen, ln = 0;
-    ParamReaderExt reader(config.fileName);
+    ParamReaderExt<MScal, NScal> reader(config.fileName);
     reader.getLines();
     reader.readInt(numGen, ++ln, 0);
     int k = config.compon[0].k;
@@ -1022,7 +1023,7 @@ int main (int argc, char **argv)
   //config.write ();
   Init ();
   timer.init ();
-  Zone::initFrontieres (config);
+  Zone<MScal>::initFrontieres (config);
   InitZones ();
   if (config.readGenFile) {
     TestGen();

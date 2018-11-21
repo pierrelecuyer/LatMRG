@@ -23,7 +23,7 @@ int main (int argc, char **argv)
   }
 
   struct stat buf;    // properties of a file or directory
-  LatTestAll testall;
+  LatTestAll<MScal, NScal> testall;
   int status = 0;
 
   //char *testfile = "/Users/Erwan1/projects/github/LatMRG/latZZDD_test2";

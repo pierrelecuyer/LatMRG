@@ -1,12 +1,25 @@
 #ifndef POLY_H
 #define POLY_H
 
+#include <sstream>
+#include <iostream>
+#include <string>
+#include <stdexcept>
+
+#include "NTL/ZZ.h"
+#include "NTL/ZZ_p.h"
+#include "NTL/ZZ_pX.h"
+#include "NTL/ZZ_pXFactoring.h"
+#include "NTL/lzz_p.h"
+#include "NTL/lzz_pE.h"
+#include "NTL/lzz_pX.h"
+#include "NTL/lzz_pXFactoring.h"
+
+#include "latticetester/Util.h"
+#include "latticetester/IntFactor.h"
 #include "latticetester/Types.h"
 
-#include "IntPrimitivity.h"
-
-#include <string>
-
+#include "latmrg/IntPrimitivity.h"
 
 namespace LatMRG {
 
@@ -45,139 +58,396 @@ namespace LatMRG {
    * <tt>ZZ_p</tt>.
    *
    */
-  class PolyPE : public PolE {
-    public:
+  template<typename Int>
+    class PolyPE : public PolE {
+      public:
 
-      /**
-       * Initializes the modulus \f$m\f$ for this class. This must be called before
-       * doing any operations on `PolyPE` objects, otherwise the results are
-       * unpredictable.
-       */
-      static void setM (const MScal & m);
+        /**
+         * Initializes the modulus \f$m\f$ for this class. This must be called before
+         * doing any operations on `PolyPE` objects, otherwise the results are
+         * unpredictable.
+         */
+        static void setM (const Int & m);
 
-      /**
-       * Returns a read-only reference to \f$m\f$.
-       */
-      static const MScal & getM () { return m_m; }
+        /**
+         * Returns a read-only reference to \f$m\f$.
+         */
+        static const Int & getM () { return m_m; }
 
-      /**
-       * Initializes the modulus polynomial \f$f(x) = c_0 + c_1x +c_2x^2 +
-       * \cdots+ c_kx^k\f$ of degree \f$k\f$ for this class from the
-       * coefficients \f$c_i = \f$<tt>C[i]</tt> of vector `C` of dimension
-       * \f$k + 1\f$. This function must be called before doing any
-       * arithmetic operations on `PolyPE` objects, otherwise the results are
-       * unpredictable.
-       */
-      static void setF (const MVectP & C);
+        /**
+         * Initializes the modulus polynomial \f$f(x) = c_0 + c_1x +c_2x^2 +
+         * \cdots+ c_kx^k\f$ of degree \f$k\f$ for this class from the
+         * coefficients \f$c_i = \f$<tt>C[i]</tt> of vector `C` of dimension
+         * \f$k + 1\f$. This function must be called before doing any
+         * arithmetic operations on `PolyPE` objects, otherwise the results are
+         * unpredictable.
+         */
+        static void setF (const MVectP & C);
 
-      /**
-       * Same as above, but instead from a `MVect`.
-       */
-      static void setF (const MVect & C);
+        /**
+         * Same as above, but instead from a `MVect`.
+         */
+        static void setF (const MVect & C);
 
-      /**
-       * Returns the modulus polynomial \f$f(x)\f$.
-       */
-      static const PolX & getF () { return modulus().val(); }
+        /**
+         * Returns the modulus polynomial \f$f(x)\f$.
+         */
+        static const PolX & getF () { return modulus().val(); }
 
-      /**
-       * Returns the degree of the modulus \f$f(x)\f$.
-       */
-      static long getK () { return degree(); }
+        /**
+         * Returns the degree of the modulus \f$f(x)\f$.
+         */
+        static long getK () { return degree(); }
 
-      /**
-       * Given a vector \f$C = [c_0, c_1, …, c_{k-1}, c_k]\f$, this function
-       * reorders the components of \f$C\f$ in the form \f$C = [c_k, c_{k-1},
-       * …, c_1, c_0]\f$ for `kind = 1`, and in the form \f$C =
-       * [-c_k, -c_{k-1}, …, -c_1, 1]\f$ for `kind = 2`. For other values of
-       * `kind`, it has no effect.
-       */
-      static void reverse (MVect & c, long k, int kind);
+        /**
+         * Given a vector \f$C = [c_0, c_1, …, c_{k-1}, c_k]\f$, this function
+         * reorders the components of \f$C\f$ in the form \f$C = [c_k, c_{k-1},
+         * …, c_1, c_0]\f$ for `kind = 1`, and in the form \f$C =
+         * [-c_k, -c_{k-1}, …, -c_1, 1]\f$ for `kind = 2`. For other values of
+         * `kind`, it has no effect.
+         */
+        static void reverse (MVect & c, long k, int kind);
 
-      /**
-       * Minimal constructor: this object is set to the **0** polynomial.
-       */
-      PolyPE ();
-      const PolX & getVal () { return rep(*this); }
-      void setVal (long j);
+        /**
+         * Minimal constructor: this object is set to the **0** polynomial.
+         */
+        PolyPE ();
+        const PolX & getVal () { return rep(*this); }
+        void setVal (long j);
 
-      /**
-       * Initializes this object to \f$C\f$.
-       */
-      void setVal (const MVect & C);
+        /**
+         * Initializes this object to \f$C\f$.
+         */
+        void setVal (const MVect & C);
 
-      /**
-       * Initializes this object to the polynomial in `str`.
-       */
-      void setVal (std::string & str);
+        /**
+         * Initializes this object to the polynomial in `str`.
+         */
+        void setVal (std::string & str);
 
-      /**
-       * Sets \f$v = x^j \mod f(x) (\bmod m)\f$.
-       */
-      void powerMod (const MScal & j);
+        /**
+         * Sets \f$v = x^j \mod f(x) (\bmod m)\f$.
+         */
+        void powerMod (const Int & j);
 
-      /**
-       * Returns the coefficients of this polynomial as a vector \f$C\f$ of
-       * \f$k\f$ components, where \f$k\f$ is the degree of the modulus
-       * \f$f(x)\f$.
-       */
-      void toVector (MVect & c);
+        /**
+         * Returns the coefficients of this polynomial as a vector \f$C\f$ of
+         * \f$k\f$ components, where \f$k\f$ is the degree of the modulus
+         * \f$f(x)\f$.
+         */
+        void toVector (MVect & c);
 
-      /**
-       * Returns `true` if the modulus \f$f(x)\f$ is a primitive polynomial
-       * modulo \f$m\f$. For this to be true, assuming that \f$f(x)\f$ has
-       * the form {@link REF__PolyPE_eq_poly2 (eq.poly2)} above, the three
-       * following conditions must be satisfied: \anchor REF__PolyPE_isprimi
-       * <dl> <dt>None</dt>
-       * <dd>
-       * \f$[(-1)^{k+1} a_k]^{(m-1)/q} \bmod m \neq1\f$ for each prime
-       * factor \f$q\f$ of \f$m - 1\f$;
-       * </dd>
-       * <dt>None</dt>
-       * <dd>
-       * \f$x^r \bmod(f(x),m) =  (-1)^{k+1} a_k \bmod m\f$;
-       * </dd>
-       * <dt>None</dt>
-       * <dd>
-       * \f$x^{r/q} \bmod(f(x), m) \f$ has positive degree for each prime
-       * factor \f$q\f$ of \f$r\f$, with \f$1<q< r\f$;
-       * </dd>
-       * </dl> where \f$r = (m^k - 1)/(m - 1)\f$. The factorizations of
-       * \f$m-1\f$ and \f$r\f$ must be in `fm` and `fr` respectively.
-       * Condition 1 is the same as saying that \f$(-1)^{k+1} a_k\f$ is a
-       * primitive root of \f$m\f$. Condition 3 is automatically satisfied
-       * when \f$r\f$ is prime.
-       */
-      bool isPrimitive (const IntPrimitivity<MScal> & fm, const IntFactorization<MScal> & fr);
+        /**
+         * Returns `true` if the modulus \f$f(x)\f$ is a primitive polynomial
+         * modulo \f$m\f$. For this to be true, assuming that \f$f(x)\f$ has
+         * the form {@link REF__PolyPE_eq_poly2 (eq.poly2)} above, the three
+         * following conditions must be satisfied: \anchor REF__PolyPE_isprimi
+         * <dl> <dt>None</dt>
+         * <dd>
+         * \f$[(-1)^{k+1} a_k]^{(m-1)/q} \bmod m \neq1\f$ for each prime
+         * factor \f$q\f$ of \f$m - 1\f$;
+         * </dd>
+         * <dt>None</dt>
+         * <dd>
+         * \f$x^r \bmod(f(x),m) =  (-1)^{k+1} a_k \bmod m\f$;
+         * </dd>
+         * <dt>None</dt>
+         * <dd>
+         * \f$x^{r/q} \bmod(f(x), m) \f$ has positive degree for each prime
+         * factor \f$q\f$ of \f$r\f$, with \f$1<q< r\f$;
+         * </dd>
+         * </dl> where \f$r = (m^k - 1)/(m - 1)\f$. The factorizations of
+         * \f$m-1\f$ and \f$r\f$ must be in `fm` and `fr` respectively.
+         * Condition 1 is the same as saying that \f$(-1)^{k+1} a_k\f$ is a
+         * primitive root of \f$m\f$. Condition 3 is automatically satisfied
+         * when \f$r\f$ is prime.
+         */
+        bool isPrimitive (const IntPrimitivity<Int> & fm, const IntFactorization<Int> & fr);
 
-      /**
-       * Given the factorization of \f$r\f$, this method returns `true` if
-       * conditions 2 and 3 above are satisfied by the modulus \f$f(x)\f$. It
-       * does not check condition 1, assuming it to be `true`.
-       */
-      bool isPrimitive (const IntFactorization<MScal> & r);
+        /**
+         * Given the factorization of \f$r\f$, this method returns `true` if
+         * conditions 2 and 3 above are satisfied by the modulus \f$f(x)\f$. It
+         * does not check condition 1, assuming it to be `true`.
+         */
+        bool isPrimitive (const IntFactorization<Int> & r);
 
-      /**
-       * Returns this object as a string.
-       */
-      std::string toString () const;
-    private:
+        /**
+         * Returns this object as a string.
+         */
+        std::string toString () const;
+      private:
 
-      /**
-       * Modulus of congruence.
-       */
-      static MScal m_m;
+        /**
+         * Modulus of congruence.
+         */
+        static Int m_m;
 
-      /**
-       * Degree of the modulus polynomial \f$f\f$.
-       */
-      static long m_k;
+        /**
+         * Degree of the modulus polynomial \f$f\f$.
+         */
+        static long m_k;
 
-      /**
-       * The polynomial \f$f(x) = x\f$.
-       */
-      static PolX m_x;
-  };
+        /**
+         * The polynomial \f$f(x) = x\f$.
+         */
+        static PolX m_x;
+    };
+
+  template<typename Int>
+    Int PolyPE<Int>::m_m;
+  template<typename Int>
+    long PolyPE<Int>::m_k;
+  template<typename Int>
+    PolX PolyPE<Int>::m_x;
+
+
+
+  /*=========================================================================*/
+  //PolyPE::PolyPE (const MVect & C, long n)
+  //{
+  //   init (C, n);
+  //}
+
+
+  /*=========================================================================*/
+
+  template<typename Int>
+    PolyPE<Int>::PolyPE ()
+    {}
+
+
+  /*=========================================================================*/
+
+  template<typename Int>
+    void PolyPE<Int>::setM (const Int & m)
+    {
+      MScalP::init (m);
+      m_m = m;
+    }
+
+
+  /*=========================================================================*/
+
+  template<typename Int>
+    void PolyPE<Int>::setF (const MVectP & c)
+    {
+      m_k = c.length () - 1;
+      PolX f;
+      for (long i = 0; i <= m_k; i++)
+        SetCoeff (f, i, c[i]);
+      f.normalize ();
+      PolE::init (f);
+      std::string str = "[0 1]";
+      std::istringstream in (str);
+      m_x.kill();
+      in >> m_x;
+    }
+
+  /*=========================================================================*/
+
+  template<typename Int>
+    void PolyPE<Int>::setF (const MVect & V)
+    {
+      MVectP vP;
+      conv (vP, V);
+      setF (vP);
+    }
+
+
+  /*=========================================================================*/
+
+  template<typename Int>
+    void PolyPE<Int>::setVal (long j)
+    {
+      MScalP coeff;
+      conv (coeff, 1);
+      PolX val;
+      SetCoeff (val, j, coeff);
+      val.normalize ();
+      init (val);
+    }
+
+
+  /*=========================================================================*/
+
+  template<typename Int>
+    void PolyPE<Int>::setVal (const MVect & C)
+    {
+      std::ostringstream out;
+      out << "[";
+      for (int i = 0; i < C.length (); i++) {
+        out << C[i] << " ";
+      }
+      out << "]";
+      std::string str = out.str ();
+      setVal (str);
+    }
+
+
+  /*=========================================================================*/
+
+  template<typename Int>
+    void PolyPE<Int>::powerMod (const Int & j)
+    {
+      std::string str = "[0 1]";
+      std::istringstream in (str);
+      PolyPE<Int> A;
+      in >> A;
+      power (*this, A, j);
+    }
+
+
+  /*=========================================================================*/
+
+  template<typename Int>
+    void PolyPE<Int>::setVal (std::string & str)
+    {
+      std::istringstream in (str);
+      in >> *this;
+    }
+
+
+  //===========================================================================
+
+  template<typename Int>
+    std::string PolyPE<Int>::toString ()const
+    {
+      std::ostringstream sortie;
+
+      PolX pX = PolE::modulus ().val ();
+      sortie << "m = " << PolyPE<Int>::m_m << std::endl;
+      sortie << "k = " << getK () << std::endl;
+      sortie << "f = " << getF () << std::endl;
+      sortie << "v = " << *this << std::endl;
+      sortie << "    " << std::endl;
+      return sortie.str ();
+    }
+
+
+  /*=========================================================================*/
+
+  template<typename Int>
+    void PolyPE<Int>::toVector (MVect & C)
+    {
+      // C = rep(*this);
+
+      // remark: in the code it was "i <= getK()" before but this produces
+      // errors because sometimes dim(C) < getK().
+
+      for (int i = 0; i < getK (); ++i) {
+        C[i] = rep (coeff (rep (*this), i));
+      }
+    }
+
+
+  /*=========================================================================*/
+#if 0
+  bool PolyPE<Int>::isIrreducible ()
+  {
+    // Méthode de crandall-Pomerance. La vitesse de cette méthode est
+    // pratiquement identique à celle de NTL::DetIrredTest, mais plus
+    // lente que NTL::IterIrredTest, spécialement pour grand k.
+    PolE g;
+    PolX d;
+    std::string str = "[0 1]";
+    std::istringstream in (str);
+    in >> g;
+    for (int i = 1; i <= m_k/2; ++i) {
+      power(g, g, m_m);
+      GCD (d, PolE::modulus(), rep(g) - m_x);
+      if (1 != IsOne(d))
+        return false;
+    }
+    return true;
+  }
+#endif
+
+  /*=========================================================================*/
+
+  template<typename Int>
+    bool PolyPE<Int>::isPrimitive (const IntFactorization<Int> & r)
+    {
+      if (1 == getK())
+        return true;
+
+      // Is f irreducible ?
+      PolX Q;
+      Q = getF ();
+      //  if (!isIrreducible())      // slow
+      //  if (0 == DetIrredTest(Q))   // medium slow
+      if (0 == IterIrredTest(Q))   // fastest
+        return false;
+
+      // ---- Condition 2
+      Int r0;
+      r0 = r.getNumber ();
+      Q = PowerXMod (r0, getF ());
+      if (0 != deg (Q))
+        return false;
+
+      Int T1;
+      T1 = rep (ConstTerm (getF ()));
+      if ((getK () & 1) == 1)
+        T1 = -T1;
+      if (T1 < 0)
+        T1 += getM ();
+      if (rep (ConstTerm (Q)) != T1)
+        return false;
+
+      // ---- Condition 3
+      if (r.getStatus () == LatticeTester::PRIME)
+        return true;
+
+      std::vector <Int> invFactorList = r.getInvFactorList ();
+      //   assert (!invFactorList.empty ());
+      typename std::vector <Int>::const_iterator it = invFactorList.begin ();
+
+      while (it != invFactorList.end ()) {
+        Q = PowerXMod (*it, getF());
+        if (0 == deg (Q))
+          return false;
+        ++it;
+      }
+      return true;
+    }
+
+
+  /*=========================================================================*/
+
+  template<typename Int>
+    bool PolyPE<Int>::isPrimitive (const IntPrimitivity<Int> & fm,
+        const IntFactorization<Int> & fr)
+    {
+      Int a0;
+      a0 = -rep (ConstTerm (getF ()));
+      if ((getK () & 1) == 0)
+        a0 = -a0;
+      if (!fm.isPrimitiveElement (a0))
+        return false;
+      return isPrimitive (fr);
+    }
+
+
+  /*=========================================================================*/
+
+  template<typename Int>
+    void PolyPE<Int>::reverse (MVect & C, long n, int kind)
+    {
+      long i;
+      Int temp;
+      if ((kind == 2) || (kind == 1)) {
+        for (i = 0; i < (n + 1) / 2; i++) {
+          temp = C[n - i];
+          C[n - i] = C[i];
+          C[i] = temp;
+        }
+      }
+      if (kind == 2) {
+        for (i = 0; i < n; i++)
+          C[i] = -C[i];
+        C[n] = 1;
+      }
+    }
 
 }
 #endif

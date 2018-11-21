@@ -56,7 +56,7 @@ namespace LatMRG
 
   //===========================================================================
 
-  void Zone::initFrontieres (const SeekConfig & config)
+  void Zone::initFrontieres (const SeekConfig<MScal> & config)
   {
     CreateMatr (Frontiere, config.J, NZONES);
     // Calcul des frontieres superieures des 3 zones
@@ -70,7 +70,7 @@ namespace LatMRG
 
   //===========================================================================
 
-  void Zone::init (const Component & comp, int j, int i)
+  void Zone::init (const Component<MScal> & comp, int j, int i)
   {
     MScal h(0), Eb, Ec;
     // Calcul des bornes pour a[j][i] ou q (ZONE 1 ou 3) dans chaque zone
@@ -160,7 +160,7 @@ namespace LatMRG
   //===========================================================================
 
   void Zone::calcInfBound (const MScal & b, const MScal & c,
-      const Component & comp, int No, MScal & inf)
+      const Component<MScal> & comp, int No, MScal & inf)
   {
     /* Calcule la borne inferieure de l'intersection d'une zone avec [b..c].
        Si No = 1 ou 3, la borne retournee sera (approx) q t.q. [m/q] = c
@@ -206,7 +206,7 @@ Borne = (m DIV (c+1)) + 1. */
   //===========================================================================
 
   void Zone::calcSupBound (const MScal & b, const MScal & c,
-      const Component & comp, int No, MScal & sup)
+      const Component<MScal> & comp, int No, MScal & sup)
   {
     switch (No) {
       case ZONE1:                      // b <= -sqrt(m)-1
@@ -277,7 +277,7 @@ Borne = (m DIV (c+1)) + 1. */
 
   //===========================================================================
 
-  void Zone::chooseBoundaries (const Component & comp, Zone *zone, long h)
+  void Zone::chooseBoundaries (const Component<MScal> & comp, Zone *zone, long h)
   {
     /* Choisir une region au hasard et en initialiser les bornes.
      * On fouillera ensuite completement cette region.

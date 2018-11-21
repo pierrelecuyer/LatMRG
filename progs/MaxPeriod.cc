@@ -34,7 +34,7 @@ namespace
 
   //===========================================================================
 
-  void read (ParamReaderExt & reader, ParamType & par)
+  void read (ParamReaderExt<MScal, NScal> & reader, ParamType & par)
   {
     reader.getLines ();
     int ln = 0;
@@ -71,7 +71,7 @@ int main(int argc, char** argv)
   }
   string fname(argv[1]);
   fname += ".dat";
-  ParamReaderExt reader (fname);
+  ParamReaderExt<MScal, NScal> reader (fname);
   ParamType par;
   read (reader, par);
 

@@ -18,8 +18,8 @@ namespace LatMRG {
    * the `LatMain` program on page (FIXME: page#).
    *
    */
-  template<typename Int>
-    class LatTestPalpha : public LatticeTest {
+  template<typename Int, typename Dbl>
+    class LatTestPalpha : public LatticeTest<Int, Dbl> {
       public:
 
         /**
@@ -27,8 +27,8 @@ namespace LatMRG {
          * parameters are in `config`. The `bounds` \f$B_{\alpha}(s)\f$ may be used
          * to normalize the \f$P_{\alpha}(s)\f$ values.
          */
-        LatTestPalpha (LatticeTester::Normalizer<RScal> * bounds,
-            LatticeTester::IntLattice<Int, BScal, NScal, RScal> * lat);
+        LatTestPalpha (LatticeTester::Normalizer<Dbl> * bounds,
+            LatticeTester::IntLattice<Int, Int, Dbl, Dbl> * lat);
 
         /**
          * Destructor.
@@ -57,7 +57,7 @@ namespace LatMRG {
          * The \f$B_{\alpha}\f$ bounds used to normalize the
          * \f$P_{\alpha}\f$.
          */
-        LatticeTester::Normalizer<RScal> *m_bound;
+        LatticeTester::Normalizer<Dbl> *m_bound;
 
         /**
          * Prepares and dispatches the results for dimension `dim` to all
@@ -74,60 +74,60 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int>
-    void LatTestPalpha<Int>::init ()
+  template<typename Int, typename Dbl>
+    void LatTestPalpha<Int, Dbl>::init ()
     {
-      m_merit.setDim(m_toDim);
+      this->m_merit.setDim(this->m_toDim);
       const int N = 3;
       std::string header[N];
-      if (m_config->calcPalpha == LatticeTester::NORMPAL) {
+      if (this->m_config->calcPalpha == LatticeTester::NORMPAL) {
         header[0] = "P_a";
         header[1] = "P_a/B_a";
         header[2] = "Cumul CPU t(sec)";
-        dispatchTestInit ("Palpha", header, N);
+        this->dispatchTestInit ("Palpha", header, N);
       } else {
         header[0] = "P_a";
         header[1] = "Cumul CPU t(sec)";
-        dispatchTestInit ("Palpha", header, N - 1);
+        this->dispatchTestInit ("Palpha", header, N - 1);
       }
-      timer.init();
+      this->timer.init();
     }
 
 
   //===========================================================================
 
-  template<typename Int>
-    void LatTestPalpha<Int>::prepAndDisp (int dim)
+  template<typename Int, typename Dbl>
+    void LatTestPalpha<Int, Dbl>::prepAndDisp (int dim)
     {
       const int N = 3;
       double results[N];
-      if (m_config->calcPalpha == LatticeTester::NORMPAL) {
-        results[0] = m_merit.getMerit (dim);
-        results[1] = m_merit[dim];
-        results[2] = timer.val(Chrono::SEC);
-        dispatchResultUpdate (results, N);
+      if (this->m_config->calcPalpha == LatticeTester::NORMPAL) {
+        results[0] = this->m_merit.getMerit (dim);
+        results[1] = this->m_merit[dim];
+        results[2] = this->timer.val(Chrono::SEC);
+        this->dispatchResultUpdate (results, N);
       } else {
-        results[0] = m_merit[dim];
-        results[1] = timer.val(Chrono::SEC);
-        dispatchResultUpdate (results, N - 1);
+        results[0] = this->m_merit[dim];
+        results[1] = this->timer.val(Chrono::SEC);
+        this->dispatchResultUpdate (results, N - 1);
       }
     }
 
 
   //===========================================================================
 
-  template<typename Int>
-    LatTestPalpha<Int>::LatTestPalpha (LatticeTester::Normalizer<RScal> * 
-        normal, LatticeTester::IntLattice<Int, BScal, NScal, RScal> * lat):
-      LatticeTest (lat)
+  template<typename Int, typename Dbl>
+    LatTestPalpha<Int, Dbl>::LatTestPalpha (LatticeTester::Normalizer<Dbl> * 
+        normal, LatticeTester::IntLattice<Int, Int, Dbl, Dbl> * lat):
+      LatticeTest<Int, Dbl> (lat)
   {
-    m_criter = LatticeTester::PALPHA;
-    m_bound = normal;
+    this->m_criter = LatticeTester::PALPHA;
+    this->m_bound = normal;
     //   m_config = config;
     //   m_fromDim = m_config->td[0];
     //   m_toDim = m_config->td[1];
-    m_dualF = false;
-    m_maxAllDimFlag = false;
+    this->m_dualF = false;
+    this->m_maxAllDimFlag = false;
   }
 
 
@@ -141,31 +141,31 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int>
-    bool LatTestPalpha<Int>::test (int fromDim, int toDim, double minVal[])
+  template<typename Int, typename Dbl>
+    bool LatTestPalpha<Int, Dbl>::test (int fromDim, int toDim, double minVal[])
     {
-      m_fromDim = fromDim;
-      m_toDim = toDim;
+      this->m_fromDim = fromDim;
+      this->m_toDim = toDim;
       init ();
 
-      if (m_config->verifyM) {
-        if (LatticeTester::PRIME == LatticeTester::IntFactor<Int>::isPrime (m_config->comp[0]->getM(), 50)) {
+      if (this->m_config->verifyM) {
+        if (LatticeTester::PRIME == LatticeTester::IntFactor<Int>::isPrime (this->m_config->comp[0]->getM(), 50)) {
           std::cout << "Verify prime m:   true" << std::endl;
-          m_config->primeM = true;
+          this->m_config->primeM = true;
         } else {
           std::cout << "Verify prime m:   false" << std::endl;
-          m_config->primeM = false;
+          this->m_config->primeM = false;
         }
       }
 
-      if (m_config->verifyP) {
-        MRGComponent<Int> mrg (m_config->comp[0]->getM(), 1, DECOMP, 0, DECOMP_PRIME,  0);
-        if (mrg.maxPeriod (m_config->comp[0]->a)) {
+      if (this->m_config->verifyP) {
+        MRGComponent<Int> mrg (this->m_config->comp[0]->getM(), 1, DECOMP, 0, DECOMP_PRIME,  0);
+        if (mrg.maxPeriod (this->m_config->comp[0]->a)) {
           std::cout << "Verify maximal period:   true" << std::endl;
-          m_config->maxPeriod = true;
+          this->m_config->maxPeriod = true;
         } else {
           std::cout << "Verify maximal period:   false" << std::endl;
-          m_config->maxPeriod = false;
+          this->m_config->maxPeriod = false;
         }
         std::cout << std::endl;
       }

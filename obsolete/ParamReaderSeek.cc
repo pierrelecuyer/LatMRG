@@ -46,7 +46,7 @@ namespace LatMRG
 
   //===========================================================================
 
-  void ParamReaderSeek::read (SeekConfig & config)
+  void ParamReaderSeek::read (SeekConfig<MScal> & config)
   {
     getLines ();
     int ln = 0;
@@ -69,7 +69,7 @@ namespace LatMRG
 
     config.compon.reserve (config.J);
     int maxOrder = 0;
-    Component comp;
+    Component<MScal> comp;
     for (int i = 0; i < config.J; i++) {
       readGenType (comp.genType, ++ln, 0);
       if (comp.genType == MMRG){

@@ -12,7 +12,7 @@ INCLUDES = -I./include -I./latticetester/include
 DEF_LLDD = -DNTL_TYPES_CODE=1
 DEF_ZZDD = -DNTL_TYPES_CODE=2
 DEF_ZZRR = -DNTL_TYPES_CODE=3
-NUM_TYPES = $(DEF_LLDD)
+NUM_TYPES = $(DEF_ZZDD)
 
 # Library path. This assumes NTL is in /usr/local/lib (its default path).
 STAT_LIBS_PATH = -Wl,-Bstatic -L$(LIB_DIR)
@@ -140,7 +140,7 @@ $(EX_BUILD)/:
 build_ex:$(EX_O)
 
 $(EX_DIR)/%.o:$(EX_DIR)/%.cc
-	$(CC) $< $(INCLUDES) $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) \
+	$(CC) $< $(INCLUDES) -I. $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) \
 	  $(DYN_LIBS) -o $(EX_BUILD)/$(<:examples/%.cc=%) 
 
 #==============================================================================

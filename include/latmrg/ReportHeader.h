@@ -11,13 +11,14 @@ namespace LatMRG {
    * `ReportLat` or `ReportSeek`.
    *
    */
+  template<typename Int>
   class ReportHeader {
     public:
 
       /**
        * Constructor. See the module `Writer` for more information.
        */
-      ReportHeader (LatticeTester::Writer<MScal> *writer) { m_writer = writer; }
+      ReportHeader (LatticeTester::Writer<Int> *writer) { m_writer = writer; }
 
       /**
        * Destructor.
@@ -34,7 +35,7 @@ namespace LatMRG {
       /**
        * The `Writer` used to write the report header.
        */
-      LatticeTester::Writer<MScal>* m_writer;
+      LatticeTester::Writer<Int>* m_writer;
   };
 
 }

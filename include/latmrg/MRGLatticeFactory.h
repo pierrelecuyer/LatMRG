@@ -14,7 +14,7 @@ namespace LatMRG {
    * recurrences than a MRG or from a combination of several MRG lattices.
    *
    */
-  template<typename Int>
+  template<typename Int, typename Dbl>
     class MRGLatticeFactory {
       public:
 
@@ -25,7 +25,7 @@ namespace LatMRG {
          * be `NULL` if no lacunary indices are to be used. The combined MRG is 
          * calculated as described in \cite rLEC96b.
          */
-        static MRGLattice<Int> * fromCombMRG (MRGComponent<Int> **comp, int J,
+        static MRGLattice<Int, Dbl> * fromCombMRG (MRGComponent<Int> **comp, int J,
             int maxDim, BVect * Lac, LatticeType lat,
             LatticeTester::NormType norm);
 
@@ -51,22 +51,22 @@ namespace LatMRG {
          * \f$ m = \sum^k_{l=0} a_l b^l \f$ and \f$a\f$ is the inverse of 
          * \f$b\f$ in arithmetic modulo \f$m\f$.
          */
-        static MRGLattice<Int> * fromMWC (const MVect & a, const Int & b, 
+        static MRGLattice<Int, Dbl> * fromMWC (const MVect & a, const Int & b, 
             int maxDim, int k, BVect *Lac, LatticeType lat,
             LatticeTester::NormType norm);
 
         /**
          * Same as above, but with no lacunary indices.
          */
-        static MRGLattice<Int> * fromMWC (const MVect & a, const Int & b,
+        static MRGLattice<Int, Dbl> * fromMWC (const MVect & a, const Int & b,
             int maxDim, int k, LatticeType lat,
             LatticeTester::NormType norm);
     }; // End class declaration
 
   //===========================================================================
 
-  template<typename Int>
-    MRGLattice<Int> *MRGLatticeFactory<Int>::fromCombMRG (MRGComponent<Int> ** comp,
+  template<typename Int, typename Dbl>
+    MRGLattice<Int, Dbl> *MRGLatticeFactory<Int, Dbl>::fromCombMRG (MRGComponent<Int> ** comp,
         int J, int maxDim, BVect * I, LatticeType type,
         LatticeTester::NormType norm)
     {
@@ -141,12 +141,12 @@ with _n[].
         LatticeTester::Quotient (rho, g, rho);
       }
 
-      MRGLattice<Int> *lat;
+      MRGLattice<Int, Dbl> *lat;
 
       if (I != 0)
-        lat = new MRGLattice<Int> (_m, _a, maxDim, _k, *I, type, norm);
+        lat = new MRGLattice<Int, Dbl> (_m, _a, maxDim, _k, *I, type, norm);
       else
-        lat = new MRGLattice<Int> (_m, _a, maxDim, _k, type, norm);
+        lat = new MRGLattice<Int, Dbl> (_m, _a, maxDim, _k, type, norm);
 
       lat->setRho (rho);
       lat->setLossRho (lossRho);
@@ -235,8 +235,8 @@ with _n[].
 
   //===========================================================================
 
-  template<typename Int>
-    MRGLattice<Int> *MRGLatticeFactory<Int>::fromMWC (const MVect & a,
+  template<typename Int, typename Dbl>
+    MRGLattice<Int, Dbl> *MRGLatticeFactory<Int, Dbl>::fromMWC (const MVect & a,
         const Int & b, int MaxDim, int k, LatticeType lat,
         LatticeTester::NormType norm)
     {
@@ -246,8 +246,8 @@ with _n[].
 
   //===========================================================================
 
-  template<typename Int>
-    MRGLattice<Int> *MRGLatticeFactory<Int>::fromMWC (const MVect & a,
+  template<typename Int, typename Dbl>
+    MRGLattice<Int, Dbl> *MRGLatticeFactory<Int, Dbl>::fromMWC (const MVect & a,
         const Int & b, int MaxDim, int k, BVect * I, LatticeType lat_t,
         LatticeTester::NormType norm)
     {
@@ -274,11 +274,11 @@ with _n[].
         _a[1] = -_a[1];
       }
 
-      MRGLattice<Int> *lat;
+      MRGLattice<Int, Dbl> *lat;
       if (I) {
-        lat = new MRGLattice<Int> (_m, _a, MaxDim, 1, *I, lat_t, norm);
+        lat = new MRGLattice<Int, Dbl> (_m, _a, MaxDim, 1, *I, lat_t, norm);
       } else {
-        lat = new MRGLattice<Int> (_m, _a, MaxDim, 1, lat_t, norm);
+        lat = new MRGLattice<Int, Dbl> (_m, _a, MaxDim, 1, lat_t, norm);
       }
       LatticeTester::DeleteVect (_a);
       return lat;

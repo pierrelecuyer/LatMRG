@@ -1,6 +1,8 @@
 #include "latmrg/Primes.h"
 #include "latmrg/ParamReaderExt.h"
 
+#include "latticetester/Types.h"
+
 #include <string>
 
 using namespace std;
@@ -25,7 +27,7 @@ namespace
 
   //===========================================================================
 
-  void read (ParamReaderExt & reader, ParamType & par)
+  void read (ParamReaderExt<MScal, NScal> & reader, ParamType & par)
   {
     reader.getLines ();
     int ln = 0;
@@ -50,7 +52,7 @@ int main(int argc, char** argv)
   }
   string fname(argv[1]);
   fname += ".dat";
-  ParamReaderExt reader (fname);
+  ParamReaderExt<MScal, NScal> reader (fname);
   ParamType par;
   read (reader, par);
 
@@ -58,7 +60,7 @@ int main(int argc, char** argv)
   oname += ".res";
 
   ofstream fout (oname.c_str());
-  Primes primes;
+  Primes<MScal> primes;
   primes.find (par.k, par.e, par.c1, par.c2, par.safe, par.fac, fout);
 
   return 0;
