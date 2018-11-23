@@ -124,7 +124,7 @@ namespace LatMRG {
          * found, the search for the shortest vector in this lattice is stopped
          * and the lattice is rejected.
          */
-        NVect m_boundL2;
+        NTL::vector<Dbl> m_boundL2;
 
         /**
          * Initializes the constants <tt>m_S2toL2</tt> below, necessary to
@@ -369,22 +369,12 @@ namespace LatMRG {
 
           //updating value of matrix density.
 
-#if NTL_TYPES_CODE == 3
           if (dim <= this->m_lat->getOrder()) {
             if (this->m_dualF) // dual basis
-              this->m_normalizer->setLogDensity(NTL::conv<Dbl>( - dim * log(this->m_lat->getModulo()) ));
+              this->m_normalizer->setLogDensity(Dbl( - dim * log(this->m_lat->getModulo()) ));
             else // primal basis
-              this->m_normalizer->setLogDensity(NTL::conv<Dbl>( dim * log(this->m_lat->getModulo())  ));
+              this->m_normalizer->setLogDensity(Dbl( dim * log(this->m_lat->getModulo())  ));
           }
-#else
-          if (dim <= this->m_lat->getOrder()) {
-            if (this->m_dualF) // dual basis
-              this->m_normalizer->setLogDensity( - dim * log(this->m_lat->getModulo()) );
-            else // primal basis
-              this->m_normalizer->setLogDensity( dim * log(this->m_lat->getModulo()) );
-          }
-#endif
-
           //std::cout << "density APRES = " << exp(this->m_normalizer->getLogDensity()) << std::endl;
           //std::cout << "this->m_normalizer->getBound = " << this->m_normalizer->getBound(dim) << std::endl;
 
@@ -550,21 +540,12 @@ namespace LatMRG {
 
             //updating value of matrix density.
 
-#if NTL_TYPES_CODE == 3
             if (dim <= this->m_lat->getOrder()) {
               if (this->m_dualF) // dual basis
-                this->m_normalizer->setLogDensity(NTL::conv<Dbl>( - dim * log(this->m_lat->getModulo()) ));
+                this->m_normalizer->setLogDensity(Dbl( - dim * log(this->m_lat->getModulo()) ));
               else // primal basis
-                this->m_normalizer->setLogDensity(NTL::conv<Dbl>( dim * log(this->m_lat->getModulo())  ));
+                this->m_normalizer->setLogDensity(Dbl( dim * log(this->m_lat->getModulo())  ));
             }
-#else
-            if (dim <= this->m_lat->getOrder()) {
-              if (this->m_dualF) // dual basis
-                this->m_normalizer->setLogDensity( - dim * log(this->m_lat->getModulo()) );
-              else // primal basis
-                this->m_normalizer->setLogDensity( dim * log(this->m_lat->getModulo()) );
-            }
-#endif
 
             //std::cout << "density APRES = " << exp(this->m_normalizer->getLogDensity()) << std::endl;
             //std::cout << "this->m_normalizer->getBound = " << this->m_normalizer->getBound(dim) << std::endl;
@@ -715,6 +696,10 @@ namespace LatMRG {
         this->dispatchResultUpdate (results, N);
       }
     }
+
+  extern template class LatTestSpectral<std::int64_t, double>;
+  extern template class LatTestSpectral<NTL::ZZ, double>;
+  extern template class LatTestSpectral<NTL::ZZ, NTL::RR>;
 
 }
 #endif

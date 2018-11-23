@@ -37,11 +37,12 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include "latticetester/Types.h"
+
 // Include LatMRG Header
 #include "latmrg/LatConfig.h"
 #include "latmrg-high/LatMRGRoutines.h"
-//#include "latmrg/mrgtypes/MixmaxMMRG.h"
-#include "src/latmrg/mrgtypes/MixmaxMMRG.cc"
+#include "latmrg/mrgtypes/MixmaxMMRG.h"
 
 using namespace std;
 using namespace NTL;

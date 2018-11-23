@@ -6,7 +6,6 @@
 #include <cstdlib>
 #include <climits>
 
-#include "latticetester/Types.h"
 #include "latticetester/Util.h"
 #include "latticetester/IntFactor.h"
 

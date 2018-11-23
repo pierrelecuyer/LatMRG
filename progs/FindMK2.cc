@@ -2,6 +2,7 @@
    pour les k dans KTABLE, pour m < 2^e  */
 
 #include "latmrg/Primes.h"
+#include "latticetester/Types.h"
 #include <fstream>
 
 using namespace std;
@@ -35,21 +36,28 @@ namespace
 
 int main(int argc, char** argv)
 {
-  if (argc != 2) {
+  if (argc != 3) {
     cout << "Usage: " << argv[0] << " <data file>" << endl;
     return 1;
   }
-  string fname(argv[1]);
+  string types(argv[1]);
+  string fname(argv[2]);
   fname += ".dat";
   ofstream fout (fname);
-  Primes<MScal> primes;
 
-  //   primes.find (3, 39, 3, true, false, fout);
+  Primes<std::int64_t> primesI;
+  Primes<NTL::ZZ> primesZ;
 
-  for (int i = 0; i <= 2; ++i) {
-    int k = KTABLE[i];
-    // trouver 3 modules m proches de 2^31 pour des MRGs d'ordre k
-    primes.find (k, 40, 3, true, false, fout);
-  }
-  return 0;
+    //   primes.find (3, 39, 3, true, false, fout);
+
+    for (int i = 0; i <= 2; ++i) {
+      int k = KTABLE[i];
+      // trouver 3 modules m proches de 2^31 pour des MRGs d'ordre k
+      if (types == "I") {
+        primesI.find (k, 40, 3, true, false, fout);
+      } else if (types == "Z") {
+        primesZ.find (k, 40, 3, true, false, fout);
+      }
+    }
+    return 0;
 }

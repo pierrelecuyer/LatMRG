@@ -15,7 +15,6 @@
 #include "NTL/vec_ZZ.h"
 #include "NTL/mat_ZZ.h"
 
-#include "latticetester/Types.h"
 #include "latticetester/Const.h"
 #include "latticetester/IntLattice.h"
 #include "latticetester/Reducer.h"
@@ -457,6 +456,10 @@ namespace LatMRG {
         ob->testFailed(dim);
       }
     }
+
+  extern template class LatticeTest<std::int64_t, double>;
+  extern template class LatticeTest<NTL::ZZ, double>;
+  extern template class LatticeTest<NTL::ZZ, NTL::RR>;
 
 }     // namespace LatMRG
 #endif

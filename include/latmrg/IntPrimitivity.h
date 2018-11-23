@@ -1,7 +1,7 @@
 #ifndef INTPRIMITIVITY_H
 #define INTPRIMITIVITY_H
 
-#include "latticetester/Types.h"
+#include "latticetester/ntlwrap.h"
 
 #include "latmrg/IntFactorization.h"
 
@@ -31,6 +31,8 @@ namespace LatMRG {
    */
   template<typename Int>
     class IntPrimitivity {
+      private:
+        typedef NTL::vector<Int> IntVec;
       public:
 
         IntPrimitivity ();
@@ -54,7 +56,7 @@ namespace LatMRG {
          * \f$p^e\f$. This method uses the prime factor decomposition of
          * \f$p-1\f$ and its inverse factors.
          */
-        bool isPrimitiveElement (const MVect &V, int k) const ;
+        bool isPrimitiveElement (const IntVec &V, int k) const ;
 
         /**
          * Sets the value of \f$p\f$, \f$e\f$ and \f$m = p^e\f$.
@@ -179,7 +181,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    bool IntPrimitivity<Int>::isPrimitiveElement (const MVect & V, int k) const
+    bool IntPrimitivity<Int>::isPrimitiveElement (const IntVec & V, int k) const
     {
       Int a;
       if (k & 1)

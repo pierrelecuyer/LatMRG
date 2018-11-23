@@ -13,7 +13,6 @@
 
 #include "NTL/ZZ.h"
 
-#include "latticetester/Types.h"
 #include "latticetester/Const.h"
 #include "latticetester/ParamReader.h"
 #include "latticetester/Util.h"
@@ -33,6 +32,9 @@ namespace LatMRG {
    */
   template <typename Int, typename Dbl>
     class ParamReaderExt: public LatticeTester::ParamReader<Int, Int, Dbl> {
+      private:
+        typedef NTL::vector<Int> IntVec;
+        typedef NTL::matrix<Int> IntMat;
       public:
         static const int MAX_WORD_SIZE = 64;
 
@@ -59,10 +61,10 @@ namespace LatMRG {
             unsigned int pos);
 
         /**
-         * Reads a `BMat` from the <tt>pos</tt>-th token of the <tt>ln</tt>-th
+         * Reads a `IntMat` from the <tt>pos</tt>-th token of the <tt>ln</tt>-th
          * line into `field`.
          */
-        void readMMat (MMat & fields, unsigned int & ln, unsigned int pos,
+        void readMMat (IntMat & fields, unsigned int & ln, unsigned int pos,
             unsigned int numPos);
 
         /**
@@ -73,7 +75,7 @@ namespace LatMRG {
          * coefficient may be given in the form described in `readNumber3`
          * above.
          */
-        void readInterval (MVect & B, MVect & C, unsigned int & ln, int k);
+        void readInterval (IntVec & B, IntVec & C, unsigned int & ln, int k);
 
         /**
          * Reads the type of calculation to do (<tt>PAL</tt> or <tt>BAL</tt>)
@@ -137,7 +139,7 @@ namespace LatMRG {
          */
         void readLacunary (int k, int fromDim, int toDim, unsigned int & ln,
             bool & lacunary, int & lacGroupSize, Int & lacSpacing,
-            BVect & Lac, GenType genType);
+            IntVec & Lac, GenType genType);
 
         /**
          * Reads the lacunary configuration specified in the input file. If 
@@ -150,7 +152,7 @@ namespace LatMRG {
          */
         void readMMRGLacunary(int ordre, int fromDim, int toDim, unsigned int & ln, 
             bool & lacunary, LacunaryType & lacunaryType, int & m_numberLacIndices,
-            BVect & Lac, GenType genType);
+            IntVec & Lac, GenType genType);
 
         /**
          * Reads the type of lacunary projection used (either NONE, SUBVECTOR, or
@@ -176,13 +178,13 @@ namespace LatMRG {
          * Checks that the components of \f$A\f$ satisfy \f$-m < A_i < m\f$,
          * for \f$i=1, 2, …, k\f$.
          */
-        bool checkBound (const Int & m, const MVect & A, int k);
+        bool checkBound (const Int & m, const IntVec & A, int k);
 
         /**
          * Checks that the components of \f$A\f$ satisfy \f$-m < A_{i,j} < m\f$,
          * for \f$i,j=1, 2, …, k\f$.
          */
-        bool checkBound (const Int & m, const MMat & A, int k);
+        bool checkBound (const Int & m, const IntMat & A, int k);
 
       private:
 
@@ -280,7 +282,7 @@ namespace LatMRG {
   //===========================================================================
 
   template <typename Int, typename Dbl>
-    void ParamReaderExt<Int, Dbl>::readMMat(MMat & fields, unsigned int & ln, unsigned int pos,
+    void ParamReaderExt<Int, Dbl>::readMMat(IntMat & fields, unsigned int & ln, unsigned int pos,
         unsigned int numPos)
     {
       for (unsigned int i = pos; i < numPos; i++){
@@ -297,7 +299,7 @@ namespace LatMRG {
   //===========================================================================
 
   template <typename Int, typename Dbl>
-    void ParamReaderExt<Int, Dbl>::readInterval (MVect & B, MVect & C, unsigned int & ln, int k)
+    void ParamReaderExt<Int, Dbl>::readInterval (IntVec & B, IntVec & C, unsigned int & ln, int k)
     {
       long m1, m2, m3;
       for (int i = 0; i < k; i++) {
@@ -428,7 +430,7 @@ namespace LatMRG {
   template <typename Int, typename Dbl>
     void ParamReaderExt<Int, Dbl>::readLacunary(int ordre, int fromDim, int toDim,
         unsigned int & ln, bool & lacunary, int & lacGroupSize, Int & lacSpacing,
-        BVect & Lac, GenType genType)
+        IntVec & Lac, GenType genType)
     {
       this->readInt (lacGroupSize, ++ln, 0);
       const int t = lacGroupSize;
@@ -451,7 +453,7 @@ namespace LatMRG {
       if (t < 0) {
         for (i = 0; i < toDim; i++)
           this->readBScal (Lac[i], ++ln, 0);
-        //cout << "BVect Lac = " << Lac << endl;
+        //cout << "IntVec Lac = " << Lac << endl;
         return;
       }
 
@@ -480,7 +482,7 @@ namespace LatMRG {
   template <typename Int, typename Dbl>
     void ParamReaderExt<Int, Dbl>::readMMRGLacunary(int ordre, int fromDim, int toDim,
         unsigned int & ln, bool & lacunary, LacunaryType & lacunaryType, int & numberLacIndices,
-        BVect & Lac, GenType genType)
+        IntVec & Lac, GenType genType)
     {
       readLacunaryType(lacunaryType, ln, 0);
 
@@ -490,7 +492,7 @@ namespace LatMRG {
         lacunary = true;
 
         // storing the lacunary indices for each vector
-        BVect vectorSubLac;
+        IntVec vectorSubLac;
         LatticeTester::CreateVect (vectorSubLac, numberLacIndices-1); 
         for (int i = 0; i < numberLacIndices; i++) {
           if (vectorSubLac[i] > ordre)
@@ -527,7 +529,7 @@ namespace LatMRG {
   //===========================================================================
 
   template <typename Int, typename Dbl>
-    bool ParamReaderExt<Int, Dbl>::checkBound (const Int & m, const MVect & A, int k)
+    bool ParamReaderExt<Int, Dbl>::checkBound (const Int & m, const IntVec & A, int k)
     {
       for (int i = 0; i < k; i++) {
         assert (A[i] < m);
@@ -539,7 +541,7 @@ namespace LatMRG {
   //===========================================================================
 
   template <typename Int, typename Dbl>
-    bool ParamReaderExt<Int, Dbl>::checkBound (const Int & m, const MMat & A, int k)
+    bool ParamReaderExt<Int, Dbl>::checkBound (const Int & m, const IntMat & A, int k)
     {
       for (int i = 0; i < k; i++) {
         for (int j = 0; j < k; j++) {
@@ -566,6 +568,10 @@ namespace LatMRG {
         LatticeTester::MyExit(1, "LatticeType = PRIMEPOWER:   k > 1");
       return true;
     }
+
+  extern template class ParamReaderExt<std::int64_t, double>;
+  extern template class ParamReaderExt<NTL::ZZ, double>;
+  extern template class ParamReaderExt<NTL::ZZ, NTL::RR>;
 
 }
 #endif

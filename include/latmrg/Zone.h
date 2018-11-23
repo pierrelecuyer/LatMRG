@@ -110,7 +110,7 @@ namespace LatMRG {
         /**
          * Upper boundary of each zone.
          */
-        static MMat Frontiere;
+        static NTL::matrix<Int> Frontiere;
 
         /**
          * Is <tt>true</tt> if at upper boundary of each zone.
@@ -164,7 +164,7 @@ namespace LatMRG {
   //============================================================================
 
   template<typename Int>
-  MMat Zone<Int>::Frontiere;
+  NTL::matrix<Int> Zone<Int>::Frontiere;
 
   // Si DivQ[i] = true, on cherche les a=m/q avec q entre les bornes.
   template<typename Int>

@@ -10,6 +10,7 @@
 #include "NTL/ZZ_p.h"
 #include "NTL/ZZ_pX.h"
 #include "NTL/ZZ_pXFactoring.h"
+#include "NTL/ZZ_pE.h"
 #include "NTL/lzz_p.h"
 #include "NTL/lzz_pE.h"
 #include "NTL/lzz_pX.h"
@@ -17,11 +18,35 @@
 
 #include "latticetester/Util.h"
 #include "latticetester/IntFactor.h"
-#include "latticetester/Types.h"
 
 #include "latmrg/IntPrimitivity.h"
 
 namespace LatMRG {
+  template<typename Int>
+    class ModInt{
+      public:
+        typedef NTL::ZZ_p IntP;
+        typedef NTL::ZZ_pE PolE;
+        typedef NTL::vec_ZZ_p IntVecP;
+        typedef NTL::mat_ZZ_p IntMatP;
+        typedef NTL::ZZ_pX PolX;
+    };
+  template<> class ModInt<std::int64_t> {
+    public:
+      typedef NTL::zz_p IntP;
+      typedef NTL::zz_pE PolE;
+      typedef NTL::vec_zz_p IntVecP;
+      typedef NTL::mat_zz_p IntMatP;
+      typedef NTL::zz_pX PolX;
+  };
+  template<> class ModInt<NTL::ZZ> {
+    public:
+      typedef NTL::ZZ_p IntP;
+      typedef NTL::ZZ_pE PolE;
+      typedef NTL::vec_ZZ_p IntVecP;
+      typedef NTL::mat_ZZ_p IntMatP;
+      typedef NTL::ZZ_pX PolX;
+  };
 
   /**
    * This class implements polynomials \f$P(x)\f$ in \f$\mathbb Z_m[X]\f$
@@ -49,9 +74,9 @@ namespace LatMRG {
    * arithmetic operations on `PolyPE` objects, otherwise the results are
    * unpredictable.
    *
-   * Type `MScal` is used to represent polynomial coefficients. It may be
+   * Type `Int` is used to represent polynomial coefficients. It may be
    * chosen as `long` for \f$m < 2^{50}\f$ (on 64-bit machines), or as the big
-   * integer type `ZZ` otherwise. The possible associated types `MVect` are
+   * integer type `ZZ` otherwise. The possible associated types `IntVec` are
    * `long*` and <tt>vec_ZZ</tt>. Type `PolE` for the polynomials may be chosen
    * as <tt>zz_pE</tt> when \f$m < 2^{50}\f$, or it may be set to
    * <tt>ZZ_pE</tt> which is implemented with the big integer type
@@ -59,7 +84,9 @@ namespace LatMRG {
    *
    */
   template<typename Int>
-    class PolyPE : public PolE {
+    class PolyPE : public ModInt<Int>::PolE {
+      private:
+        typedef NTL::vector<Int> IntVec;
       public:
 
         /**
@@ -82,22 +109,22 @@ namespace LatMRG {
          * arithmetic operations on `PolyPE` objects, otherwise the results are
          * unpredictable.
          */
-        static void setF (const MVectP & C);
+        static void setF (const typename ModInt<Int>::IntVecP & C);
 
         /**
-         * Same as above, but instead from a `MVect`.
+         * Same as above, but instead from a `IntVec`.
          */
-        static void setF (const MVect & C);
+        static void setF (const IntVec & C);
 
         /**
          * Returns the modulus polynomial \f$f(x)\f$.
          */
-        static const PolX & getF () { return modulus().val(); }
+        static const typename ModInt<Int>::PolX & getF () { return ModInt<Int>::PolE::modulus().val(); }
 
         /**
          * Returns the degree of the modulus \f$f(x)\f$.
          */
-        static long getK () { return degree(); }
+        static long getK () { return ModInt<Int>::PolE::degree(); }
 
         /**
          * Given a vector \f$C = [c_0, c_1, …, c_{k-1}, c_k]\f$, this function
@@ -106,19 +133,19 @@ namespace LatMRG {
          * [-c_k, -c_{k-1}, …, -c_1, 1]\f$ for `kind = 2`. For other values of
          * `kind`, it has no effect.
          */
-        static void reverse (MVect & c, long k, int kind);
+        static void reverse (IntVec & c, long k, int kind);
 
         /**
          * Minimal constructor: this object is set to the **0** polynomial.
          */
         PolyPE ();
-        const PolX & getVal () { return rep(*this); }
+        const typename ModInt<Int>::PolX & getVal () { return rep(*this); }
         void setVal (long j);
 
         /**
          * Initializes this object to \f$C\f$.
          */
-        void setVal (const MVect & C);
+        void setVal (const IntVec & C);
 
         /**
          * Initializes this object to the polynomial in `str`.
@@ -135,7 +162,7 @@ namespace LatMRG {
          * \f$k\f$ components, where \f$k\f$ is the degree of the modulus
          * \f$f(x)\f$.
          */
-        void toVector (MVect & c);
+        void toVector (IntVec & c);
 
         /**
          * Returns `true` if the modulus \f$f(x)\f$ is a primitive polynomial
@@ -190,7 +217,7 @@ namespace LatMRG {
         /**
          * The polynomial \f$f(x) = x\f$.
          */
-        static PolX m_x;
+        static typename ModInt<Int>::PolX m_x;
     };
 
   template<typename Int>
@@ -198,12 +225,12 @@ namespace LatMRG {
   template<typename Int>
     long PolyPE<Int>::m_k;
   template<typename Int>
-    PolX PolyPE<Int>::m_x;
+    typename ModInt<Int>::PolX PolyPE<Int>::m_x;
 
 
 
   /*=========================================================================*/
-  //PolyPE::PolyPE (const MVect & C, long n)
+  //PolyPE::PolyPE (const IntVec & C, long n)
   //{
   //   init (C, n);
   //}
@@ -221,7 +248,7 @@ namespace LatMRG {
   template<typename Int>
     void PolyPE<Int>::setM (const Int & m)
     {
-      MScalP::init (m);
+      ModInt<Int>::IntP::init (m);
       m_m = m;
     }
 
@@ -229,14 +256,14 @@ namespace LatMRG {
   /*=========================================================================*/
 
   template<typename Int>
-    void PolyPE<Int>::setF (const MVectP & c)
+    void PolyPE<Int>::setF (const typename ModInt<Int>::IntVecP & c)
     {
       m_k = c.length () - 1;
-      PolX f;
+      typename ModInt<Int>::PolX f;
       for (long i = 0; i <= m_k; i++)
         SetCoeff (f, i, c[i]);
       f.normalize ();
-      PolE::init (f);
+      ModInt<Int>::PolE::init (f);
       std::string str = "[0 1]";
       std::istringstream in (str);
       m_x.kill();
@@ -246,9 +273,9 @@ namespace LatMRG {
   /*=========================================================================*/
 
   template<typename Int>
-    void PolyPE<Int>::setF (const MVect & V)
+    void PolyPE<Int>::setF (const IntVec & V)
     {
-      MVectP vP;
+      typename ModInt<Int>::IntVecP vP;
       conv (vP, V);
       setF (vP);
     }
@@ -259,19 +286,19 @@ namespace LatMRG {
   template<typename Int>
     void PolyPE<Int>::setVal (long j)
     {
-      MScalP coeff;
+      typename ModInt<Int>::IntP coeff;
       conv (coeff, 1);
-      PolX val;
+      typename ModInt<Int>::PolX val;
       SetCoeff (val, j, coeff);
       val.normalize ();
-      init (val);
+      ModInt<Int>::PolE::init (val);
     }
 
 
   /*=========================================================================*/
 
   template<typename Int>
-    void PolyPE<Int>::setVal (const MVect & C)
+    void PolyPE<Int>::setVal (const IntVec & C)
     {
       std::ostringstream out;
       out << "[";
@@ -314,7 +341,7 @@ namespace LatMRG {
     {
       std::ostringstream sortie;
 
-      PolX pX = PolE::modulus ().val ();
+      typename ModInt<Int>::PolX pX = ModInt<Int>::PolE::modulus ().val ();
       sortie << "m = " << PolyPE<Int>::m_m << std::endl;
       sortie << "k = " << getK () << std::endl;
       sortie << "f = " << getF () << std::endl;
@@ -327,7 +354,7 @@ namespace LatMRG {
   /*=========================================================================*/
 
   template<typename Int>
-    void PolyPE<Int>::toVector (MVect & C)
+    void PolyPE<Int>::toVector (IntVec & C)
     {
       // C = rep(*this);
 
@@ -371,7 +398,7 @@ namespace LatMRG {
         return true;
 
       // Is f irreducible ?
-      PolX Q;
+      typename ModInt<Int>::PolX Q;
       Q = getF ();
       //  if (!isIrreducible())      // slow
       //  if (0 == DetIrredTest(Q))   // medium slow
@@ -431,7 +458,7 @@ namespace LatMRG {
   /*=========================================================================*/
 
   template<typename Int>
-    void PolyPE<Int>::reverse (MVect & C, long n, int kind)
+    void PolyPE<Int>::reverse (IntVec & C, long n, int kind)
     {
       long i;
       Int temp;

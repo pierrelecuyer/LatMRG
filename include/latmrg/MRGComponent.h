@@ -1,7 +1,6 @@
 #ifndef	MRGCOMPONENT_H
 #define	MRGCOMPONENT_H
 
-#include "latticetester/Types.h"
 
 #include "latmrg/Const.h"
 #include "latmrg/PolyPE.h"
@@ -27,32 +26,35 @@ namespace LatMRG {
    */
   template<typename Int>
     class MRGComponent {
+      private:
+        typedef NTL::vector<Int> IntVec;
+        typedef NTL::matrix<Int> IntMat;
       public:
 
         /**
          * Constructor with modulus \f$m\f$, vector \f$a\f$ and order \f$k\f$.
          */
-        MRGComponent (const Int & m, const MVect & a, int k);
+        MRGComponent (const Int & m, const IntVec & a, int k);
 
 
         /**
          * Constructor for MMRG with modulus \f$m\f$, Matrix \f$A\f$ and
          * order \f$k\f$.
          */
-        MRGComponent (const Int & m, const MMat & A, int k);
+        MRGComponent (const Int & m, const IntMat & A, int k);
 
         /**
          * Constructor for MMRG with modulus \f$m\f$, Matrix \f$A\f$ and
          * order \f$k\f$.
          */
-        MRGComponent (long b, long e, long c, const MMat & A, int k);
+        MRGComponent (long b, long e, long c, const IntMat & A, int k);
 
 
         /**
          * Constructor with modulus \f$m=b^e + c\f$, vector \f$a\f$ and order
          * \f$k\f$.
          */
-        MRGComponent (long b, long e, long c, const MVect & a, int k);
+        MRGComponent (long b, long e, long c, const IntVec & a, int k);
 
         /**
          * Constructor with modulus \f$m\f$ and order \f$k\f$. Arguments
@@ -96,13 +98,13 @@ namespace LatMRG {
         /**
          * Sets the multipliers of the recurrence to \f$A\f$.
          */
-        void setA (const MVect & A);
+        void setA (const IntVec & A);
 
         /**
          * Returns `true` if coefficients \f$A\f$ give a MRG with maximal
          * period; returns `false` otherwise.
          */
-        bool maxPeriod (const MVect & A);
+        bool maxPeriod (const IntVec & A);
 
         /**
          * Returns `true` if coefficients \f$A\f$ give a MRG with maximal
@@ -111,7 +113,7 @@ namespace LatMRG {
          * `isPrimitive` of class `PolyPE` on page (FIXME: page#) of this
          * guide.
          */
-        bool maxPeriod23 (const MVect & A);
+        bool maxPeriod23 (const IntVec & A);
 
         /**
          * The prime factor decomposition of \f$m-1\f$.
@@ -142,12 +144,12 @@ namespace LatMRG {
         /**
          * The multipliers \f$a_i\f$ of the recurrence, \f$i = 1, …, k\f$.
          */
-        MVect a;
+        IntVec a;
 
         /**
          * The generator matrix \f$A\f$ of the recurrence for MMRG.
          */
-        MMat A;
+        IntMat A;
 
         /**
          * The length of the period \f$\rho\f$ for this MRG. For now, the
@@ -179,7 +181,7 @@ namespace LatMRG {
          * Contains the starting state of the component for the case when the
          * lattice type is `ORBIT`. It is made of \f$k\f$ numbers.
          */
-        MVect orbitSeed;
+        IntVec orbitSeed;
 
         /**
          * Returns this object as a string.
@@ -198,7 +200,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    MRGComponent<Int>::MRGComponent (const Int & m, const MVect & a0, int k0)
+    MRGComponent<Int>::MRGComponent (const Int & m, const IntVec & a0, int k0)
     {
       PolyPE<Int>::setM(m);
       module.init(m);
@@ -212,7 +214,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    MRGComponent<Int>::MRGComponent (const Int & m, const MMat & A0, int k0)
+    MRGComponent<Int>::MRGComponent (const Int & m, const IntMat & A0, int k0)
     {
       PolyPE<Int>::setM(m);
       module.init(m);
@@ -225,7 +227,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    MRGComponent<Int>::MRGComponent (long p, long e, long c, const MMat & A0, 
+    MRGComponent<Int>::MRGComponent (long p, long e, long c, const IntMat & A0, 
         int k0)
     {
       module.init(p, e, c);
@@ -239,7 +241,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    MRGComponent<Int>::MRGComponent (long p, long e, long c, const MVect & a0, 
+    MRGComponent<Int>::MRGComponent (long p, long e, long c, const IntVec & a0, 
         int k0)
     {
       module.init(p, e, c);
@@ -385,7 +387,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    void MRGComponent<Int>::setA (const MVect & b)
+    void MRGComponent<Int>::setA (const IntVec & b)
     {
       a = b;
       //  LatticeTester::CopyVect(b, a, k);
@@ -395,7 +397,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    bool MRGComponent<Int>::maxPeriod (const MVect & a0)
+    bool MRGComponent<Int>::maxPeriod (const IntVec & a0)
     {
       PolyPE<Int>::setM(getM());
       a = a0;
@@ -410,7 +412,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    bool MRGComponent<Int>::maxPeriod23 (const MVect & a0)
+    bool MRGComponent<Int>::maxPeriod23 (const IntVec & a0)
     {
       PolyPE<Int>::setM(getM());
       a = a0;
@@ -439,6 +441,9 @@ namespace LatMRG {
       str += "\n";
       return str;
     }
+
+  extern template class MRGComponent<std::int64_t>;
+  extern template class MRGComponent<NTL::ZZ>;
 
 } // End namespace LatMRG
 #endif

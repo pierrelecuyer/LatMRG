@@ -501,5 +501,8 @@ namespace LatMRG {
       }
     }
 
+  extern template class IntFactorization<std::int64_t>;
+  extern template class IntFactorization<NTL::ZZ>;
+
 }
 #endif

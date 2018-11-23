@@ -10,7 +10,6 @@
 #include "latticetester/CoordinateSets.h"
 #include "latticetester/Util.h"
 #include "latticetester/IntLattice.h"
-#include "latticetester/Types.h"
 #include "latticetester/Weights.h"
 
 #include "latmrg/ProjIterator.h"
@@ -741,6 +740,10 @@ namespace LatMRG {
       }
       return minMerit;
     }
+
+  extern template class TestProjections<std::int64_t, double>;
+  extern template class TestProjections<NTL::ZZ, double>;
+  extern template class TestProjections<NTL::ZZ, NTL::RR>;
 
 }
 #endif

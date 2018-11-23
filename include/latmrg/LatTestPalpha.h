@@ -255,5 +255,9 @@ namespace LatMRG {
       return true;
     }
 
+  extern template class LatTestPalpha<std::int64_t, double>;
+  extern template class LatTestPalpha<NTL::ZZ, double>;
+  extern template class LatTestPalpha<NTL::ZZ, NTL::RR>;
+
 } // End namespace LatMRG
 #endif

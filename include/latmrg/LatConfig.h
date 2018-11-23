@@ -182,7 +182,7 @@ namespace LatMRG {
          * The lacunary indices, either read explicitly or computed from
          * `lacGroupSize` and `lacSpacing`.
          */
-        BVect Lac;
+        NTL::vector<Int> Lac;
 
         /**
          * Is `true` when the modulus of congruence \f$m\f$ is a prime number,
@@ -300,7 +300,7 @@ namespace LatMRG {
         std::cout << "   m: " << comp[i]->getM() << std::endl;
         std::cout << "   verifyM: " << std::boolalpha << verifyM << std::endl;
         std::cout << "   k: " << comp[i]->k << std::endl;
-        std::cout << "   a: " << LatticeTester::toString<MVect>(comp[i]->a,
+        std::cout << "   a: " << LatticeTester::toString<NTL::vector<Int>>(comp[i]->a,
             comp[i]->k) << std::endl << std::endl;
       }
 

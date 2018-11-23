@@ -3,7 +3,6 @@
 
 #include "latticetester/Const.h"
 #include "latticetester/IntLattice.h"
-#include "latticetester/Types.h"
 
 
 namespace LatMRG {
@@ -23,6 +22,8 @@ namespace LatMRG {
    */
   template<typename Int, typename Dbl>
     class KorobovLattice: public LatticeTester::IntLattice<Int, Int, Dbl, Dbl> {
+      private:
+        typedef NTL::matrix<Int> IntMat;
       public:
 
         /**
@@ -149,7 +150,7 @@ namespace LatMRG {
       if (this == &lat)
         return *this;
       this->m_dim = lat.m_dim;
-      copyBasis(lat);
+      this->copyBasis(lat);
       this->m_order = lat.m_order;
       m_a = lat.m_a;
       m_shift = lat.m_shift;
@@ -215,7 +216,7 @@ namespace LatMRG {
       }
 
       // Build dual basis
-      LatticeTester::CalcDual<BMat>(this->m_basis, this->m_dualbasis, d, this->m_modulo);
+      LatticeTester::CalcDual<IntMat>(this->m_basis, this->m_dualbasis, d, this->m_modulo);
     }
 
 
@@ -237,7 +238,8 @@ namespace LatMRG {
   template<typename Int, typename Dbl>
     void KorobovLattice<Int, Dbl>::incDim()
     {
-      Int tmp1, tmp2, tmp3; MVect vectmp1;// working variables
+      Int tmp1, tmp2, tmp3;
+      NTL::vector<Int> vectmp1;// working variables
       LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::incDim(); //Increment the dimenson of the lattice by 1
       const int dim = this->getDim(); //New dimension
 
@@ -249,7 +251,7 @@ namespace LatMRG {
         this->m_basis (i, dim) = vectmp1(i) =  tmp1; //Erwan m_vSI (0, i) = tmp1;
       }
 
-      NTL::matrix_row<BMat> row1(this->m_basis, dim - 2);
+      NTL::matrix_row<IntMat> row1(this->m_basis, dim - 2);
       LatticeTester::SetZero (row1, dim - 2);
 
       for (int i = 0; i < dim-1; i++)
@@ -274,6 +276,10 @@ namespace LatMRG {
       this->setNegativeNorm();
       this->setDualNegativeNorm();
     }
+
+  extern template class KorobovLattice<std::int64_t, double>;
+  extern template class KorobovLattice<NTL::ZZ, double>;
+  extern template class KorobovLattice<NTL::ZZ, NTL::RR>;
 
 } // End namespace LatMRG
 #endif

@@ -8,7 +8,6 @@
 #include <cassert>
 #include <string>
 
-#include "latticetester/Types.h"
 #include "latticetester/Util.h"
 
 #include "latmrg/ParamReaderExt.h"

@@ -6,7 +6,6 @@
 #include "latticetester/Const.h"
 #include "latticetester/IntLattice.h"
 #include "latticetester/Writer.h"
-#include "latticetester/Types.h"
 
 #include "latmrg/ReportHeader.h"
 #include "latmrg/LatConfig.h"

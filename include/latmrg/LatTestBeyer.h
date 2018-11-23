@@ -169,6 +169,10 @@ namespace LatMRG {
       this->dispatchResultUpdate (results, N);
     }
 
+  extern template class LatTestBeyer<std::int64_t, double>;
+  extern template class LatTestBeyer<NTL::ZZ, double>;
+  extern template class LatTestBeyer<NTL::ZZ, NTL::RR>;
+
 } // End namespace LatMRG
 
 #endif // LATTESTBEYER_H

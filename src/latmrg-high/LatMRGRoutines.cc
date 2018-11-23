@@ -23,7 +23,6 @@
 #include <string>
 #include <iostream>
 
-#include "latticetester/Types.h"
 #include "latticetester/Util.h"
 #include "latticetester/Const.h"
 #include "latticetester/Rank1Lattice.h"

@@ -9,7 +9,6 @@
 #include <string>
 #include <iostream>
 
-#include "latticetester/Types.h"
 #include "latticetester/Util.h"
 #include "latticetester/Const.h"
 #include "latticetester/Rank1Lattice.h"
@@ -395,6 +394,10 @@ namespace LatMRG {
 
       return flag;
     }
+
+  extern template class LatTestAll<std::int64_t, double>;
+  extern template class LatTestAll<NTL::ZZ, double>;
+  extern template class LatTestAll<NTL::ZZ, NTL::RR>;
 
 }
 #endif

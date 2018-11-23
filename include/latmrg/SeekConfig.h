@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 
-#include "latticetester/Types.h"
 #include "latticetester/Const.h"
 
 #include "latmrg/Modulus.h"
@@ -18,42 +17,45 @@ namespace LatMRG {
    * */
   template<typename Int>
     struct Component {
-      /// Type of the generator. Either MRG or MWC.
-      GenType genType;
-      /// The modulus m of this component.
-      Modulus<Int> modulus;
-      /// The order of the component.
-      int k;
-      /** `bool` describing if the component has maximal period. It has to be 
-       * `true` if the compenent has maximal period, and `false` otherwise.
-       * */
-      bool PerMax;
-      /// \todo this
-      ImplemCond implemCond;
-      /// \todo this
-      int NumBits;
-      /// \todo this
-      int HighestBit;
-      /// \todo this
-      int ncoef;
-      /// \todo this
-      int *Icoef;
-      /// \todo this
-      DecompType F1;
-      /// \todo this
-      std::string file1;
-      /// \todo this
-      DecompType F2;
-      /// \todo this
-      std::string file2;
-      /// \todo this
-      SearchMethod searchMethod;
-      /// \todo this
-      int numReg, H, Hk;
-      /// \todo this
-      MVect b, c;
-      /// \todo this
-      bool ApproxTotGen;
+      private:
+        typedef NTL::vector<Int> IntVec;
+      public:
+        /// Type of the generator. Either MRG or MWC.
+        GenType genType;
+        /// The modulus m of this component.
+        Modulus<Int> modulus;
+        /// The order of the component.
+        int k;
+        /** `bool` describing if the component has maximal period. It has to be 
+         * `true` if the compenent has maximal period, and `false` otherwise.
+         * */
+        bool PerMax;
+        /// \todo this
+        ImplemCond implemCond;
+        /// \todo this
+        int NumBits;
+        /// \todo this
+        int HighestBit;
+        /// \todo this
+        int ncoef;
+        /// \todo this
+        int *Icoef;
+        /// \todo this
+        DecompType F1;
+        /// \todo this
+        std::string file1;
+        /// \todo this
+        DecompType F2;
+        /// \todo this
+        std::string file2;
+        /// \todo this
+        SearchMethod searchMethod;
+        /// \todo this
+        int numReg, H, Hk;
+        /// \todo this
+        IntVec b, c;
+        /// \todo this
+        bool ApproxTotGen;
     };
 
   /**
@@ -69,6 +71,8 @@ namespace LatMRG {
    */
   template<typename Int>
     class SeekConfig {
+      private:
+        typedef NTL::vector<Int> IntVec;
       public:
         static const int MAX_WORD_SIZE = 64;
         SeekConfig();
@@ -83,7 +87,7 @@ namespace LatMRG {
         int J;            // nombre de generateurs dans la combinason
         std::vector<Component<Int>> compon;
         Int* Ms;
-        MVect* As;
+        IntVec* As;
         int* Ks;
         int C;
         double* minMerit;
@@ -231,8 +235,8 @@ namespace LatMRG {
           std::cout << "H: " << compon[i].H << std::endl;
           std::cout << "Hk: " << compon[i].Hk << std::endl;
         }
-        std::cout << "b: " << LatticeTester::toString<MVect>(compon[i].b, compon[i].k) << std::endl;
-        std::cout << "c: " << LatticeTester::toString<MVect>(compon[i].c, compon[i].k) << std::endl;
+        std::cout << "b: " << LatticeTester::toString<IntVec>(compon[i].b, compon[i].k) << std::endl;
+        std::cout << "c: " << LatticeTester::toString<IntVec>(compon[i].c, compon[i].k) << std::endl;
       }
       std::cout << "========================= End  ======================\n" << std::endl;
       std::cout << "C : " << C << std::endl;

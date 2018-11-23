@@ -2,7 +2,6 @@
 #define REPORTLAT_H
 
 #include "latticetester/Writer.h"
-#include "latticetester/Types.h"
 
 #include "latmrg/LatticeTestObserver.h"
 #include "latmrg/TableColumnImpl.h"
@@ -403,6 +402,10 @@ namespace LatMRG {
 
       m_base_col = m_next_base;
     }
+
+  extern template class ReportLat<std::int64_t, double>;
+  extern template class ReportLat<NTL::ZZ, double>;
+  extern template class ReportLat<NTL::ZZ, NTL::RR>;
 
 }
 #endif

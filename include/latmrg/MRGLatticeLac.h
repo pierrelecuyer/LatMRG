@@ -18,6 +18,9 @@ namespace LatMRG {
    */
   template<typename Int, typename Dbl>
     class MRGLatticeLac:   public MRGLattice<Int, Dbl> {
+      private:
+        typedef NTL::vector<Int> IntVec;
+        typedef NTL::matrix<Int> IntMat;
       public:
 
         /**
@@ -27,8 +30,8 @@ namespace LatMRG {
          * the basis vectors is computed with `norm`. The bases are built using the
          * *lacunary indices* `lac`.
          */
-        MRGLatticeLac (const Int & m, const MVect & A, int maxDim, int k,
-            BVect & lac, LatticeType latt,
+        MRGLatticeLac (const Int & m, const IntVec & A, int maxDim, int k,
+            IntVec & lac, LatticeType latt,
             LatticeTester::NormType norm = LatticeTester::L2NORM);
 
         /**
@@ -104,7 +107,7 @@ namespace LatMRG {
       if (this == &lat)
         return * this;
       LatticeTester::MyExit (1, " MRGLatticeLac::operator= n'est pas terminé   ");
-      copyBasis (lat);
+      this->copyBasis (lat);
       return *this;
     }
 
@@ -112,8 +115,8 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int, typename Dbl>
-    MRGLatticeLac<Int, Dbl>::MRGLatticeLac (const Int & m, const MVect & a, int maxDim,
-        int k, BVect & Lac, LatticeType lat,
+    MRGLatticeLac<Int, Dbl>::MRGLatticeLac (const Int & m, const IntVec & a, int maxDim,
+        int k, IntVec & Lac, LatticeType lat,
         LatticeTester::NormType norm):
       MRGLattice<Int, Dbl>::MRGLattice (m, a, maxDim, k, lat, norm),
       m_lac (Lac, maxDim)
@@ -164,7 +167,7 @@ namespace LatMRG {
       initStates ();
       int IMax = this->m_lac.getSize ();
 
-      MVect b;
+      IntVec b;
       b.SetLength (this->m_order+1);
       LatticeTester::Invert (this->m_aCoef, b, this->m_order);
 
@@ -207,8 +210,8 @@ namespace LatMRG {
       //Triangularization qui pourrait nécessiter un appel pour chaque ligne,
       //mais qui sauverait beaucoup de mémoire.
       //Il n'est pas certain que cela en vaille la peine.
-      LatticeTester::Triangularization <BMat> (this->m_wSI, this->m_vSI, ord, IMax, this->m_modulo);
-      LatticeTester::CalcDual <BMat> (this->m_vSI, this->m_wSI, IMax, this->m_modulo);
+      LatticeTester::Triangularization <IntMat> (this->m_wSI, this->m_vSI, ord, IMax, this->m_modulo);
+      LatticeTester::CalcDual <IntMat> (this->m_vSI, this->m_wSI, IMax, this->m_modulo);
 
       // Construire la base de dimension 1
       this->m_basis[0][0] = this->m_vSI[0][0];
@@ -266,6 +269,10 @@ namespace LatMRG {
         }
       }
     }
+
+  extern template class MRGLatticeLac<std::int64_t, double>;
+  extern template class MRGLatticeLac<NTL::ZZ, double>;
+  extern template class MRGLatticeLac<NTL::ZZ, NTL::RR>;
 
 } // End namespace LatMRG
 #endif

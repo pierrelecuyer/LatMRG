@@ -12,7 +12,6 @@ INCLUDES = -I./include -I./latticetester/include
 DEF_LLDD = -DNTL_TYPES_CODE=1
 DEF_ZZDD = -DNTL_TYPES_CODE=2
 DEF_ZZRR = -DNTL_TYPES_CODE=3
-NUM_TYPES = $(DEF_ZZDD)
 
 # Library path. This assumes NTL is in /usr/local/lib (its default path).
 STAT_LIBS_PATH = -Wl,-Bstatic -L$(LIB_DIR)
@@ -39,7 +38,7 @@ MRG_TYPES = $(SRC_DIR)/latmrg/mrgtypes
 # The source files are in SRC_DIR. This grabs subdirectories
 SRCS = $(wildcard $(MRG_LOW)/*.cc) $(wildcard $(MRG_HIGH)/*.cc) \
        $(wildcard $(MRG_TYPES)/*.cc)
-PROGS_CC = $(wildcard $(PRO_DIR)/*.cc)
+PROGS_CC = $(filter-out ./progs/SeekMain.cc, $(wildcard $(PRO_DIR)/*.cc))
 EX_CC = $(wildcard $(EX_DIR)/*.cc)
 
 # define the C object files
@@ -89,7 +88,7 @@ $(OBJ_DIR)/:
 lib_objects: $(OBJ_DIR)/ $(OBJS)
 
 $(OBJ_DIR)/%.o:$(SRC_DIR)/%.cc $(INC_DIR)/%.h
-	$(CC) $(CFLAGS) $(INCLUDES) $(NUM_TYPES) -c $< -o $@
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 #==============================================================================
 # Building the programs of ./progs
@@ -106,9 +105,18 @@ $(BIN_DIR)/:
 
 # Builds objects and binaries for every of the programs of LatMRG
 progs_objects: $(PROGS_O)
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_LLDD) -c ./progs/SeekMain.cc -o ./progs/SeekLLDD.o
+	$(CC) ./progs/SeekLLDD.o $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
+	  -o $(BIN_DIR)/SeekLLDD 
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_ZZDD) -c ./progs/SeekMain.cc -o ./progs/SeekZZDD.o
+	$(CC) ./progs/SeekZZDD.o $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
+	  -o $(BIN_DIR)/SeekZZDD
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_ZZRR) -c ./progs/SeekMain.cc -o ./progs/SeekZZRR.o
+	$(CC) ./progs/SeekZZRR.o $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
+	  -o $(BIN_DIR)/SeekZZRR
 
 $(PRO_DIR)/%.o:$(PRO_DIR)/%.cc
-	$(CC) $(CFLAGS) $(INCLUDES) $(NUM_TYPES) -c $< -o $@
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 	$(CC) $@ $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
 	  -o $(BIN_DIR)/$(@:progs/%.o=%) 
 

@@ -2,7 +2,6 @@
 #define LATTICETESTOBSERVER_H
 
 #include "latticetester/IntLattice.h"
-#include "latticetester/Types.h"
 
 #include <string>
 

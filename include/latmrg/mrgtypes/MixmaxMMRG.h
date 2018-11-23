@@ -10,7 +10,6 @@
 #include <iomanip>
 #include <time.h>
 
-#include "latticetester/Types.h"
 #include "latticetester/Util.h"
 
 namespace LatMRG {

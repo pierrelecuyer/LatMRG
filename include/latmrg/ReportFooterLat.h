@@ -2,7 +2,6 @@
 #define REPORTFOOTERLAT_H
 
 #include "latticetester/Writer.h"
-#include "latticetester/Types.h"
 #include "latticetester/Const.h"
 
 #include "latmrg/ReportFooter.h"

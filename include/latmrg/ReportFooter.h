@@ -2,7 +2,6 @@
 #define REPORTFOOTER_H
 
 #include "latticetester/Writer.h"
-#include "latticetester/Types.h"
 
 namespace LatMRG {
 

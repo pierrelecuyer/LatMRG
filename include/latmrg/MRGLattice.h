@@ -27,6 +27,9 @@ namespace LatMRG {
    */
   template<typename Int, typename Dbl>
     class MRGLattice: public LatticeTester::IntLattice<Int, Int, Dbl, Dbl> {
+      private:
+        typedef NTL::vector<Int> IntVec;
+        typedef NTL::matrix<Int> IntMat;
       public:
 
         /**
@@ -38,7 +41,7 @@ namespace LatMRG {
          * and the indices of vectors and matrices vary from dimension 1 to 
          * `maxDim`. The norm to be used for the basis vectors is `norm`.
          */
-        MRGLattice (const Int & m, const MVect & a, int maxDim, int k, 
+        MRGLattice (const Int & m, const IntVec & a, int maxDim, int k, 
             LatticeType latt, 
             LatticeTester::NormType norm = LatticeTester::L2NORM);
 
@@ -47,8 +50,8 @@ namespace LatMRG {
          * indices `lac`. `a` has to be a vector of k+1 components 
          * with `a[i]`=\f$a_i\f$ for compatibility with other classes.
          */
-        MRGLattice (const Int & m, const MVect & a, int maxDim, int k, 
-            BVect & lac, LatticeType latt, 
+        MRGLattice (const Int & m, const IntVec & a, int maxDim, int k, 
+            IntVec & lac, LatticeType latt, 
             LatticeTester::NormType norm = LatticeTester::L2NORM);
 
         /**
@@ -117,7 +120,7 @@ namespace LatMRG {
          * Returns a non-mutable copy of the multipliers (coefficients) of the
          * MRG.
          */
-        const MVect & getCoef() const { return m_aCoef; }
+        const IntVec & getCoef() const { return m_aCoef; }
 
         /**
          * Returns the vector of multipliers \f$A\f$ as a string.
@@ -147,8 +150,8 @@ namespace LatMRG {
          * Initializes this object when the lattice type is `ORBIT`.
          */
         void initOrbit();
-        void insertion (BVect & Sta);
-        void lemme2 (BVect & Sta);
+        void insertion (IntVec & Sta);
+        void lemme2 (IntVec & Sta);
 
         /**
          * For debugging purposes.
@@ -194,7 +197,7 @@ namespace LatMRG {
         /**
          * The coefficients of the recurrence.
          */
-        MVect m_aCoef;
+        IntVec m_aCoef;
 
         /**
          * Indicates which lattice or sublattice is analyzed.
@@ -219,7 +222,7 @@ namespace LatMRG {
          * @{
          */
         Int m_t4, m_t5, m_t6, m_t7, m_t8, m_e;
-        MVect m_xi;
+        IntVec m_xi;
         /**
          * @}
          */
@@ -231,7 +234,7 @@ namespace LatMRG {
          * matrix. **Marc-Antoine** This matrix is different in some way that I
          * don't quite understand if we use lacunary indices.
          */
-        BMat m_sta;
+        IntMat m_sta;
 
         /**
          * When the flag `m_ip[i]` is `true`, the \f$i\f$-th diagonal
@@ -326,7 +329,7 @@ namespace LatMRG {
       if (this == &lat)
         return *this;
       this->m_dim = lat.m_dim;
-      copyBasis(lat);
+      this->copyBasis(lat);
       this->m_order = lat.m_order;
       m_ip = lat.m_ip;
       //m_shift = lat.m_shift;
@@ -340,7 +343,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int, typename Dbl>
-    MRGLattice<Int, Dbl>::MRGLattice(const Int & m, const MVect & a, int maxDim, 
+    MRGLattice<Int, Dbl>::MRGLattice(const Int & m, const IntVec & a, int maxDim, 
         int k, LatticeType lat, LatticeTester::NormType norm):
       LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::IntLattice(
           m, k, maxDim, norm)
@@ -359,8 +362,8 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int, typename Dbl>
-    MRGLattice<Int, Dbl>::MRGLattice(const Int & m, const MVect & a, int maxDim, 
-        int k, BVect & I, LatticeType lat, LatticeTester::NormType norm):
+    MRGLattice<Int, Dbl>::MRGLattice(const Int & m, const IntVec & a, int maxDim, 
+        int k, IntVec & I, LatticeType lat, LatticeTester::NormType norm):
       LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::IntLattice (
           m, k, maxDim, norm), m_lac(I, maxDim), m_ip(0)
   {
@@ -493,7 +496,7 @@ namespace LatMRG {
         }
       }
 
-      LatticeTester::CalcDual<BMat>(this->m_basis, this->m_dualbasis, dk, this->m_modulo);
+      LatticeTester::CalcDual<IntMat>(this->m_basis, this->m_dualbasis, dk, this->m_modulo);
       this->setDim(dk);
       if (d > this->m_order) {
         for (i = this->m_order; i < d; i++)
@@ -590,7 +593,7 @@ namespace LatMRG {
       initStates();
       int IMax = m_lac.getSize();
 
-      MVect b;
+      IntVec b;
       b.SetLength(this->m_order+1);
       LatticeTester::Invert(m_aCoef, b, this->m_order);
 
@@ -626,9 +629,9 @@ namespace LatMRG {
        * V_i >= i]) et de plein rang (on remplace les lignes = 0 par lignes 
        * avec m sur la diagonale). 
        * */
-      LatticeTester::Triangularization<BMat>(this->m_wSI, this->m_vSI, ord, IMax, 
+      LatticeTester::Triangularization<IntMat>(this->m_wSI, this->m_vSI, ord, IMax, 
           this->m_modulo);
-      LatticeTester::CalcDual<BMat>(this->m_vSI, this->m_wSI, IMax, this->m_modulo);
+      LatticeTester::CalcDual<IntMat>(this->m_vSI, this->m_wSI, IMax, this->m_modulo);
 
       // Construire la base de dimension 1
       this->m_basis[0][0] = this->m_vSI[0][0];
@@ -662,8 +665,8 @@ namespace LatMRG {
          }
          */
 
-      BVect tempLineBasis (dim);
-      BVect tempColBasis (dim);
+      IntVec tempLineBasis (dim);
+      IntVec tempColBasis (dim);
 
       for (int i = 0; i < dim-1; i++) {
 
@@ -727,7 +730,7 @@ namespace LatMRG {
      * groupe d'états considérés.
      */
     {
-      BVect statmp;
+      IntVec statmp;
       statmp.resize(this->m_order); // Stocks variables
       int maxDim = this->getDim();
       //clear (m_t2);
@@ -759,7 +762,7 @@ namespace LatMRG {
         if (m_latType == ORBIT) {
           LatticeTester::MyExit (1, "case ORBIT is not finished");
 
-          MVect InSta;
+          IntVec InSta;
           InSta.SetLength (this->m_order);
           NTL::clear (statmp[this->m_order-1]);
           for (int i = 0; i < this->m_order; i++) {
@@ -790,7 +793,7 @@ namespace LatMRG {
 
           LatticeTester::MyExit (1, "case RECURRENT ne fonctionne pas");
           printf("ESPION_RECURRENT\n");
-          MVect b;
+          IntVec b;
           b.SetLength(this->m_order + 1);
           LatticeTester::CopyVect (b, m_aCoef, this->m_order);
           PolyPE<Int>::reverse (b, this->m_order, 2);
@@ -878,7 +881,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int, typename Dbl>
-    void MRGLattice<Int, Dbl>::insertion (BVect & statmp)
+    void MRGLattice<Int, Dbl>::insertion (IntVec & statmp)
     /*
      * Cette procedure insere le vecteur Sta[0] dans la matrice triangulaire
      * Sta. Si IP[i] = TRUE, l'entree diagonale sur la i-ieme ligne de Sta est
@@ -922,7 +925,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int, typename Dbl>
-    void MRGLattice<Int, Dbl>::lemme2 (BVect & statmp)
+    void MRGLattice<Int, Dbl>::lemme2 (IntVec & statmp)
     /*
      * Cette procedure suppose que la matrice Sta est triangulaire. Si
      * IP[i] = TRUE, l'entree diagonale sur la i-ieme ligne de Sta est
@@ -971,6 +974,9 @@ namespace LatMRG {
          */
     }
 
+  extern template class MRGLattice<std::int64_t, double>;
+  extern template class MRGLattice<NTL::ZZ, double>;
+  extern template class MRGLattice<NTL::ZZ, NTL::RR>;
 
 } // End namespace LatMRG
 #endif

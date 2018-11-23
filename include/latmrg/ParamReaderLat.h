@@ -8,7 +8,6 @@
 #include <cassert>
 #include <cstring>
 
-#include "latticetester/Types.h"
 #include "latticetester/Util.h"
 #include "latticetester/Const.h"
 
@@ -72,8 +71,8 @@ namespace LatMRG {
           Int m;
           long m1(0), m2(0), m3(0);
           int k(0);
-          MVect a;
-          MMat A;
+          NTL::vector<Int> a;
+          NTL::matrix<Int> A;
           int maxOrder = 0;
           std::string coefkind (" ");  // = NOCOND, EQUAL, NONZERO
           for (int i = 0; i < config.J; i++) {

@@ -14,6 +14,8 @@ namespace LatMRG {
    */
   template<typename Int>
     class MRGComponentFactory {
+      private:
+        typedef NTL::vector<Int> IntVec;
       public:
 
         /**
@@ -40,16 +42,16 @@ namespace LatMRG {
          * where \f$a\f$ is the inverse of \f$b\f$ in arithmetic modulo 
          * \f$m\f$.
          */
-        static MRGComponent<Int> * fromMWC (const Int & b, const MVect & a, int k);
+        static MRGComponent<Int> * fromMWC (const Int & b, const IntVec & a, int k);
     }; // End class declaration
 
   template<typename Int>
     MRGComponent<Int>* MRGComponentFactory<Int>::fromMWC(const Int & b,
-        const MVect & a, int k)
+        const IntVec & a, int k)
     {
       Int _m;
       Int _b;
-      MVect _a;
+      IntVec _a;
 
       Int d, e, f, g;
 

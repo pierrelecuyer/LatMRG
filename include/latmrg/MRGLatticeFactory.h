@@ -1,7 +1,6 @@
 #ifndef MRGLATTICEFACTORY_H
 #define MRGLATTICEFACTORY_H
 #include "latticetester/Const.h"
-#include "latticetester/Types.h"
 #include "latmrg/Const.h"
 #include "latmrg/MRGLattice.h"
 #include "latmrg/MRGComponent.h"
@@ -16,6 +15,8 @@ namespace LatMRG {
    */
   template<typename Int, typename Dbl>
     class MRGLatticeFactory {
+      private:
+        typedef NTL::vector<Int> IntVec;
       public:
 
         /**
@@ -26,7 +27,7 @@ namespace LatMRG {
          * calculated as described in \cite rLEC96b.
          */
         static MRGLattice<Int, Dbl> * fromCombMRG (MRGComponent<Int> **comp, int J,
-            int maxDim, BVect * Lac, LatticeType lat,
+            int maxDim, IntVec * Lac, LatticeType lat,
             LatticeTester::NormType norm);
 
         /**
@@ -51,14 +52,14 @@ namespace LatMRG {
          * \f$ m = \sum^k_{l=0} a_l b^l \f$ and \f$a\f$ is the inverse of 
          * \f$b\f$ in arithmetic modulo \f$m\f$.
          */
-        static MRGLattice<Int, Dbl> * fromMWC (const MVect & a, const Int & b, 
-            int maxDim, int k, BVect *Lac, LatticeType lat,
+        static MRGLattice<Int, Dbl> * fromMWC (const IntVec & a, const Int & b, 
+            int maxDim, int k, IntVec *Lac, LatticeType lat,
             LatticeTester::NormType norm);
 
         /**
          * Same as above, but with no lacunary indices.
          */
-        static MRGLattice<Int, Dbl> * fromMWC (const MVect & a, const Int & b,
+        static MRGLattice<Int, Dbl> * fromMWC (const IntVec & a, const Int & b,
             int maxDim, int k, LatticeType lat,
             LatticeTester::NormType norm);
     }; // End class declaration
@@ -67,7 +68,7 @@ namespace LatMRG {
 
   template<typename Int, typename Dbl>
     MRGLattice<Int, Dbl> *MRGLatticeFactory<Int, Dbl>::fromCombMRG (MRGComponent<Int> ** comp,
-        int J, int maxDim, BVect * I, LatticeType type,
+        int J, int maxDim, IntVec * I, LatticeType type,
         LatticeTester::NormType norm)
     {
       Int _m;
@@ -84,7 +85,7 @@ type Int".
 So instead we decied to use a vector to perform the same operations
 with _n[].
 */
-      MVect _n;
+      IntVec _n;
       _n.resize(J);
 
       Int d, e, f, g;
@@ -106,7 +107,7 @@ with _n[].
         comp[j]->nj = _n[j];
       }
 
-      MVect _a;
+      IntVec _a;
       LatticeTester::CreateVect (_a, _k);
 
       // Calcul de ai
@@ -174,7 +175,7 @@ with _n[].
     Int _m;
     int _k = 0;
     Int _n[J];
-    MVect _a;
+    IntVec _a;
 
     Int d, e, f, g;
 
@@ -236,7 +237,7 @@ with _n[].
   //===========================================================================
 
   template<typename Int, typename Dbl>
-    MRGLattice<Int, Dbl> *MRGLatticeFactory<Int, Dbl>::fromMWC (const MVect & a,
+    MRGLattice<Int, Dbl> *MRGLatticeFactory<Int, Dbl>::fromMWC (const IntVec & a,
         const Int & b, int MaxDim, int k, LatticeType lat,
         LatticeTester::NormType norm)
     {
@@ -247,13 +248,13 @@ with _n[].
   //===========================================================================
 
   template<typename Int, typename Dbl>
-    MRGLattice<Int, Dbl> *MRGLatticeFactory<Int, Dbl>::fromMWC (const MVect & a,
-        const Int & b, int MaxDim, int k, BVect * I, LatticeType lat_t,
+    MRGLattice<Int, Dbl> *MRGLatticeFactory<Int, Dbl>::fromMWC (const IntVec & a,
+        const Int & b, int MaxDim, int k, IntVec * I, LatticeType lat_t,
         LatticeTester::NormType norm)
     {
       Int _m;
       Int _b;
-      MVect _a;
+      IntVec _a;
 
       Int d, e, f, g;
 
@@ -283,5 +284,10 @@ with _n[].
       LatticeTester::DeleteVect (_a);
       return lat;
     }
+
+  extern template class MRGLatticeFactory<std::int64_t, double>;
+  extern template class MRGLatticeFactory<NTL::ZZ, double>;
+  extern template class MRGLatticeFactory<NTL::ZZ, NTL::RR>;
+
 } // End namespace LatMRG
 #endif

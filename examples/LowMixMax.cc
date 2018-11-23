@@ -39,6 +39,7 @@
 
 #include "latticetester/Writer.h"
 #include "latticetester/WriterRes.h"
+#include "latticetester/Types.h"
 
 #include "latmrg/LatConfig.h"
 #include "latmrg/ReportLat.h"

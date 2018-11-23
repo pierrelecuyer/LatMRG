@@ -263,7 +263,5 @@ namespace LatMRG {
       }
     }
 
-
-
 } // End namespace LatMRG
 #endif
