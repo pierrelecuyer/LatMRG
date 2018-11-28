@@ -38,7 +38,7 @@ namespace
       reader.readBool (par.fac, ++ln, 1);
     }
 
-  void ID(string fname) {
+  void Integer(string fname) {
     fname += ".dat";
     ParamReaderExt<std::int64_t, double> reader (fname);
     ParamType par;
@@ -52,23 +52,9 @@ namespace
     primes.find (par.k, par.e, par.c1, par.c2, par.safe, par.fac, fout);
   }
 
-  void ZD(string fname) {
+  void NTLInt(string fname) {
     fname += ".dat";
     ParamReaderExt<NTL::ZZ, double> reader (fname);
-    ParamType par;
-    read (reader, par);
-
-    string oname(fname);
-    oname += ".res";
-
-    ofstream fout (oname.c_str());
-    Primes<NTL::ZZ> primes;
-    primes.find (par.k, par.e, par.c1, par.c2, par.safe, par.fac, fout);
-  }
-
-  void ZR(string fname) {
-    fname += ".dat";
-    ParamReaderExt<NTL::ZZ, NTL::RR> reader (fname);
     ParamType par;
     read (reader, par);
 
@@ -93,12 +79,10 @@ int main(int argc, char** argv)
   }
   string types(argv[1]);
   string fname(argv[2]);
-  if (types == "ID") {
-    ID(fname);
-  } else if (types == "ZD") {
-    ZD(fname);
-  } else if (types == "ZR") {
-    ZR(fname);
+  if (types == "I") {
+    Integer(fname);
+  } else if (types == "Z") {
+    NTLInt(fname);
   }
   return 0;
 }
