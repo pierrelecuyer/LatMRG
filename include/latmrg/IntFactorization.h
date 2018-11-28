@@ -10,6 +10,7 @@
 
 #include "latticetester/Const.h"
 #include "latticetester/IntFactor.h"
+#include "latticetester/Util.h"
 
 namespace LatMRG {
 

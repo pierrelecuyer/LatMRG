@@ -13,6 +13,7 @@
 #include "latmrg/Table.h"
 
 #include <string>
+#include <cstring>
 #include <iostream>
 
 
