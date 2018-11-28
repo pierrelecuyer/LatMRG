@@ -1,0 +1,52 @@
+/*!
+ * 
+ * \mainpage LatMRG Manual
+ * 
+ * *A software package for theoretical analysis of linear congruential random number generators and integration lattices.*
+ * 
+ * \section latmrg_overview Overview
+ * 
+ * *LatMRG* is a software toolkit for examining theoretical properties of
+ * linear congruential or multiple recursive random number generators.
+ * It is implemented as a library of modules written in C++.
+ * 
+ * *LatMRG* offers tools to solve the following problems:
+ * - Finding a good moduli for such a generator via \ref FindMK and \ref FindMK2
+ * - Searching for new MRGs with a wide array of criteria via \ref SeekMain
+ * - Testing the theoretical properties of a multiple recursive random number
+ * generator with the most common tests in the litterature. This includes
+ *   - A test for the period length in \ref MaxPeriod
+ *   - Figures of merit on the lattice spanned by the generator in the unit
+ *   square. These computations are available via \ref LatMain and use the
+ *   *LatticeTester* software
+ *   - These figures of merit can be computed on a wide array of projections
+ *   formed by taking "leapfrog" values of the output of the generator.
+ * - A library that can easily be extended to test a specific construction of
+ * an MRG like generators (generators with an underlying lattice in the unit
+ * cube). This library already contains specific implementations for combined
+ * generators, multiply-with-carry generators and matrix recursive generators as
+ * well as a few examples of the basic use cases of *LatMRG*.
+ *
+ * \section latmrg_outline Manual Outline
+ * 
+ * This manual compiles everything there is to know about *LatMRG* divided in 3
+ * sections :
+
+ * - \subpage intro
+ * A pdf file (?) containing all the theory needed to understand what is going
+ * on in the background of *LatMRG*. Anyone whishing to use *LatMRG* that does
+ * not understand some of the terms in this manual should fall back to that file
+ * for explainations.
+ *
+ * - \subpage usage
+ * A description of the executable programs available with *LatMRG*, of the
+ * file formats to use them and of the output they produce.
+ *
+ * - \subpage dev
+ * An introduction to the usage of *LatMRG* as a library. This surveys the most
+ * important classes and presents ways to build new specific implementations of
+ * MRGs and test them easily.
+ * 
+ * - \subpage detailed_usage Should be removed in favor of a more grouped approach.
+ * \ref usage should link to each program specific documentation.
+ * */

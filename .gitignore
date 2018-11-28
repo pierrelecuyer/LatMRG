@@ -1,13 +1,15 @@
-doc/
+doc/html/
 build/
 lib/
 obj/
 bin/
 obscure_files/
+obsolete/
 unused/
 .*
 *.o
 *.res
+*.log
 !.gitignore
 !.gitmodules
 waf
