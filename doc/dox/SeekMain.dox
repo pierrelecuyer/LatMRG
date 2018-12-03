@@ -155,7 +155,7 @@
  *      S
  *      OutputType
  * <center> **Data file format for `SeekMain`** </center>
-
+ *
  * The data for `SeekMain` must be placed in a file with extension
  * `.dat`, according to the format displayed \ref input_format_seek "above". The
  * fields in square brackets are optional (depending on the value taken by the 
@@ -164,10 +164,6 @@
  * `/path/to/file.dat` is the name of the data file containing the test to 
  * execute. The results will be printed either in a file `/path/to/file.res` or 
  * `path/to/file.gen` depending on `OutpoutType` (see below).
- *
- * Comments may be inserted after data, on the same line, separated from the
- * data by at least one blank. Moreover, any line starting with "#" is
- * considered as a comment and is discarded by the reading program.
  *
  * The values of \f$m\f$, \f$b_i\f$, and \f$c_i\f$ in the data file can be
  * given in one of the two following formats:

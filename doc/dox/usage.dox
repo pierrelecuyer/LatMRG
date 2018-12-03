@@ -20,6 +20,75 @@
  * to it. This page contains a detailed description of what can be computed with
  * that program, the file format that has to be given as input and a description
  * of the standard output.
+ * \section file_format About the file format
+ *
+ * A standard notation is used throughout the pages describing the programs to
+ * describe the file format used by them. The description takes place in two
+ * parts :
+ * - We always present the layout of the file first in a "code" environment.
+ *   This makes it so that you can see what the file will actually look like.
+ * - We present a detailled description of every parameter and it's type.
+ * 
+ * The file layout looks like this :
+ * \anchor input_format_ex
+ *
+ *      param1 // A comment
+ *      param2 [optionnal parameter]
+ *      .
+ *      .
+ *      .
+ *      param_n
+ * <center> **Example of a datafile layout** </center>
+ * 
+ * If you see a double slash (`//`) in the layout, this is a comment to
+ * explain what is going on for this/those lines. It is not necessary to put it
+ * in the files to feed to the program. As written above, the parameters in
+ * brackets are optionnal parameters that do not always need to be there. Most
+ * often than not, their presence will be determined by the parameter on the
+ * same line as them. Also note that comments may be inserted after data, on the
+ * same line, separated from the data by at least one blank. Moreover, any line
+ * starting with `#` is considered as a comment and is discarded by the reading
+ * program.
+ *
+ * Each of the configuration must be in a file that has a `.dat` extension.
+ *
+ * After presenting the file template, we explain the meaning of all the fields
+ * of the data file. For every line,
+ * of the data file, the options for the mandatory fields are listed between 
+ * inequality signs as `<option1, option2, ...>`. If this field takes a data
+ * and no particular value, this type is writen instead. The options for the 
+ * optionnal/situationnal fields are listed in square brackets as `[option1, 
+ * option2, ...]`. It looks like this:
+ * <dl>
+ * <dt>parameter name</dt> : <dd>`<case1, case2, case3> 
+ * [option1, option2]` \n
+ * Description of the parameter
+ *
+ * <dl>
+ * <dt>`case1`</dt>:
+ * <dd>
+ * Description of the case
+ * </dd>
+ * <dt>`case2`</dt>:
+ * <dd>
+ * Description of the case
+ * </dd>
+ * <dt>`case3`:</dt>
+ * <dd>
+ * Description of the case
+ * </dd>
+ * </dl>
+ * <dl>
+ * <dt>`option1`:</dt>
+ * <dd>
+ * Description of the option
+ * </dd>
+ * <dt>`option2`:</dt>
+ * <dd>
+ * Description of the option
+ * </dd>
+ * </dl>
+ * </dd>
  * */
 
  * The following modules describe precompiled programs that can be executed

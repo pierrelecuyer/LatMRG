@@ -63,7 +63,7 @@ all: clean_all lib bin examples doc
 
 bin: lib progs
 
-#==============================================================================
+#===============================================================================
 # Building the API
 
 lib: latticetester $(LIB_DIR)/ lib_objects
@@ -90,7 +90,7 @@ lib_objects: $(OBJ_DIR)/ $(OBJS)
 $(OBJ_DIR)/%.o:$(SRC_DIR)/%.cc $(INC_DIR)/%.h
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-#==============================================================================
+#===============================================================================
 # Building the programs of ./progs
 
 progs: $(BIN_DIR)/ progs_objects
@@ -120,7 +120,7 @@ $(PRO_DIR)/%.o:$(PRO_DIR)/%.cc
 	$(CC) $@ $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
 	  -o $(BIN_DIR)/$(@:progs/%.o=%) 
 
-#==============================================================================
+#===============================================================================
 # Building the documentation
 
 doc:
@@ -131,7 +131,7 @@ doc:
 	@echo 'Documentation now in ./doc'
 	@echo
 
-#==============================================================================
+#===============================================================================
 # Building the examples
 
 examples:$(EX_BUILD)/ build_ex
@@ -151,10 +151,32 @@ $(EX_DIR)/%.o:$(EX_DIR)/%.cc
 	$(CC) $< $(INCLUDES) -I. $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) \
 	  $(DYN_LIBS) -o $(EX_BUILD)/$(<:examples/%.cc=%) 
 
-#==============================================================================
+#===============================================================================
 # Installation/removal of LatMRG 
 
-#==============================================================================
+#===============================================================================
+# Execution of the examples
+
+PROGS_INPUTS = $(EX_DIR)/inputs
+
+# Don't call this unless you are reckless
+all_ex:mk2_ex_head mk2_ex
+
+MK2_DAT = $(wildcard $(PROGS_INPUTS)/mk2/mk2*.dat)
+MK2_RES = $(MK2_DAT:%.dat=%)
+
+mk2_ex_head:
+	$(SEP)
+	@echo 'Making mk2 examples'
+
+mk2_ex:$(MK2_RES)
+
+$(PROGS_INPUTS)/mk2/%:$(PROGS_INPUTS)/mk2/%.dat
+	$(BIN_DIR)/FindMK2 Z $@
+
+clean_ex_res:clean_mk2_res
+
+#===============================================================================
 # LatticeTester related considerations
 
 config_latticetester:
@@ -188,7 +210,7 @@ clean_lattice:
 	cd latticetester; ./waf clean
 	@echo
 
-#==============================================================================
+#===============================================================================
 # Cleaning stuff
 
 clean: separator clean_lib clean_progs clean_doc
@@ -211,15 +233,16 @@ clean_doc:
 clean_examples:
 	rm -rf $(BIN_DIR)/examples
 
-#==============================================================================
+#===============================================================================
 # Graphical stuff
 
 separator:
 	$(SEP)
 	@echo
 
-#==============================================================================
+#===============================================================================
 # PHONY targets
 
 .PHONY: latticetester $(LIB_DIR)/ $(OBJ_DIR)/ $(BIN_DIR)/ $(OBJ_DIR)/ doc clean\
-  clean_all examples $(EX_BUILD)/ $(EX_CC) separator config_latticetester
+  clean_all examples $(EX_BUILD)/ $(EX_CC) separator config_latticetester\
+  $(MK2_DAT) mk2_ex_head all_ex

@@ -37,10 +37,16 @@ namespace
 int main(int argc, char** argv)
 {
   if (argc != 3) {
-    cout << "Usage: " << argv[0] << " <data file>" << endl;
+    cout << "Usage: " << argv[0] << " <I,Z> <data file>" << endl;
+    cout << 1 <<endl;
     return 1;
   }
   string types(argv[1]);
+  if (types != "I" && types != "Z") {
+    cout << "Usage: " << argv[0] << " <I,Z> <data file>" << endl;
+    cout << 2 <<endl;
+    return 1;
+  }
   string fname(argv[2]);
   fname += ".dat";
   ofstream fout (fname);
@@ -48,16 +54,16 @@ int main(int argc, char** argv)
   Primes<std::int64_t> primesI;
   Primes<NTL::ZZ> primesZ;
 
-    //   primes.find (3, 39, 3, true, false, fout);
+  //   primes.find (3, 39, 3, true, false, fout);
 
-    for (int i = 0; i <= 2; ++i) {
-      int k = KTABLE[i];
-      // trouver 3 modules m proches de 2^31 pour des MRGs d'ordre k
-      if (types == "I") {
-        primesI.find (k, 40, 3, true, false, fout);
-      } else if (types == "Z") {
-        primesZ.find (k, 40, 3, true, false, fout);
-      }
+  for (int i = 0; i <= 2; ++i) {
+    int k = KTABLE[i];
+    // trouver 3 modules m proches de 2^31 pour des MRGs d'ordre k
+    if (types == "I") {
+      primesI.find (k, 40, 3, true, false, fout);
+    } else if (types == "Z") {
+      primesZ.find (k, 40, 3, true, false, fout);
     }
-    return 0;
+  }
+  return 0;
 }
