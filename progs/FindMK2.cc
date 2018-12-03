@@ -1,8 +1,14 @@
-/* Ce programme trouve des valeurs de m, k, r, premiers
-   pour les k dans KTABLE, pour m < 2^e  */
+/*
+ * This program look for integers smaller to specific powers of two. Look at
+ * the manual for more details.
+ * */
 
 #include "latmrg/Primes.h"
-#include "latticetester/Types.h"
+#include "latmrg/ParamReaderExt.h"
+
+#include <NTL/ZZ.h>
+
+#include <stdint.h>
 #include <fstream>
 
 using namespace std;
@@ -32,7 +38,7 @@ namespace
 }
 
 
-//===========================================================================
+//==============================================================================
 
 int main(int argc, char** argv)
 {
@@ -48,22 +54,28 @@ int main(int argc, char** argv)
     return 1;
   }
   string fname(argv[2]);
+  ofstream fout (fname + ".res");
   fname += ".dat";
-  ofstream fout (fname);
 
-  Primes<std::int64_t> primesI;
-  Primes<NTL::ZZ> primesZ;
+  ParamReaderExt<int64_t, double> reader(fname);
+  reader.getLines();
+  int k, e, s;
+  bool safe;
+  int ln = 0;
+  reader.readInt(k, ln, 0);
+  reader.readInt(e, ++ln, 0);
+  reader.readInt(s, ++ln, 0);
+  reader.readBool(safe, ++ln, 0);
 
   //   primes.find (3, 39, 3, true, false, fout);
 
-  for (int i = 0; i <= 2; ++i) {
-    int k = KTABLE[i];
-    // trouver 3 modules m proches de 2^31 pour des MRGs d'ordre k
-    if (types == "I") {
-      primesI.find (k, 40, 3, true, false, fout);
-    } else if (types == "Z") {
-      primesZ.find (k, 40, 3, true, false, fout);
-    }
+  // trouver 3 modules m proches de 2^31 pour des MRGs d'ordre k
+  if (types == "I") {
+    Primes<std::int64_t> primes;
+    primes.find (k, e, s, safe, false, fout);
+  } else if (types == "Z") {
+    Primes<NTL::ZZ> primes;
+    primes.find (k, e, s, safe, false, fout);
   }
   return 0;
 }
