@@ -143,7 +143,6 @@ namespace LatMRG {
                                 // it seems to be too much.
 
       while (i < s && m >= S1) {
-        // r = (m^k-1)/(m-1)
         LatticeTester::PrimeType status = LatticeTester::IntFactor<Int>::isPrime (m, KTRIALS);
         if (status == LatticeTester::PRIME || status == LatticeTester::PROB_PRIME) {
           Int m1 = m - Int(1);
