@@ -1,5 +1,0 @@
-# This is an example of the format to be used. This is not a valid file.
-k    // The order of the recurrence you want to build
-e    // Will search for m<2^e
-s    // The number of m the program will obtain.
-safe // The program checks more conditions.

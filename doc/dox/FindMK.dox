@@ -1,4 +1,3 @@
-/**
  * \page FindMK FindMK
  *
  * This module contains the main program to search for all prime integers
@@ -88,4 +87,3 @@
  * file with extension `.fac`.
  * </dd>
  * </dl>
- */

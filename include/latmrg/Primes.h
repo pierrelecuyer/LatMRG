@@ -5,6 +5,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <climits>
+#include <ctime>
 
 #include "latticetester/Util.h"
 #include "latticetester/IntFactor.h"
@@ -12,18 +13,19 @@
 #include "latmrg/Chrono.h"
 #include "latmrg/IntFactorization.h"
 
-
-namespace
-{
-}
-
 namespace LatMRG {
 
   /**
    * This class provides methods to search for integers \f$m\f$ that are prime,
    * for which the integer \f$r = (m^k-1)/(m-1)\f$ is also prime for a given
    * \f$k\f$, and possibly for which \f$(m-1)/2\f$ is also prime.
-   * \anchor REF__Primes_clas_Primes
+   *
+   * This class solely uses probabilistic primality tests, but does it a lot of
+   * times.
+   *
+   * \todo Could probably switch to a deterministic test because it is possible
+   * to do everything this class does with efficient deterministic tests for integers < 2^64
+   * see https://math.stackexchange.com/questions/2481148/primality-testing-for-64-bit-numbers
    */
   template<typename Int>
     class Primes {
@@ -78,14 +80,23 @@ namespace LatMRG {
          * Writes the CPU time of the find to the stream `fout`.
          */
         void writeFooter (std::ofstream & fout);
+
+        /**
+         * This is the general purpose function used by this program. This
+         * method searches for `s` prime integers between `S1` and `S2`.
+         * */
         void find (int k, int e, int s, const Int& S0, const Int & S1, const Int & S2, bool safe,
             bool facto, std::ofstream & fout);
+
         Chrono timer;
+
         IntFactorization<Int> ifac;
+
         void nextM (Int & m) {
           m -= 2;
           if (0 == m % 5)
-            m -= 2;    }
+            m -= 2;
+        }
     };
 
   //============================================================================
@@ -122,44 +133,44 @@ namespace LatMRG {
     void Primes<Int>::find (int k, int e, int s, const Int& S0, const Int & S1, const Int & S2,
         bool safe, bool facto, std::ofstream & fout)
     {
-      Int m, m1, m1s2, r, Sdiff;
-      NTL::set (r);
+      Int m, Sdiff;
       if (NTL::IsOdd (S2))
         m = S2;
       else
         m = S2 - Int(1);
       int i = 0;
-      const long KTRIALS = 200;
+      const long KTRIALS = 200; // This should be reduced from 200, because
+                                // it seems to be too much.
 
       while (i < s && m >= S1) {
-        // m1 = m-1
-        // m1s2 = (m-1)/2
         // r = (m^k-1)/(m-1)
         LatticeTester::PrimeType status = LatticeTester::IntFactor<Int>::isPrime (m, KTRIALS);
         if (status == LatticeTester::PRIME || status == LatticeTester::PROB_PRIME) {
-          m1 = m - Int(1);
+          Int m1 = m - Int(1);
           if (safe) {
             if (1 == m % 4) {
               nextM(m);
               continue;
             }
-            LatticeTester::Quotient (m1, Int(2), m1s2);
+            Int m1s2 = m1 / Int(2);
             status = LatticeTester::IntFactor<Int>::isPrime (m1s2, KTRIALS);
             if (status != LatticeTester::PRIME && status != LatticeTester::PROB_PRIME) {
               nextM(m);
               continue;
             }
           }
+          Int r;
+          NTL::set(r);
           if (k > 1) {
             r = NTL::power (m, k);
             --r;
-            LatticeTester::Quotient (r, m1, r);
+            r = r/m1;
             status = LatticeTester::IntFactor<Int>::isPrime (r, KTRIALS);
           }
           if (k == 1 || status == LatticeTester::PRIME || status == LatticeTester::PROB_PRIME) {
             i++;
             fout << "   m = " << m << std::endl;
-            Sdiff = m - S0;
+            Sdiff = m - (1<<e);
             fout << "     = 2^" << e;
             if (Sdiff >= 0) {
               fout << " + ";

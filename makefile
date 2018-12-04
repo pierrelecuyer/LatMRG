@@ -160,21 +160,21 @@ $(EX_DIR)/%.o:$(EX_DIR)/%.cc
 PROGS_INPUTS = $(EX_DIR)/inputs
 
 # Don't call this unless you are reckless
-all_ex:mk2_ex_head mk2_ex
+all_ex:mk_ex_head mk_ex
 
-MK2_DAT = $(wildcard $(PROGS_INPUTS)/mk2/mk2*.dat)
-MK2_RES = $(MK2_DAT:%.dat=%)
+MK_DAT = $(wildcard $(PROGS_INPUTS)/mk/mk*.dat)
+MK_RES = $(MK_DAT:%.dat=%)
 
-mk2_ex_head:
+mk_ex_head:
 	$(SEP)
-	@echo 'Making mk2 examples'
+	@echo 'Making FindMK examples'
 
-mk2_ex:$(MK2_RES)
+mk_ex:$(MK_RES)
 
-$(PROGS_INPUTS)/mk2/%:$(PROGS_INPUTS)/mk2/%.dat
-	$(BIN_DIR)/FindMK2 Z $@
+$(PROGS_INPUTS)/mk/%:$(PROGS_INPUTS)/mk/%.dat
+	$(BIN_DIR)/FindMK Z $@
 
-clean_ex_res:clean_mk2_res
+clean_ex_res:clean_mk_res
 
 #===============================================================================
 # LatticeTester related considerations
@@ -245,4 +245,4 @@ separator:
 
 .PHONY: latticetester $(LIB_DIR)/ $(OBJ_DIR)/ $(BIN_DIR)/ $(OBJ_DIR)/ doc clean\
   clean_all examples $(EX_BUILD)/ $(EX_CC) separator config_latticetester\
-  $(MK2_DAT) mk2_ex_head all_ex
+  $(MK_DAT) mk_ex_head all_ex

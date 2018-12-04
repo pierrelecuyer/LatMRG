@@ -1,39 +1,60 @@
 /**
- * \page FindMK2 FindMK2
+ * \page FindMK FindMK
  *
- * This module contains the main program to search for a fixed number of
- * prime integers \f$m\f$ close to a power of 2 (such that \f$m < 2^e\f$),
- * and for which \f$r = (m^k-1)/(m-1)\f$ is also prime. We may also require
- * that \f$(m-1)/2\f$ be prime by setting the boolean variable `safe` to
- * `true`. (See class LatMRG::Primes for the basic method
- * called by the program.) \todo Why safe?
+ * This module contains a program to search for good modulus for MRGs. Given a
+ * specific order, this program will search for modulus that are of one of two
+ * forms :
+ *   - Modulus that are smaller than a particular power of 2
+ *   - Modulus that are in a specific interval
  *
- * This program is called `findmk2`. The program reads the search parameters
+ * In the first case, the program will search for \f$m\f$ prime such that
+ * \f$m < 2^e\f$ and for which \f$r = (m^k-1)/(m-1)\f$ is also prime. We may
+ * also require that \f$(m-1)/2\f$ be prime.
+ *
+ * In the second case, the program will search for all prime integers in a given
+ * interval such that \f$ 2^e + c_1 \leq m \leq 2^e + c2\f$. It is also possible
+ * to require to have \f$(m-1)/2\f$ be prime.
+ *
+ * In both cases, it is possible to ask to program to factorize \f$m-1\f$. This
+ * factorization will then be printed in a file with the extension `.fac`.
+ * This program uses the class Primes of LatMRG to perform its computations.
+ * \todo Why safe?
+ *
+ * This program is called `FindMK`. The program reads the search parameters
  * from a file. This data file must have
  * the extension `.dat`. To run the program, a combination of types and the name
  * of the data file must be given without extension on the command line, and the
  * results will be written in a file of the same name but with extension `.res`.
- * For example, if the data file is called `find.dat`, then the program is run
+ * For example, if the data file is called `find.dat`, then the program is ran
  * by calling
  *
- *      findmk2 <I,Z> find
+ *      FindMK <I,Z> find
  *
  * and the results will be written in file `find.res`.
  *
  * The data file must have the following format:
  *
+ *      power
  *      k
  *      e
- *      s
+ *      c1 [c2]
  *      safe
+ *      facto
 
  * <center>
- * **Data file format for `findmk2`**
+ * **Data file format for `FindMK`**
  * </center>
  *
  * The file must contain the following parameters in that order:
  *
  * <dl>
+ * <dt>
+ * `power` :
+ * </dt>
+ * <dd>
+ * `<bool>` if power is `true`, the program will search for prime integers
+ * smaller than \f$2^e\f$, otherwise the program will search in an interval.
+ * </dd>
  * <dt>
  * `k` :
  * </dt>
@@ -42,16 +63,22 @@
  * </dd>
  * <dt> `e` :</dt>
  * <dd>
- * `<int>` the `e` for which the program will search an \f$m < 2^e\f$.
+ * `<int>` the `e` for which the program will search around \f$2^e\f$.
  * </dd>
- * <dt> `s` :</dt>
+ * <dt> `c1 [c2]` :</dt>
  * <dd>
- * `<int>` the program will find the first \f$s\f$ values of \f$m\f$ closest to
- * \f$2^e\f$ and such that \f$m < 2^e\f$.
+ * `<int> <int>` if power is `false`, the program will use \f$c_1\f$ and \f$c_2\f$
+ * limit the research interval. If power is `true`, the program will make
+ * computations until it has found \f$c_1\f$ primes meeting the constraints.
  * </dd>
  * <dt> `safe` :</dt>
  * <dd>
  * `<bool>` if `true`, only \f$m\f$ such that \f$(m-1)/2\f$ is prime are considered.
+ * </dd>
+ * <dt> `facto` :</dt>
+ * <dd>
+ * `<bool>` if `true`, the program will factorize \f$m-1\f$. It is recommended
+ * to set this option to `false`, especially if `safe` is `true`.
  * </dd>
  * </dl>
  */
