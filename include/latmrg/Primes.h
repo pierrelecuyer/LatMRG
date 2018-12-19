@@ -85,12 +85,11 @@ namespace LatMRG {
          * This is the general purpose function used by this program. This
          * method searches for `s` prime integers between `S1` and `S2`.
          * */
-        void find (int k, int e, int s, const Int& S0, const Int & S1, const Int & S2, bool safe,
+        void find (int k, int e, int s, const Int & S1, const Int & S2, bool safe,
             bool facto, std::ofstream & fout);
 
         Chrono timer;
 
-        IntFactorization<Int> ifac;
 
         void nextM (Int & m) {
           m -= 2;
@@ -130,10 +129,10 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    void Primes<Int>::find (int k, int e, int s, const Int& S0, const Int & S1, const Int & S2,
+    void Primes<Int>::find (int k, int e, int s, const Int & S1, const Int & S2,
         bool safe, bool facto, std::ofstream & fout)
     {
-      Int m, Sdiff;
+      Int m;
       if (NTL::IsOdd (S2))
         m = S2;
       else
@@ -169,7 +168,7 @@ namespace LatMRG {
           if (k == 1 || status == LatticeTester::PRIME || status == LatticeTester::PROB_PRIME) {
             i++;
             fout << "   m = " << m << std::endl;
-            Sdiff = m - (1<<e);
+            Int Sdiff = m - (Int(1)<<e);
             fout << "     = 2^" << e;
             if (Sdiff >= 0) {
               fout << " + ";
@@ -179,6 +178,7 @@ namespace LatMRG {
               fout << (-Sdiff) << std::endl;
             }
             if (facto) {
+              IntFactorization<Int> ifac;
               ifac.clear();
               ifac.setNumber (m1);
               ifac.factorize ();
@@ -198,13 +198,12 @@ namespace LatMRG {
     void Primes<Int>::find (int k, int e, int s, bool safe, bool facto,
         std::ofstream & fout)
     {
-      Int Sm0, Sm1, Sm2;
+      Int Sm1, Sm2;
       writeHeader (k, e, INT_MAX, INT_MAX, safe, facto, fout);
       timer.init();
-      Sm0 = Int(1) << e;
-      Sm2 = Sm0 - 1;
-      Sm1 = Sm0 >> 1;
-      find (k, e, s, Sm0, Sm1, Sm2, safe, facto, fout);
+      Sm2 = (Int(1)<<e) - 1;
+      Sm1 = (Int(1)<<e) >> 1;
+      find (k, e, s, Sm1, Sm2, safe, facto, fout);
       writeFooter (fout);
     }
 
@@ -214,13 +213,12 @@ namespace LatMRG {
   template<typename Int>
     void Primes<Int>::find (int e, int s, bool facto, std::ofstream & fout)
     {
-      Int Sm0, Sm1, Sm2;
+      Int Sm1, Sm2;
       writeHeader (1, e, INT_MAX, INT_MAX, false, facto, fout);
       timer.init();
-      Sm0 = Int(1) << e;
-      Sm2 = Sm0 - 1;
-      Sm1 = Sm0 >> 1;
-      find (1, e, s, Sm0, Sm1, Sm2, false, facto, fout);
+      Sm2 = (Int(1)<<e) - 1;
+      Sm1 = (Int(1)<<e) >> 1;
+      find (1, e, s, Sm1, Sm2, false, facto, fout);
       writeFooter (fout);
     }
 
@@ -231,13 +229,12 @@ namespace LatMRG {
     void Primes<Int>::find (int k, int e, long c1, long c2, bool safe,
         bool facto, std::ofstream & fout)
     {
-      Int Sm0, Sm1, Sm2;
+      Int Sm1, Sm2;
       writeHeader (k, e, c1, c2, safe, facto, fout);
       timer.init();
-      Sm0 = Int(1) << e;
-      Sm1 = Sm0 + c1;
-      Sm2 = Sm0 + c2;
-      find (k, e, INT_MAX, Sm0, Sm1, Sm2, safe, facto, fout);
+      Sm1 = (Int(1)<<e) + c1;
+      Sm2 = (Int(1)<<e) + c2;
+      find (k, e, INT_MAX, Sm1, Sm2, safe, facto, fout);
       writeFooter (fout);
     }
 

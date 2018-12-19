@@ -18,7 +18,7 @@ namespace LatMRG {
    * The class `IntFactorization` implements the decomposition of integers in
    * factors, preferably prime (see class <tt>IntFactor</tt>). It contains
    * functions to factorize an integer in prime factors, to sort and print the
-   * list of its factors. `IntFactorization
+   * list of its factors. `IntFactorization`
    * Integers are factorized by calling the MIRACL software
    * \cite iSCO03a, which uses many different methods in succession to
    * effect the factorization.
@@ -455,7 +455,6 @@ namespace LatMRG {
       remove (filename);
     }
 
-
   //===========================================================================
 
   template<typename Int>
@@ -479,7 +478,6 @@ namespace LatMRG {
       }
       return (temp == m_number);
     }
-
 
   //===========================================================================
 

@@ -1,0 +1,33 @@
+Spectral BestLat
+false
+1
+MWC
+2 64
+4
+True
+Write MWCSearchm.fac
+Write MWCSearchr.fac
+NoCond
+0 1 0
+2 63 -52426
+0 1 0
+2 63 -52426
+0 1 0
+2 63 -52426
+0 1 0
+2 63 -52426
+Random 200000 1 1
+1
+0.0 0.0
+1.0 1.0
+20000
+16
+1 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16 16
+TRUE
+0
+Full
+1 1
+1000000
+10 h
+3
+RES

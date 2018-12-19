@@ -174,7 +174,8 @@ mk_ex:$(MK_RES)
 $(PROGS_INPUTS)/mk/%:$(PROGS_INPUTS)/mk/%.dat
 	$(BIN_DIR)/FindMK Z $@
 
-clean_ex_res:clean_mk_res
+clean_ex:
+	rm -f $(PROGS_INPUTS)/*/*.res
 
 #===============================================================================
 # LatticeTester related considerations

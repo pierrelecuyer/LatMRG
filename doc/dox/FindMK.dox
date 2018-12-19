@@ -1,89 +1,86 @@
+/**
  * \page FindMK FindMK
  *
- * This module contains the main program to search for all prime integers
- * \f$m\f$ in a given interval, i.e. such that \f$2^e + c_1 \le m\le2^e +
- * c_2\f$ and for which \f$r = (m^k-1)/(m-1)\f$ is also prime. We may also
- * require that \f$(m-1)/2\f$ be prime by setting the boolean variable *Safe*
- * to `true`. If the boolean *Facto* is `true`, the program will factorize
- * \f$m-1\f$ and write the factors in a file with extension `.fac`. (See
- * class LatMRG::Primes for the basic method called by the
- * program.)
+ * This module contains a program to search for good modulus for MRGs. Given a
+ * specific order, this program will search for modulus that are of one of two
+ * forms :
+ *   - Modulus that are smaller than a particular power of 2
+ *   - Modulus that are in a specific interval
  *
- * The program is called `findmk`. \anchor REF__FindMK_ref_findmk The program
- * reads the search parameters from a file. This data file must have the
- * extension `.dat`. To run the program, the name of the data file must be
- * given without extension on the command line, and the results will be
- * written in a file of the same name but with extension `.res`. For example,
- * if the data file is called `find1.dat`, then the program is run by calling
+ * In the first case, the program will search for \f$m\f$ prime such that
+ * \f$m < 2^e\f$ and for which \f$r = (m^k-1)/(m-1)\f$ is also prime. We may
+ * also require that \f$(m-1)/2\f$ be prime.
  *
- *  `findmk find1`
+ * In the second case, the program will search for all prime integers in a given
+ * interval such that \f$ 2^e + c_1 \leq m \leq 2^e + c2\f$. It is also possible
+ * to require to have \f$(m-1)/2\f$ be prime.
  *
- * and the results will be written in file `find1.res`. If factorization of
- * \f$m-1\f$ is required, the factors will be written in file `find1.fac`.
+ * In both cases, it is possible to ask to program to factorize \f$m-1\f$. This
+ * factorization will then be printed in a file with the extension `.fac`.
+ * This program uses the class LatMRG::Primes to perform its computations, and
+ * this class uses LatticeTester::IntFactor.
+ * \todo Why safe?
  *
- * The data file must have the format displayed in Figure&nbsp; {@link
- * REF__FindMK_findmk_dat findmk.dat}.
+ * This program is called `FindMK`. The program reads the search parameters
+ * from a file. This data file must have
+ * the extension `.dat`. To run the program, a combination of types and the name
+ * of the data file must be given without extension on the command line, and the
+ * results will be written in a file of the same name but with extension `.res`.
+ * For example, if the data file is called `find.dat`, then the program is ran
+ * by calling
+ *
+ *      FindMK <I,Z> find
+ *
+ * and the results will be written in file `find.res`.
+ *
+ * The data file must have the following format:
+ *
+ *      power
+ *      k
+ *      e
+ *      c1 [c2]
+ *      safe
+ *      facto
  *
  * <center>
- *  <div class="LatSoft-fbox"><div class="LatSoft-parbox">
- * <table class="LatSoft-table">
- * <tr>
- *   <td colspan="3" class="l">\# This is a comment line</td>
- * </tr><tr>
- *   <td class="l">\f$k\f$</td>
- *   <td class="l"></td>
- *   <td class="l">order</td>
- * </tr><tr>
- *   <td class="l">\f$e\f$</td>
- *   <td class="l"></td>
- *   <td class="l"></td>
- * </tr><tr>
- *   <td class="l">\f$c_1\f$</td>
- *   <td class="l"></td>
- *   <td class="l"></td>
- * </tr><tr>
- *   <td class="l">\f$c_2\f$</td>
- *   <td class="l"></td>
- *   <td class="l"></td>
- * </tr><tr>
- *   <td class="l"><em>Safe</em></td>
- *   <td class="l"></td>
- *   <td class="l">a boolean</td>
- * </tr><tr>
- *   <td class="l"><em>Facto</em></td>
- *   <td class="l"></td>
- *   <td class="l">a boolean</td>
- * </tr>
- * </table>
- * </div></div> <center>\anchor REF__FindMK_findmk_dat Data file format for
- * `findmk`.</center>
+ * **Data file format for `FindMK`**
  * </center>
  *
  * The file must contain the following parameters in that order:
  *
- * <dl><dt>\f$k\f$:</dt>
+ * <dl>
+ * <dt>
+ * `power` :
+ * </dt>
  * <dd>
- * the order of the MRG.
+ * `<bool>` if power is `true`, the program will search for prime integers
+ * smaller than \f$2^e\f$, otherwise the program will search in an interval.
  * </dd>
- * <dt>\f$e\f$:</dt>
+ * <dt>
+ * `k` :
+ * </dt>
  * <dd>
- * the modulus of congruence will be close to \f$2^e\f$.
+ * `<int>` the order of the MRG that you search an `m` for. Note that `k` has to
+ * be odd because there are no prime `r` for `k` even.
  * </dd>
- * <dt>\f$c_1\f$:</dt>
+ * <dt> `e` :</dt>
  * <dd>
- * gives the lower limit for \f$m\f$ as \f$m \ge2^e + c_1\f$.
+ * `<int>` the `e` for which the program will search around \f$2^e\f$.
  * </dd>
- * <dt>\f$c_1\f$:</dt>
+ * <dt> `c1 [c2]` :</dt>
  * <dd>
- * gives the upper limit for \f$m\f$ as \f$m \le2^e + c_2\f$.
+ * `<int> <int>` if power is `false`, the program will use \f$c_1\f$ and \f$c_2\f$
+ * limit the research interval. If power is `true`, the program will make
+ * computations until it has found \f$c_1\f$ primes meeting the constraints.
  * </dd>
- * <dt><em>Safe</em>:</dt>
+ * <dt> `safe` :</dt>
  * <dd>
- * if `true`, only \f$m\f$ such that \f$(m-1)/2\f$ is prime are considered.
+ * `<bool>` if `true`, only \f$m\f$ such that \f$(m-1)/2\f$ is prime are considered.
  * </dd>
- * <dt><em>Facto</em>:</dt>
+ * <dt> `facto` :</dt>
  * <dd>
- * if `true`, the program will factorize \f$m-1\f$ and write the factors in a
- * file with extension `.fac`.
+ * `<bool>` if `true`, the program will factorize \f$m-1\f$. It is recommended
+ * to set this option to `false`, especially if `safe` is `true`.
  * </dd>
  * </dl>
+ */
