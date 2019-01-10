@@ -876,6 +876,7 @@ void Init ()
     CoPerMax[s] = 0;
     CoRegions[s] = 0;
 
+    cout << "1\n";
     if (comps.PerMax) {
       compJ[s] =
         new MRGComponent<MScal> (comps.modulus, comps.k,
@@ -883,6 +884,7 @@ void Init ()
             comps.F2, comps.file2.c_str ());
       primJ[s] =
         new IntPrimitivity<MScal> (compJ[s]->ifm1, comps.modulus.m);
+      cout << "2\n";
 
     } else
       compJ[s] = new MRGComponent<MScal> (comps.modulus.m, coef[s],  comps.k);
@@ -972,17 +974,17 @@ void SeekGen (int j)
       return ;
     }
 
-    for (int region = 0; region < config.compon[j].numReg; region++) {
-      if (timer.timeOver (config.duration))
-        return ;
-      if (config.compon[j].searchMethod == EXHAUST) {
-        ExamAllZones (j, config.compon[j].k);
-      } else {
-        ChoisirBornes (j);
-        ExamRegion (j, config.compon[j].k);
-      }
+  for (int region = 0; region < config.compon[j].numReg; region++) {
+    if (timer.timeOver (config.duration))
+      return ;
+    if (config.compon[j].searchMethod == EXHAUST) {
+      ExamAllZones (j, config.compon[j].k);
+    } else {
+      ChoisirBornes (j);
+      ExamRegion (j, config.compon[j].k);
     }
   }
+}
 
   //===========================================================================
 

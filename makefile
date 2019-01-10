@@ -59,7 +59,7 @@ SEP = @echo ====================================================================
 
 default: lib progs
 
-all: clean_all lib bin examples doc
+all: clean_all lib bin examples doc all_ex
 
 bin: lib progs
 
@@ -104,15 +104,17 @@ $(BIN_DIR)/:
 	mkdir -p $(BIN_DIR)
 
 # Builds objects and binaries for every of the programs of LatMRG
-progs_objects: $(PROGS_O)
-	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_LLDD) -c ./progs/SeekMain.cc -o ./progs/SeekLLDD.o
-	$(CC) ./progs/SeekLLDD.o $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
+progs_objects: $(PROGS_O) ./progs/SeekMain.o
+
+./progs/SeekMain.o: ./progs/SeekMain.cc
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_LLDD) -c ./progs/SeekMain.cc -o ./progs/SeekMain.o
+	$(CC) ./progs/SeekMain.o $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
 	  -o $(BIN_DIR)/SeekLLDD 
-	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_ZZDD) -c ./progs/SeekMain.cc -o ./progs/SeekZZDD.o
-	$(CC) ./progs/SeekZZDD.o $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_ZZDD) -c ./progs/SeekMain.cc -o ./progs/SeekMain.o
+	$(CC) ./progs/SeekMain.o $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
 	  -o $(BIN_DIR)/SeekZZDD
-	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_ZZRR) -c ./progs/SeekMain.cc -o ./progs/SeekZZRR.o
-	$(CC) ./progs/SeekZZRR.o $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_ZZRR) -c ./progs/SeekMain.cc -o ./progs/SeekMain.o
+	$(CC) ./progs/SeekMain.o $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
 	  -o $(BIN_DIR)/SeekZZRR
 
 $(PRO_DIR)/%.o:$(PRO_DIR)/%.cc
@@ -160,10 +162,12 @@ $(EX_DIR)/%.o:$(EX_DIR)/%.cc
 PROGS_INPUTS = $(EX_DIR)/inputs
 
 # Don't call this unless you are reckless
-all_ex:mk_ex_head mk_ex
+all_ex:mk_ex_head mk_ex seek_ex_head seek_ex
 
 MK_DAT = $(wildcard $(PROGS_INPUTS)/mk/mk*.dat)
 MK_RES = $(MK_DAT:%.dat=%)
+SEEK_DAT = $(wildcard $(PROGS_INPUTS)/seek/seek*.dat)
+SEEK_RES = $(SEEK_DAT:%.dat=%)
 
 mk_ex_head:
 	$(SEP)
@@ -171,8 +175,17 @@ mk_ex_head:
 
 mk_ex:$(MK_RES)
 
+seek_ex_head:
+	$(SEP)
+	@echo 'Making SeekMain examples'
+
+seek_ex:$(SEEK_RES)
+
 $(PROGS_INPUTS)/mk/%:$(PROGS_INPUTS)/mk/%.dat
 	$(BIN_DIR)/FindMK Z $@
+
+$(PROGS_INPUTS)/seek/%:$(PROGS_INPUTS)/seek/%.dat
+	$(BIN_DIR)/SeekZZDD $@
 
 clean_ex:
 	rm -f $(PROGS_INPUTS)/*/*.res
@@ -246,4 +259,4 @@ separator:
 
 .PHONY: latticetester $(LIB_DIR)/ $(OBJ_DIR)/ $(BIN_DIR)/ $(OBJ_DIR)/ doc clean\
   clean_all examples $(EX_BUILD)/ $(EX_CC) separator config_latticetester\
-  $(MK_DAT) mk_ex_head all_ex
+  $(MK_DAT) mk_ex_head seek_ex_head all_ex

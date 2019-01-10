@@ -16,8 +16,8 @@ namespace LatMRG {
   /**
    * This class implements lattice basis built from multiple recursive linear
    * congruential generators (MRGs). One must first call the constructor with a
-   * given congruence modulus \f$m\f$, a given order \f$k\f$ for the
-   * recurrence, and a maximal dimension for the basis. One must then build the
+   * given congruence modulus \f$m\f$, order \f$k\f$ for the
+   * recurrence, and maximal dimension for the basis. One must then build the
    * lattice basis associated to a vector of multipliers for a given dimension.
    * Each MRG is defined by a vector of multipliers \f$A\f$, where \f$A[i-1]\f$
    * represents \f$a_i\f$. This MRG satisfies the recurrence
