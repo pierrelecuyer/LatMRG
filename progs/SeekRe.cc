@@ -27,11 +27,12 @@ namespace {
     coeff[4] = 13;
     coeff[5] = 17;
     for (long i = 0; i<number; i++) {
+      do {
       for(int j = 0; j <= k; j++) {
         coeff[j] = NTL::ZZ(LatticeTester::RandBits(63));
-        std::cout << coeff[j] << std::endl;
       }
-      MWCLattice<NTL::ZZ, double> lattice(b, coeff, NTL::ZZ(1), k);
+      } while(MWCLattice<NTL::ZZ, double>::validate(b, coeff));
+      MWCLattice<NTL::ZZ, double> lattice(b, coeff, k);
       std::cout << lattice.toStringCoef() << std::endl;
     }
   }

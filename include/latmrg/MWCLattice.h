@@ -43,6 +43,10 @@ namespace LatMRG {
          * b is the modulo.
          * e is the vector of coefficients.
          * k is the order of the recurrence.
+         *
+         * It is recommended to verify that the parameters passed to this
+         * constructor work before using it, because the program will crash of
+         * `validate(b, e) != 0`.
          */
         MWCLattice (const Int & b, const IntVec & e, int k);
 
@@ -90,6 +94,29 @@ namespace LatMRG {
          * the generator has `k+1` coefficients.
          * */
         const IntVec& geteCoef() const {return this->m_eCoef;}
+
+        /**
+         * This checks if `b` and `e` are suitable parameters for a MWC
+         * generator.
+         * It is recommended to call this function before building a MWCLattice
+         * object because the program will exit if the condition verified here
+         * is not met.
+         *
+         * This basically just checks that `gcd(b, e[0]) = 1` and returns `1` if
+         * it is `false` and `0` if it checks out.
+         * */
+        static int validate(const Int& b, const IntVec& e) {
+          if(NTL::GCD(b, e[0]) != 1) return 1;
+          return 0;
+        }
+
+        /**
+         * This is a basic method to check if the MWC generator described by
+         * `b` and `e` has full period.
+         * */
+        static int fullPeriod(const Int& b, const IntVec& e) {
+          if(MWCLattice<Int, Dbl>::validate(b, e)) return 1;
+        }
 
       private:
 
