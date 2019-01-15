@@ -11,7 +11,7 @@
  * It is implemented as a library of modules written in C++.
  * 
  * *LatMRG* offers tools to solve the following problems:
- * - Finding a good moduli for such a generator via \ref FindMK and \ref FindMK2
+ * - Finding a good moduli for such a generator via \ref FindMK
  * - Searching for new MRGs with a wide array of criteria via \ref SeekMain
  * - Testing the theoretical properties of a multiple recursive random number
  * generator with the most common tests in the litterature. This includes

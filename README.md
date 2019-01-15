@@ -9,9 +9,17 @@ to test and search for new multiple recursive random number generators*
 ## Dependencies
 
 LatMRG currently depends on
-* [LatticeTester](https://github.com/umontreal-simul/latcommon)
-* [NTL](http://www.shoup.net/ntl/index.html)
-* [Boost](https://www.boost.org/)
+* [LatticeTester](https://github.com/umontreal-simul/latcommon): a utility library
+upon which *LatMRG* builds. It currently is necessary to have this library in the
+repository to compile *LatMRG*.
+* [NTL](http://www.shoup.net/ntl/index.html): *LatMRG* heavily (and shamelesly)
+uses the **Number Theory Library** developped by Victor Shoup. Make sure this is
+installed with the NTL_THREADS=off option. This has to be in a standard path
+as of now because *LatMRG* does not detect it otherwise.
+* (*Factoring free DLC*)[yafu](https://sourceforge.net/projects/yafu/): this factorization
+utility unlocks some of the functionnality of *LatMRG*! To unlock these functionnality,
+simply download the program and extract the `yafu` executable in `./data`. The
+makefile will then include a preprocessor definition that will unlock factoring.
 
 ## Compiling
 

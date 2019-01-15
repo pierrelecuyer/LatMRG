@@ -167,7 +167,7 @@ namespace LatMRG {
             if (facto) {
               IntFactorization<Int> ifac;
               ifac.clear();
-              ifac.setNumber (m1);
+              ifac.setNumber (2*m1);
               ifac.factorize ();
               fout << "   Factors of m - 1:\n";
               fout << ifac.toString ();

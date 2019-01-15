@@ -6,6 +6,7 @@ bin/
 obscure_files/
 obsolete/
 unused/
+data/*
 .*
 *.o
 *.res

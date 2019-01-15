@@ -2,15 +2,29 @@
  * This program rewrites parts of SeekMain to be easier to understand and use
  * better design. For now this is the file in which I implement MWC gen searches.
  * */
+#include "latticetester/NormaBestLat.h"
+
 #include "latmrg/MWCLattice.h"
 #include "latmrg/Chrono.h"
+#include "latmrg/LatTestSpectral.h"
+#include "latmrg/ParamReaderExt.h"
 
 using namespace LatMRG;
 
 namespace {
-  NTL::ZZ b = NTL::power2_ZZ(64);
-  long exponent = 250;
+  typedef NTL::ZZ Int;
+  typedef double Dbl;
+
   Chrono timer;
+  LatticeTester::Normalizer<Dbl>* normalizer;
+  MWCLattice<Int, Dbl>* bestLattice;
+  double bestMerit = 0;
+  long num_gen = 0;
+
+  Int b = NTL::power2_ZZ(64);
+  int exponent;
+  int minDim, maxDim;
+  double timeLimit;
 
   /**
    * A small class to search for modulus for MWC generators.
@@ -23,7 +37,7 @@ namespace {
        * `increase`.
        * */
       Modulus(long e, bool increase) {
-        m = (NTL::ZZ(1)<<e) - 1;
+        m = (Int(1)<<e) - 1;
         this->increase = increase;
       }
 
@@ -31,14 +45,14 @@ namespace {
        * This function finds the next value for `m`. This can return 1 if
        * `increase` is `false` and `m` gets to 1.
        * */
-      NTL::ZZ next() {
+      Int next() {
         while (m > 1) {
           nextM();
-          LatticeTester::PrimeType status = LatticeTester::IntFactor<NTL::ZZ>::isPrime (m, KTRIALS);
+          LatticeTester::PrimeType status = LatticeTester::IntFactor<Int>::isPrime (m, KTRIALS);
           if (status == LatticeTester::PRIME || status == LatticeTester::PROB_PRIME) {
             if (1 == m % 4) continue;
-            NTL::ZZ m1 = (m - 1)/2;
-            status = LatticeTester::IntFactor<NTL::ZZ>::isPrime (m1, KTRIALS);
+            Int m1 = (m - 1)/2;
+            status = LatticeTester::IntFactor<Int>::isPrime (m1, KTRIALS);
             if (status != LatticeTester::PRIME && status != LatticeTester::PROB_PRIME) continue;
             // For MWC we check 2^{(m-1)/2} \neq 1 mod m.
             NTL::ZZ_p::init(m);
@@ -49,7 +63,7 @@ namespace {
             return m;
           }
         }
-        return NTL::ZZ(-1);
+        return Int(-1);
       }
 
     private:
@@ -59,7 +73,7 @@ namespace {
       /**
        * Last valid modulus found (or 2^e).
        * */
-      NTL::ZZ m;
+      Int m;
 
       /**
        * As passed to constructor.
@@ -77,51 +91,69 @@ namespace {
           else m -= 2;
         }
       }
-  } mod(exponent, true);
+  } *mod;
   /**
    * Reads the configuration file for this program.
    * */
+  double test(MWCLattice<Int, Dbl> & lattice) {
+    normalizer = lattice.getNormalizer(LatticeTester::BESTLAT, 0, true);
+    LatTestSpectral<Int, Dbl> latTest(normalizer, &lattice);
+    double minVal[maxDim+1] = {0};
+    latTest.test(minDim, maxDim, minVal);
+    delete normalizer;
+    return latTest.getMerit().getST(minDim, maxDim);
+  }
+
+
+  // This just instanciates number MWC generators with order k and mod b.
+  void testGenerators() {
+    while (!timer.timeOver(timeLimit)) {
+      MWCLattice<Int, Dbl> lattice(b, mod->next());
+      lattice.buildBasis(1);
+      double merit = test(lattice);
+      std::cout << merit << std::endl;
+      if (merit > bestMerit) {
+        bestMerit = merit;
+        delete bestLattice;
+        bestLattice = new MWCLattice<Int, Dbl>(lattice);
+      }
+      num_gen++;
+    }
+  }
+
+  // Reads parameters from config file.
   bool readConfigFile(int argc, char **argv) {
+    ParamReaderExt<Int, Dbl> reader(argv[1]);
+    reader.getLines();
+    int power;
+    int ln = 0;
+    reader.readInt(power, ln++, 0);
+    b = NTL::power2_ZZ(power);
+    reader.readInt(exponent, ln++, 0);
+    mod = new Modulus(exponent, true);
+    reader.readInt(minDim, ln, 0);
+    reader.readInt(maxDim, ln++, 1);
+    reader.readDouble(timeLimit, ln++, 0);
     return true;
   }
 
-  // This just instanciates number MWC generators with order k and mod b.
-  void spawnGenerators(int number) {
-    for (long i = 0; i<number; i++) {
-      MWCLattice<NTL::ZZ, double> lattice(b, mod.next());
-      std::cout << "Modulus: " << lattice.getCoef() << std::endl;
-    }
-  }
 }
 
 int main (int argc, char **argv)
 {
+  if (argc != 2) {
+    std::cout << "Usage: " << argv[0] << " filename" << std::endl;
+    return -1;
+  }
   readConfigFile(argc, argv);
   timer.init();
-  spawnGenerators(10);
+  testGenerators();
+  std::cout << "Number of generators tested: " << num_gen << std::endl;
+  std::cout << "Best merit: " << bestMerit << std::endl;
+  std::cout << "Best lattice LCG coefficient: " << bestLattice->getCoef() << std::endl;
+  std::cout << "Best lattice modulus: " << bestLattice->getModulo() << std::endl;
   std::cout << "CPU time: " << timer.toString() << std::endl;
-  //if (readConfigFile (argc, argv))
-  //  return -1;
-  //config.write ();
-  // Init ();
-  // timer.init ();
-  // Zone<MScal>::initFrontieres (config);
-  // InitZones ();
-  // if (config.readGenFile) {
-  //   TestGen();
-  // } else {
-  //   SeekGen (0);
-  // }
-  // SortBestGen ();
-  // if (config.outputType == RES) {
-  //   PrintResults ();
-  // } else if (config.outputType == GEN) {
-  //   PrintGen();
-  // } else {
-  //   std::cout << "\nCould not print results as requested, tried to output using
-  //     standard method.\n";
-  //   PrintResults ();
-  // }
-  // Finalize ();
+  delete bestLattice;
+  delete mod;
   return 0;
 }

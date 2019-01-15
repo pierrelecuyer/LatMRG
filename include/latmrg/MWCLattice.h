@@ -176,7 +176,7 @@ namespace LatMRG {
 
   template<typename Int, typename Dbl>
     MWCLattice<Int, Dbl>::MWCLattice(const Int & b, const Int & m):
-      MRGLattice<Int, Dbl>(m, NTL::InvMod(b,m), 1, FULL)
+      MRGLattice<Int, Dbl>(m, NTL::InvMod(b, m), 1, FULL)
   {
     m_MWCmod = b;
     m_MWCorder = 0;

@@ -13,6 +13,13 @@ DEF_LLDD = -DNTL_TYPES_CODE=1
 DEF_ZZDD = -DNTL_TYPES_CODE=2
 DEF_ZZRR = -DNTL_TYPES_CODE=3
 
+#Definition to compile with yafu on if it is included
+ifeq ($(wildcard data/yafu),) 
+    YAFU =
+else 
+    YAFU = -DUSE_YAFU
+endif 
+
 # Library path. This assumes NTL is in /usr/local/lib (its default path).
 STAT_LIBS_PATH = -Wl,-Bstatic -L$(LIB_DIR)
 STAT_LIBS = -llatmrg -llatticetester 
@@ -53,6 +60,7 @@ OBJS = $(SRCS:$(SRC_DIR)/%.cc=$(OBJ_DIR)/%.o)
 PROGS_O = $(PROGS_CC:$(PRO_DIR)/%.cc=$(PRO_DIR)/%.o)
 EX_O = $(EX_CC:%.cc=%.o)
 
+
 # A separator to segment the information printed on screen
 
 SEP = @echo ================================================================================
@@ -88,7 +96,7 @@ $(OBJ_DIR)/:
 lib_objects: $(OBJ_DIR)/ $(OBJS)
 
 $(OBJ_DIR)/%.o:$(SRC_DIR)/%.cc $(INC_DIR)/%.h
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	$(CC) $(CFLAGS) $(INCLUDES) $(YAFU) -c $< -o $@
 
 #===============================================================================
 # Building the programs of ./progs
@@ -107,18 +115,18 @@ $(BIN_DIR)/:
 progs_objects: $(PROGS_O) ./progs/SeekMain.o
 
 ./progs/SeekMain.o: ./progs/SeekMain.cc
-	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_LLDD) -c ./progs/SeekMain.cc -o ./progs/SeekMain.o
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_LLDD) $(YAFU) -c ./progs/SeekMain.cc -o ./progs/SeekMain.o
 	$(CC) ./progs/SeekMain.o $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
 	  -o $(BIN_DIR)/SeekLLDD 
-	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_ZZDD) -c ./progs/SeekMain.cc -o ./progs/SeekMain.o
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_ZZDD) $(YAFU) -c ./progs/SeekMain.cc -o ./progs/SeekMain.o
 	$(CC) ./progs/SeekMain.o $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
 	  -o $(BIN_DIR)/SeekZZDD
-	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_ZZRR) -c ./progs/SeekMain.cc -o ./progs/SeekMain.o
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_ZZRR) $(YAFU) -c ./progs/SeekMain.cc -o ./progs/SeekMain.o
 	$(CC) ./progs/SeekMain.o $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
 	  -o $(BIN_DIR)/SeekZZRR
 
 $(PRO_DIR)/%.o:$(PRO_DIR)/%.cc
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	$(CC) $(CFLAGS) $(INCLUDES) $(YAFU) -c $< -o $@
 	$(CC) $@ $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
 	  -o $(BIN_DIR)/$(@:progs/%.o=%) 
 
@@ -150,7 +158,7 @@ $(EX_BUILD)/:
 build_ex:$(EX_O)
 
 $(EX_DIR)/%.o:$(EX_DIR)/%.cc
-	$(CC) $< $(INCLUDES) -I. $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) \
+	$(CC) $< $(INCLUDES) -I. $(YAFU) $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) \
 	  $(DYN_LIBS) -o $(EX_BUILD)/$(<:examples/%.cc=%) 
 
 #===============================================================================

@@ -394,14 +394,11 @@ namespace LatMRG {
   template<typename Int>
     void IntFactorization<Int>::factorize ()
     {
-
-      /// \todo This makes no sense at all because FACTORHOME is not a 
-      /// standard environment variable.
-      std::string S("./data");
-      S += "/factorm ";
+#ifdef USE_YAFU
+      std::string S("./data/yafu \"factor(");
       std::ostringstream num;
       num << m_number;
-      S += num.str();
+      S += num.str() + ")\"";
 
       // Choose a temporary name for the file
       const char *filename = "temp938573291";
@@ -421,38 +418,31 @@ namespace LatMRG {
       std::string line;
       std::string::size_type pos;
       Int z;
-      getline (in, line, '\n');
-      pos = line.find ("this number is prime");
-      if (pos != std::string::npos) {
-        addFactor (m_number, 1, LatticeTester::PRIME);
-        remove
-          (filename);
-        return;
-      }
+      do {
+        getline (in, line, '\n');
+        pos = line.find ("factors found");
+      } while (pos == std::string::npos);
       while (getline (in, line, '\n')) {
-        pos = line.find ("PRIME FACTOR");
+        pos = line.find ("=");
         if (pos != std::string::npos) {
           // Found a prime factor
-          S = line.substr (pos + 12);
+          S = line.substr (pos + 2);
           NTL::conv(z, S.c_str ());
           addFactor (z, 1, LatticeTester::PRIME);
-        }
-        pos = line.find ("COMPOSITE FACTOR");
-        if (pos != std::string::npos) {
-          // The program gave up: last factor is composite
-          S = line.substr (pos + 16);
-          NTL::conv(z, S.c_str ());
-          addFactor(z, 1, LatticeTester::COMPOSITE);
-        }
-        pos = line.find ("MIRACL error");
-        if (pos != std::string::npos) {
-          // error in factorizing
-          NTL::Error ("MIRACL error in IntFactorization::factorize:   Number too big");
         }
       }
 
       unique ();
       remove (filename);
+      remove("session.log");
+      remove("factor.log");
+#else
+      std::cout << "IntFactorization: Yafu is not installed in ./data. \
+        For more information on how to fix this problem, look at the\
+        installation documentation.\n";
+      std::cout << "Exiting the program to avoid undefined behavior.";
+      exit(1);
+#endif
     }
 
   //===========================================================================

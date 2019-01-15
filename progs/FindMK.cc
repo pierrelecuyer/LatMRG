@@ -35,7 +35,7 @@ int main(int argc, char** argv)
   ParamReaderExt<int64_t, double> reader(fname);
   reader.getLines();
   int k, e, c1, c2;
-  bool power, safe;
+  bool power, safe, facto;
   int ln = 0;
   reader.readBool(power, ln, 0);
   reader.readInt(k, ++ln, 0);
@@ -47,18 +47,17 @@ int main(int argc, char** argv)
     reader.readInt(c2, ln, 1);
   }
   reader.readBool(safe, ++ln, 0);
-
-  //   primes.find (3, 39, 3, true, false, fout);
+  reader.readBool(facto, ++ln, 0);
 
   // trouver 3 modules m proches de 2^31 pour des MRGs d'ordre k
   if (types == "I") {
     Primes<std::int64_t> primes;
-    if (power) primes.find (k, e, c1, safe, false, fout);
-    else primes.find (k, e, c1, c2, safe, false, fout);
+    if (power) primes.find (k, e, c1, safe, facto, fout);
+    else primes.find (k, e, c1, c2, safe, facto, fout);
   } else if (types == "Z") {
     Primes<NTL::ZZ> primes;
-    if (power) primes.find (k, e, c1, safe, false, fout);
-    else primes.find (k, e, c1, c2, safe, false, fout);
+    if (power) primes.find (k, e, c1, safe, facto, fout);
+    else primes.find (k, e, c1, c2, safe, facto, fout);
   }
   return 0;
 }
