@@ -46,6 +46,14 @@ namespace LatMRG {
             LatticeTester::NormType norm = LatticeTester::L2NORM);
 
         /**
+         * Alternative constructor for a LCG. In this case, `k` is 1 and `a` is
+         * a single number.
+         */
+        MRGLattice (const Int & m, const Int & a, int maxDim,
+            LatticeType latt, 
+            LatticeTester::NormType norm = LatticeTester::L2NORM);
+
+        /**
          * As in the constructor above but the basis is built for the lacunary
          * indices `lac`. `a` has to be a vector of k+1 components 
          * with `a[i]`=\f$a_i\f$ for compatibility with other classes.
@@ -358,6 +366,20 @@ namespace LatMRG {
       m_aCoef[i] = a[i+1];
   }
 
+  //============================================================================
+
+  template<typename Int, typename Dbl>
+    MRGLattice<Int, Dbl>::MRGLattice(const Int & m, const Int & a, int maxDim, 
+        LatticeType lat, LatticeTester::NormType norm):
+      LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::IntLattice(
+          m, 1, maxDim, norm)
+  {
+    m_latType = lat;
+    m_lacunaryFlag = false;
+    m_ip = new bool[1];
+    init();
+    m_aCoef[0] = a;
+  }
 
   //===========================================================================
 

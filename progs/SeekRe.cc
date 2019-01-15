@@ -7,8 +7,74 @@
 using namespace LatMRG;
 
 namespace {
-  int k = 5;
   NTL::ZZ b = NTL::power2_ZZ(64);
+  long exponent = 250;
+
+  /**
+   * A small class to search for modulus for MWC generators.
+   * */
+  class Modulus {
+    public:
+
+      /**
+       * Search will begin at `2^e` and will increase of decrease depending on
+       * `increase`.
+       * */
+      Modulus(long e, bool increase) {
+        m = NTL::ZZ(1)<<e;
+        this->increase = increase;
+      }
+
+      /**
+       * This function finds the next value for `m`. This can return 1 if
+       * `increase` is `false` and `m` gets to 1.
+       * */
+      NTL::ZZ next() {
+        while (m > 1) {
+          nextM();
+          LatticeTester::PrimeType status = LatticeTester::IntFactor<NTL::ZZ>::isPrime (m, KTRIALS);
+          if (status == LatticeTester::PRIME || status == LatticeTester::PROB_PRIME) {
+            NTL::ZZ m1 = (m - 1)/2;
+            status = LatticeTester::IntFactor<NTL::ZZ>::isPrime (m1, KTRIALS);
+            if (status != LatticeTester::PRIME && status != LatticeTester::PROB_PRIME) continue;
+            // For MWC we check 2^{(m-1)/2} \neq 1 mod m.
+            NTL::ZZ_p::init(m);
+            NTL::ZZ_p a = NTL::power(NTL::ZZ_p(2), m1);
+            if (NTL::IsOne(a)) {
+              continue;
+            }
+            return m;
+          }
+        }
+        return NTL::ZZ(-1);
+      }
+
+    private:
+
+      static const long KTRIALS = 200;
+
+      /**
+       * Last valid modulus found (or 2^e).
+       * */
+      NTL::ZZ m;
+
+      /**
+       * As passed to constructor.
+       * */
+      bool increase;
+
+      /**
+       * Increment/decrement m
+       * */
+      void nextM () {
+        if (increase) m += 2;
+        else m -= 2;
+        if (0 == m % 5){
+          if (increase) m += 2;
+          else m -= 2;
+        }
+      }
+  } mod(exponent, true);
   /**
    * Reads the configuration file for this program.
    * */
@@ -18,22 +84,9 @@ namespace {
 
   // This just instanciates number MWC generators with order k and mod b.
   void spawnGenerators(int number) {
-    NTL::vector<NTL::ZZ> coeff;
-    coeff.SetLength(k+1);
-    coeff[0] = 3;
-    coeff[1] = 4;
-    coeff[2] = 7;
-    coeff[3] = 11;
-    coeff[4] = 13;
-    coeff[5] = 17;
     for (long i = 0; i<number; i++) {
-      do {
-      for(int j = 0; j <= k; j++) {
-        coeff[j] = NTL::ZZ(LatticeTester::RandBits(63));
-      }
-      } while(MWCLattice<NTL::ZZ, double>::validate(b, coeff));
-      MWCLattice<NTL::ZZ, double> lattice(b, coeff, k);
-      std::cout << lattice.toStringCoef() << std::endl;
+      MWCLattice<NTL::ZZ, double> lattice(b, mod.next());
+      std::cout << "Modulus: " << lattice.getCoef() << std::endl;
     }
   }
 }

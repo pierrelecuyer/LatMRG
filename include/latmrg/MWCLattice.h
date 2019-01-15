@@ -51,6 +51,12 @@ namespace LatMRG {
         MWCLattice (const Int & b, const IntVec & e, int k);
 
         /**
+         * Another constructor with just `b` and `m`. Of course, `b` and `m`
+         * have to be valid.
+         * */
+        MWCLattice (const Int & b, const Int & m);
+
+        /**
          * Copy constructor. The maximal dimension of the created basis is set
          * equal to <tt>Lat</tt>’s current dimension.
          */
@@ -116,6 +122,7 @@ namespace LatMRG {
          * */
         static int fullPeriod(const Int& b, const IntVec& e) {
           if(MWCLattice<Int, Dbl>::validate(b, e)) return 1;
+          return 0;
         }
 
       private:
@@ -163,6 +170,19 @@ namespace LatMRG {
     m_eCoef.SetLength(k+1);
     for (int i = 0; i < k+1; i++)
       m_eCoef[i] = e[i];
+  }
+
+  //===========================================================================
+
+  template<typename Int, typename Dbl>
+    MWCLattice<Int, Dbl>::MWCLattice(const Int & b, const Int & m):
+      MRGLattice<Int, Dbl>(m, NTL::InvMod(b,m), 1, FULL)
+  {
+    m_MWCmod = b;
+    m_MWCorder = 0;
+    // Even though this is not needed, this constructor should set the
+    // coefficients of the MWC generator to the representation of m in base b.
+    m_eCoef.SetLength(1);
   }
 
   //===========================================================================

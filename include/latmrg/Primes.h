@@ -42,14 +42,14 @@ namespace LatMRG {
         ~Primes();
 
         /**
-         * Finds the \f$s\f$ prime integers \f$m<2^e\f$ that are closest to
+         * Finds \f$s\f$ prime integers \f$m<2^e\f$ that are closest to
          * \f$2^e\f$. If `facto` is `true`, then \f$m-1\f$ is factorized in its
          * prime factors. The results are printed on stream `fout`.
          */
         void find (int e, int s, bool facto, std::ofstream & fout);
 
         /**
-         * Finds the \f$s\f$ integers \f$m<2^e\f$ that are closest to
+         * Finds \f$s\f$ prime integers \f$m<2^e\f$ that are closest to
          * \f$2^e\f$, such that \f$m\f$ and \f$r = (m^k-1)/(m-1)\f$ are prime.
          * If `safe` is `true`, \f$(m-1)/2\f$ is also required to be prime. The
          * results are printed on stream `fout`. If `facto` is `true`, then
@@ -68,6 +68,7 @@ namespace LatMRG {
          */
         void find (int k, int e, long c1, long c2, bool safe, bool facto,
             std::ofstream & fout);
+
       private:
 
         /**
@@ -106,25 +107,12 @@ namespace LatMRG {
       timer.init();
     }
 
-
   //===========================================================================
 
   template<typename Int>
     Primes<Int>::~Primes ()
     {
     }
-
-
-  //===========================================================================
-  /*
-     template<typename Int>
-     inline void Primes::nextM (Int & m)
-     {
-     m -= 2;
-     if ((0 == m % 5) && (m > 5))
-     m -= 2;
-     }
-     */
 
   //===========================================================================
 
@@ -138,8 +126,7 @@ namespace LatMRG {
       else
         m = S2 - Int(1);
       int i = 0;
-      const long KTRIALS = 200; // This should be reduced from 200, because
-                                // it seems to be too much.
+      const long KTRIALS = 200;
 
       while (i < s && m >= S1) {
         LatticeTester::PrimeType status = LatticeTester::IntFactor<Int>::isPrime (m, KTRIALS);
@@ -190,7 +177,6 @@ namespace LatMRG {
         nextM(m);
       }
     }
-
 
   //===========================================================================
 
@@ -289,9 +275,11 @@ namespace LatMRG {
     {
       fout << "\nCPU time: ";
       fout << timer.toString () << std::endl;
-      char *machine;
-      machine = getenv ("HOST");
-      fout << "Tests made on " << machine << std::endl << std::endl;
+      // Find an alternative to this to, maybe, print the CPU name and memory
+      // size of the machine
+      // char *machine;
+      // machine = getenv ("HOST");
+      // fout << "Tests made on " << machine << std::endl << std::endl;
     }
 
 }

@@ -19,7 +19,6 @@
  * factorization will then be printed in a file with the extension `.fac`.
  * This program uses the class LatMRG::Primes to perform its computations, and
  * this class uses LatticeTester::IntFactor.
- * \todo Why safe?
  *
  * This program is called `FindMK`. The program reads the search parameters
  * from a file. This data file must have

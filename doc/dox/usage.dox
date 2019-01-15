@@ -5,8 +5,6 @@
  * various tasks:
  * - \subpage FindMK, a program to search for prime numbers that can be used
  * as moduli.
- * - \subpage FindMK2, a program to search for prime moduli close to a power of
- * two. 
  * - \subpage SeekMain, a program to search for MRG or certain specific MRG-like
  * generators.
  * - \subpage MaxPeriod, a program to test if a specific generator has a maximal

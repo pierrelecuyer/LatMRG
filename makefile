@@ -59,7 +59,7 @@ SEP = @echo ====================================================================
 
 default: lib progs
 
-all: clean_all lib bin examples doc all_ex
+all: clean_all lib bin examples doc
 
 bin: lib progs
 
