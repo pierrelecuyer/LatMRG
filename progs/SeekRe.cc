@@ -3,12 +3,14 @@
  * better design. For now this is the file in which I implement MWC gen searches.
  * */
 #include "latmrg/MWCLattice.h"
+#include "latmrg/Chrono.h"
 
 using namespace LatMRG;
 
 namespace {
   NTL::ZZ b = NTL::power2_ZZ(64);
   long exponent = 250;
+  Chrono timer;
 
   /**
    * A small class to search for modulus for MWC generators.
@@ -21,7 +23,7 @@ namespace {
        * `increase`.
        * */
       Modulus(long e, bool increase) {
-        m = NTL::ZZ(1)<<e;
+        m = (NTL::ZZ(1)<<e) - 1;
         this->increase = increase;
       }
 
@@ -34,6 +36,7 @@ namespace {
           nextM();
           LatticeTester::PrimeType status = LatticeTester::IntFactor<NTL::ZZ>::isPrime (m, KTRIALS);
           if (status == LatticeTester::PRIME || status == LatticeTester::PROB_PRIME) {
+            if (1 == m % 4) continue;
             NTL::ZZ m1 = (m - 1)/2;
             status = LatticeTester::IntFactor<NTL::ZZ>::isPrime (m1, KTRIALS);
             if (status != LatticeTester::PRIME && status != LatticeTester::PROB_PRIME) continue;
@@ -94,7 +97,9 @@ namespace {
 int main (int argc, char **argv)
 {
   readConfigFile(argc, argv);
+  timer.init();
   spawnGenerators(10);
+  std::cout << "CPU time: " << timer.toString() << std::endl;
   //if (readConfigFile (argc, argv))
   //  return -1;
   //config.write ();
