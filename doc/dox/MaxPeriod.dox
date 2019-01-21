@@ -1,8 +1,8 @@
 /**
  * \page MaxPeriod MaxPeriod
  *
- * This module contains the main program to determine whether a given
- * generator has maximal period or not. The MRG generator has the form
+ * This module contains a program to determine whether a given
+ * MRG has maximal period or not. The MRG generator has the form
  * \f[
  *   x_n = (a_1 x_{n-1} + \cdots+ a_k x_{n-k}) \mbox{ mod } m.
  * \f]
@@ -13,115 +13,84 @@
  * \f$r\f$ can take a *huge* amount of time for large integers. Integers are
  * represented using the `ZZ` type from NTL.
  *
- * The program is called `maxper` and reads the parameters of the generator
+ * The program is called `MaxPeriod` and reads the parameters of the generator
  * from a file. The data file must have the extension
  * \anchor REF__MaxPeriod_ref_maxper `.dat`. To run the program, the name of
  * the data file must be given without extension on the command line. For
  * example, if the data file is called `maxp1.dat`, then the program is run
  * by calling
  *
- *  `maxper maxp1`
+ *  `MaxPeriod <I, Z> maxp1`
  *
- * The data file must have the format displayed in Figure&nbsp; {@link
- * REF__MaxPeriod_maxper_dat maxper.dat}.
+ * and the results will be written in file `maxp1.res`.
+ *
+ * The data file must have the following format:
+ *
+ *      GenType
+ *      m
+ *      k
+ *      decom1 [file1]
+ *      decom2 [file2]
+ *      a_1
+ *      ...
+ *      a_k
  *
  * <center>
- *  <div class="LatSoft-fbox"><div class="LatSoft-parbox">
- * <table class="LatSoft-table">
- * <tr>
- *   <td colspan="3" class="l"># This is a comment line</td>
- * </tr><tr>
- *   <td class="l"><em>GenType</em></td>
- *   <td class="l"></td>
- *   <td class="l"></td>
- * </tr><tr>
- *   <td class="l">\f$m\f$</td>
- *   <td class="l"></td>
- *   <td class="l">modulus</td>
- * </tr><tr>
- *   <td class="l">\f$k\f$</td>
- *   <td class="l"></td>
- *   <td class="l">order</td>
- * </tr><tr>
- *   <td class="l"><em>Decom1</em></td>
- *   <td class="l">[<em>file1</em>]</td>
- *   <td class="l">factorization of \f$m-1\f$</td>
- * </tr><tr>
- *   <td class="l"><em>Decor</em></td>
- *   <td class="l">[<em>file2</em>]</td>
- *   <td class="l">factorization of \f$r\f$</td>
- * </tr><tr>
- *   <td class="l">\f$a_1\f$</td>
- *   <td class="l"></td>
- *   <td class="l">coefficient</td>
- * </tr><tr>
- *   <td class="l">\f$\vdots\f$</td>
- *   <td class="l"></td>
- *   <td class="l"></td>
- * </tr><tr>
- *   <td class="l">\f$a_k\f$</td>
- *   <td class="l"></td>
- *   <td class="l">coefficient</td>
- * </tr>
- * </table>
- * </div></div> <center>\anchor REF__MaxPeriod_maxper_dat Data file format
- * for <tt>maxper</tt>.</center>
+ * **Data file format for `MaxPeriod`**
  * </center>
  *
  *  The file must contain the following parameters in that order:
  *
- * <dl><dt><em>GenType</em>:</dt>
+ * <dl><dt>`GenType`:</dt>
  * <dd>
- * for now, only <tt>MRG</tt> is allowed for *GenType*.
+ * This has to be `MRG`.
  * </dd>
- * <dt>\f$m\f$:</dt>
+ * <dt>`m`:</dt>
  * <dd>
- * the modulus of congruence of the MRG.
+ * `<int>` the modulus of congruence of the MRG.
  * </dd>
- * <dt>\f$k\f$:</dt>
+ * <dt>`k`:</dt>
  * <dd>
- * the order of the MRG.
+ * `<int>` the order of the MRG.
  * </dd>
- * <dt><em>Decom1</em> and [<em>file1</em>]:</dt>
+ * <dt>`decom1 [file1]`:</dt>
  * <dd>
- * refers to the prime number decomposition of \f$m-1\f$. *Decom1* indicates
- * how the factors of \f$m-1\f$ are to be found, and *file1* is an optional
- * file name. The possible values for *Decom1* are <tt>Decomp, Write, Read,
- * Prime</tt>. The meaning of the values are:
- *
- * <dl><dt><tt>Decomp</tt>:</dt>
+ * `<DecompType> <string>` `file1` is needed depending on the value of `decom1`.
+ * This parameters specifies how the program will get the decomposition of `m-1`.
+ * <dl><dt>`Decomp`:</dt>
  * <dd>
- * the program itself will factorize \f$m-1\f$. In this case, the field
- * *file1* is unused and can be omitted. To factorize, the program uses the
- * MIRACL software \cite iSCO03a&thinsp;. It is the responsibility of the
- * user to make sure that the factorization will take a reasonable time.
+ * the program will factorize \f$m-1\f$. In this case, the field
+ * `file1` is unused and can be omitted. To factorize, the program uses `yafu`.
+ * It is the responsibility of the user to make sure that the factorization will
+ * take a reasonable time and that `yafu` is installed as specified in the
+ * installation instructions.
  * </dd>
- * <dt><tt>Write</tt>:</dt>
+ * <dt>`Write`:</dt>
  * <dd>
- * means the same as <tt>Decomp</tt>, except that the program will also write
- * the prime factors found in file *file1*.
+ * means the same as `Decomp`, except that the program will also write
+ * the prime factors found in a file with name `file1.fac`.
  * </dd>
- * <dt><tt>Read</tt>:</dt>
+ * <dt>`Read`:</dt>
  * <dd>
  * \f$m-1\f$ is already factorized and the factors will be read from file
- * *file1*. The prime factors must be given as described in class
+ * `file1.fac`. The prime factors must be given as described in class
  * LatMRG::IntFactorization.
  * </dd>
- * <dt><tt>Prime</tt>:</dt>
+ * <dt>`Prime`:</dt>
  * <dd>
- * the number is a prime number (cannot occur for \f$m-1\f$ but is possible
- * for \f$r\f$).
+ * the number is a prime number. Note that this is not possible for decom1.
  * </dd>
  * </dl>
  * </dd>
- * <dt><em>Decor</em> and [<em>file2</em>]:</dt>
+ * <dt>`decom2 [file2]`:</dt>
  * <dd>
- * refers to the prime number decomposition of \f$r\f$. The meaning of the
- * fields is similar to the description above for \f$m-1\f$.
+ * `<DecompType> <string>` `file1` is needed depending on the value of `decom1`.
+ * This parameters specifies how the program will get the decomposition of `r`.
+ * The argument `decom2` can take the values specified above for `decom1`.
  * </dd>
- * <dt>\f$a_1, …, a_k\f$:</dt>
+ * <dt>`a_1, ..., a_k`:</dt>
  * <dd>
- * the coefficients of the MRG must be given each on a separate line.
+ * `<int>` the coefficients of the MRG that must each be given on a separate line.
  * </dd>
  * </dl>
- */
+ * */

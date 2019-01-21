@@ -69,13 +69,13 @@ namespace
 int main(int argc, char** argv)
 {
   if (argc != 3) {
-    cout << "Usage: " << argv[0] << " <data file>" << endl;
+    cout << "Usage: " << argv[0] << "<I, Z> filename" << endl;
     return 1;
   }
   string types(argv[1]);
   string fname(argv[2]);
   fname += ".dat";
-  if (types == "ID") {
+  if (types == "I") {
     ParamReaderExt<std::int64_t, double> reader (fname);
     ParamType<std::int64_t> par;
     read (reader, par);
@@ -93,7 +93,7 @@ int main(int argc, char** argv)
     else
       cout << "      does NOT have maximal period." << endl;
 
-  } else if (types == "ZD") {
+  } else if (types == "Z") {
     ParamReaderExt<NTL::ZZ, double> reader (fname);
     ParamType<NTL::ZZ> par;
     read (reader, par);
@@ -111,26 +111,7 @@ int main(int argc, char** argv)
     else
       cout << "      does NOT have maximal period." << endl;
 
-  } else if (types == "ZR") {
-    ParamReaderExt<NTL::ZZ, NTL::RR> reader (fname);
-    ParamType<NTL::ZZ> par;
-    read (reader, par);
-    MRGComponent<NTL::ZZ> mrg (par.m, par.k, par.decom1, par.filem1.c_str(),
-        par.decor,  par.filer.c_str());
-
-    cout << "   \nThe generator with" << endl;
-    cout << "   m = " << par.m << endl;
-    cout << "   k = " << par.k << endl;
-    cout << "   a = ";
-    cout <<  LatticeTester::toString(par.a, 1, par.k);
-
-    if (mrg.maxPeriod (par.a))
-      cout << "      HAS maximal period." << endl;
-    else
-      cout << "      does NOT have maximal period." << endl;
-
   }
-
 
   return 0;
 }

@@ -4,8 +4,7 @@
  * 
  * This is the main program to search for the "best" (or "worst") multiple
  * recursive generators or multiply-with-carry generators of a given form,
- * based on one of the criteria \f$Q_T\f$ (the Minkowski reduced basis 
- * criterion) or \f$M_T\f$ (the spectral test criterion) defined in \ref merit.
+ * based on a criteria based on the Beyer quotient or on the spectral test.
  * It produces a report listing the retained generators, their properties, and 
  * various statistics on the search.
  *
@@ -23,7 +22,7 @@
  * lattice structure. The former (checking maximal period conditions) can be
  * done only if \f$m\f$ is prime, or if \f$k=1\f$ and \f$m\f$ is a power of a
  * prime. The program can also list the retained generators in a file, in a
- * format more compact than for the result file, and can re-use that file as
+ * format more compact than the standard one that can be re-used as
  * input to the program, in a later run. This could be useful, for example,
  * if one wishes to perform first a screening over a large region, based on a
  * criterion that does not require expensive computations, and then do a
