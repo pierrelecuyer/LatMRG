@@ -11,6 +11,38 @@
 
 #include <string>
 
+namespace {
+  /**
+   * Returns the modulo for an MWC with coefficients in `e` and
+   * modulo `b`.
+   * */
+  template<typename Int>
+    Int LCGMod(const Int& b, const NTL::vector<Int>& e){
+      Int m(0);
+      for(int i = 0; i <= e.length(); i++) {
+        m += e[i] * NTL::power(b, i);
+      }
+      return m - 1;
+      //return m;
+    }
+
+  //============================================================================
+
+  /**
+   * Returns the coefficient for an MWC with coefficients in `e` and
+   * modulo `b`.
+   * */
+  template<typename Int>
+    NTL::vector<Int> LCGCoeff(const Int& b, const NTL::vector<Int>& e){
+      Int mult = LCGMod(b,e);
+      Int a = NTL::InvMod(b, mult);
+      NTL::vector<Int> coeff;
+      coeff.SetLength(2);
+      coeff[1] = a;
+      return coeff;
+    }
+}
+
 namespace LatMRG {
 
   /**
@@ -128,18 +160,6 @@ namespace LatMRG {
       private:
 
         /**
-         * Returns the coefficient for an MWC with coefficients in `e` and
-         * modulo `b`.
-         * */
-        IntVec LCGCoeff(const Int& b, const IntVec& e);
-
-        /**
-         * Returns the modulo for an MWC with coefficients in `e` and
-         * modulo `b`.
-         * */
-        Int LCGMod(const Int& b, const IntVec& e);
-
-        /**
          * The modulo of the MWC generator this object represents.
          * */
         Int m_MWCmod;
@@ -163,7 +183,7 @@ namespace LatMRG {
 
   template<typename Int, typename Dbl>
     MWCLattice<Int, Dbl>::MWCLattice(const Int & b, const IntVec & e, int k):
-      MRGLattice<Int, Dbl>(this->LCGMod(b, e), this->LCGCoeff(b,e), 1, 1, FULL)
+      MRGLattice<Int, Dbl>(LCGMod(b, e), LCGCoeff(b,e), 1, 1, FULL)
   {
     m_MWCmod = b;
     m_MWCorder = k;
@@ -252,26 +272,6 @@ namespace LatMRG {
 
   //============================================================================
 
-  template<typename Int, typename Dbl>
-    typename MWCLattice<Int,Dbl>::IntVec MWCLattice<Int, Dbl>::LCGCoeff(const Int& b, const IntVec& e){
-      Int mult = this->LCGMod(b,e);
-      Int a = NTL::InvMod(b, mult);
-      IntVec coeff;
-      coeff.SetLength(2);
-      coeff[1] = a;
-      return coeff;
-    }
-
-  //============================================================================
-
-  template<typename Int, typename Dbl>
-    Int MWCLattice<Int, Dbl>::LCGMod(const Int& b, const IntVec& e){
-      Int m(0);
-      for(int i = 0; i <= e.length(); i++) {
-        m += e[i] * NTL::power(b, i);
-      }
-      return m;
-    }
 
   //============================================================================
   //The types combinations supported in the library

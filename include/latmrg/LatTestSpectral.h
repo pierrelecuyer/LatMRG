@@ -580,7 +580,7 @@ namespace LatMRG {
             this->m_merit[dim] /= weight;
 
 
-            std::cout << "this->m_merit[" << dim << "] = " << this->m_merit[dim] << std::endl;
+            //std::cout << "this->m_merit[" << dim << "] = " << this->m_merit[dim] << std::endl;
 
             // Si on sait deja que ce gen. ne pourra etre retenu,
             // on le rejette tout de suite et on arrete le test.
