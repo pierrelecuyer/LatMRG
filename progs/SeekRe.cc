@@ -13,12 +13,12 @@ using namespace LatMRG;
 
 namespace {
   typedef NTL::ZZ Int;
-  typedef double Dbl;
+  typedef NTL::RR Dbl;
 
   Chrono timer;
-  LatticeTester::Normalizer<Dbl>* normalizer;
-  MWCLattice<Int, Dbl>* bestLattice;
-  double bestMerit = 0;
+  LatticeTester::Normalizer<Dbl>* norma;
+  MWCLattice<Int, Dbl>* bestLattice = NULL;
+  Dbl bestMerit = Dbl(0);
   long num_gen = 0;
 
   Int b = NTL::power2_ZZ(64);
@@ -92,16 +92,37 @@ namespace {
         }
       }
   } *mod;
+
   /**
-   * Reads the configuration file for this program.
+   * Tests the generator via spectral test.
    * */
-  double test(MWCLattice<Int, Dbl> & lattice) {
-    normalizer = lattice.getNormalizer(LatticeTester::BESTLAT, 0, true);
-    LatTestSpectral<Int, Dbl> latTest(normalizer, &lattice);
-    double minVal[maxDim+1] = {0};
-    latTest.test(minDim, maxDim, minVal);
-    delete normalizer;
-    return latTest.getMerit().getST(minDim, maxDim);
+  Dbl test(MWCLattice<Int, Dbl> & lattice) {
+    norma = lattice.getNormalizer(LatticeTester::BESTLAT, 0, false);
+    Dbl merit = Dbl(1);
+    for (int i = minDim; i <= maxDim; i++){
+      std::cout << "i: " << i << std::endl;
+      // Building the basis
+      lattice.buildBasis(i);
+      lattice.dualize();
+      // Reducing the lattice
+      LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lattice);
+      red.redBKZ(0.999999, 10, LatticeTester::QUADRUPLE, lattice.getDim());
+      red.shortestVector(lattice.getNorm());
+      // Computing shortest vector length and spectral test
+      NTL::vector<Int> shortest(lattice.getBasis()[0]);
+      Dbl tmp;
+      LatticeTester::ProdScal<Int>(shortest, shortest, i, tmp);
+      tmp = Dbl(1)/NTL::sqrt(tmp);
+      std::cout << "Pre-Normalization: " << tmp << std::endl;
+      // Normalization
+      std::cout << "Bound: " << norma->getBound(i) << std::endl;
+      tmp /= norma->getBound(i);
+      std::cout << "Normalized value: " << tmp << std::endl;
+      merit = (tmp < merit) ? tmp : merit;
+    }
+
+    delete norma;
+    return merit;
   }
 
 
@@ -109,12 +130,10 @@ namespace {
   void testGenerators() {
     while (!timer.timeOver(timeLimit)) {
       MWCLattice<Int, Dbl> lattice(b, mod->next());
-      lattice.buildBasis(1);
-      double merit = test(lattice);
-      std::cout << merit << std::endl;
+      Dbl merit(test(lattice));
       if (merit > bestMerit) {
         bestMerit = merit;
-        delete bestLattice;
+        if(bestLattice) delete bestLattice;
         bestLattice = new MWCLattice<Int, Dbl>(lattice);
       }
       num_gen++;

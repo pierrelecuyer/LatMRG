@@ -381,24 +381,24 @@ namespace LatMRG {
           if (this->m_lat->getNorm () == LatticeTester::L2NORM) {
 
             if (!this->m_dualF) { // in case we work with rescaled values
-              double normalizer = this->m_normalizer->getBound(dim);
-              this->m_merit[dim] = log(temp) - 2*log(normalizer) - 2*log(mr);
+              Dbl normalizer = this->m_normalizer->getBound(dim);
+              NTL::conv(this->m_merit[dim], log(temp) - 2*log(normalizer) - 2*log(mr));
               this->m_merit[dim] = exp(this->m_merit[dim]);
             } else { // general case
-              double normalizer = this->m_normalizer->getBound(dim);
-              this->m_merit[dim] = log(temp) - 2*log(normalizer);
+              Dbl normalizer = this->m_normalizer->getBound(dim);
+              NTL::conv(this->m_merit[dim], log(temp) - 2*log(normalizer));
               this->m_merit[dim] = exp(this->m_merit[dim]);
             }
 
           } else if (this->m_lat->getNorm () == LatticeTester::L1NORM) {
 
             if (!this->m_dualF) { // in case we work with rescaled values
-              double normalizer = this->m_normalizer->getBound(dim);
-              this->m_merit[dim] = log(temp) - log(normalizer) - log(mr);
+              Dbl normalizer = this->m_normalizer->getBound(dim);
+              NTL::conv(this->m_merit[dim], log(temp) - log(normalizer) - log(mr));
               this->m_merit[dim] = exp(this->m_merit[dim]);
             } else { // general case
-              double normalizer = this->m_normalizer->getBound(dim);
-              this->m_merit[dim] = log(temp) - log(normalizer);
+              Dbl normalizer = this->m_normalizer->getBound(dim);
+              NTL::conv(this->m_merit[dim], log(temp) - log(normalizer));
               this->m_merit[dim] = exp(this->m_merit[dim]);
             }
 
@@ -553,24 +553,24 @@ namespace LatMRG {
             if (this->m_lat->getNorm () == LatticeTester::L2NORM) {
 
               if (!this->m_dualF) { // in case we work with rescaled values
-                double normalizer = this->m_normalizer->getBound(dim);
-                this->m_merit[dim] = log(temp) - 2*log(normalizer) - 2*log(mr);
+                Dbl normalizer = this->m_normalizer->getBound(dim);
+                NTL::conv(this->m_merit[dim], log(temp) - 2*log(normalizer) - 2*log(mr));
                 this->m_merit[dim] = exp(this->m_merit[dim]);
               } else { // general case
-                double normalizer = this->m_normalizer->getBound(dim);
-                this->m_merit[dim] = log(temp) - 2*log(normalizer);
+                Dbl normalizer = this->m_normalizer->getBound(dim);
+                NTL::conv(this->m_merit[dim], log(temp) - 2*log(normalizer));
                 this->m_merit[dim] = exp(this->m_merit[dim]);
               }
 
             } else if (this->m_lat->getNorm () == LatticeTester::L1NORM) {
 
               if (!this->m_dualF) { // in case we work with rescaled values
-                double normalizer = this->m_normalizer->getBound(dim);
-                this->m_merit[dim] = log(temp) - log(normalizer) - log(mr);
+                Dbl normalizer = this->m_normalizer->getBound(dim);
+                NTL::conv(this->m_merit[dim], log(temp) - log(normalizer) - log(mr));
                 this->m_merit[dim] = exp(this->m_merit[dim]);
               } else { // general case
-                double normalizer = this->m_normalizer->getBound(dim);
-                this->m_merit[dim] = log(temp) - log(normalizer);
+                Dbl normalizer = this->m_normalizer->getBound(dim);
+                NTL::conv(this->m_merit[dim], log(temp) - log(normalizer));
                 this->m_merit[dim] = exp(this->m_merit[dim]);
               }
 

@@ -22,7 +22,7 @@ namespace {
       for(int i = 0; i <= e.length(); i++) {
         m += e[i] * NTL::power(b, i);
       }
-      return m - 1;
+      return m-1;
       //return m;
     }
 
@@ -198,7 +198,7 @@ namespace LatMRG {
     MWCLattice<Int, Dbl>::MWCLattice(const Int & b, const Int & m):
       MRGLattice<Int, Dbl>(m, NTL::InvMod(b, m), 1, FULL)
   {
-    m_MWCmod = b;
+    m_MWCmod = Int(b);
     m_MWCorder = 0;
     // Even though this is not needed, this constructor should set the
     // coefficients of the MWC generator to the representation of m in base b.
@@ -211,11 +211,11 @@ namespace LatMRG {
     MWCLattice<Int, Dbl>::MWCLattice(const MWCLattice<Int, Dbl> &lat):
       MRGLattice<Int, Dbl> (lat)
   {
-    m_MWCmod = lat.getMWCmod();
+    m_MWCmod = Int(lat.getMWCmod());
     m_MWCorder = lat.getMWCorder();
     m_eCoef.SetLength(m_MWCorder+1);
     for (int i = 0; i < m_MWCorder+1; i++)
-      m_eCoef[i] = lat.geteCoef()[i];
+      m_eCoef[i] = Int(lat.geteCoef()[i]);
   }
 
 
