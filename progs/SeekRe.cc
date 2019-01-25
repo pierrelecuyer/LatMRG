@@ -97,7 +97,7 @@ namespace {
    * Tests the generator via spectral test.
    * */
   Dbl test(MWCLattice<Int, Dbl> & lattice) {
-    norma = lattice.getNormalizer(LatticeTester::BESTLAT, 0, false);
+    norma = lattice.getNormalizer(LatticeTester::BESTLAT, 0, true);
     Dbl merit = Dbl(1);
     for (int i = minDim; i <= maxDim; i++){
       std::cout << "i: " << i << std::endl;
@@ -112,11 +112,11 @@ namespace {
       NTL::vector<Int> shortest(lattice.getBasis()[0]);
       Dbl tmp;
       LatticeTester::ProdScal<Int>(shortest, shortest, i, tmp);
-      tmp = Dbl(1)/NTL::sqrt(tmp);
-      std::cout << "Pre-Normalization: " << tmp << std::endl;
+      //tmp = Dbl(1)/NTL::sqrt(tmp);
+      //std::cout << "Pre-Normalization: " << tmp << std::endl;
       // Normalization
-      std::cout << "Bound: " << norma->getBound(i) << std::endl;
-      tmp /= norma->getBound(i);
+      //std::cout << "Bound: " << norma->getBound(i) << std::endl;
+      tmp = NTL::sqrt(tmp)/norma->getBound(i);
       std::cout << "Normalized value: " << tmp << std::endl;
       merit = (tmp < merit) ? tmp : merit;
     }

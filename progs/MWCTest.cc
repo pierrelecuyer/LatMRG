@@ -38,7 +38,7 @@ namespace {
    * */
   double test(MRGLattice<Int, Dbl> & lattice) {
     Dbl minVal[maxDim - minDim + 1];
-    LatticeTester::Normalizer<Dbl>* norma(lattice.getNormalizer(LatticeTester::BESTLAT, 0, false));
+    LatticeTester::Normalizer<Dbl>* norma(lattice.getNormalizer(LatticeTester::BESTLAT, 0, true));
     for (int i = minDim; i <= maxDim; i ++) {
       lattice.buildBasis(i);
       LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lattice);
@@ -46,11 +46,10 @@ namespace {
       red.redBKZ(0.999999, 10, LatticeTester::QUADRUPLE, lattice.getDim());
       red.shortestVector(lattice.getNorm());
       NTL::vector<Int> shortest(lattice.getBasis()[0]);
-      Dbl tmp, tmp1;
+      Dbl tmp;
       LatticeTester::ProdScal<Int>(shortest, shortest, i, tmp);
-      NTL::conv(tmp1, lattice.getModulo());
       minVal[i-minDim] = Dbl(1)/(NTL::sqrt(tmp));
-      std::cout << "Normalized value: " << minVal[i-minDim]/norma->getBound(i) << std::endl;
+      std::cout << "Normalized value: " << NTL::sqrt(tmp)/norma->getBound(i) << std::endl;
       lattice.dualize();
     }
     printTest(lattice, minVal);
