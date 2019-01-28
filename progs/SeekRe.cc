@@ -112,10 +112,9 @@ namespace {
       NTL::vector<Int> shortest(lattice.getBasis()[0]);
       Dbl tmp;
       LatticeTester::ProdScal<Int>(shortest, shortest, i, tmp);
-      //tmp = Dbl(1)/NTL::sqrt(tmp);
-      //std::cout << "Pre-Normalization: " << tmp << std::endl;
+      std::cout << "Pre-Normalization: " << NTL::sqrt(tmp) << std::endl;
       // Normalization
-      //std::cout << "Bound: " << norma->getBound(i) << std::endl;
+      std::cout << "Bound: " << norma->getBound(i) << std::endl;
       tmp = NTL::sqrt(tmp)/norma->getBound(i);
       std::cout << "Normalized value: " << tmp << std::endl;
       merit = (tmp < merit) ? tmp : merit;
