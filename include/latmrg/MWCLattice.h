@@ -22,8 +22,7 @@ namespace {
       for(int i = 0; i <= e.length(); i++) {
         m += e[i] * NTL::power(b, i);
       }
-      return m-1;
-      //return m;
+      return m;
     }
 
   //============================================================================
