@@ -16,10 +16,10 @@ repository to compile *LatMRG*.
 uses the **Number Theory Library** developped by Victor Shoup. Make sure this is
 installed with the NTL_THREADS=off option. This has to be in a standard path
 as of now because *LatMRG* does not detect it otherwise.
-* (*Factoring free DLC*)[yafu](https://sourceforge.net/projects/yafu/): this factorization
-utility unlocks some of the functionnality of *LatMRG*! To unlock these functionnality,
+* (*Factoring, free DLC*)[yafu](https://sourceforge.net/projects/yafu/): this factorization
+utility unlocks some of the functionnality of *LatMRG*! To do so,
 simply download the program and extract the `yafu` executable in `./data`. The
-makefile will then include a preprocessor definition that will unlock factoring.
+makefile will then include a preprocessor definition that will allow factoring.
 
 ## Compiling
 

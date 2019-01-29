@@ -106,7 +106,7 @@ namespace {
       lattice.dualize();
       // Reducing the lattice
       LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lattice);
-      red.redBKZ(0.999999, 10, LatticeTester::EXACT, lattice.getDim());
+      red.redBKZ(0.99, 10, LatticeTester::ARBITRARY, lattice.getDim());
       red.shortestVector(lattice.getNorm());
       // Computing shortest vector length and spectral test
       NTL::vector<Int> shortest(lattice.getBasis()[0]);
