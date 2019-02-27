@@ -33,12 +33,14 @@ namespace {
     public:
 
       /**
-       * Search will begin at `2^e` and will increase of decrease depending on
+       * Search will begin at `2^e±c` and will increase of decrease depending on
        * `increase`.
        * */
-      Modulus(long e, bool increase) {
+      Modulus(long e, Int c, bool increase) {
         m = (Int(1)<<e) - 1;
         this->increase = increase;
+        if (increase) m+=c;
+        else m-=c;
       }
 
       /**
@@ -91,7 +93,7 @@ namespace {
           else m -= 2;
         }
       }
-  } *mod;
+  } /**mod*/;
 
   /**
    * Tests the generator via spectral test.
@@ -106,7 +108,7 @@ namespace {
       lattice.dualize();
       // Reducing the lattice
       LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lattice);
-      red.redBKZ(0.99, 10, LatticeTester::ARBITRARY, lattice.getDim());
+      red.redBKZ(0.999999, 10, LatticeTester::QUADRUPLE, lattice.getDim());
       red.shortestVector(lattice.getNorm());
       // Computing shortest vector length and spectral test
       NTL::vector<Int> shortest(lattice.getBasis()[0]);
@@ -128,7 +130,21 @@ namespace {
   // This just instanciates number MWC generators with order k and mod b.
   void testGenerators() {
     while (!timer.timeOver(timeLimit)) {
-      MWCLattice<Int, Dbl> lattice(b, mod->next());
+      Int m(0);
+      long exp = exponent-1;
+      while(exp > 0) {
+        if (exp < 63) {
+          m << exp;
+          m += LatticeTester::RandBits(exp);
+          exp -= exp;
+        }
+        m << 63;
+        m += LatticeTester::RandBits(63);
+        exp -= 63;
+      }
+      Modulus mod(exponent, m, true);
+      Int next(mod.next());
+      MWCLattice<Int, Dbl> lattice(b, next);
       Dbl merit(test(lattice));
       if (merit > bestMerit) {
         bestMerit = merit;
@@ -148,7 +164,7 @@ namespace {
     reader.readInt(power, ln++, 0);
     b = NTL::power2_ZZ(power);
     reader.readInt(exponent, ln++, 0);
-    mod = new Modulus(exponent, true);
+    //mod = new Modulus(exponent, true);
     reader.readInt(minDim, ln, 0);
     reader.readInt(maxDim, ln++, 1);
     reader.readDouble(timeLimit, ln++, 0);
@@ -172,6 +188,6 @@ int main (int argc, char **argv)
   std::cout << "Best lattice modulus: " << bestLattice->getModulo() << std::endl;
   std::cout << "CPU time: " << timer.toString() << std::endl;
   delete bestLattice;
-  delete mod;
+  //delete mod;
   return 0;
 }

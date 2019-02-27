@@ -34,6 +34,7 @@ namespace {
   template<typename Int>
     NTL::vector<Int> LCGCoeff(const Int& b, const NTL::vector<Int>& e){
       Int mult = LCGMod(b,e);
+      std::cout << b << "\n";
       Int a = NTL::InvMod(b, mult);
       NTL::vector<Int> coeff;
       coeff.SetLength(2);
