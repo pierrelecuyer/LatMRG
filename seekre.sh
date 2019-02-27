@@ -6,3 +6,6 @@
 ./bin/SeekRe ./examples/inputs/mwc/MWC05.dat > ./examples/inputs/mwc/MWC05.res
 ./bin/SeekRe ./examples/inputs/mwc/MWC06.dat > ./examples/inputs/mwc/MWC06.res
 ./bin/SeekRe ./examples/inputs/mwc/MWC07.dat > ./examples/inputs/mwc/MWC07.res
+./bin/SeekRe ./examples/inputs/mwc/MWC08.dat > ./examples/inputs/mwc/MWC08.res
+./bin/SeekRe ./examples/inputs/mwc/MWC09.dat > ./examples/inputs/mwc/MWC09.res
+./bin/SeekRe ./examples/inputs/mwc/MWC10.dat > ./examples/inputs/mwc/MWC10.res
