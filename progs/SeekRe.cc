@@ -142,9 +142,9 @@ namespace {
         m += LatticeTester::RandBits(63);
         exp -= 63;
       }
+      if ((m&1) == 1) m+=1;
       Modulus mod(exponent, m, true);
-      Int next(mod.next());
-      MWCLattice<Int, Dbl> lattice(b, next);
+      MWCLattice<Int, Dbl> lattice(b, mod.next());
       Dbl merit(test(lattice));
       if (merit > bestMerit) {
         bestMerit = merit;
