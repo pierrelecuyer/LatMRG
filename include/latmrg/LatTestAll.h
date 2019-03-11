@@ -141,11 +141,12 @@ namespace LatMRG {
           rw = new LatticeTester::WriterRes<Int> (fname.c_str ());
           break;
 
-        case LatticeTester::TEX:
-          fname = infile;
-          fname += ".tex";
-          // rw = new WriterTex(fname.c_str()); //EB Ne permet pas d'écrire en Tex
-          break;
+        // This option has been removed since it was not implemented.
+        //case LatticeTester::TEX:
+        //  fname = infile;
+        //  fname += ".tex";
+        //  // rw = new WriterTex(fname.c_str()); //EB Ne permet pas d'écrire en Tex
+        //  break;
 
         case LatticeTester::TERM:
           rw = new LatticeTester::WriterRes<Int> (&std::cout);
