@@ -207,7 +207,7 @@ namespace {
    * Tests the generator via spectral test.
    * */
   Dbl test(IntLattice<Int, Int, Dbl, Dbl> & lattice) {
-    norma = lattice.getNormalizer(LatticeTester::BESTLAT, 0, true);
+    norma = lattice.getNormalizer(LatticeTester::NONE, 0, true);
     Dbl merit = Dbl(1);
     for (int i = minDim; i <= maxDim; i++){
       std::cout << "i: " << i << std::endl;
@@ -228,7 +228,7 @@ namespace {
       //std::cout << "Bound: " << norma->getBound(i) << std::endl;
       tmp = NTL::sqrt(tmp)/norma->getBound(i);
       //tmp = Dbl(1)/NTL::sqrt(tmp);
-      std::cout << "Value: " << tmp << std::endl;
+      std::cout << "Value: " << Dbl(1)/tmp << std::endl;
       merit = (tmp < merit) ? tmp : merit;
     }
 
