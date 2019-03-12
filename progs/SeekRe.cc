@@ -11,22 +11,35 @@
 #include "latmrg/ParamReaderExt.h"
 
 using namespace LatMRG;
+using LatticeTester::IntLattice;
 
 namespace {
   typedef NTL::ZZ Int;
   typedef NTL::RR Dbl;
+  typedef NTL::matrix<Int> IntMat;
 
   // Program global objects
   Chrono timer;
   LatticeTester::Normalizer<Dbl>* norma;
-  MRGLattice<Int, Dbl>* bestLattice = NULL;
+  IntLattice<Int, Int, Dbl, Dbl>* bestLattice = NULL;
   Dbl bestMerit = Dbl(0);
   long num_gen = 0;
 
   // Data file parameters
   GenType type; // This one is experimental
-  Int b = NTL::power2_ZZ(64);
-  int exponent;
+
+  // MWC Specific parameters
+  Int b; // modulo of MWC recurence
+
+  // Shared components names
+  std::int64_t order; // k for MRG and MMRG
+  Int modulo; // m for MRG and MMRG
+  // modulo is basis^exponent+rest
+  std::int64_t basis;
+  std::int64_t exponent;
+  std::int64_t rest;
+
+  // Non type dependent parameters
   int minDim, maxDim;
   double timeLimit;
 
@@ -127,28 +140,73 @@ namespace {
     return new MWCLattice<Int, Dbl>(b, mod.next());
   }
 
+  /*
+   * Goin' full random for now
+   * */
   MMRGLattice<Int, Dbl>* nextGenerator(MMRGLattice<Int, Dbl>* lattice) {
-    return 0;
+    IntMat A;
+    A.SetDims(order, order);
+    NTL::clear(A);
+    while (NTL::determinant(A) == 0) {
+      for (long i = 0; i<order; i++) {
+        for (long j = 0; j<order; j++) {
+          Int a(0);
+          long exp = exponent-1;
+          // 63 bits at a time because NTL converts from SIGNED long
+          while(exp > 0) {
+            if (exp < 63) {
+              a << exp;
+              a += LatticeTester::RandBits(exp);
+              exp -= exp;
+            }
+            a << 63;
+            a += LatticeTester::RandBits(63);
+            exp -= 63;
+          }
+          A[i][j] = a;
+        }
+      }
+    }
+    if (lattice) delete lattice;
+    return new MMRGLattice<Int, Dbl>(modulo, A, maxDim, order);
   }
 
   /*
    * These next function add the tested lattices to the list of the best ones.
    * This only add the lattices that are good enough.
    * */
-  void addLattice(MRGLattice<Int, Dbl>* lattice) {
-    return;
+  void addLattice(MRGLattice<Int, Dbl>* lattice, Dbl& merit) {
+    bestMerit = merit;
+    if(bestLattice) delete bestLattice;
+    bestLattice = new IntLattice<Int, Int, Dbl, Dbl>(*lattice);
   }
-  void addLattice(MWCLattice<Int, Dbl>* lattice) {
-    return;
+  void addLattice(MWCLattice<Int, Dbl>* lattice, Dbl& merit) {
+    bestMerit = merit;
+    if(bestLattice) delete bestLattice;
+    bestLattice = new IntLattice<Int, Int, Dbl, Dbl>(*lattice);
   }
-  void addLattice(MMRGLattice<Int, Dbl>* lattice) {
-    return;
+  void addLattice(MMRGLattice<Int, Dbl>* lattice, Dbl& merit) {
+    bestMerit = merit;
+    if(bestLattice) delete bestLattice;
+    bestLattice = new IntLattice<Int, Int, Dbl, Dbl>(*lattice);
+  }
+
+  /*
+   * These next function add the tested lattices to the list of the best ones.
+   * This only add the lattices that are good enough.
+   * */
+  void printResults() {
+    std::cout << "Number of generators tested: " << num_gen << std::endl;
+    std::cout << "Best merit: " << bestMerit << std::endl;
+    //std::cout << "Best lattice LCG coefficient: " << bestLattice->getCoef() << std::endl;
+    std::cout << "Best lattice modulus: " << bestLattice->getModulo() << std::endl;
+    std::cout << "CPU time: " << timer.toString() << std::endl;
   }
 
   /**
    * Tests the generator via spectral test.
    * */
-  Dbl test(MRGLattice<Int, Dbl> & lattice) {
+  Dbl test(IntLattice<Int, Int, Dbl, Dbl> & lattice) {
     norma = lattice.getNormalizer(LatticeTester::BESTLAT, 0, true);
     Dbl merit = Dbl(1);
     for (int i = minDim; i <= maxDim; i++){
@@ -189,26 +247,19 @@ namespace {
         mrglat = nextGenerator(mrglat);
         Dbl merit(test(*mrglat));
         if (merit > bestMerit) {
-          bestMerit = merit;
-          if(bestLattice) delete bestLattice;
-          bestLattice = new MRGLattice<Int, Dbl>(*mrglat);
+          addLattice(mrglat, merit);
         }
       } else if (type == MWC) {
-        mwcLat = nextGenerator(mwclat);
+        mwclat = nextGenerator(mwclat);
         Dbl merit(test(*mwclat));
         if (merit > bestMerit) {
-          addLattice(mwclat);
-          bestMerit = merit;
-          if(bestLattice) delete bestLattice;
-          bestLattice = new MRGLattice<Int, Dbl>(*mwclat);
+          addLattice(mwclat, merit);
         }
       } else if (type == MMRG) {
         mmrglat = nextGenerator(mmrglat);
         Dbl merit(test(*mmrglat));
         if (merit > bestMerit) {
-          bestMerit = merit;
-          if(bestLattice) delete bestLattice;
-          bestLattice = new MRGLattice<Int, Dbl>(*mmrglat);
+          addLattice(mmrglat, merit);
         }
       }
       num_gen++;
@@ -222,10 +273,17 @@ namespace {
     int power;
     int ln = 0;
     reader.readGenType(type, ln++, 0);
-    reader.readInt(power, ln++, 0);
-    b = NTL::power2_ZZ(power);
-    reader.readInt(exponent, ln++, 0);
-    //mod = new Modulus(exponent, true);
+    if (type == MRG) {
+      reader.readNumber3(modulo, basis, exponent, rest, ln++, 0);
+      reader.readLong(order, ln++, 0);
+    } else if (type == MWC) {
+      reader.readInt(power, ln++, 0);
+      b = NTL::power2_ZZ(power);
+      reader.readLong(exponent, ln++, 0);
+    } else if (type == MMRG) {
+      reader.readNumber3(modulo, basis, exponent, rest, ln++, 0);
+      reader.readLong(order, ln++, 0);
+    }
     reader.readInt(minDim, ln, 0);
     reader.readInt(maxDim, ln++, 1);
     reader.readDouble(timeLimit, ln++, 0);
@@ -243,11 +301,7 @@ int main (int argc, char **argv)
   readConfigFile(argc, argv);
   timer.init();
   testGenerators();
-  std::cout << "Number of generators tested: " << num_gen << std::endl;
-  std::cout << "Best merit: " << bestMerit << std::endl;
-  std::cout << "Best lattice LCG coefficient: " << bestLattice->getCoef() << std::endl;
-  std::cout << "Best lattice modulus: " << bestLattice->getModulo() << std::endl;
-  std::cout << "CPU time: " << timer.toString() << std::endl;
+  printResults();
   delete bestLattice;
   //delete mod;
   return 0;
