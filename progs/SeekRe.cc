@@ -5,24 +5,41 @@
 #include "latticetester/NormaBestLat.h"
 
 #include "latmrg/MWCLattice.h"
+#include "latmrg/MMRGLattice.h"
 #include "latmrg/Chrono.h"
 #include "latmrg/LatTestSpectral.h"
 #include "latmrg/ParamReaderExt.h"
 
 using namespace LatMRG;
+using LatticeTester::IntLattice;
 
 namespace {
   typedef NTL::ZZ Int;
   typedef NTL::RR Dbl;
+  typedef NTL::matrix<Int> IntMat;
 
+  // Program global objects
   Chrono timer;
   LatticeTester::Normalizer<Dbl>* norma;
-  MWCLattice<Int, Dbl>* bestLattice = NULL;
+  IntLattice<Int, Int, Dbl, Dbl>* bestLattice = NULL;
   Dbl bestMerit = Dbl(0);
   long num_gen = 0;
 
-  Int b = NTL::power2_ZZ(64);
-  int exponent;
+  // Data file parameters
+  GenType type; // This one is experimental
+
+  // MWC Specific parameters
+  Int b; // modulo of MWC recurence
+
+  // Shared components names
+  std::int64_t order; // k for MRG and MMRG
+  Int modulo; // m for MRG and MMRG
+  // modulo is basis^exponent+rest
+  std::int64_t basis;
+  std::int64_t exponent;
+  std::int64_t rest;
+
+  // Non type dependent parameters
   int minDim, maxDim;
   double timeLimit;
 
@@ -95,11 +112,102 @@ namespace {
       }
   } /**mod*/;
 
+  /*
+   * The goal is to create this overload and to use it to switch generators
+   * without requiring the use of switch statements.
+   * */
+  MRGLattice<Int, Dbl>* nextGenerator(MRGLattice<Int, Dbl>* lattice) {
+    return 0;
+  }
+
+  MWCLattice<Int, Dbl>* nextGenerator(MWCLattice<Int, Dbl>* lattice) {
+    Int m(0);
+    long exp = exponent-1;
+    // 63 bits at a time because NTL converts from SIGNED long
+    while(exp > 0) {
+      if (exp < 63) {
+        m << exp;
+        m += LatticeTester::RandBits(exp);
+        exp -= exp;
+      }
+      m << 63;
+      m += LatticeTester::RandBits(63);
+      exp -= 63;
+    }
+    if ((m&1) == 1) m+=1;
+    Modulus mod(exponent, m, true);
+    if (lattice) delete lattice;
+    return new MWCLattice<Int, Dbl>(b, mod.next());
+  }
+
+  /*
+   * Goin' full random for now
+   * */
+  MMRGLattice<Int, Dbl>* nextGenerator(MMRGLattice<Int, Dbl>* lattice) {
+    IntMat A;
+    A.SetDims(order, order);
+    NTL::clear(A);
+    while (NTL::determinant(A) == 0) {
+      for (long i = 0; i<order; i++) {
+        for (long j = 0; j<order; j++) {
+          Int a(0);
+          long exp = exponent-1;
+          // 63 bits at a time because NTL converts from SIGNED long
+          while(exp > 0) {
+            if (exp < 63) {
+              a << exp;
+              a += LatticeTester::RandBits(exp);
+              exp -= exp;
+            }
+            a << 63;
+            a += LatticeTester::RandBits(63);
+            exp -= 63;
+          }
+          A[i][j] = a;
+        }
+      }
+    }
+    if (lattice) delete lattice;
+    return new MMRGLattice<Int, Dbl>(modulo, A, maxDim, order);
+  }
+
+  /*
+   * These next function add the tested lattices to the list of the best ones.
+   * This only add the lattices that are good enough.
+   * */
+  void addLattice(MRGLattice<Int, Dbl>* lattice, Dbl& merit) {
+    bestMerit = merit;
+    if(bestLattice) delete bestLattice;
+    bestLattice = new IntLattice<Int, Int, Dbl, Dbl>(*lattice);
+  }
+  void addLattice(MWCLattice<Int, Dbl>* lattice, Dbl& merit) {
+    bestMerit = merit;
+    if(bestLattice) delete bestLattice;
+    bestLattice = new IntLattice<Int, Int, Dbl, Dbl>(*lattice);
+  }
+  void addLattice(MMRGLattice<Int, Dbl>* lattice, Dbl& merit) {
+    bestMerit = merit;
+    if(bestLattice) delete bestLattice;
+    bestLattice = new IntLattice<Int, Int, Dbl, Dbl>(*lattice);
+  }
+
+  /*
+   * These next function add the tested lattices to the list of the best ones.
+   * This only add the lattices that are good enough.
+   * */
+  void printResults() {
+    std::cout << "Number of generators tested: " << num_gen << std::endl;
+    std::cout << "Best merit: " << bestMerit << std::endl;
+    //std::cout << "Best lattice LCG coefficient: " << bestLattice->getCoef() << std::endl;
+    std::cout << "Best lattice modulus: " << bestLattice->getModulo() << std::endl;
+    std::cout << "CPU time: " << timer.toString() << std::endl;
+  }
+
   /**
    * Tests the generator via spectral test.
    * */
-  Dbl test(MWCLattice<Int, Dbl> & lattice) {
-    norma = lattice.getNormalizer(LatticeTester::BESTLAT, 0, true);
+  Dbl test(IntLattice<Int, Int, Dbl, Dbl> & lattice) {
+    norma = lattice.getNormalizer(LatticeTester::NONE, 0, true);
     Dbl merit = Dbl(1);
     for (int i = minDim; i <= maxDim; i++){
       std::cout << "i: " << i << std::endl;
@@ -108,17 +216,19 @@ namespace {
       lattice.dualize();
       // Reducing the lattice
       LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lattice);
-      red.redBKZ(0.999999, 10, LatticeTester::QUADRUPLE, lattice.getDim());
-      red.shortestVector(lattice.getNorm());
+      //red.redBKZ(0.999999, 10, LatticeTester::QUADRUPLE, lattice.getDim());
+      red.redLLLNTL(0.99, LatticeTester::QUADRUPLE, lattice.getDim());
+      //red.shortestVector(lattice.getNorm());
       // Computing shortest vector length and spectral test
       NTL::vector<Int> shortest(lattice.getBasis()[0]);
       Dbl tmp;
       LatticeTester::ProdScal<Int>(shortest, shortest, i, tmp);
-      std::cout << "Pre-Normalization: " << NTL::sqrt(tmp) << std::endl;
+      //std::cout << "Pre-Normalization: " << NTL::sqrt(tmp) << std::endl;
       // Normalization
-      std::cout << "Bound: " << norma->getBound(i) << std::endl;
+      //std::cout << "Bound: " << norma->getBound(i) << std::endl;
       tmp = NTL::sqrt(tmp)/norma->getBound(i);
-      std::cout << "Normalized value: " << tmp << std::endl;
+      //tmp = Dbl(1)/NTL::sqrt(tmp);
+      std::cout << "Value: " << Dbl(1)/tmp << std::endl;
       merit = (tmp < merit) ? tmp : merit;
     }
 
@@ -129,27 +239,28 @@ namespace {
 
   // This just instanciates number MWC generators with order k and mod b.
   void testGenerators() {
+    MRGLattice<Int, Dbl>* mrglat = 0;
+    MMRGLattice<Int, Dbl>* mmrglat = 0;
+    MWCLattice<Int, Dbl>* mwclat = 0;
     while (!timer.timeOver(timeLimit)) {
-      Int m(0);
-      long exp = exponent-1;
-      while(exp > 0) {
-        if (exp < 63) {
-          m << exp;
-          m += LatticeTester::RandBits(exp);
-          exp -= exp;
+      if (type == MRG) {
+        mrglat = nextGenerator(mrglat);
+        Dbl merit(test(*mrglat));
+        if (merit > bestMerit) {
+          addLattice(mrglat, merit);
         }
-        m << 63;
-        m += LatticeTester::RandBits(63);
-        exp -= 63;
-      }
-      if ((m&1) == 1) m+=1;
-      Modulus mod(exponent, m, true);
-      MWCLattice<Int, Dbl> lattice(b, mod.next());
-      Dbl merit(test(lattice));
-      if (merit > bestMerit) {
-        bestMerit = merit;
-        if(bestLattice) delete bestLattice;
-        bestLattice = new MWCLattice<Int, Dbl>(lattice);
+      } else if (type == MWC) {
+        mwclat = nextGenerator(mwclat);
+        Dbl merit(test(*mwclat));
+        if (merit > bestMerit) {
+          addLattice(mwclat, merit);
+        }
+      } else if (type == MMRG) {
+        mmrglat = nextGenerator(mmrglat);
+        Dbl merit(test(*mmrglat));
+        if (merit > bestMerit) {
+          addLattice(mmrglat, merit);
+        }
       }
       num_gen++;
     }
@@ -161,10 +272,18 @@ namespace {
     reader.getLines();
     int power;
     int ln = 0;
-    reader.readInt(power, ln++, 0);
-    b = NTL::power2_ZZ(power);
-    reader.readInt(exponent, ln++, 0);
-    //mod = new Modulus(exponent, true);
+    reader.readGenType(type, ln++, 0);
+    if (type == MRG) {
+      reader.readNumber3(modulo, basis, exponent, rest, ln++, 0);
+      reader.readLong(order, ln++, 0);
+    } else if (type == MWC) {
+      reader.readInt(power, ln++, 0);
+      b = NTL::power2_ZZ(power);
+      reader.readLong(exponent, ln++, 0);
+    } else if (type == MMRG) {
+      reader.readNumber3(modulo, basis, exponent, rest, ln++, 0);
+      reader.readLong(order, ln++, 0);
+    }
     reader.readInt(minDim, ln, 0);
     reader.readInt(maxDim, ln++, 1);
     reader.readDouble(timeLimit, ln++, 0);
@@ -182,11 +301,7 @@ int main (int argc, char **argv)
   readConfigFile(argc, argv);
   timer.init();
   testGenerators();
-  std::cout << "Number of generators tested: " << num_gen << std::endl;
-  std::cout << "Best merit: " << bestMerit << std::endl;
-  std::cout << "Best lattice LCG coefficient: " << bestLattice->getCoef() << std::endl;
-  std::cout << "Best lattice modulus: " << bestLattice->getModulo() << std::endl;
-  std::cout << "CPU time: " << timer.toString() << std::endl;
+  printResults();
   delete bestLattice;
   //delete mod;
   return 0;

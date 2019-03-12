@@ -9,6 +9,8 @@
 namespace LatMRG {
 
   /**
+   * \todo Make this class not use/compute the dual if not asked.
+   *
    * This class implements lattice basis built from M-MRG (matrix multiple
    * recursive linear congruential generators). One must first call the 
    * constructor with a given congruence modulus \f$m\f$, a given generator
@@ -220,9 +222,7 @@ namespace LatMRG {
     m_latType = lat;
     m_lacunaryFlag = false;
     m_lacunaryType = NONE;
-    //m_ip = new bool[1];
     init();
-    //PW_TODO attention m_ip aussi initialisé dans init()
   }
 
 
@@ -338,7 +338,7 @@ namespace LatMRG {
   template<typename Int, typename Dbl>
     void MMRGLattice<Int, Dbl>::init()
     {
-      kill(); //PW_TODO : wzf ? M-A : Indeed wzf...?
+      //kill(); //PW_TODO : wzf ? M-A : Indeed wzf...?
       LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::init();
       // This should not be needed
       m_xi.SetLength(this->m_order);
