@@ -41,7 +41,7 @@ namespace
     {
       reader.getLines ();
       int ln = 0;
-      reader.readGenType (par.typ, ++ln, 0);
+      reader.readGenType (par.typ, ln, 0);
       long b, e, c;
       reader.readNumber3 (par.m, b, e, c, ++ln, 0);
       reader.readInt (par.k, ++ln, 0);
@@ -59,6 +59,7 @@ namespace
       for (int i = 1; i <= par.k; i++)
         reader.readMScal(par.a[i], ++ln, 0);
       par.a[0] = 0;
+      std::cout << par.a <<std::endl;
     }
 
 }  // namespace
@@ -69,7 +70,7 @@ namespace
 int main(int argc, char** argv)
 {
   if (argc != 3) {
-    cout << "Usage: " << argv[0] << "<I, Z> filename" << endl;
+    cout << "Usage: " << argv[0] << " <I, Z> filename" << endl;
     return 1;
   }
   string types(argv[1]);
@@ -86,7 +87,7 @@ int main(int argc, char** argv)
     cout << "   m = " << par.m << endl;
     cout << "   k = " << par.k << endl;
     cout << "   a = ";
-    cout <<  LatticeTester::toString(par.a, 1, par.k);
+    cout <<  LatticeTester::toString(par.a, 1, par.k+1);
 
     if (mrg.maxPeriod (par.a))
       cout << "      HAS maximal period." << endl;
@@ -104,7 +105,7 @@ int main(int argc, char** argv)
     cout << "   m = " << par.m << endl;
     cout << "   k = " << par.k << endl;
     cout << "   a = ";
-    cout <<  LatticeTester::toString(par.a, 1, par.k);
+    cout <<  LatticeTester::toString(par.a, 1, par.k+1);
 
     if (mrg.maxPeriod (par.a))
       cout << "      HAS maximal period." << endl;
