@@ -437,9 +437,9 @@ namespace LatMRG {
       remove("session.log");
       remove("factor.log");
 #else
-      std::cout << "IntFactorization: Yafu is not installed in ./data. \
-        For more information on how to fix this problem, look at the\
-        installation documentation.\n";
+      std::cout << "IntFactorization: Yafu is not installed in ./data.\n"
+        "For more information on how to fix this problem, look at the\n"
+        "installation documentation.\n";
       std::cout << "Exiting the program to avoid undefined behavior.";
       exit(1);
 #endif
