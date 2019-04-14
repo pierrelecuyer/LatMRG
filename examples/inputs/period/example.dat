@@ -1,0 +1,9 @@
+# This is an example of the format to be used. This is not a valid file.
+GenType // The type of generator used
+m       // modulo of the generator
+k       // The order of the recurrence
+decom1  // The method of decomposition for m-1
+decom2  // The method of decomposition for r
+a1      // The mrg components
+...
+ak
