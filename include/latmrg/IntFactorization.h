@@ -476,17 +476,15 @@ namespace LatMRG {
     {
       //   sort ();
       unsigned int j = 0;
-      typename std::list<LatticeTester::IntFactor<Int>>::reverse_iterator it =
-        m_factorList.rbegin ();
 
-      while (it != m_factorList.rend ()) {
+      for (auto it = m_factorList.rbegin(); it != m_factorList.rend(); it++) {
+        if (it->getFactor() == Int(1)) continue;
         ++j;
         if (m_invFactorList.capacity () < j) {
           m_invFactorList.clear ();
           m_invFactorList.reserve (j + 10);
         }
         m_invFactorList.push_back (m_number / it->getFactor ());
-        ++it;
       }
     }
 

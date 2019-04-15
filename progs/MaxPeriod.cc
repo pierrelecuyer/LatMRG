@@ -59,7 +59,6 @@ namespace
       for (int i = 1; i <= par.k; i++)
         reader.readMScal(par.a[i], ++ln, 0);
       par.a[0] = 0;
-      std::cout << par.a <<std::endl;
     }
 
 }  // namespace

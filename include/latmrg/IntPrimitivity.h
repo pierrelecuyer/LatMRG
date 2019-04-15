@@ -12,7 +12,7 @@ namespace LatMRG {
    * integer. Let \f$a\f$, \f$e\f$ and \f$p\f$ be integers, with \f$p\f$ a
    * prime number. Assume also that \f$a\f$ and \f$m=p^e\f$ are relatively
    * prime. The smallest positive integer \f$\lambda(m)\f$ for which
-   * \f$a^{\lambda}= 1 \pmod m \f$ is called the order of \f$a\f$ modulo
+   * \f$a^{\lambda}= 1 \ \mod\ m \f$ is called the order of \f$a\f$ modulo
    * \f$m\f$. Any \f$a\f$ which has the maximum possible order for a given
    * \f$m\f$ is called a *primitive root* modulo \f$m\f$. For the following
    * important cases, the value of the order for given \f$m\f$ is
@@ -167,12 +167,11 @@ namespace LatMRG {
 
       const std::vector<Int> invList = m_f.getInvFactorList();
       //   assert (!(invList.empty ()));
-      auto it = invList.begin();
-      while (it != invList.end()) {
+      for (auto it = invList.begin(); it != invList.end(); it++) {
+        if (*it == (m_m-1)) continue;
         t2 = NTL::PowerMod (t1, *it, m_m);
         if (t2 == 1)
           return false;
-        ++it;
       }
       return true;
     }
