@@ -29,6 +29,7 @@ int main (int argc, char **argv)
   LatTestAll<NTL::ZZ, NTL::RR> testallZR;
   int status = 0;
   string types(argv[1]);
+  std::cout << types << std::endl;
 
   //char *testfile = "/Users/Erwan1/projects/github/LatMRG/latZZDD_test2";
   //status |= testall.doTest (testfile);

@@ -87,7 +87,7 @@ int main(int argc, char** argv)
     cout << "   m = " << par.m << endl;
     cout << "   k = " << par.k << endl;
     cout << "   a = ";
-    cout <<  LatticeTester::toString(par.a, 1, par.k+1);
+    cout <<  LatticeTester::toString(par.a, 1, par.k+1) << "\n";
 
     if (mrg.maxPeriod (par.a))
       cout << "      HAS maximal period." << endl;
@@ -105,7 +105,7 @@ int main(int argc, char** argv)
     cout << "   m = " << par.m << endl;
     cout << "   k = " << par.k << endl;
     cout << "   a = ";
-    cout <<  LatticeTester::toString(par.a, 1, par.k+1);
+    cout <<  LatticeTester::toString(par.a, 1, par.k+1) << "\n";
 
     if (mrg.maxPeriod (par.a))
       cout << "      HAS maximal period." << endl;

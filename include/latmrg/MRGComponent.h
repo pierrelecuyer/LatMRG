@@ -403,6 +403,8 @@ namespace LatMRG {
       a = a0;
       PolyPE<Int>::reverse (a, k, 2);
       PolyPE<Int>::setF(a);
+      std::cout << "F: " << PolyPE<Int>::getF() << "\n";
+      std::cout << "a: " << a << "\n";
       PolyPE<Int> pol;
       IntPrimitivity<Int> privfm(ifm1, getM(), 1);
       return pol.isPrimitive(privfm, ifr);
