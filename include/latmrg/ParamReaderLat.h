@@ -54,7 +54,6 @@ namespace LatMRG {
           this->readCriterionType (config.criter, ln, 0);
           if (config.criter == LatticeTester::SPECTRAL)
             this->readNormaType (config.norma, ln, 1);
-
           if (config.criter == LatticeTester::PALPHA) {
             this->readCalcType (config.calcPalpha, ++ln, 0);
             config.J = 1;
@@ -153,7 +152,7 @@ namespace LatMRG {
           this->readInt (config.d, ++ln, 0);
           if (config.d < 1)
             LatticeTester::MyExit (1, "ParamReaderLat:   config.d < 1");
-          config.td = new int[config.d];
+          config.td = new int[config.d+1];
           this->readIntVect (config.td, ++ln, 0, 1 + config.d, 0);
           int fromDim = config.td[0];
           int toDim = config.td[1];

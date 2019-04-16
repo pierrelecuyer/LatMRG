@@ -75,16 +75,16 @@ namespace LatMRG {
       int _k = 1;
 
       /*
-Remark: before the code was
-''
-Int _n[J];
-
-''
-But this sends a compiler error: "variable length array of non-POD
-type Int".
-So instead we decied to use a vector to perform the same operations
-with _n[].
-*/
+       * Remark: before the code was
+       * ''
+       * Int _n[J];
+       * 
+       * ''
+       * But this sends a compiler error: "variable length array of non-POD
+       * type Int".
+       * So instead we decied to use a vector to perform the same operations
+       * with _n[].
+       * */
       IntVec _n;
       _n.resize(J);
 

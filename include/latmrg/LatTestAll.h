@@ -141,12 +141,12 @@ namespace LatMRG {
           rw = new LatticeTester::WriterRes<Int> (fname.c_str ());
           break;
 
-        // This option has been removed since it was not implemented.
-        //case LatticeTester::TEX:
-        //  fname = infile;
-        //  fname += ".tex";
-        //  // rw = new WriterTex(fname.c_str()); //EB Ne permet pas d'écrire en Tex
-        //  break;
+          // This option has been removed since it was not implemented.
+          //case LatticeTester::TEX:
+          //  fname = infile;
+          //  fname += ".tex";
+          //  // rw = new WriterTex(fname.c_str()); //EB Ne permet pas d'écrire en Tex
+          //  break;
 
         case LatticeTester::TERM:
           rw = new LatticeTester::WriterRes<Int> (&std::cout);
@@ -211,14 +211,18 @@ namespace LatMRG {
           }
 
         } else if (config.genType[0] == MRG || config.genType[0] == LCG) {
+          NTL::vector<Int> vec(config.comp[0]->k+1);
+          vec[0] = Int(0);
+          for (int i = 1; i <= config.comp[0]->k; i++){
+            vec[i] = config.comp[0]->a[i-1];
+          }
           if (memLacF && config.lacunary){
             lattice = new MRGLatticeLac<Int, Dbl> (config.comp[0]->module.mRed,
                 config.comp[0]->a, toDim, config.comp[0]->k, config.Lac,
                 config.latType, config.norm);
-          }
-          else{
+          } else {
             lattice = new MRGLattice<Int, Dbl> (config.comp[0]->module.mRed,
-                config.comp[0]->a, toDim, config.comp[0]->k,
+                vec, toDim, config.comp[0]->k,
                 config.latType, config.norm);
           }
 
@@ -269,102 +273,102 @@ namespace LatMRG {
 
       switch (config.criter) {
         case LatticeTester::SPECTRAL: {
-                         LatTestSpectral<Int, Dbl> spectralTest (normal, lattice);
-                         lattice->buildBasis (fromDim - 1);
-                         spectralTest.attach (&report);
+                                        LatTestSpectral<Int, Dbl> spectralTest (normal, lattice);
+                                        lattice->buildBasis (fromDim - 1);
+                                        spectralTest.attach (&report);
 
-                         report.printHeader ();
+                                        report.printHeader ();
 
-                         spectralTest.setDualFlag (config.dualF);
-                         spectralTest.setInvertFlag (config.invertF);
-                         spectralTest.setDetailFlag (config.detailF);
-                         spectralTest.setMaxAllDimFlag (true);
-                         spectralTest.setMaxNodesBB (config.maxNodesBB);
-                         if (1 == config.d) {
-                           spectralTest.test (fromDim, toDim, minVal);
-                           // lattice->write();
-                           footer.setLatticeTest (&spectralTest);
-                           report.printTable ();
-                           report.printFooter ();
+                                        spectralTest.setDualFlag (config.dualF);
+                                        spectralTest.setInvertFlag (config.invertF);
+                                        spectralTest.setDetailFlag (config.detailF);
+                                        spectralTest.setMaxAllDimFlag (true);
+                                        spectralTest.setMaxNodesBB (config.maxNodesBB);
+                                        if (1 == config.d) {
+                                          spectralTest.test (fromDim, toDim, minVal);
+                                          // lattice->write();
+                                          footer.setLatticeTest (&spectralTest);
+                                          report.printTable ();
+                                          report.printFooter ();
 
-                         } else {
-                           if (config.genType[0] == MRG || config.genType[0] == LCG)
-                             master = new MRGLattice<Int, Dbl> (*(MRGLattice<Int, Dbl> *) lattice);
-                           else if (config.genType[0] == KOROBOV)
-                             master = new KorobovLattice<Int, Dbl> (*(KorobovLattice<Int, Dbl> *) lattice);
-                           else if (config.genType[0] == RANK1)
-                             master = new LatticeTester::Rank1Lattice<Int, Int, Dbl, Dbl> (*(LatticeTester::Rank1Lattice<Int, Int, Dbl, Dbl> *) lattice);
+                                        } else {
+                                          if (config.genType[0] == MRG || config.genType[0] == LCG)
+                                            master = new MRGLattice<Int, Dbl> (*(MRGLattice<Int, Dbl> *) lattice);
+                                          else if (config.genType[0] == KOROBOV)
+                                            master = new KorobovLattice<Int, Dbl> (*(KorobovLattice<Int, Dbl> *) lattice);
+                                          else if (config.genType[0] == RANK1)
+                                            master = new LatticeTester::Rank1Lattice<Int, Int, Dbl, Dbl> (*(LatticeTester::Rank1Lattice<Int, Int, Dbl, Dbl> *) lattice);
 
-                           master->buildBasis (toDim);
-                           TestProjections<Int, Dbl> proj (master, lattice, &spectralTest, config.td,
-                               config.d);
-                           proj. setOutput (rw);
-                           // proj.setDualFlag (config.dualF);
-                           proj.setPrintF (true);
-                           double merit = proj.run (stationary, false, minVal);
-                           int nbProj = proj.getNumProjections ();
-                           rw->writeString ("\nMin merit:   ");
-                           rw->writeDouble (sqrt (merit));
-                           rw->newLine ();
-                           rw->writeString ("Num projections:   ");
-                           rw->writeInt (nbProj);
-                           rw->newLine ();
-                           // nbProj = proj.calcNumProjections(stationary, false);
-                           // std::cout << "Num projections2:  " << nbProj << std::endl << std::endl;
-                           delete master;
-                         }
-                       }
-                       break;
+                                          master->buildBasis (toDim);
+                                          TestProjections<Int, Dbl> proj (master, lattice, &spectralTest, config.td,
+                                              config.d);
+                                          proj. setOutput (rw);
+                                          // proj.setDualFlag (config.dualF);
+                                          proj.setPrintF (true);
+                                          double merit = proj.run (stationary, false, minVal);
+                                          int nbProj = proj.getNumProjections ();
+                                          rw->writeString ("\nMin merit:   ");
+                                          rw->writeDouble (sqrt (merit));
+                                          rw->newLine ();
+                                          rw->writeString ("Num projections:   ");
+                                          rw->writeInt (nbProj);
+                                          rw->newLine ();
+                                          // nbProj = proj.calcNumProjections(stationary, false);
+                                          // std::cout << "Num projections2:  " << nbProj << std::endl << std::endl;
+                                          delete master;
+                                        }
+                                      }
+                                      break;
 
         case LatticeTester::BEYER: {
-                      LatTestBeyer<Int, Dbl> beyerTest (lattice);
-                      lattice->buildBasis (fromDim - 1);
-                      beyerTest.attach (&report);
-                      report.printHeader ();
-                      beyerTest.setDualFlag (config.dualF);
-                      beyerTest.setMaxAllDimFlag (true);
-                      beyerTest.setMaxNodesBB (config.maxNodesBB);
-                      beyerTest.setDetailFlag (config.detailF);
-                      beyerTest.test (fromDim, toDim, minVal);
-                      footer.setLatticeTest (&beyerTest);
-                      report.printTable ();
-                      report.printFooter ();
-                      //rw->writeString (lattice->toStringDualBasis ());
-                    }
-                    break;
+                                     LatTestBeyer<Int, Dbl> beyerTest (lattice);
+                                     lattice->buildBasis (fromDim - 1);
+                                     beyerTest.attach (&report);
+                                     report.printHeader ();
+                                     beyerTest.setDualFlag (config.dualF);
+                                     beyerTest.setMaxAllDimFlag (true);
+                                     beyerTest.setMaxNodesBB (config.maxNodesBB);
+                                     beyerTest.setDetailFlag (config.detailF);
+                                     beyerTest.test (fromDim, toDim, minVal);
+                                     footer.setLatticeTest (&beyerTest);
+                                     report.printTable ();
+                                     report.printFooter ();
+                                     //rw->writeString (lattice->toStringDualBasis ());
+                                   }
+                                   break;
 
         case LatticeTester::PALPHA: {
-                       LatTestPalpha<Int, Dbl> palphaTest (normal, lattice);
-                       palphaTest.setConfig (&config);
-                       palphaTest.attach (&report);
-                       report.printHeader ();
-                       if (1 == config.d) {
-                         palphaTest.test (fromDim, toDim, minVal);
-                         footer.setLatticeTest (&palphaTest);
-                         report.printTable ();
-                         report.printFooter ();
-                       } else {
-                         MRGLattice<Int, Dbl> master = MRGLattice<Int, Dbl> (*(MRGLattice<Int, Dbl> *) lattice);
-                         master.buildBasis (toDim);
-                         TestProjections<Int, Dbl> proj (&master, lattice, &palphaTest, config.td,
-                             config.d);
-                         proj. setOutput (rw);
-                         double merit = proj.run (true, false, minVal);
-                         int nbProj = proj.getNumProjections ();
-                         rw->writeString ("\n\nMin merit:   ");
-                         rw->writeDouble (sqrt (merit));
-                         rw->newLine ();
-                         rw->writeString ("Num projections:   ");
-                         rw->writeInt (nbProj);
-                         rw->newLine ();
-                         rw->newLine ();
-                       }
-                     }
-                     break;
+                                      LatTestPalpha<Int, Dbl> palphaTest (normal, lattice);
+                                      palphaTest.setConfig (&config);
+                                      palphaTest.attach (&report);
+                                      report.printHeader ();
+                                      if (1 == config.d) {
+                                        palphaTest.test (fromDim, toDim, minVal);
+                                        footer.setLatticeTest (&palphaTest);
+                                        report.printTable ();
+                                        report.printFooter ();
+                                      } else {
+                                        MRGLattice<Int, Dbl> master = MRGLattice<Int, Dbl> (*(MRGLattice<Int, Dbl> *) lattice);
+                                        master.buildBasis (toDim);
+                                        TestProjections<Int, Dbl> proj (&master, lattice, &palphaTest, config.td,
+                                            config.d);
+                                        proj. setOutput (rw);
+                                        double merit = proj.run (true, false, minVal);
+                                        int nbProj = proj.getNumProjections ();
+                                        rw->writeString ("\n\nMin merit:   ");
+                                        rw->writeDouble (sqrt (merit));
+                                        rw->newLine ();
+                                        rw->writeString ("Num projections:   ");
+                                        rw->writeInt (nbProj);
+                                        rw->newLine ();
+                                        rw->newLine ();
+                                      }
+                                    }
+                                    break;
 
         default:
-                     std::cerr << "Default case for config.criter" << std::endl;
-                     return -1;
+                                    std::cerr << "Default case for config.criter" << std::endl;
+                                    return -1;
       }
 
       if (normal != 0)
@@ -373,6 +377,7 @@ namespace LatMRG {
         delete plac;
       delete lattice;
       delete rw;
+      std::cout << "hi\n";
       return 0;
     }
 

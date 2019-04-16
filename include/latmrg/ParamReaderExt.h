@@ -453,7 +453,6 @@ namespace LatMRG {
       if (t < 0) {
         for (i = 0; i < toDim; i++)
           this->readBScal (Lac[i], ++ln, 0);
-        //cout << "IntVec Lac = " << Lac << endl;
         return;
       }
 

@@ -441,9 +441,6 @@ namespace LatMRG {
     bool LatTestSpectral<Int, Dbl>::test (int fromDim, int toDim, double minVal[], const double* weights)
     {
 
-      //BOOST_DISPLAY
-      //boost::progress_display show_progress(toDim-fromDim+1);
-
       this->m_merit.setDim(toDim);
       this->m_fromDim = fromDim;
       this->m_toDim = toDim;
@@ -474,9 +471,6 @@ namespace LatMRG {
       red.setBoundL2 (this->m_boundL2, fromDim, toDim);
 
       while (true) {
-
-        //BOOST_DISPLAY
-        //++show_progress;
 
         if (this->m_dualF)
           this->m_lat->dualize ();

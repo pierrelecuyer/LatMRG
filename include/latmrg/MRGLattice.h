@@ -361,7 +361,6 @@ namespace LatMRG {
     m_ip = new bool[1];
     init();
 
-
     for (int i = 0; i < this->m_order; i++)
       m_aCoef[i] = a[i+1];
   }
