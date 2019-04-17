@@ -1,0 +1,22 @@
+# This is an example of the format to be used. This is not a valid file.
+Test Normalizer          // The test to apply on the generator
+Norm                     // The norm to use for the test
+ReadGenFile [GenFile]    // File input for tested generators
+J                        // The number of components of the generator
+# This section has to appear J times
+GenType                  // The type of generator for this component
+m                        // The modulus of the recurrence
+k                        // The order of the recurrence
+CoefCond [s k_1 ... k_s] // A condition of the coefficients of the generator
+a_1 ... a_k              // The coefficients of the generator
+# End of section
+d                        // The dimensions of the projections
+td[0] td[1] ... td[d]    // The range for each projection
+DualFlag                 // Flag to test the dual or not
+LatticeType              // The type of lattice the generator has
+LacGroupSize             // A flag to allow the usage of lacunary indices
+LacSpacing               // The spacing for lacunary indices
+MaxNodesBB
+InvertFlag
+DetailFlag
+OutputForm
