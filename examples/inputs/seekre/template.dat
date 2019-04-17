@@ -1,0 +1,19 @@
+# General stuff
+Generator type
+Computation
+Dimensions
+Normalization
+Time limit
+# Generator related
+## MRG
+Modulo
+order
+period length
+parameter constraints
+## MWC
+## combo
+## MMRG
+Modulo
+dimension
+period length
+parameter constraints
