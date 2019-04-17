@@ -594,16 +594,15 @@ namespace LatMRG {
 
             //std::cout << "this->m_merit[" << dim << "] = " << this->m_merit[dim] << std::endl;
 
-            // Si on sait deja que ce gen. ne pourra etre retenu,
-            // on le rejette tout de suite et on arrete le test.
-            if ((this->m_maxAllDimFlag && this->m_merit[dim] < minVal[toDim])
-                || this->m_merit[dim] < minVal[dim]) {
-              //    this->m_merit[dim] = 0.0;
-              return false;
-            }
-          }
-          else
+            // This uses the bound we do not use anymore because of bad code
+            //if ((this->m_maxAllDimFlag && this->m_merit[dim] < minVal[toDim])
+            //    || this->m_merit[dim] < minVal[dim]) {
+            //  //    this->m_merit[dim] = 0.0;
+            //  return false;
+            //}
+          } else {
             this->m_merit[dim] /= weight;
+          }
 
           prepAndDisp (dim);
 

@@ -163,11 +163,11 @@ namespace LatMRG {
 
     TableColumnImpl<int>* dims = new TableColumnImpl<int>(&m_iFormat, "t");
 
-    m_results.add(dims);
-
     for (int i = m_config->td[0]; i <= m_config->td[1]; i++) {
       dims->addValue(static_cast<void*>(&i));
     }
+
+    m_results.add(dims);
 
     m_base_col = 1;
   }
@@ -193,11 +193,10 @@ namespace LatMRG {
     void ReportLat<Int, Dbl>::printTable()
     {
       std::ostream* stream(&this->getWriter()->getStream());
-      Table data = m_results;
       const std::string pos = "llllllllll";
       int margins = 5;
-      int t = data.size ();       // Nb de colonne
-      int n = data.getHeight () + 1; // Nb de ligne
+      int t = m_results.size ();       // Nb de colonne
+      int n = m_results.getHeight () + 1; // Nb de ligne
 
       int max_length[t];
       int nb_lig_cell[t][n];
@@ -216,12 +215,12 @@ namespace LatMRG {
       // maximale de chaque colonne.
 
       for (int i = 0; i < t; i++) {
-        for (int j = -1; j < data[i]->size (); j++) {
+        for (int j = -1; j < m_results[i]->size (); j++) {
           lig = 0;
           curpos = 0;
           curpos_b = -1;
 
-          temp = data[i]->getFormattedValue (j);
+          temp = m_results[i]->getFormattedValue (j);
 
           while ((curpos = temp.find ("\n", curpos)) != std::string::npos) {
             int tmp = (int) curpos - curpos_b - 1;
@@ -267,7 +266,7 @@ namespace LatMRG {
 
       for (int i = 0; i < t; i++) {
         offset = 0;
-        for (int j = -1; j < data[i]->size (); j++) {
+        for (int j = -1; j < m_results[i]->size (); j++) {
           curpos = 0;
           curpos_b = 0;
 
@@ -276,7 +275,7 @@ namespace LatMRG {
             sub_data[i][j + offset + k + 1] = "";
           }
 
-          temp = data[i]->getFormattedValue (j);
+          temp = m_results[i]->getFormattedValue (j);
 
           while ((curpos = temp.find ("\n", curpos)) != std::string::npos) {
             sub_data[i][j + offset + k + 1] =

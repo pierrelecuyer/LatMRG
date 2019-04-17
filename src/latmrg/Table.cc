@@ -11,6 +11,7 @@ Richard Simard
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include <iostream>
 
 #include "latmrg/Table.h"
 
@@ -32,8 +33,9 @@ namespace LatMRG
 
   Table::~Table()
   {
-    for (unsigned int i = 0; i < m_columns.size(); i++)
-      delete m_columns.at(i);
+    for (unsigned int i = 0; i < m_columns.size(); i++) {
+      if (m_columns.at(i)) delete m_columns.at(i);
+    }
     m_columns.clear();
   }
 

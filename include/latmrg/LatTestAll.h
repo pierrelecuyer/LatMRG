@@ -377,7 +377,6 @@ namespace LatMRG {
         delete plac;
       delete lattice;
       delete rw;
-      std::cout << "hi\n";
       return 0;
     }
 

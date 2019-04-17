@@ -14,7 +14,7 @@ using namespace LatMRG;
 int main (int argc, char **argv)
 {
 
-  struct stat buf;    // properties of a file or directory
+  struct stat* buf = new struct stat();    // properties of a file or directory
   LatTestAll<std::int64_t, double> testallID;
   LatTestAll<NTL::ZZ, double> testallZD;
   LatTestAll<NTL::ZZ, NTL::RR> testallZR;
@@ -32,9 +32,8 @@ int main (int argc, char **argv)
 
   for (int j = 2; j < argc; j++) {
     // Do the test for each data file or directory on the command line
-    stat(argv[j], &buf);
-    if (0 != S_ISDIR(buf.st_mode)) {
-      std::cout << "Is dir\n";
+    stat(argv[j], buf);
+    if (0 != S_ISDIR(buf->st_mode)) {
       if (types == "ID") {
         status |= testallID.doTestDir (argv[j]);
       } else if (types == "ZD") {
@@ -45,22 +44,20 @@ int main (int argc, char **argv)
     } else {
       string dataname(argv[j]);
       dataname.append(".dat");
-      stat(dataname.c_str(), &buf);
-      if (0 != S_ISREG(buf.st_mode)){    // data file
+      stat(dataname.c_str(), buf);
+      if (0 != S_ISREG(buf->st_mode)){    // data file
         if (types == "ID") {
           status |= testallID.doTest (argv[j]);
-          std::cout << "end\n";
         } else if (types == "ZD") {
           int temp = testallZD.doTest(argv[j]);
-          std::cout << "end\n";
           status |= temp;
         } else if (types == "ZR") {
           status |= testallZR.doTest (argv[j]);
-          std::cout << "end\n";
         }
       }
     }
   }
 
+  delete buf;
   return status;
 }
