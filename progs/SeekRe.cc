@@ -3,6 +3,7 @@
  * better design. For now this is the file in which I implement MWC gen searches.
  * */
 #include "latticetester/NormaBestLat.h"
+#include "latticetester/Random.h"
 
 #include "latmrg/MWCLattice.h"
 #include "latmrg/MMRGLattice.h"
@@ -12,10 +13,12 @@
 
 using namespace LatMRG;
 using LatticeTester::IntLattice;
+using namespace LatticeTester::Random;
 
 namespace {
   typedef NTL::ZZ Int;
-  typedef NTL::RR Dbl;
+  typedef double Dbl;
+  typedef NTL::vector<Int> IntVec;
   typedef NTL::matrix<Int> IntMat;
 
   // Program global objects
@@ -27,6 +30,9 @@ namespace {
 
   // Data file parameters
   GenType type; // This one is experimental
+  int minDim, maxDim;
+  LatticeTester::NormaType normaType;
+  double timeLimit;
 
   // MWC Specific parameters
   Int b; // modulo of MWC recurence
@@ -38,10 +44,8 @@ namespace {
   std::int64_t basis;
   std::int64_t exponent;
   std::int64_t rest;
+  bool period; // Period is full if this is true
 
-  // Non type dependent parameters
-  int minDim, maxDim;
-  double timeLimit;
 
   /**
    * A small class to search for modulus for MWC generators.
@@ -117,7 +121,14 @@ namespace {
    * without requiring the use of switch statements.
    * */
   MRGLattice<Int, Dbl>* nextGenerator(MRGLattice<Int, Dbl>* lattice) {
-    return 0;
+    IntVec A;
+    A.SetLength(order+1);
+    NTL::clear(A);
+    while (A[order] == 0) {
+      for (long i = 1; i<order+1; i++) A[i] = randInt(Int(0), modulo);
+    }
+    if (lattice) delete lattice;
+    return new MRGLattice<Int, Dbl>(modulo, A, maxDim, order, FULL);
   }
 
   MWCLattice<Int, Dbl>* nextGenerator(MWCLattice<Int, Dbl>* lattice) {
@@ -207,7 +218,7 @@ namespace {
    * Tests the generator via spectral test.
    * */
   Dbl test(IntLattice<Int, Int, Dbl, Dbl> & lattice) {
-    norma = lattice.getNormalizer(LatticeTester::NONE, 0, true);
+    norma = lattice.getNormalizer(normaType, 0, true);
     Dbl merit = Dbl(1);
     for (int i = minDim; i <= maxDim; i++){
       std::cout << "i: " << i << std::endl;
@@ -216,9 +227,9 @@ namespace {
       lattice.dualize();
       // Reducing the lattice
       LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lattice);
-      //red.redBKZ(0.999999, 10, LatticeTester::QUADRUPLE, lattice.getDim());
-      red.redLLLNTL(0.99, LatticeTester::QUADRUPLE, lattice.getDim());
-      //red.shortestVector(lattice.getNorm());
+      red.redBKZ(0.999999, 10, LatticeTester::QUADRUPLE, lattice.getDim());
+      //red.redLLLNTL(0.99, LatticeTester::QUADRUPLE, lattice.getDim());
+      red.shortestVector(lattice.getNorm());
       // Computing shortest vector length and spectral test
       NTL::vector<Int> shortest(lattice.getBasis()[0]);
       Dbl tmp;
@@ -227,8 +238,8 @@ namespace {
       // Normalization
       //std::cout << "Bound: " << norma->getBound(i) << std::endl;
       tmp = NTL::sqrt(tmp)/norma->getBound(i);
-      //tmp = Dbl(1)/NTL::sqrt(tmp);
-      std::cout << "Value: " << Dbl(1)/tmp << std::endl;
+      if (tmp > 1) tmp = Dbl(1)/tmp;
+      std::cout << "Value: " << tmp << std::endl;
       merit = (tmp < merit) ? tmp : merit;
     }
 
@@ -273,9 +284,14 @@ namespace {
     int power;
     int ln = 0;
     reader.readGenType(type, ln++, 0);
+    reader.readInt(minDim, ln, 0);
+    reader.readInt(maxDim, ln++, 1);
+    reader.readNormaType(normaType, ln++, 0);
+    reader.readDouble(timeLimit, ln++, 0);
     if (type == MRG) {
       reader.readNumber3(modulo, basis, exponent, rest, ln++, 0);
       reader.readLong(order, ln++, 0);
+      reader.readBool(period, ln++, 0);
     } else if (type == MWC) {
       reader.readInt(power, ln++, 0);
       b = NTL::power2_ZZ(power);
@@ -284,9 +300,6 @@ namespace {
       reader.readNumber3(modulo, basis, exponent, rest, ln++, 0);
       reader.readLong(order, ln++, 0);
     }
-    reader.readInt(minDim, ln, 0);
-    reader.readInt(maxDim, ln++, 1);
-    reader.readDouble(timeLimit, ln++, 0);
     return true;
   }
 
