@@ -181,8 +181,12 @@ namespace LatMRG {
   template<typename Int, typename Dbl>
     void LatTestSpectral<Int, Dbl>::initLowerBoundL2 (int dim1, int dim2)
     {
+      std::cout << "dim1: " << dim1 << " dim2: " << dim2 << "\n"
+        << "max indice: " << this->m_lat->getDim() << "\n";
+
       if (this->m_lat->getNorm () == LatticeTester::L2NORM) {
         for (int i = dim1; i <= dim2; i++) {
+          std::cout << "outputing " << this->m_lat->getLgVolDual2(i) << "\n";
           this->m_S2toL2[i] = this->m_normalizer->getGamma (i);
           this->m_S2toL2[i] *= exp2 (this->m_lat->getLgVolDual2 (i) / i);
         }
@@ -317,10 +321,17 @@ namespace LatMRG {
 
       LatticeTester::Reducer<Int, Int, Dbl, Dbl> red (*this->m_lat);
 
-      if (this->m_S2toL2[fromDim] <= 0.0)
-        initLowerBoundL2 (fromDim, toDim);
-      setLowerBoundL2 (minVal[toDim], weights);   // same S2 for all dim
-      red.setBoundL2 (this->m_boundL2, fromDim, toDim);
+      /* This creates a memory error because m_lat contains a lattice of dimension
+       * fromDim and initLowerBoundL2 calls getLgVolDual2 for a bigger dimension.
+       * It is not possible to change the dimension of the lattice to fix this
+       * problem, the method initLowerBoundL2 has to be corrected, but since
+       * this method implements a bound on results of the test, it is not really
+       * necessary because this class cannot perform lengthy tests anyway.
+       * */
+      // if (this->m_S2toL2[fromDim] <= 0.0)
+      //   initLowerBoundL2 (fromDim, toDim);
+      // setLowerBoundL2 (minVal[toDim], weights);   // same S2 for all dim
+      // red.setBoundL2 (this->m_boundL2, fromDim, toDim);
 
       while (true) {
 
@@ -465,10 +476,17 @@ namespace LatMRG {
 
       LatticeTester::Reducer<Int, Int, Dbl, Dbl> red (*this->m_lat);
 
-      if (this->m_S2toL2[fromDim] <= 0.0)
-        initLowerBoundL2 (fromDim, toDim);
-      setLowerBoundL2 (minVal[toDim], weights);   // same S2 for all dim
-      red.setBoundL2 (this->m_boundL2, fromDim, toDim);
+      /* This creates a memory error because m_lat contains a lattice of dimension
+       * fromDim and initLowerBoundL2 calls getLgVolDual2 for a bigger dimension.
+       * It is not possible to change the dimension of the lattice to fix this
+       * problem, the method initLowerBoundL2 has to be corrected, but since
+       * this method implements a bound on results of the test, it is not really
+       * necessary because this class cannot perform lengthy tests anyway.
+       * */
+      // if (this->m_S2toL2[fromDim] <= 0.0)
+      //   initLowerBoundL2 (fromDim, toDim);
+      // setLowerBoundL2 (minVal[toDim], weights);   // same S2 for all dim
+      // red.setBoundL2 (this->m_boundL2, fromDim, toDim);
 
       while (true) {
 
