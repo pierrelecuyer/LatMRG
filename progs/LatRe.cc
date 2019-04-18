@@ -17,14 +17,20 @@ namespace {
 
   // Program global objects
   Chrono timer;
-  LatticeTester::Normalizer<Dbl>* norma;
-  //Dbl worstMerit = Dbl(1);
+  LatticeTester::Normalizer<Dbl>* norma; // If a normalizer is used
+  // For period tests
+  DecompType decompm1 = DECOMP, decompr = DECOMP;
+  std::string filem1, filer;
+  Dbl worstMerit(1);
 
-  // Data file parameters
-  GenType type; // This one is experimental
+  // Data file read parameters
+  GenType type;
+  int minDim, maxDim;
+  LatticeTester::NormaType normaType;
+  double timeLimit;
 
   // MRG Specific parameters
-  IntVec mult;
+  IntVec mult; // MRG multipliers
 
   // MWC Specific parameters
   Int b; // modulo of MWC recurence
@@ -36,19 +42,24 @@ namespace {
   std::int64_t basis;
   std::int64_t exponent;
   std::int64_t rest;
+  bool period;
 
-  // Non type dependent parameters
-  int minDim, maxDim;
-  double timeLimit;
+  /**
+   * Prints the results of the program execution.
+   * */
+  void printResults() {
+    std::cout << "Merit: " << worstMerit << std::endl;
+    std::cout << "CPU time: " << timer.toString() << std::endl;
+  }
 
   /**
    * Tests the generator via spectral test.
    * */
   Dbl test(IntLattice<Int, Int, Dbl, Dbl> & lattice) {
-    norma = lattice.getNormalizer(LatticeTester::BESTLAT, 0, true);
+    norma = lattice.getNormalizer(normaType, 0, true);
     Dbl merit = Dbl(1);
     for (int i = minDim; i <= maxDim; i++){
-      std::cout << "i: " << i << std::endl;
+      //std::cout << "i: " << i << std::endl;
       // Building the basis
       lattice.buildBasis(i);
       lattice.dualize();
@@ -65,7 +76,7 @@ namespace {
       tmp = NTL::sqrt(tmp)/norma->getBound(i);
       // The next condition is true if there is no normalizer (or a bug)
       if (tmp > 1) tmp = Dbl(1)/tmp;
-      std::cout << "Value: " << tmp << std::endl;
+      //std::cout << "Value: " << tmp << std::endl;
       merit = (tmp < merit) ? tmp : merit;
     }
 
@@ -73,15 +84,15 @@ namespace {
     return merit;
   }
 
-
-  // This just instanciates number MWC generators with order k and mod b.
+  // This is the main program function. This instanciates evey generator to
+  // test and tests it.
   void testGenerator() {
     if (type == MRG) {
       IntVec temp(order+1);
       temp[0] = Int(0);
       for (int i = 1; i < order+1; i++) temp[i] = mult[i-1];
       MRGLattice<Int, Dbl> mrglat(modulo, temp, maxDim, order, FULL);
-      test(mrglat);
+      worstMerit = test(mrglat);
     } else if (type == MWC) {
       //MWCLattice<Int, Dbl>* mwclat = 0;
       //mwclat = nextGenerator(mwclat);
@@ -106,12 +117,30 @@ namespace {
     //int power;
     unsigned int ln = 0;
     reader.readGenType(type, ln++, 0);
+    reader.readInt(minDim, ln, 0);
+    reader.readInt(maxDim, ln++, 1);
+    reader.readNormaType(normaType, ln++, 0);
+    reader.readDouble(timeLimit, ln++, 0);
     if (type == MRG) {
       reader.readNumber3(modulo, basis, exponent, rest, ln++, 0);
       reader.readLong(order, ln++, 0);
+      minDim = minDim<order ? order : minDim;
+      maxDim = maxDim>minDim ? maxDim : minDim;
       mult.SetLength(order);
       reader.readMVect(mult, ln, 0, order, 0);
       ln++;
+      reader.readBool(period, ln, 0);
+      if (period) {
+        // Using default parameters
+        bool def;
+        reader.readBool(def, ln, 1);
+        if (!def) {
+          reader.readDecompType(decompm1, ln, 2);
+          reader.readString(filem1, ln, 3);
+          reader.readDecompType(decompr, ln, 4);
+          reader.readString(filer, ln, 5);
+        }
+      }
     } else if (type == MWC) {
       //reader.readInt(power, ln++, 0);
       //b = NTL::power2_ZZ(power);
@@ -120,9 +149,6 @@ namespace {
       //reader.readNumber3(modulo, basis, exponent, rest, ln++, 0);
       //reader.readLong(order, ln++, 0);
     }
-    reader.readInt(minDim, ln, 0);
-    reader.readInt(maxDim, ln++, 1);
-    reader.readDouble(timeLimit, ln++, 0);
     return true;
   }
 
@@ -135,10 +161,15 @@ int main (int argc, char **argv) {
     std::cout << "Usage: " << argv[0] << " filename" << std::endl;
     return -1;
   }
+  // Initializing values
+  srand(time(NULL));
+  filem1 = "./tempm1" + std::to_string(rand());
+  filer = "./tempr" + std::to_string(rand());
   readConfigFile(argc, argv);
   timer.init();
+  // Testing the generator(s)
   testGenerator();
-  //printResults();
+  printResults();
   //delete bestLattice;
   //delete mod;
   return 0;
