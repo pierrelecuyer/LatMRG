@@ -188,48 +188,6 @@ namespace LatMRG {
    * of a MRG lattice are all equivalent to a projection with 0 as a coordinate
    * */
   class Projections {
-    public:
-      Projections(int dimProj, int minDim, std::vector<std::size_t>& projDim){
-        std::cout << "dimProj: " << dimProj;
-        std::cout << "\nminDim: " << minDim << "\n";
-        for (auto it = projDim.begin(); it != projDim.end(); it++)
-          std::cout << *it << " ";
-        std::cout << "\n";
-        m_numDim = dimProj;
-        m_projDim.resize(dimProj);
-        m_minDim = minDim;
-        for (int i = 0; i < dimProj; i++) {
-          m_projDim[i] = projDim[i];
-        }
-        m_currentDim = 1;
-      }
-
-      LatticeTester::Coordinates next() {
-        if (m_curProj.empty()) {
-          for (std::size_t i = 0; i<(unsigned)m_minDim; i++) m_curProj.push_back(i);
-        }
-        return LatticeTester::Coordinates(m_curProj);
-      }
-
-      LatticeTester::Coordinates getProj() {
-        return LatticeTester::Coordinates(m_curProj);
-      }
-
-      /**
-       * Returns true if the current projection is the last one.
-       * */
-      bool end() {
-        if (m_curProj.empty()) return false;
-        return true;
-      }
-
-      void resetDim(int dim = 0) {
-        m_currentDim = dim;
-        m_curProj.clear();
-      }
-
-      int getDim() { return m_currentDim;}
-
     private:
       int m_numDim;
 
@@ -240,6 +198,64 @@ namespace LatMRG {
       int m_minDim;
 
       std::vector<std::size_t> m_projDim;
+
+    public:
+      Projections(int dimProj, int minDim, std::vector<std::size_t>& projDim){
+        m_numDim = dimProj;
+        m_projDim.resize(dimProj);
+        m_minDim = minDim;
+        for (int i = 0; i < dimProj; i++) {
+          m_projDim[i] = projDim[i];
+        }
+        m_currentDim = 0;
+      }
+
+      /**
+       * Returns true if the current projection is the last one.
+       * */
+      bool end() {
+        if (m_currentDim == 0 || m_curProj.size() == 0) return false;
+        if (m_curProj.back() == m_projDim[0]) return true;
+        return false;
+      }
+      
+      /**
+       * This returns the next projection for this set of projections.
+       * */
+      LatticeTester::Coordinates next() {
+        if (end()) return LatticeTester::Coordinates(m_curProj);
+        if (m_currentDim == 0) {
+          for (std::size_t i = 0; i<(unsigned)m_minDim; i++) m_curProj.push_back(i);
+          m_currentDim++;
+          return LatticeTester::Coordinates(m_curProj);
+        } else if (m_currentDim == 1) {
+          m_curProj.push_back(m_curProj.size());
+          if (m_curProj.back() <= m_projDim[0]) return LatticeTester::Coordinates(m_curProj);
+          m_currentDim++;
+          m_curProj.resize(0);
+        }
+        if (m_curProj.size() == 0) {
+          m_curProj.resize(m_currentDim);
+          for (std::size_t i = 0; i<(unsigned)(m_currentDim-1); i++)
+            m_curProj.push_back(i);
+          m_curProj.push_back((unsigned)(m_currentDim+1));
+          return LatticeTester::Coordinates(m_curProj);
+        }
+        return LatticeTester::Coordinates(m_curProj);
+      }
+
+      LatticeTester::Coordinates getProj() {
+        return LatticeTester::Coordinates(m_curProj);
+      }
+
+      void resetDim(int dim = 0) {
+        if (dim > m_numDim) return;
+        m_currentDim = dim;
+        m_curProj.resize(0);
+      }
+
+      int getDim() { return m_curProj.size();}
+
   };
 
 }

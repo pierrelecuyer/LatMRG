@@ -703,7 +703,6 @@ namespace LatMRG {
         LatticeTester::IntLattice<Int, Int, Dbl, Dbl>* lattice,
         const LatticeTester::Coordinates & proj)
     {
-      std::cout << "We are in MRGLattice\n";
 
       // Ripping the vectors
       const int dim = this->getDim ();
@@ -711,18 +710,16 @@ namespace LatMRG {
       IntMat temp;
       temp.SetDims(dim, dim);
       for (auto iter = proj.begin(); iter != proj.end(); ++iter) {
-        temp[i] = this->m_basis[*iter];
+        temp[i] = this->basis[*iter];
         ++i;
       }
 
       // Construction the basis for the projection
-      lattice->setDim (static_cast<int>(proj.size()));
       LatticeTester::BasisConstruction<Int> constr;
       constr.LLLConstruction(temp);
-      lattice->getBasis().SetDims(lattice->getDim(), lattice->getDim());
       for (int i = 0; i<lattice->getDim(); i++){
         for (int j = 0; j<lattice->getDim(); j++){
-          lattice->getBasis()[i][j] = temp[i][j];
+          lattice->getBasis()[i][j] = temp[j][i];
         }
       }
       lattice->setNegativeNorm ();
