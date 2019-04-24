@@ -133,7 +133,13 @@ namespace LatMRG {
         /**
          * Returns the vector of multipliers \f$A\f$ as a string.
          */
-        std::string toStringCoef() const;
+        virtual std::string toStringCoef() const;
+
+        /**
+         * Returns the vector of multipliers \f$A\f$ as a string.
+         */
+        std::string toString() const override;
+
         /**
          * The components of the lattice when it is built out of more than one
          * component. When there is only one component, it is unused as the
@@ -190,6 +196,16 @@ namespace LatMRG {
          * Builds the basis of the MRG recurrence in case of lacunary indices.
          */
         void buildLaBasis (int d);
+
+        /**
+         * Builds a projection for this lattice on the set in indices in `proj`.
+         * This differs from the original implementation in `IntLattice` because
+         * it does not compute a dual lattice basis. `lattice` has to be
+         * initialized with the right dimension beforehand.
+         * */
+        void buildProjection(
+            LatticeTester::IntLattice<Int, Int, Dbl, Dbl>* lattice,
+            const LatticeTester::Coordinates& proj) override;
 
         /**
          * \name Used for the calculation of a combined MRG.
@@ -478,6 +494,17 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int, typename Dbl>
+    std::string MRGLattice<Int, Dbl>::toString () const
+    {
+      std::ostringstream out;
+      for (int i = 0; i < this->m_order; i++)
+        out << "a_" << i+1 << " = " << m_aCoef[i] << "\n";
+      return out.str ();
+    }
+
+  //===========================================================================
+
+  template<typename Int, typename Dbl>
     void MRGLattice<Int, Dbl>::buildBasis (int d)
     {
       if (m_lacunaryFlag) {
@@ -669,8 +696,39 @@ namespace LatMRG {
       // trace("ESPION_1", 1);
     }
 
-
   //===========================================================================
+
+  template<typename Int, typename Dbl>
+    void MRGLattice<Int, Dbl>::buildProjection (
+        LatticeTester::IntLattice<Int, Int, Dbl, Dbl>* lattice,
+        const LatticeTester::Coordinates & proj)
+    {
+      std::cout << "We are in MRGLattice\n";
+
+      // Ripping the vectors
+      const int dim = this->getDim ();
+      int i = 0;
+      IntMat temp;
+      temp.SetDims(dim, dim);
+      for (auto iter = proj.begin(); iter != proj.end(); ++iter) {
+        temp[i] = this->m_basis[*iter];
+        ++i;
+      }
+
+      // Construction the basis for the projection
+      lattice->setDim (static_cast<int>(proj.size()));
+      LatticeTester::BasisConstruction<Int> constr;
+      constr.LLLConstruction(temp);
+      lattice->getBasis().SetDims(lattice->getDim(), lattice->getDim());
+      for (int i = 0; i<lattice->getDim(); i++){
+        for (int j = 0; j<lattice->getDim(); j++){
+          lattice->getBasis()[i][j] = temp[i][j];
+        }
+      }
+      lattice->setNegativeNorm ();
+    }
+  
+  //============================================================================
 
   template<typename Int, typename Dbl>
     void MRGLattice<Int, Dbl>::incDimLaBasis(int IMax)

@@ -111,9 +111,15 @@ namespace LatMRG {
         void kill();
 
         /**
-         * Reimplement this.
+         * Gets the coefficients of the MRG that spawns the lattice in a string.
          */
         std::string toStringCoef() const;
+
+        /**
+         * Gets all the information on the lattice in a string. This contains
+         * the type of generator and the coefficients.
+         */
+        std::string toString() const override;
 
         /**
          * The modulo of the MWC generator this object represents.
@@ -272,6 +278,20 @@ namespace LatMRG {
 
   //============================================================================
 
+  template<typename Int, typename Dbl>
+    std::string MWCLattice<Int, Dbl>::toString () const
+    {
+      std::ostringstream out;
+      out << "LCG coefficient: ";
+      //out << "[ ";
+      for (int i = 0; i < this->m_order; i++)
+        out << this->m_aCoef[i] << "  ";
+      //out << "]";
+      out << "MWC coefficients: ";
+      for (int i = 0; i <= this->m_MWCorder; i++)
+        out << m_eCoef[i] << "  ";
+      return out.str ();
+    }
 
   //============================================================================
   //The types combinations supported in the library
