@@ -371,7 +371,7 @@ namespace
              }
              */
         } else {
-          fout << " [" << lat->toStringCoef ();
+          fout << " [" << lat->toString ();
         }
         fout << "]\n S_";
         if (1 == config.d)
@@ -422,7 +422,7 @@ namespace
              }
              */
         } else {
-          fout << lat->toStringCoef () << std::endl;
+          fout << lat->toString () << std::endl;
         }
       }
     }

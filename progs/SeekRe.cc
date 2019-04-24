@@ -19,9 +19,16 @@ namespace {
   std::string filem1, filer;
   TestList* bestLattice;
 
+  std::string delim = "\n========================================"
+    "========================================\n\n";
+
   // Data file parameters
   GenType type; // This one is experimental
+  int numProj;
   int minDim, maxDim;
+  std::vector<std::size_t> projDim;
+  Projections* proj;
+
   LatticeTester::NormaType normaType;
   double timeLimit;
   int max_gen;
@@ -185,15 +192,46 @@ namespace {
    * These next function add the tested lattices to the list of the best ones.
    * This only add the lattices that are good enough.
    * */
-
   void printResults() {
-    std::cout << "Number of generators tested: " << num_gen << std::endl;
+    std::cout << "SeekRe: A search program for Random Number Generators\n";
+    std::cout << delim;
+    std::cout << "Bellow are the results of a search for:\n";
+    std::cout << "Generator type: " << toStringGen(type) << "\n";
+    if (type == MRG) {
+      std::cout << "With modulus:   m = " << modulo << " = " << basis << "^"
+        << exponent << (rest>0?"+":"") << (rest!=0?std::to_string(rest):"") << "\n";
+      std::cout << "Of order:       k = " << order << "\n";
+    } else if (type == MWC) {
+    } else if (type == MMRG) {
+    }
+    std::cout << "And " << (period?"full":"any") << " period length\n";
+    std::cout << "The test was:\n";
+    std::cout << "Minimal " << (normaType==LatticeTester::NONE?"":"normalized ")
+      << "shortest" << " non-zero vector length\n";
+    if (normaType != LatticeTester::NONE) {
+      std::cout << "Normalizer used: "
+        << LatticeTester::toStringNorma(normaType) << "\n";
+    }
+    std::cout << "on dimensions and projections:\n";
+    while(!proj->end()) {
+      std::cout << proj->next() << "\n";
+    }
+    std::cout << "list of projections\n";
+    std::cout << delim;
+    std::cout << "Allowed running time: " << timeLimit << "s.\n";
+    std::cout << "Actual CPU time: " << timer.toString() << "\n";
+    std::cout << "Number of generators kept: " << max_gen << "\n";
+    std::cout << "Number of generators tested: " << num_gen << "\n\n";
+    std::cout << "Retained generators (from best to worst):\n";
     auto list = bestLattice->getList();
     for (auto it = list.begin(); it!= list.end(); it++) {
-      std::cout << "Message: " << (*it).getLattice() << "\nMerit: "
-        << (*it).getMerit() << std::endl;
+      std::cout << delim;
+      if (type == MRG) {
+        std::cout << "Coefficients:\n" << (*it).getLattice() << "\n";
+      } else if (type == MWC) {}
+      else if (type == MMRG) {}
+      std::cout << "Merit: " << (*it).getMerit() << "\n";
     }
-    std::cout << "CPU time: " << timer.toString() << std::endl;
   }
 
   /**
@@ -203,29 +241,32 @@ namespace {
     norma = lattice.getNormalizer(normaType, 0, true);
     //Dbl merit = Dbl(1);
     DblVec results;
-    for (int i = minDim; i <= maxDim; i++){
+    while (!proj->end()){
       //std::cout << "i: " << i << std::endl;
       // Building the basis
-      lattice.buildBasis(i);
-      lattice.dualize();
+      IntLattice<Int, Int, Dbl, Dbl> proj_lat(modulo, order, proj->getProj().size(), false);
+      std::cout << "Projection: " << proj->next() << "\n";
+      lattice.buildProjection(&proj_lat, proj->next());
+      int dimension = proj->getProj().size();
       // Reducing the lattice
-      LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lattice);
+      LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(proj_lat);
       red.redBKZ(0.999999, 10, LatticeTester::QUADRUPLE, lattice.getDim());
       //red.redLLLNTL(0.99, LatticeTester::QUADRUPLE, lattice.getDim());
       red.shortestVector(lattice.getNorm());
       // Computing shortest vector length and spectral test
-      NTL::vector<Int> shortest(lattice.getBasis()[0]);
+      NTL::vector<Int> shortest(proj_lat.getBasis()[0]);
       Dbl tmp;
-      LatticeTester::ProdScal<Int>(shortest, shortest, i, tmp);
+      LatticeTester::ProdScal<Int>(shortest, shortest, dimension, tmp);
       //std::cout << "Pre-Normalization: " << NTL::sqrt(tmp) << std::endl;
       // Normalization
       //std::cout << "Bound: " << norma->getBound(i) << std::endl;
-      tmp = NTL::sqrt(tmp)/norma->getBound(i);
+      tmp = NTL::sqrt(tmp)/norma->getBound(dimension);
       if (tmp > 1) tmp = Dbl(1)/tmp;
       //std::cout << "Value: " << tmp << std::endl;
       results.append(tmp);
       //merit = (tmp < merit) ? tmp : merit;
     }
+    proj->resetDim();
 
     delete norma;
     return results;
@@ -234,11 +275,16 @@ namespace {
   // This is the main program loop. This loop searches for the next generator
   // and launches tests on it.
   void testGenerators() {
+    std::cout << "We get there\n";
     if (type == MRG) {
       MRGLattice<Int, Dbl>* mrglat = 0;
       while (!timer.timeOver(timeLimit)) {
         mrglat = nextGenerator(mrglat);
-        Test the_test("mrglattice", test(*mrglat));
+        mrglat->buildBasis(maxDim);
+        /*if (dual)*/ mrglat->dualize();
+        std::cout << "Testing\n";
+        Test the_test(mrglat->toString(), test(*mrglat));
+        std::cout << "I did it\n";
         bestLattice->add(the_test);
         num_gen++;
       }
@@ -268,15 +314,24 @@ namespace {
     int power;
     int ln = 0;
     reader.readGenType(type, ln++, 0);
+    reader.readInt(numProj, ln++, 0);
     reader.readInt(minDim, ln, 0);
     reader.readInt(maxDim, ln++, 1);
+    projDim.push_back((unsigned)(maxDim-1));
+    for (int i = 0; i<numProj-1; i++) {
+      int tmp;
+      reader.readInt(tmp, ln, i);
+      maxDim = tmp > maxDim? tmp : maxDim;
+      projDim.push_back((unsigned)(tmp-1));
+    }
+    ln++;
     reader.readNormaType(normaType, ln++, 0);
     reader.readInt(max_gen, ln++, 0);
     reader.readDouble(timeLimit, ln++, 0);
     if (type == MRG) {
       reader.readNumber3(modulo, basis, exponent, rest, ln++, 0);
       reader.readLong(order, ln++, 0);
-      minDim = minDim<order ? order : minDim;
+      minDim = (minDim<order ? order : minDim);
       maxDim = maxDim>minDim ? maxDim : minDim;
       reader.readBool(period, ln, 0);
       if (period) {
@@ -318,6 +373,7 @@ int main (int argc, char **argv)
   // Dynamically allocated objects
   mrg = new MRGComponent<Int>(modulo, order, decompm1, filem1.c_str(), decompr, filer.c_str());
   bestLattice = new TestList(max_gen);
+  proj = new Projections(numProj, minDim, projDim);
   //else if (type == MWC) bestLattice = new TestList<MWCLattice>(max_gen);
   //else if (type == MMRG) bestLattice = new TestList<MMRGLattice>(max_gen);
   timer.init();
@@ -326,6 +382,7 @@ int main (int argc, char **argv)
   printResults();
   delete bestLattice;
   delete mrg;
+  delete proj;
   //delete mod;
   return 0;
 }

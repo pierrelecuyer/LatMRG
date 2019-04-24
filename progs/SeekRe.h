@@ -179,6 +179,69 @@ namespace LatMRG {
       }
   };
 
+  /*
+   * A more flexible projection class. This class contains all the information
+   * of the projections to test, this includes the dimensions for each type of
+   * projection. 
+   *
+   * This only builds projections with the coordinate 0 because the projections
+   * of a MRG lattice are all equivalent to a projection with 0 as a coordinate
+   * */
+  class Projections {
+    public:
+      Projections(int dimProj, int minDim, std::vector<std::size_t>& projDim){
+        std::cout << "dimProj: " << dimProj;
+        std::cout << "\nminDim: " << minDim << "\n";
+        for (auto it = projDim.begin(); it != projDim.end(); it++)
+          std::cout << *it << " ";
+        std::cout << "\n";
+        m_numDim = dimProj;
+        m_projDim.resize(dimProj);
+        m_minDim = minDim;
+        for (int i = 0; i < dimProj; i++) {
+          m_projDim[i] = projDim[i];
+        }
+        m_currentDim = 1;
+      }
+
+      LatticeTester::Coordinates next() {
+        if (m_curProj.empty()) {
+          for (std::size_t i = 0; i<(unsigned)m_minDim; i++) m_curProj.push_back(i);
+        }
+        return LatticeTester::Coordinates(m_curProj);
+      }
+
+      LatticeTester::Coordinates getProj() {
+        return LatticeTester::Coordinates(m_curProj);
+      }
+
+      /**
+       * Returns true if the current projection is the last one.
+       * */
+      bool end() {
+        if (m_curProj.empty()) return false;
+        return true;
+      }
+
+      void resetDim(int dim = 0) {
+        m_currentDim = dim;
+        m_curProj.clear();
+      }
+
+      int getDim() { return m_currentDim;}
+
+    private:
+      int m_numDim;
+
+      std::vector<std::size_t> m_curProj;
+
+      int m_currentDim;
+
+      int m_minDim;
+
+      std::vector<std::size_t> m_projDim;
+  };
+
 }
 
 #endif
