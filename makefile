@@ -60,16 +60,16 @@ OBJS = $(SRCS:$(SRC_DIR)/%.cc=$(OBJ_DIR)/%.o)
 PROGS_O = $(PROGS_CC:$(PRO_DIR)/%.cc=$(PRO_DIR)/%.o)
 EX_O = $(EX_CC:%.cc=%.o)
 
+LATTEST_DEP = $(wildcard latticetester/progs/*.cc) $(wildcard latticetester/src/*.cc) $(wildcard latticetester/include/latticetester/*.h)
+
 
 # A separator to segment the information printed on screen
 
 SEP = @echo ================================================================================
 
-default: lib progs
+default: progs
 
-all: clean_all lib bin examples doc
-
-bin: lib progs
+all: clean_all progs examples doc
 
 #===============================================================================
 # Building the API
@@ -101,7 +101,7 @@ $(OBJ_DIR)/%.o:$(SRC_DIR)/%.cc $(INC_DIR)/%.h
 #===============================================================================
 # Building the programs of ./progs
 
-progs: $(BIN_DIR)/ progs_objects
+progs: $(PROGS_O)
 	@echo 'LatMRG programs compiled in ./bin'
 	@echo
 
@@ -112,21 +112,21 @@ $(BIN_DIR)/:
 	mkdir -p $(BIN_DIR)
 
 # Builds objects and binaries for every of the programs of LatMRG
-progs_objects: $(PROGS_O) ./progs/SeekMain.o
+#progs_objects: $(PROGS_O)# ./progs/SeekMain.o
 
-./progs/SeekMain.o: ./progs/SeekMain.cc
-	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_LLDD) $(YAFU) -c ./progs/SeekMain.cc -o ./progs/SeekMain.o
-	$(CC) ./progs/SeekMain.o $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
-	  -o $(BIN_DIR)/SeekLLDD 
-	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_ZZDD) $(YAFU) -c ./progs/SeekMain.cc -o ./progs/SeekMain.o
-	$(CC) ./progs/SeekMain.o $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
-	  -o $(BIN_DIR)/SeekZZDD
-	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_ZZRR) $(YAFU) -c ./progs/SeekMain.cc -o ./progs/SeekMain.o
-	$(CC) ./progs/SeekMain.o $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
-	  -o $(BIN_DIR)/SeekZZRR
+#./progs/SeekMain.o: lib ./progs/SeekMain.cc
+#	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_LLDD) $(YAFU) -c ./progs/SeekMain.cc -o ./progs/SeekMain.o
+#	$(CC) ./progs/SeekMain.o $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
+#	  -o $(BIN_DIR)/SeekLLDD 
+#	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_ZZDD) $(YAFU) -c ./progs/SeekMain.cc -o ./progs/SeekMain.o
+#	$(CC) ./progs/SeekMain.o $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
+#	  -o $(BIN_DIR)/SeekZZDD
+#	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_ZZRR) $(YAFU) -c ./progs/SeekMain.cc -o ./progs/SeekMain.o
+#	$(CC) ./progs/SeekMain.o $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
+#	  -o $(BIN_DIR)/SeekZZRR
 
-$(PRO_DIR)/%.o:$(PRO_DIR)/%.cc
-	$(CC) $(CFLAGS) $(INCLUDES) $(YAFU) -c $< -o $@
+$(PRO_DIR)/%.o: lib $(BIN_DIR)/ $(PRO_DIR)/%.cc
+	$(CC) $(CFLAGS) $(INCLUDES) $(YAFU) -c $(PRO_DIR)/$(@:progs/%.o=%).cc -o $@
 	$(CC) $@ $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
 	  -o $(BIN_DIR)/$(@:progs/%.o=%) 
 
@@ -217,7 +217,7 @@ config_latticetester:
 	  cd latticetester;\
 	  ./waf configure $$NTL_PREFIX $$BOOST_PREFIX
 
-latticetester:
+latticetester: $(LATTEST_DEP)
 	$(SEP)
 	@echo 'Building LatticeTester with waf'
 	@echo
@@ -265,6 +265,6 @@ separator:
 #===============================================================================
 # PHONY targets
 
-.PHONY: latticetester $(LIB_DIR)/ $(OBJ_DIR)/ $(BIN_DIR)/ $(OBJ_DIR)/ doc clean\
+.PHONY: $(LIB_DIR)/ $(OBJ_DIR)/ $(BIN_DIR)/ doc clean\
   clean_all examples $(EX_BUILD)/ $(EX_CC) separator config_latticetester\
   $(MK_DAT) mk_ex_head seek_ex_head all_ex
