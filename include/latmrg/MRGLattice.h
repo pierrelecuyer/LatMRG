@@ -527,25 +527,24 @@ namespace LatMRG {
       int dk = d;
       if (dk > this->m_order)
         dk = this->m_order;
+      this->m_basis.SetDims(dk, dk);
+      this->m_dualbasis.SetDims(dk, dk);
+      this->setDim(dk);
 
       int i, j;
       for (i = 0; i < dk; i++) {
-        if (m_ip[i]) {
-          for (j = 0; j < dk; j++) {
-            this->m_basis[i][j] = m_sta[i][j];
-          }
-        } else {
-          for (j = 0; j < dk; j++) {
-            if (i != j)
-              this->m_basis[i][j] = 0;
-            else
-              this->m_basis[i][j] = this->m_modulo;
+        for (j = 0; j < dk; j++) {
+          if (i == j) {
+            this->m_basis[i][j] = Int(1);
+            this->m_dualbasis[i][j] = this->m_modulo;
+          } else {
+            this->m_basis[i][j] = Int(0);
+            this->m_dualbasis[i][j] = Int(0);
           }
         }
       }
 
-      LatticeTester::CalcDual<IntMat>(this->m_basis, this->m_dualbasis, dk, this->m_modulo);
-      this->setDim(dk);
+
       if (d > this->m_order) {
         for (i = this->m_order; i < d; i++)
           incDimBasis ();
@@ -601,21 +600,29 @@ namespace LatMRG {
         this->m_basis[dim-1][i] = 0;
       this->m_basis[dim-1][dim-1] = this->m_modulo;
 
-      for (int i = 0; i < dim-1; i++)
+      for (int i = 0; i < dim-1; i++) {
         this->m_dualbasis[i][dim-1] = 0;
+        this->m_dualbasis[dim-1][i] = -this->m_vSI[0][i];
+      }
       this->m_dualbasis[dim-1][dim-1] = 1;
 
-      for (int j = 0; j < dim-1; j++) {
+      /*
+       * This old version used the dual to compute the next vector in the dual
+       * even when it was not needed. This caused problems because we could not
+       * increase the lattice dimension after performing computations on the
+       * dual because this would not add the correct column to the dual.
+       * */
+      // for (int j = 0; j < dim-1; j++) {
 
-        NTL::clear (this->m_t1);
-        for (int i = 0; i < dim-1; i++) {
-          this->m_t2 = this->m_dualbasis[i][j];
-          this->m_t2 *= this->m_vSI[0][i];
-          this->m_t1 -= this->m_t2;
-        }
-        LatticeTester::Quotient (this->m_t1, this->m_modulo, this->m_t1);
-        this->m_dualbasis[dim-1][j] = this->m_t1;
-      }
+      //   NTL::clear (this->m_t1);
+      //   for (int i = 0; i < dim-1; i++) {
+      //     this->m_t2 = this->m_dualbasis[i][j];
+      //     this->m_t2 *= this->m_vSI[0][i];
+      //     this->m_t1 -= this->m_t2;
+      //   }
+      //   LatticeTester::Quotient (this->m_t1, this->m_modulo, this->m_t1);
+      //   this->m_dualbasis[dim-1][j] = this->m_t1;
+      // }
 
       this->setNegativeNorm();
       this->setDualNegativeNorm();
@@ -710,7 +717,7 @@ namespace LatMRG {
       IntMat temp;
       temp.SetDims(dim, dim);
       for (auto iter = proj.begin(); iter != proj.end(); ++iter) {
-        temp[i] = this->basis[*iter];
+        temp[i] = this->m_basis[*iter];
         ++i;
       }
 
