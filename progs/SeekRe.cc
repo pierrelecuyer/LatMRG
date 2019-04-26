@@ -212,7 +212,8 @@ namespace {
       std::cout << "Normalizer used: "
         << LatticeTester::toStringNorma(normaType) << "\n";
     }
-    std::cout << "on dimensions and projections:\n";
+    std::cout << "On dimensions and projections:\n";
+    proj->resetDim();
     while(!proj->end()) {
       std::cout << proj->next() << "\n";
     }
@@ -233,6 +234,14 @@ namespace {
     }
   }
 
+  // This is abstracted to make it possible to reimplement in the future and
+  // to avoid code duplication
+  void reduce(IntLattice<Int, Int, Dbl, Dbl>& lattice) {
+    LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lattice);
+    red.redBKZ(0.999999, 10, LatticeTester::QUADRUPLE, lattice.getDim());
+    red.shortestVector(lattice.getNorm());
+  }
+
   /**
    * Tests the generator via spectral test.
    * */
@@ -240,41 +249,43 @@ namespace {
     norma = lattice.getNormalizer(normaType, 0, true);
     //Dbl merit = Dbl(1);
     DblVec results(0);
-    int i = minDim;
-    lattice.buildBasis(minDim-1);
-    while (i <= maxDim){
-      //std::cout << "i: " << i << std::endl;
-      // Building the basis
-      //IntLattice<Int, Int, Dbl, Dbl> proj_lat(modulo, order, proj->next().size(), false);
-      //lattice.buildProjection(&proj_lat, proj->getProj());
-      //int dimension = proj->getProj().size();
-      // Reducing the lattice
-      std::cout << "Basis1:\n" << lattice.getBasis() << "\n";
-      lattice.incDim();
-      std::cout << "Basis2:\n" << lattice.getBasis() << "\n";
+    lattice.buildBasis(minDim);
+    for (int i = minDim; i <= maxDim; i++) {
+      // Changing to the dual
       lattice.dualize();
-      LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lattice);
-      red.redBKZ(0.999999, 10, LatticeTester::QUADRUPLE, lattice.getDim());
-      //red.redLLLNTL(0.99, LatticeTester::QUADRUPLE, lattice.getDim());
-      red.shortestVector(lattice.getNorm());
+      reduce(lattice);
       // Computing shortest vector length and spectral test
-      NTL::vector<Int> shortest(lattice.getBasis()[0]);
+      IntVec shortest(lattice.getBasis()[0]);
       Dbl tmp;
       LatticeTester::ProdScal<Int>(shortest, shortest, i, tmp);
-      //std::cout << "Pre-Normalization: " << NTL::sqrt(tmp) << std::endl;
-      // Normalization
-      //std::cout << "Bound: " << norma->getBound(i) << std::endl;
       tmp = NTL::sqrt(tmp)/norma->getBound(i);
       if (tmp > 1) tmp = Dbl(1)/tmp;
-      //std::cout << "Value: " << tmp << std::endl;
       results.append(tmp);
-      //merit = (tmp < merit) ? tmp : merit;
-      i++;
+      // Changing back to the primal and increasing the dimension
       lattice.dualize();
+      lattice.incDim();
     }
-    proj->resetDim();
-    lattice.buildBasis(minDim-1);
-    std::cout << "final Basis:\n" << lattice.getBasis() << "\n";
+
+    // Testing projections if there are any
+    for (int i = 2; i <= numProj; i++) {
+      proj->resetDim(i);
+      lattice.buildBasis(projDim[i-1]+1);
+      lattice.dualize();
+      while(!proj->end(1)) {
+        // Building the projection
+        IntLattice<Int, Int, Dbl, Dbl> proj_lat(modulo, order, i, false);
+        lattice.buildProjection(&proj_lat, proj->next());
+        // Reduction
+        reduce(proj_lat);
+        // Figure of merit
+        IntVec shortest(proj_lat.getBasis()[0]);
+        Dbl tmp;
+        LatticeTester::ProdScal<Int>(shortest, shortest, i, tmp);
+        tmp = NTL::sqrt(tmp)/norma->getBound(i);
+        if (tmp > 1) tmp = Dbl(1)/tmp;
+        results.append(tmp);
+      }
+    }
 
     delete norma;
     return results;
@@ -332,8 +343,6 @@ namespace {
       // If the projection is requested only on indices smaller or equal to the
       // dimension, we learn nothing, this is corrected
       tmp = (unsigned)tmp>projDim.size()+1?tmp:projDim.size()+1;
-      // maxDim is used to build one lattice for all tests
-      maxDim = tmp > maxDim? tmp : maxDim;
       projDim.push_back((unsigned)(tmp-1));
     }
     ln++;
@@ -343,10 +352,14 @@ namespace {
     if (type == MRG) {
       reader.readNumber3(modulo, basis, exponent, rest, ln++, 0);
       reader.readLong(order, ln++, 0);
-      // Making sure that minDim is big enough to provide usefull tests
-      minDim = (minDim>order ? minDim : order+1);
-      maxDim = maxDim>minDim ? maxDim : minDim;
       reader.readBool(period, ln, 0);
+      // Making sure that minDim is big enough to provide usefull tests (if
+      // full period is required) this changes other dimensions accordingly
+      minDim = (!period||minDim>order) ? minDim : (order+1);
+      maxDim = maxDim>minDim ? maxDim : minDim;
+      for (unsigned int i = 0; i < projDim.size(); i++) {
+        projDim[i] = (projDim[i]<(unsigned)(minDim-1))?(unsigned)(minDim-1):projDim[i];
+      }
       if (period) {
         // Using default parameters for period or not
         bool def;
@@ -393,6 +406,8 @@ int main (int argc, char **argv)
   // Launching the tests
   testGenerators();
   printResults();
+  std::cout << "Done\n";
+  getchar();
   delete proj;
   delete bestLattice;
   delete mrg;
