@@ -710,15 +710,16 @@ namespace LatMRG {
         LatticeTester::IntLattice<Int, Int, Dbl, Dbl>* lattice,
         const LatticeTester::Coordinates & proj)
     {
-
       // Ripping the vectors
-      const int dim = this->getDim ();
-      int i = 0;
-      IntMat temp;
-      temp.SetDims(dim, dim);
+      IntMat temp(proj.size(), proj.size());
+      int i = 0, j = 0;
       for (auto iter = proj.begin(); iter != proj.end(); ++iter) {
-        temp[i] = this->m_basis[*iter];
-        ++i;
+        for (auto iter2 = proj.begin(); iter2!= proj.end(); iter2++){
+          temp[i][j] = this->m_basis[*iter][*iter2];
+          j++;
+        }
+        i++;
+        j = 0;
       }
 
       // Construction the basis for the projection
@@ -729,7 +730,6 @@ namespace LatMRG {
           lattice->getBasis()[i][j] = temp[j][i];
         }
       }
-      lattice->setNegativeNorm ();
     }
   
   //============================================================================
