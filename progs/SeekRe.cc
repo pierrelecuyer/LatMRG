@@ -274,12 +274,18 @@ namespace {
       while(!proj->end(1)) {
         // Building the projection
         IntLattice<Int, Int, Dbl, Dbl> proj_lat(modulo, order, i, false);
-        lattice.buildProjection(&proj_lat, proj->next());
+        LatticeTester::Coordinates iter(proj->next());
+        lattice.buildProjection(&proj_lat, iter);
         // Reduction
         reduce(proj_lat);
         // Figure of merit
         IntVec shortest(proj_lat.getBasis()[0]);
         Dbl tmp;
+        int j = 0;
+        for (auto it = iter.begin(); it != iter.end(); ++it) {
+          if (*it < (unsigned)order) j++;
+        }
+        norma->setLogDensity(Dbl(-j*log(modulo)));
         LatticeTester::ProdScal<Int>(shortest, shortest, i, tmp);
         tmp = NTL::sqrt(tmp)/norma->getBound(i);
         if (tmp > 1) tmp = Dbl(1)/tmp;
@@ -406,8 +412,6 @@ int main (int argc, char **argv)
   // Launching the tests
   testGenerators();
   printResults();
-  std::cout << "Done\n";
-  getchar();
   delete proj;
   delete bestLattice;
   delete mrg;
