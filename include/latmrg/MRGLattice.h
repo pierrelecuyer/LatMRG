@@ -711,23 +711,24 @@ namespace LatMRG {
         const LatticeTester::Coordinates & proj)
     {
       // Ripping the vectors
-      IntMat temp(proj.size(), proj.size());
-      int i = 0, j = 0;
+      IntMat temp(this->m_dim, proj.size());
+      IntMat temp2(proj.size(), proj.size());
+      int i = 0;
       for (auto iter = proj.begin(); iter != proj.end(); ++iter) {
-        for (auto iter2 = proj.begin(); iter2!= proj.end(); iter2++){
-          temp[i][j] = this->m_basis[*iter][*iter2];
-          j++;
+        for (int j = 0; j<this->m_dim; j++){
+          temp[j][i] = this->m_basis[j][*iter];
         }
         i++;
-        j = 0;
       }
 
       // Construction the basis for the projection
       LatticeTester::BasisConstruction<Int> constr;
       constr.LLLConstruction(temp);
+      constr.DualConstruction(temp, temp2, this->m_modulo);
       for (int i = 0; i<lattice->getDim(); i++){
         for (int j = 0; j<lattice->getDim(); j++){
-          lattice->getBasis()[i][j] = temp[j][i];
+          lattice->getBasis()[i][j] = temp[i][j];
+          lattice->getDualBasis()[i][j] = temp2[i][j];
         }
       }
     }
