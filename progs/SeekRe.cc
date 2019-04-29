@@ -2,7 +2,7 @@
  * This program rewrites parts of SeekMain to be easier to understand and use
  * better design. For now this is the file in which I implement MWC gen searches.
  * */
-#include "SeekRe.h"
+#include "Exec.h"
 
 using namespace LatMRG;
 using namespace LatticeTester::Random;
@@ -11,8 +11,6 @@ namespace {
   // Program global objects
   Chrono timer; // program timer
   LatticeTester::Normalizer<Dbl>* norma; // if a normalizer is used
-  //IntLattice<Int, Int, Dbl, Dbl>* bestLattice = NULL; // the best lattice
-  //Dbl bestMerit = Dbl(0); // best merit found
   long num_gen = 0;
   // For period tests
   DecompType decompm1 = DECOMP, decompr = DECOMP;
@@ -270,22 +268,19 @@ namespace {
     for (int i = 2; i <= numProj; i++) {
       proj->resetDim(i);
       lattice.buildBasis(projDim[i-1]+1);
-      lattice.dualize();
       while(!proj->end(1)) {
         // Building the projection
-        IntLattice<Int, Int, Dbl, Dbl> proj_lat(modulo, order, i, false);
+        IntLattice<Int, Int, Dbl, Dbl> proj_lat(modulo, order, i, true);
         LatticeTester::Coordinates iter(proj->next());
         lattice.buildProjection(&proj_lat, iter);
+        norma->setLogDensity(Dbl(-i*log(modulo)
+              +log(abs(NTL::determinant(proj_lat.getBasis())))));
+        proj_lat.dualize();
         // Reduction
         reduce(proj_lat);
         // Figure of merit
         IntVec shortest(proj_lat.getBasis()[0]);
         Dbl tmp;
-        int j = 0;
-        for (auto it = iter.begin(); it != iter.end(); ++it) {
-          if (*it < (unsigned)order) j++;
-        }
-        norma->setLogDensity(Dbl(-j*log(modulo)));
         LatticeTester::ProdScal<Int>(shortest, shortest, i, tmp);
         tmp = NTL::sqrt(tmp)/norma->getBound(i);
         if (tmp > 1) tmp = Dbl(1)/tmp;
