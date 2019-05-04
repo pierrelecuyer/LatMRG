@@ -10,7 +10,7 @@ using namespace LatticeTester::Random;
 namespace {
   // Program global objects
   Chrono timer; // program timer
-  LatticeTester::Normalizer<Dbl>* norma; // if a normalizer is used
+  Normalizer<Dbl>* norma; // if a normalizer is used
   long num_gen = 0;
   // For period tests
   DecompType decompm1 = DECOMP, decompr = DECOMP;
@@ -22,12 +22,17 @@ namespace {
 
   // Data file parameters
   GenType type; // This one is experimental
+  // figure of merit
+  LatticeTester::NormaType normaType = LatticeTester::NONE;
+  LatticeTester::CriterionType criterion;
+  LatticeTester::PreReductionType reduction;
+  bool use_dual, best;
+  // Projections
   int numProj;
   int minDim, maxDim;
   std::vector<std::size_t> projDim;
   Projections* proj;
 
-  LatticeTester::NormaType normaType;
   double timeLimit;
   int max_gen;
 
@@ -193,7 +198,7 @@ namespace {
   void printResults() {
     std::cout << "SeekRe: A search program for Random Number Generators\n";
     std::cout << delim;
-    std::cout << "Bellow are the results of a search for:\n";
+    std::cout << "Bellow are the results of a search for random number generators:\n";
     std::cout << "Generator type: " << toStringGen(type) << "\n";
     if (type == MRG) {
       std::cout << "With modulus:   m = " << modulo << " = " << basis << "^"
@@ -203,9 +208,14 @@ namespace {
     } else if (type == MMRG) {
     }
     std::cout << "And " << (period?"full":"any") << " period length\n";
-    std::cout << "The test was:\n";
-    std::cout << "Minimal " << (normaType==LatticeTester::NONE?"":"normalized ")
-      << "shortest" << " non-zero vector length\n";
+    std::cout << "The test was:\n" << (best?"Best":"Worst") << " generators "
+      "ranked by ";
+    if(criterion == LatticeTester::SPECTRAL) std::cout << "minimal " 
+      << (normaType==LatticeTester::NONE?"inverse":"normalized")
+      << " shortest non-zero vector length (Spectral test)\n";
+    else if (criterion == LatticeTester::LENGTH) std::cout << "minimal"
+      << " shortest non-zero vector length\n";
+    else if (criterion == LatticeTester::BEYER) std::cout << "their Beyer quotient\n";
     if (normaType != LatticeTester::NONE) {
       std::cout << "Normalizer used: "
         << LatticeTester::toStringNorma(normaType) << "\n";
@@ -232,14 +242,6 @@ namespace {
     }
   }
 
-  // This is abstracted to make it possible to reimplement in the future and
-  // to avoid code duplication
-  void reduce(IntLattice<Int, Int, Dbl, Dbl>& lattice) {
-    LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lattice);
-    red.redBKZ(0.999999, 10, LatticeTester::QUADRUPLE, lattice.getDim());
-    red.shortestVector(lattice.getNorm());
-  }
-
   /**
    * Tests the generator via spectral test.
    * */
@@ -250,17 +252,28 @@ namespace {
     lattice.buildBasis(minDim);
     for (int i = minDim; i <= maxDim; i++) {
       // Changing to the dual
-      lattice.dualize();
-      reduce(lattice);
-      // Computing shortest vector length and spectral test
-      IntVec shortest(lattice.getBasis()[0]);
+      if (use_dual) lattice.dualize();
+      // Reducing the lattice
+      if (reduction == LatticeTester::FULL)
+        reduceFull(lattice);
+      else if (reduction == LatticeTester::LLL)
+        reduceLLL(lattice);
+      else if (reduction == LatticeTester::BKZ)
+        reduceBKZ(lattice);
+      else if (reduction == LatticeTester::NOPRERED)
+        reduceMink(lattice);
+      // Computing the merit of the lattice
       Dbl tmp;
-      LatticeTester::ProdScal<Int>(shortest, shortest, i, tmp);
-      tmp = NTL::sqrt(tmp)/norma->getBound(i);
-      if (tmp > 1) tmp = Dbl(1)/tmp;
+      if (criterion == LatticeTester::LENGTH) tmp = meritL(lattice, norma);
+      if (criterion == LatticeTester::SPECTRAL) tmp = meritS(lattice, norma);
+      if (criterion == LatticeTester::BEYER) tmp = meritB(lattice, norma);
       results.append(tmp);
+      if (tmp < bestLattice->getMerit()) {
+        results[0] = 1-best;
+        return results;
+      }
       // Changing back to the primal and increasing the dimension
-      lattice.dualize();
+      if (use_dual) lattice.dualize();
       lattice.incDim();
     }
 
@@ -275,16 +288,26 @@ namespace {
         lattice.buildProjection(&proj_lat, iter);
         norma->setLogDensity(Dbl(-i*log(modulo)
               +log(abs(NTL::determinant(proj_lat.getBasis())))));
-        proj_lat.dualize();
+        if (use_dual) proj_lat.dualize();
         // Reduction
-        reduce(proj_lat);
+        if (reduction == LatticeTester::FULL)
+          reduceFull(proj_lat);
+        else if (reduction == LatticeTester::LLL)
+          reduceLLL(proj_lat);
+        else if (reduction == LatticeTester::BKZ)
+          reduceBKZ(proj_lat);
+        else if (reduction == LatticeTester::NOPRERED)
+          reduceMink(proj_lat);
         // Figure of merit
-        IntVec shortest(proj_lat.getBasis()[0]);
         Dbl tmp;
-        LatticeTester::ProdScal<Int>(shortest, shortest, i, tmp);
-        tmp = NTL::sqrt(tmp)/norma->getBound(i);
-        if (tmp > 1) tmp = Dbl(1)/tmp;
+        if (criterion == LatticeTester::LENGTH) tmp = meritL(proj_lat, norma);
+        if (criterion == LatticeTester::SPECTRAL) tmp = meritS(proj_lat, norma);
+        if (criterion == LatticeTester::BEYER) tmp = meritB(proj_lat, norma);
         results.append(tmp);
+        if (tmp < bestLattice->getMerit()) {
+          results[0] = 1-best;
+          return results;
+        }
       }
     }
 
@@ -332,6 +355,19 @@ namespace {
     int ln = 0;
     // Reading global problem parameters
     reader.readGenType(type, ln++, 0);
+    reader.readCriterionType(criterion, ln, 0);
+    if (criterion == LatticeTester::SPECTRAL) {
+      reader.readBool(use_dual, ln, 1);
+      reader.readPreRed(reduction, ln, 2);
+      reader.readNormaType(normaType, ln++, 3);
+    } else if (criterion == LatticeTester::LENGTH) {
+      reader.readBool(use_dual, ln, 1);
+      reader.readPreRed(reduction, ln++, 2);
+    } else if (criterion == LatticeTester::BEYER) {
+      reduction = LatticeTester::NOPRERED;
+      ln++;
+    }
+    reader.readBool(best, ln++, 0);
     // This code corrects the projections so that it always builds a valid
     // projection specification
     reader.readInt(numProj, ln++, 0);
@@ -347,7 +383,6 @@ namespace {
       projDim.push_back((unsigned)(tmp-1));
     }
     ln++;
-    reader.readNormaType(normaType, ln++, 0);
     reader.readInt(max_gen, ln++, 0);
     reader.readDouble(timeLimit, ln++, 0);
     if (type == MRG) {
@@ -399,7 +434,7 @@ int main (int argc, char **argv)
   readConfigFile(argc, argv);
   // Dynamically allocated objects
   mrg = new MRGComponent<Int>(modulo, order, decompm1, filem1.c_str(), decompr, filer.c_str());
-  bestLattice = new TestList(max_gen);
+  bestLattice = new TestList(max_gen, best);
   proj = new Projections(numProj, minDim, projDim);
   //else if (type == MWC) bestLattice = new TestList<MWCLattice>(max_gen);
   //else if (type == MMRG) bestLattice = new TestList<MMRGLattice>(max_gen);

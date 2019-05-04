@@ -1,19 +1,22 @@
 # General stuff
-Generator type
-Computation
-Dimensions
-Normalization
-Time limit
-# Generator related
-## MRG
+GenType
+Criterion (if SPECTRAL [bool]use_dual ReducType NormaType)
+          (if LENGTH   [bool]use_dual ReducType)
+[bool]best # Keep good generators if true
+# Conditions on projections: maxDim > minDim, maxDim > projDim[i] > minDim
+[int]numProj # Number of projection dimension (1 is sequential, not 1 dimension)
+[int]minDim [int]maxDim # min coordinate to include in a projection. max coordinate to include in a projection
+[int]projDim[0] ... projDim[numProj-1] # max coordinate to use in projections of dimension i
+[int]max_gen # Number of generators to keep
+[double]timeLimit # Time for the program in seconds
+# IF GenType == MRG
 Modulo
-order
-period length
-parameter constraints
-## MWC
-## combo
-## MMRG
-Modulo
-dimension
-period length
-parameter constraints
+Order
+[bool]period (if period [bool]def (if !def decompm1 filem1 decompr filer)) # Full period or not? Default parameters or not
+# ENDIF
+# IF GenType == MWC
+# ENDIF
+# IF GenType == MMRG
+# ENDIF
+# IF GenType == COMBO
+# ENDIF

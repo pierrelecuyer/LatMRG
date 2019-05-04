@@ -250,7 +250,7 @@ int main (int argc, char **argv) {
   filem1 = "./tempm1" + std::to_string(rand());
   filer = "./tempr" + std::to_string(rand());
   readConfigFile(argc, argv);
-  bestLattice = new TestList(num_gen);
+  bestLattice = new TestList(num_gen, true);
   proj = new Projections(numProj, minDim, projDim);
   timer.init();
   // Testing the generator(s)

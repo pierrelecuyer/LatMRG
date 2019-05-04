@@ -12,6 +12,7 @@
 
 #include "latticetester/NormaBestLat.h"
 #include "latticetester/Random.h"
+#include "latticetester/Const.h"
 
 #include "latmrg/MWCLattice.h"
 #include "latmrg/MMRGLattice.h"
@@ -26,6 +27,7 @@ typedef NTL::matrix<Int> IntMat;
 typedef NTL::vector<Dbl> DblVec;
 
 using LatticeTester::IntLattice;
+using LatticeTester::Normalizer;
 
 namespace LatMRG {
 
@@ -128,8 +130,10 @@ namespace LatMRG {
       /**
        * Creates a `TestList` that will hold at most `maxLength` `Test`.
        * */
-      TestList(unsigned long maxLength){
+      TestList(unsigned long maxLength, bool best){
         m_max = maxLength;
+        m_merit = Dbl(0);
+        m_best = best;
       }
 
       /**
@@ -137,7 +141,7 @@ namespace LatMRG {
        * higher merit.
        * */
       void add(Test& test) {
-        if ((m_tests.size() >= m_max) && (test > m_tests.back())) {
+        if ((m_tests.size() >= m_max) && !(m_best ^ (test > m_tests.back()))) {
           m_tests.pop_back();
         } else if (m_tests.size() >= m_max) return;
         posInsert(test);
@@ -148,6 +152,10 @@ namespace LatMRG {
       }
 
       std::list<Test> getList() {return m_tests;}
+
+      Dbl getMerit(){
+        return m_merit;
+      }
 
     private:
 
@@ -162,6 +170,16 @@ namespace LatMRG {
       unsigned long m_max;
 
       /**
+       * The minimum merit stored in this object.
+       * */
+      Dbl m_merit;
+
+      /**
+       * Indicates wether or not this object keeps best or worst lattices.
+       * */
+      bool m_best;
+
+      /**
        * Finds the right position in the vector and inserts the new test.
        * */
       void posInsert(Test& test){
@@ -170,9 +188,18 @@ namespace LatMRG {
           return;
         }
         for (auto rit = m_tests.crbegin(); rit != m_tests.crend(); rit++) {
-          if (test < *rit) {
-            m_tests.insert(rit.base(), test);
-            return;
+          if (m_best) {
+            if ((test < *rit)) {
+              m_tests.insert(rit.base(), test);
+              if (rit == m_tests.crbegin() && m_tests.size() == m_max) m_merit = test.getMerit();
+              return;
+            }
+          } else {
+            if ((test > *rit)) {
+              m_tests.insert(rit.base(), test);
+              if (rit == m_tests.crbegin() && m_tests.size() == m_max) m_merit = test.getMerit();
+              return;
+            }
           }
         }
         m_tests.insert(m_tests.cbegin(), test);
@@ -327,6 +354,55 @@ namespace LatMRG {
       int getDim() { return m_curProj.size();}
 
   };
+
+  /**
+   * Computes a figure of merit depending on the specified figure of merit.
+   * */
+  Dbl meritL(IntLattice<Int, Int, Dbl, Dbl>& lat,
+      Normalizer<Dbl>* norma) {
+    IntVec shortest(lat.getBasis()[0]);
+    Dbl tmp;
+    LatticeTester::ProdScal<Int>(shortest, shortest, shortest.length(), tmp);
+    return NTL::sqrt(tmp);
+  }
+
+  Dbl meritS(IntLattice<Int, Int, Dbl, Dbl>& lat,
+      Normalizer<Dbl>* norma) {
+    IntVec shortest(lat.getBasis()[0]);
+    Dbl tmp;
+    LatticeTester::ProdScal<Int>(shortest, shortest, shortest.length(), tmp);
+    tmp = NTL::sqrt(tmp)/norma->getBound(shortest.length());
+    if (tmp > 1) tmp = Dbl(1)/tmp;
+    return tmp;
+  }
+
+  Dbl meritB(IntLattice<Int, Int, Dbl, Dbl>& lat,
+      Normalizer<Dbl>* norma) {
+    return 0;
+  }
+  
+  void reduceFull(IntLattice<Int, Int, Dbl, Dbl>& lat) {
+    LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lat);
+    red.redBKZ(0.999999, 10, LatticeTester::QUADRUPLE, lat.getDim());
+    red.shortestVector(lat.getNorm());
+  }
+
+  void reduceBKZ(IntLattice<Int, Int, Dbl, Dbl>& lat) {
+    LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lat);
+    red.redBKZ(0.999999, 10, LatticeTester::QUADRUPLE, lat.getDim());
+  }
+
+  void reduceLLL(IntLattice<Int, Int, Dbl, Dbl>& lat) {
+    LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lat);
+    red.redLLLNTL(0.999999, LatticeTester::QUADRUPLE, lat.getDim());
+  }
+
+  // This actually calls Minkowski reduction
+  void reduceMink(IntLattice<Int, Int, Dbl, Dbl>& lat) {
+    LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lat);
+    red.redBKZ(0.999999, 10, LatticeTester::QUADRUPLE, lat.getDim());
+    red.reductMinkowski(lat.getDim());
+  }
 
 }
 
