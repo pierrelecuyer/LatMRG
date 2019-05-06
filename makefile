@@ -69,51 +69,64 @@ LATTEST_DEP = $(wildcard latticetester/progs/*.cc) \
 
 SEP = @echo ================================================================================
 
-default: progs
+default: $(PROGS_O)
+	@echo
+	@echo 'LatMRG programs compiled in ./bin'
 
 all: clean_all progs examples doc
 
 #===============================================================================
 # Building the library
 
-library: $(OBJS)
-	cp latticetester/build/src/liblatticetester.a $(LIB_DIR)
+$(LIB_DIR)/liblatmrg.a: $(OBJS) | message_lib $(LIB_DIR)
 	rm -f $(LIB_DIR)/liblatmrg.a
 	ar rcs $(LIB_DIR)/liblatmrg.a $(OBJS)
-	@echo 'LatMRG library archive created in ./lib/liblatmrg.a'
+	@echo
+	@echo 'LatMRG library archive created: ./lib/liblatmrg.a'
 	@echo
 
-$(LIB_DIR):
+message_lib:
 	$(SEP)
-	@echo 'Building the LatMRG library'
+	@echo 'Building library(ies)'
 	@echo
+	@make -q $(LIB_DIR)/liblatticetester.a && echo Everything up to date! || true
+
+
+$(LIB_DIR):
 	mkdir -p $(LIB_DIR)
+	@echo
 
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 	mkdir -p $(OBJ_DIR)/latmrg
 	mkdir -p $(OBJ_DIR)/latmrg/mrgtypes
 	mkdir -p $(OBJ_DIR)/latmrg-high
+	@echo
 
-$(OBJS): | $(LIB_DIR) $(OBJ_DIR)
-
-$(OBJ_DIR)/%.o:$(SRC_DIR)/%.cc $(INC_DIR)/%.h
+$(OBJ_DIR)/%.o:$(SRC_DIR)/%.cc $(INC_DIR)/%.h | message_obj $(OBJ_DIR)
 	$(CC) $(CFLAGS) $(INCLUDES) $(YAFU) -c $< -o $@
+
+message_obj:
+	$(SEP)
+	@echo 'Compiling the LatMRG library'
+	@echo
 
 #===============================================================================
 # Building the programs of ./progs
 
-progs: $(PROGS_O)
-	@echo 'LatMRG programs compiled in ./bin'
-	@echo
+$(PRO_DIR)/%.o: $(LIB_DIR)/liblatticetester.a $(LIB_DIR)/liblatmrg.a\
+  $(PRO_DIR)/%.cc | message_progs $(BIN_DIR)
+	$(CC) $(CFLAGS) $(INCLUDES) $(YAFU) -c $(PRO_DIR)/$(@:progs/%.o=%).cc -o $@
+	$(CC) $@ $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
+	  -o $(BIN_DIR)/$(@:progs/%.o=%) 
 
-$(PROGS_O): | $(BIN_DIR)
+message_progs:
 	$(SEP)
 	@echo 'Building the LatMRG executables'
-	@echo
 
 $(BIN_DIR):
 	mkdir -p $(BIN_DIR)
+	@echo
 
 # Builds objects and binaries for every of the programs of LatMRG
 #progs_objects: $(PROGS_O)# ./progs/SeekMain.o
@@ -128,11 +141,6 @@ $(BIN_DIR):
 #	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_ZZRR) $(YAFU) -c ./progs/SeekMain.cc -o ./progs/SeekMain.o
 #	$(CC) ./progs/SeekMain.o $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
 #	  -o $(BIN_DIR)/SeekZZRR
-
-$(PRO_DIR)/%.o: library $(BIN_DIR)/ $(PRO_DIR)/%.cc
-	$(CC) $(CFLAGS) $(INCLUDES) $(YAFU) -c $(PRO_DIR)/$(@:progs/%.o=%).cc -o $@
-	$(CC) $@ $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
-	  -o $(BIN_DIR)/$(@:progs/%.o=%) 
 
 #===============================================================================
 # Building the documentation
@@ -221,12 +229,14 @@ config_latticetester:
 	  cd latticetester;\
 	  ./waf configure $$NTL_PREFIX $$BOOST_PREFIX
 
-lattest:
+$(LIB_DIR)/liblatticetester.a:$(LATTEST_DEP) | message_lib $(LIB_DIR)
 	$(SEP)
-	@echo 'Building LatticeTester with waf'
+	@echo 'Building/Updating LatticeTester with waf'
 	@echo
 	cd latticetester; ./waf build
-	@echo 'LatticeTester build finished'
+	@echo 'LatticeTester build/update finished'
+	@echo
+	cp latticetester/build/src/liblatticetester.a $(LIB_DIR)
 	@echo
 
 clean_lattice:
