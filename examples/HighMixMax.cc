@@ -74,7 +74,7 @@ void doTests(MScal m, int k, MScal d, MScal c) {
    latconfig.norm = L2NORM;
    latconfig.dualF = true;
    latconfig.invertF = false;
-   latconfig.latType = FULL;
+   latconfig.latType = LatMRG::FULL;
    latconfig.lacunary = true;
    latconfig.lacunaryType = ARBITRARYINDICES;
    latconfig.numberLacIndices = 7;

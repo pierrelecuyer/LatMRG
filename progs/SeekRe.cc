@@ -382,7 +382,7 @@ namespace {
       tmp = (unsigned)tmp>projDim.size()+1?tmp:projDim.size()+1;
       projDim.push_back((unsigned)(tmp-1));
     }
-    ln++;
+    if (numProj > 1) ln++;
     reader.readInt(max_gen, ln++, 0);
     reader.readDouble(timeLimit, ln++, 0);
     if (type == MRG) {
