@@ -60,7 +60,9 @@ OBJS = $(SRCS:$(SRC_DIR)/%.cc=$(OBJ_DIR)/%.o)
 PROGS_O = $(PROGS_CC:$(PRO_DIR)/%.cc=$(PRO_DIR)/%.o)
 EX_O = $(EX_CC:%.cc=%.o)
 
-LATTEST_DEP = $(wildcard latticetester/progs/*.cc) $(wildcard latticetester/src/*.cc) $(wildcard latticetester/include/latticetester/*.h)
+LATTEST_DEP = $(wildcard latticetester/progs/*.cc) \
+	      $(wildcard latticetester/src/*.cc) \
+	      $(wildcard latticetester/include/latticetester/*.h)
 
 
 # A separator to segment the information printed on screen
@@ -72,28 +74,28 @@ default: progs
 all: clean_all progs examples doc
 
 #===============================================================================
-# Building the API
+# Building the library
 
-lib: latticetester $(LIB_DIR)/ lib_objects
+library: $(OBJS)
 	cp latticetester/build/src/liblatticetester.a $(LIB_DIR)
 	rm -f $(LIB_DIR)/liblatmrg.a
 	ar rcs $(LIB_DIR)/liblatmrg.a $(OBJS)
 	@echo 'LatMRG library archive created in ./lib/liblatmrg.a'
 	@echo
 
-$(LIB_DIR)/:
+$(LIB_DIR):
 	$(SEP)
 	@echo 'Building the LatMRG library'
 	@echo
 	mkdir -p $(LIB_DIR)
 
-$(OBJ_DIR)/:
+$(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 	mkdir -p $(OBJ_DIR)/latmrg
 	mkdir -p $(OBJ_DIR)/latmrg/mrgtypes
 	mkdir -p $(OBJ_DIR)/latmrg-high
 
-lib_objects: $(OBJ_DIR)/ $(OBJS)
+$(OBJS): | $(LIB_DIR) $(OBJ_DIR)
 
 $(OBJ_DIR)/%.o:$(SRC_DIR)/%.cc $(INC_DIR)/%.h
 	$(CC) $(CFLAGS) $(INCLUDES) $(YAFU) -c $< -o $@
@@ -105,10 +107,12 @@ progs: $(PROGS_O)
 	@echo 'LatMRG programs compiled in ./bin'
 	@echo
 
-$(BIN_DIR)/:
+$(PROGS_O): | $(BIN_DIR)
 	$(SEP)
 	@echo 'Building the LatMRG executables'
 	@echo
+
+$(BIN_DIR):
 	mkdir -p $(BIN_DIR)
 
 # Builds objects and binaries for every of the programs of LatMRG
@@ -125,7 +129,7 @@ $(BIN_DIR)/:
 #	$(CC) ./progs/SeekMain.o $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
 #	  -o $(BIN_DIR)/SeekZZRR
 
-$(PRO_DIR)/%.o: lib $(BIN_DIR)/ $(PRO_DIR)/%.cc
+$(PRO_DIR)/%.o: library $(BIN_DIR)/ $(PRO_DIR)/%.cc
 	$(CC) $(CFLAGS) $(INCLUDES) $(YAFU) -c $(PRO_DIR)/$(@:progs/%.o=%).cc -o $@
 	$(CC) $@ $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
 	  -o $(BIN_DIR)/$(@:progs/%.o=%) 
@@ -217,7 +221,7 @@ config_latticetester:
 	  cd latticetester;\
 	  ./waf configure $$NTL_PREFIX $$BOOST_PREFIX
 
-latticetester: $(LATTEST_DEP)
+lattest:
 	$(SEP)
 	@echo 'Building LatticeTester with waf'
 	@echo
@@ -265,6 +269,5 @@ separator:
 #===============================================================================
 # PHONY targets
 
-.PHONY: $(LIB_DIR)/ $(OBJ_DIR)/ $(BIN_DIR)/ doc clean\
-  clean_all examples $(EX_BUILD)/ $(EX_CC) separator config_latticetester\
-  $(MK_DAT) mk_ex_head seek_ex_head all_ex
+.PHONY: doc clean clean_all examples $(EX_BUILD)/ $(EX_CC) separator\
+  config_latticetester $(MK_DAT) mk_ex_head seek_ex_head all_ex
