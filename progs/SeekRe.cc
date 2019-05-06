@@ -196,7 +196,7 @@ namespace {
    * This only add the lattices that are good enough.
    * */
   void printResults() {
-    std::cout << "SeekRe: A search program for Random Number Generators\n";
+    std::cout << "\nSeekRe: A search program for Random Number Generators\n";
     std::cout << delim;
     std::cout << "Bellow are the results of a search for random number generators:\n";
     std::cout << "Generator type: " << toStringGen(type) << "\n";
@@ -315,9 +315,25 @@ namespace {
     return results;
   }
 
+  int print_progress(int old) {
+    int per_80 = timer.val(Chrono::SEC)/timeLimit * 80;
+    if (per_80 > 80) per_80 = 80;
+    if (per_80 < 0) per_80 = 0;
+    // We do not print for no reason as this slows the program a lot.
+    if (per_80 <= old) return old;
+    std::cout << "[";
+    for (int i = 0; i < per_80; i++) std::cout << "#";
+    for (int i = per_80; i < 80; i++) std::cout << " ";
+    std::cout << "] ";
+    std::cout << std::setw(3) << int(per_80/80.0*100) << "%\r" << std::flush;
+    return per_80;
+  }
+
   // This is the main program loop. This loop searches for the next generator
   // and launches tests on it.
   void testGenerators() {
+    std::cout << "Program progress:\n";
+    int old = print_progress(-1);
     if (type == MRG) {
       MRGLattice<Int, Dbl>* mrglat = 0;
       while (!timer.timeOver(timeLimit)) {
@@ -327,6 +343,7 @@ namespace {
         Test the_test(mrglat->toString(), test(*mrglat));
         bestLattice->add(the_test);
         num_gen++;
+        old = print_progress(old);
       }
     } else if (type == MWC) {
       MWCLattice<Int, Dbl>* mwclat = 0;
