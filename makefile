@@ -73,7 +73,7 @@ default: $(PROGS_O)
 	@echo
 	@echo 'LatMRG programs compiled in ./bin'
 
-all: clean_all progs examples doc
+all: clean_all default examples doc
 
 #===============================================================================
 # Building the library
