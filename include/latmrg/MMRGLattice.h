@@ -91,7 +91,7 @@ namespace LatMRG {
         /**
          * Builds the basis in dimension \f$d\f$.
          */
-        virtual void buildBasis (int d);
+        void buildBasis (int d) override;
 
         /**
          * Increments the dimension of the basis by 1 by calling either
