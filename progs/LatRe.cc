@@ -1,13 +1,15 @@
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <iostream>
-
-#include "latticetester/Types.h"
+/**
+ * This is a program that tests random number generators specified in a file
+ *
+ * Todo
+ * - Test period
+ * - Read from generator file
+ * - input file format correction
+ * */
 
 #include "Exec.h"
 
 using namespace LatMRG;
-using LatticeTester::IntLattice;
 
 namespace {
   // Program global objects
@@ -23,12 +25,17 @@ namespace {
 
   // Data file read parameters
   GenType type;
+  // Type of figure of merit
+  LatticeTester::NormaType normaType = LatticeTester::NONE;
+  LatticeTester::CriterionType criterion;
+  LatticeTester::PreReductionType reduction;
+  bool use_dual;
+  // Projection
   int numProj;
   int minDim, maxDim;
   std::vector<std::size_t> projDim;
   Projections* proj;
 
-  LatticeTester::NormaType normaType;
   double timeLimit;
   int num_gen;
 
