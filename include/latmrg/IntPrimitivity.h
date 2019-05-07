@@ -189,5 +189,9 @@ namespace LatMRG {
         a = -V[k];
       return isPrimitiveElement (a);
     }
+
+  extern template class IntPrimitivity<std::int64_t>;
+  extern template class IntPrimitivity<NTL::ZZ>;
+
 }
 #endif

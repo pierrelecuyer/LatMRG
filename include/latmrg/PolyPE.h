@@ -476,5 +476,8 @@ namespace LatMRG {
       }
     }
 
+  extern template class PolyPE<std::int64_t>;
+  extern template class PolyPE<NTL::ZZ>;
+
 }
 #endif
