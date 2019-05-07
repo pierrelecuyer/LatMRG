@@ -172,7 +172,8 @@ namespace {
           A[i][j] = randInt(Int(0), modulo);
         }
       }
-    } while ((NTL::determinant(A) == 0)/* || (period && !mrg->maxPeriod(A))*/);
+      std::cout << "A: " << A << "\n";
+    } while ((NTL::determinant(A) == 0) || (period && !mrg->maxPeriod(A)));
     if (lattice) delete lattice;
     return new MMRGLattice<Int, Dbl>(modulo, A, maxDim, order);
   }
@@ -324,8 +325,6 @@ namespace {
       MRGLattice<Int, Dbl>* mrglat = 0;
       while (!timer.timeOver(timeLimit)) {
         mrglat = nextGenerator(mrglat);
-        //mrglat->buildBasis(maxDim);
-        /*if (dual)*/ //mrglat->dualize();
         Test the_test(mrglat->toString(), test(*mrglat));
         bestLattice->add(the_test);
         num_gen++;
@@ -420,6 +419,26 @@ namespace {
     } else if (type == MMRG) {
       reader.readNumber3(modulo, basis, exponent, rest, ln++, 0);
       reader.readLong(order, ln++, 0);
+      reader.readBool(period, ln, 0);
+      // Making sure that minDim is big enough to provide usefull tests (if
+      // full period is required) this changes other dimensions accordingly
+      minDim = (!period||minDim>order) ? minDim : (order+1);
+      maxDim = maxDim>minDim ? maxDim : minDim;
+      for (unsigned int i = 0; i < projDim.size(); i++) {
+        projDim[i] = (projDim[i]<(unsigned)(minDim-1))?(unsigned)(minDim-1):projDim[i];
+      }
+      if (period) {
+        // Using default parameters for period or not
+        bool def;
+        reader.readBool(def, ln, 1);
+        if (!def) {
+          reader.readDecompType(decompm1, ln, 2);
+          reader.readString(filem1, ln, 3);
+          reader.readDecompType(decompr, ln, 4);
+          reader.readString(filer, ln, 5);
+        }
+      }
+      ln++;
     }
     return true;
   }
