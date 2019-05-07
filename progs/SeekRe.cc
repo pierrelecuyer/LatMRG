@@ -21,8 +21,8 @@ namespace {
     "========================================\n\n";
 
   // Data file parameters
-  GenType type; // This one is experimental
-  // figure of merit
+  GenType type;
+  // Type of figure of merit
   LatticeTester::NormaType normaType = LatticeTester::NONE;
   LatticeTester::CriterionType criterion;
   LatticeTester::PreReductionType reduction;
@@ -130,12 +130,11 @@ namespace {
     IntVec A;
     A.SetLength(order+1);
     NTL::clear(A);
-    for (long i = 0; i<order; i++) A[i+1] = randInt(Int(0), modulo);
     // The program will not run the maxPeriod function if it is not wanted with
     // this condition
-    while ((A[order] == 0) || (period && !mrg->maxPeriod(A))) {
+    do {
       for (long i = 0; i<order; i++) A[i+1] = randInt(Int(0), modulo);
-    }
+    } while ((A[order] == 0) || (period && !mrg->maxPeriod(A)));
     if (lattice) delete lattice;
     return new MRGLattice<Int, Dbl>(modulo, A, maxDim, order, FULL);
   }
@@ -167,26 +166,13 @@ namespace {
     IntMat A;
     A.SetDims(order, order);
     NTL::clear(A);
-    while (NTL::determinant(A) == 0) {
+    do {
       for (long i = 0; i<order; i++) {
         for (long j = 0; j<order; j++) {
-          Int a(0);
-          long exp = exponent-1;
-          // 63 bits at a time because NTL converts from SIGNED long
-          while(exp > 0) {
-            if (exp < 63) {
-              a << exp;
-              a += LatticeTester::RandBits(exp);
-              exp -= exp;
-            }
-            a << 63;
-            a += LatticeTester::RandBits(63);
-            exp -= 63;
-          }
-          A[i][j] = a;
+          A[i][j] = randInt(Int(0), modulo);
         }
       }
-    }
+    } while ((NTL::determinant(A) == 0)/* || (period && !mrg->maxPeriod(A))*/);
     if (lattice) delete lattice;
     return new MMRGLattice<Int, Dbl>(modulo, A, maxDim, order);
   }
@@ -352,6 +338,7 @@ namespace {
         Test the_test("mwclattice", test(*mwclat));
         bestLattice->add(the_test);
         num_gen++;
+        old = print_progress(old);
       }
     } else if (type == MMRG) {
       MMRGLattice<Int, Dbl>* mmrglat = 0;
@@ -360,6 +347,7 @@ namespace {
         Test the_test("mmrglattice", test(*mmrglat));
         bestLattice->add(the_test);
         num_gen++;
+        old = print_progress(old);
       }
     }
   }
