@@ -6,6 +6,9 @@
 #include "latmrg/PolyPE.h"
 #include "latmrg/IntFactorization.h"
 #include "latmrg/Modulus.h"
+#include "latmrg/IntPrimitivity.h"
+
+#include <NTL/mat_poly_ZZ.h>
 
 #include <string>
 
@@ -107,6 +110,12 @@ namespace LatMRG {
         bool maxPeriod (const IntVec & A);
 
         /**
+         * Returns `true` if coefficients in \f$A\f$ give a MMRG with maximal
+         * period; returns `false` otherwise.
+         */
+        bool maxPeriod (const IntMat & A);
+
+        /**
          * Returns `true` if coefficients \f$A\f$ give a MRG with maximal
          * period; returns `false` otherwise. This method supposes that
          * condition 1 is `true` and tests only conditions 2 and 3. See method
@@ -121,10 +130,16 @@ namespace LatMRG {
         IntFactorization<Int> ifm1;
 
         /**
+         * The prime factor decomposition of \f$m-1\f$.
+         */
+        IntFactorization<NTL::ZZ> ifm2;
+
+        /**
          * The prime factor decomposition of \f$r=(m^k-1)/(m-1)\f$, where
          * \f$k\f$ is the order of the recurrence.
          */
         IntFactorization<Int> ifr;
+        IntFactorization<NTL::ZZ> ifr2;
 
         /**
          * The modulus \f$m\f$ of the recurrence.
@@ -310,22 +325,30 @@ namespace LatMRG {
       Int m1;
       m1 = getM() - 1;
       ifm1.setNumber (m1);
+      ifm2.setNumber (NTL::ZZ(m1));
 
-      if (decom1 == DECOMP_READ)
+      if (decom1 == DECOMP_READ) {
         ifm1.read (filem1);
-      else if (decom1 == DECOMP)
+      } else if (decom1 == DECOMP) {
         ifm1.factorize();
-      else if (decom1 == DECOMP_WRITE) {
+      } else if (decom1 == DECOMP_WRITE) {
         ifm1.factorize();
         std::ofstream fout(filem1);
-
         fout << ifm1.toString();
       }
+      {
+        std::ofstream fout("dummy");
+        fout << ifm1.toString();
+      }
+      ifm2.read("dummy");
+      remove("dummy");
       ifm1.calcInvFactors();
+      ifm2.calcInvFactors();
 
       Int r;
       r = (NTL::power(m0, k) - 1) / (m0 - 1);
       ifr.setNumber(r);
+      ifr2.setNumber(NTL::ZZ(r));
 
       if (decor == DECOMP_READ)
         ifr.read (filer);
@@ -338,7 +361,15 @@ namespace LatMRG {
       } else if (decor == DECOMP_PRIME)
         ifr.setStatus (LatticeTester::PRIME);
 
+      {
+        std::ofstream fout("dummy");
+        fout << ifr.toString();
+      }
+      ifr2.read("dummy");
+      remove("dummy");
+
       ifr.calcInvFactors();
+      ifr2.calcInvFactors();
     }
 
 
@@ -406,6 +437,29 @@ namespace LatMRG {
       PolyPE<Int> pol;
       IntPrimitivity<Int> privfm(ifm1, getM(), 1);
       return pol.isPrimitive(privfm, ifr);
+    }
+
+
+  //===========================================================================
+
+  template<typename Int>
+    bool MRGComponent<Int>::maxPeriod (const IntMat & a0)
+    {
+      PolyPE<NTL::ZZ>::setM(NTL::ZZ(getM()));
+      NTL::ZZX poly;
+      NTL::matrix<NTL::ZZ> mat(k, k);
+      for (int i = 0; i<k; i++) {
+        for (int j = 0; j<k; j++) {
+          mat[i][j] = NTL::ZZ(a0[i][j]);
+        }
+      }
+      NTL::CharPoly(poly, mat);
+      NTL::vector<NTL::ZZ> vec(NTL::VectorCopy(poly, k+1));
+      std::cout << "Poly: " << poly << "\nVect: " << vec << "\n";
+      PolyPE<NTL::ZZ>::setF(vec);
+      PolyPE<NTL::ZZ> pol;
+      IntPrimitivity<NTL::ZZ> privfm(ifm2, NTL::ZZ(getM()), 1);
+      return pol.isPrimitive(privfm, ifr2);
     }
 
 
