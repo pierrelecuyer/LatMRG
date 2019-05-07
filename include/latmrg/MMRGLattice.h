@@ -476,8 +476,8 @@ namespace LatMRG {
       this->m_dualbasis.resize(dimension, dimension);
       LatticeTester::CalcDual<IntMat>(this->m_basis, this->m_dualbasis, dimension, this->m_modulo);
 
-      if (!this->checkDuality())
-        LatticeTester::MyExit (1, "BUG in MMRGLattice::buildNonLacunaryBasis");
+      // if (!this->checkDuality())
+      //   LatticeTester::MyExit (1, "BUG in MMRGLattice::buildNonLacunaryBasis");
     }
 
   //===========================================================================
@@ -596,8 +596,8 @@ namespace LatMRG {
       for (int i = 1; i < dimension; i++)
         incDim ();
 
-      if (!this->checkDuality())
-        LatticeTester::MyExit (1, "BUG in MMRGLattice::buildNonLacunaryBasis");
+      // if (!this->checkDuality())
+      //   LatticeTester::MyExit (1, "BUG in MMRGLattice::buildNonLacunaryBasis");
 
     }
 
@@ -685,8 +685,8 @@ namespace LatMRG {
       this->setNegativeNorm();
       this->setDualNegativeNorm();
 
-      if (!this->checkDuality())
-        LatticeTester::MyExit (1, "BUG in MMRGLattice::incrementDimBasis");
+      // if (!this->checkDuality())
+      //   LatticeTester::MyExit (1, "BUG in MMRGLattice::incrementDimBasis");
 
     }
 
