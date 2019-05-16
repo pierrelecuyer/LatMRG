@@ -449,8 +449,9 @@ namespace LatMRG {
       a0 = -rep (ConstTerm (getF ()));
       if ((getK () & 1) == 0)
         a0 = -a0;
-      if (!fm.isPrimitiveElement (a0))
+      if (!fm.isPrimitiveElement (a0)) {
         return false;
+      }
       return isPrimitive (fr);
     }
 

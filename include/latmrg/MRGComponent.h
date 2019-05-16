@@ -455,7 +455,6 @@ namespace LatMRG {
       }
       NTL::CharPoly(poly, mat);
       NTL::vector<NTL::ZZ> vec(NTL::VectorCopy(poly, k+1));
-      std::cout << "Poly: " << poly << "\nVect: " << vec << "\n";
       PolyPE<NTL::ZZ>::setF(vec);
       PolyPE<NTL::ZZ> pol;
       IntPrimitivity<NTL::ZZ> privfm(ifm2, NTL::ZZ(getM()), 1);
