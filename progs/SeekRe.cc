@@ -4,6 +4,9 @@
  * */
 #include "Exec.h"
 
+// Number of generators to generate before testing time in nextGenerator
+#define DELAY 1000
+
 using namespace LatMRG;
 using namespace LatticeTester::Random;
 
@@ -130,10 +133,16 @@ namespace {
     IntVec A;
     A.SetLength(order+1);
     NTL::clear(A);
+    int delay = 0;
     // The program will not run the maxPeriod function if it is not wanted with
     // this condition
     do {
+      if (delay >= DELAY) {
+        if (timer.timeOver(timeLimit)) return NULL;
+        else delay = 0;
+      }
       for (long i = 0; i<order; i++) A[i+1] = randInt(Int(0), modulo);
+      delay++;
     } while ((A[order] == 0) || (period && !mrg->maxPeriod(A)));
     if (lattice) delete lattice;
     return new MRGLattice<Int, Dbl>(modulo, A, maxDim, order, FULL);
@@ -166,14 +175,25 @@ namespace {
     IntMat A;
     A.SetDims(order, order);
     NTL::clear(A);
+    int delay = 0;
     do {
-      for (long i = 0; i<order; i++) {
-        for (long j = 0; j<order; j++) {
-          A[i][j] = randInt(Int(0), modulo);
-        }
+      if (delay >= DELAY) {
+        if (timer.timeOver(timeLimit)) return NULL;
+        else delay = 0;
       }
-      std::cout << "A: " << A << "\n";
+      for (long i = 0; i<order-1; i++) {
+        A[i][i+1] = Int(1);
+      }
+      for (long i = 0; i<order; i++) {
+        A[order-1][i] = randInt(Int(0), modulo);
+      }
+      delay++;
     } while ((NTL::determinant(A) == 0) || (period && !mrg->maxPeriod(A)));
+    // Correcting the matrix to a full matrix
+    for (int i = 0; i<order; i++) A *= A;
+    for (int i = 0; i<order; i++)
+      for (int j = 0; j<order; j++) 
+        A[i][j] = A[i][j]%modulo;
     if (lattice) delete lattice;
     return new MMRGLattice<Int, Dbl>(modulo, A, maxDim, order);
   }
@@ -224,7 +244,9 @@ namespace {
       if (type == MRG) {
         std::cout << "Coefficients:\n" << (*it).getLattice() << "\n";
       } else if (type == MWC) {}
-      else if (type == MMRG) {}
+      else if (type == MMRG) {
+        std::cout << "Matrix:\n" << (*it).getLattice() << "\n";
+      }
       std::cout << "Merit: " << (*it).getMerit() << "\n";
     }
   }
@@ -312,7 +334,7 @@ namespace {
     for (int i = 0; i < per_80; i++) std::cout << "#";
     for (int i = per_80; i < 80; i++) std::cout << " ";
     std::cout << "] ";
-    std::cout << std::setw(3) << int(per_80/80.0*100) << "%\r" << std::flush;
+    std::cout << std::setw(2) << int(per_80/80.0*100) << " %\r" << std::flush;
     return per_80;
   }
 
@@ -325,6 +347,7 @@ namespace {
       MRGLattice<Int, Dbl>* mrglat = 0;
       while (!timer.timeOver(timeLimit)) {
         mrglat = nextGenerator(mrglat);
+        if (mrglat == NULL) continue;
         Test the_test(mrglat->toString(), test(*mrglat));
         bestLattice->add(the_test);
         num_gen++;
@@ -334,6 +357,7 @@ namespace {
       MWCLattice<Int, Dbl>* mwclat = 0;
       while (!timer.timeOver(timeLimit)) {
         mwclat = nextGenerator(mwclat);
+        if (mwclat == NULL) continue;
         Test the_test("mwclattice", test(*mwclat));
         bestLattice->add(the_test);
         num_gen++;
@@ -343,7 +367,8 @@ namespace {
       MMRGLattice<Int, Dbl>* mmrglat = 0;
       while (!timer.timeOver(timeLimit)) {
         mmrglat = nextGenerator(mmrglat);
-        Test the_test("mmrglattice", test(*mmrglat));
+        if (mmrglat == NULL) continue;
+        Test the_test(mmrglat->toStringGeneratorMatrix(), test(*mmrglat));
         bestLattice->add(the_test);
         num_gen++;
         old = print_progress(old);
