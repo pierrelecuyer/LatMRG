@@ -4,8 +4,7 @@
  * \todo The file still contains the old background, but this should be rethought
  * and redone from the ground up. This should probably be stored in a pdf file
  * shipped with LatMRG.
- * */
-
+ *
  * \page intro Background and overview
  *
  *   LatMRG is a software system implemented as a library of classes written
@@ -1064,3 +1063,4 @@
  * first perform all the "screening" computations (involving many generators)
  * using standard type <tt>double</tt>, and then recompute (verify) with the
  * large floating-point numbers <tt>RR</tt> only for the retained generators.
+ * */
