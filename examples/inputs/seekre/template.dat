@@ -10,8 +10,9 @@ Criterion (if SPECTRAL [bool]use_dual ReducType NormaType)
 [int]max_gen # Number of generators to keep
 [double]timeLimit # Time for the program in seconds
 # IF GenType == MRG
-Modulo
-Order
+[int]Modulo
+[int]Order
+SearchMethod CoeffInfo # CoeffInfo depends on SearchMethod
 [bool]period (if period [bool]def (if !def decompm1 filem1 decompr filer)) # Full period or not? Default parameters or not
 # ENDIF
 # IF GenType == MWC

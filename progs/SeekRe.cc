@@ -41,6 +41,7 @@ namespace {
 
   // MRG specific parameters
   MRGComponent<Int>* mrg;
+  int* coeff = NULL;
 
   // MWC Specific parameters
   Int b; // modulo of MWC recurence
@@ -52,6 +53,7 @@ namespace {
   std::int64_t basis;
   std::int64_t exponent;
   std::int64_t rest;
+  std::string construction;
   bool period; // Period is full if this is true
 
   /**
@@ -141,11 +143,60 @@ namespace {
         if (timer.timeOver(timeLimit)) return NULL;
         else delay = 0;
       }
-      for (long i = 0; i<order; i++) A[i+1] = randInt(Int(0), modulo);
+      for (long i = 0; i<order; i++) A[i+1] = coeff[i] * randInt(Int(0), modulo);
       delay++;
     } while ((A[order] == 0) || (period && !mrg->maxPeriod(A)));
     if (lattice) delete lattice;
     return new MRGLattice<Int, Dbl>(modulo, A, maxDim, order, FULL);
+  }
+
+  MRGLattice<Int, Dbl>* nextGeneratorPow2(MRGLattice<Int, Dbl>* lattice) {
+    // Setting up two vectors. MRGComponent and MRGLattice do not use the same
+    // vector format
+    IntVec A;
+    A.SetLength(order+1);
+    NTL::clear(A);
+    int coefficients[2*order];
+    int sign;
+    int delay = 0;
+    // The program will not run the maxPeriod function if it is not wanted with
+    // this condition
+    do {
+      if (delay >= DELAY) {
+        if (timer.timeOver(timeLimit)) return NULL;
+        else delay = 0;
+      }
+      for (long i = 0; i<order; i++) {
+        if (coeff[2*i] < 0) {
+          // This is a placeholder value for a zero coefficient
+          coefficients[2*i] = coefficients[2*i+1] = 2004012;
+          A[i+1] = 0;
+          continue;
+        }
+        coefficients[2*i] = randInt(0, coeff[2*i]);
+        sign = randInt(0,1);
+        {
+          Int tmp;
+          NTL::power2(tmp, coefficients[2*i]);
+          A[i+1] = Int(sign?1:-1) * tmp;
+        }
+        coefficients[2*i] ^= sign<<30;
+        if (!(coeff[2*i+1] < 0)) {
+          coefficients[2*i+1] = randInt(0, coeff[2*i+1]);
+          sign = randInt(0,1);
+          Int tmp;
+          NTL::power2(tmp, coefficients[2*i+1]);
+          A[i+1] += Int(sign?1:-1) * tmp;
+          coefficients[2*i+1] ^= (sign<<30);
+        }
+        else coefficients[2*i+1] = 2004012;
+      }
+      delay++;
+    } while ((A[order] == 0) || (period && !mrg->maxPeriod(A)));
+    if (lattice) delete lattice;
+    MRGLattice<Int, Dbl>* lat = new MRGLattice<Int, Dbl>(modulo, A, maxDim, order, FULL);
+    lat->setPower2(coefficients);
+    return lat;
   }
 
   MWCLattice<Int, Dbl>* nextGenerator(MWCLattice<Int, Dbl>* lattice) {
@@ -346,7 +397,11 @@ namespace {
     if (type == MRG) {
       MRGLattice<Int, Dbl>* mrglat = 0;
       while (!timer.timeOver(timeLimit)) {
-        mrglat = nextGenerator(mrglat);
+        //std::cout << "1"<<std::endl;
+        if (construction == "POW2") mrglat = nextGeneratorPow2(mrglat);
+        else if (construction == "RANDOM") mrglat = nextGenerator(mrglat);
+        //std::cout << "2" << std::endl;
+        if (construction == "POW2") mrglat = nextGeneratorPow2(mrglat);
         if (mrglat == NULL) continue;
         Test the_test(mrglat->toString(), test(*mrglat));
         bestLattice->add(the_test);
@@ -417,6 +472,21 @@ namespace {
     if (type == MRG) {
       reader.readNumber3(modulo, basis, exponent, rest, ln++, 0);
       reader.readLong(order, ln++, 0);
+      // Reading the construction method
+      reader.readString(construction, ln, 0);
+      if (construction == "RANDOM") {
+        coeff = new int[order];
+        for (unsigned int i = 1; i < order; i++) reader.readInt(coeff[i-1], ln, i);
+        coeff[order-1] = 1;
+        ln++;
+      } else if (construction == "POW2") {
+        coeff = new int[2 * order];
+        for (unsigned int i = 1; i < 2*order-1; i++)
+          reader.readInt(coeff[i-1], ln, i);
+        coeff[2*order-1] = exponent-1;
+        coeff[2*order-2] = exponent-1;
+        ln++;
+      }
       reader.readBool(period, ln, 0);
       // Making sure that minDim is big enough to provide usefull tests (if
       // full period is required) this changes other dimensions accordingly
@@ -494,5 +564,6 @@ int main (int argc, char **argv)
   delete proj;
   delete bestLattice;
   delete mrg;
+  if (coeff) delete[] coeff;
   return 0;
 }

@@ -147,6 +147,11 @@ namespace LatMRG {
          */
         std::vector<MRGComponent<Int> *> comp;
 
+        /**
+         * Sets `m_power2` to true and sets `m_pow2_exp to `coeffs`.
+         * */
+        void setPower2(int* coeffs);
+
       protected:
 
         /**
@@ -268,6 +273,19 @@ namespace LatMRG {
          * identically 0.
          */
         bool *m_ip;
+
+      private:
+        /**
+         * Indicates this generator is built using coefficients that are power
+         * of 2 combinations.
+         * */
+        bool m_power2;
+
+        /**
+         * The powers of 2 used if this generator has power of 2 coefficients.
+         * */
+        int* m_pow2_exp;
+
     }; // End class declaration
 
   //===========================================================================
@@ -355,7 +373,7 @@ namespace LatMRG {
       this->m_dim = lat.m_dim;
       this->copyBasis(lat);
       this->m_order = lat.m_order;
-      m_ip = lat.m_ip;
+      this->m_ip = lat.m_ip;
       //m_shift = lat.m_shift;
       return *this;
       //MyExit (1, " MRGLattice::operator= n'est pas terminé   " );
@@ -374,7 +392,7 @@ namespace LatMRG {
   {
     m_latType = lat;
     m_lacunaryFlag = false;
-    m_ip = new bool[1];
+    m_ip = 0;
     init();
 
     for (int i = 0; i < this->m_order; i++)
@@ -391,7 +409,7 @@ namespace LatMRG {
   {
     m_latType = lat;
     m_lacunaryFlag = false;
-    m_ip = new bool[1];
+    m_ip = 0;
     init();
     m_aCoef[0] = a;
   }
@@ -417,6 +435,8 @@ namespace LatMRG {
   template<typename Int, typename Dbl>
     void MRGLattice<Int, Dbl>::init()
     {
+      m_power2 = false;
+      m_pow2_exp = NULL;
       kill();
       LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::init();
       m_xi.SetLength(this->m_order);
@@ -457,6 +477,7 @@ namespace LatMRG {
       m_aCoef.kill();
       m_sta.kill();
       this->m_wSI.kill();
+      if (this->m_power2) delete[] this->m_pow2_exp;
     }
 
   //===========================================================================
@@ -497,8 +518,19 @@ namespace LatMRG {
     std::string MRGLattice<Int, Dbl>::toString () const
     {
       std::ostringstream out;
-      for (int i = 0; i < this->m_order; i++)
-        out << "a_" << i+1 << " = " << m_aCoef[i] << "\n";
+      for (int i = 0; i < this->m_order; i++) {
+        out << "a_" << i+1 << " = " << m_aCoef[i];
+        if(m_power2) {
+          out << " = ";
+          if (m_pow2_exp[2*i] == 2004012) out << 0;
+          else out << (m_pow2_exp[2*i]>>30?" ":"-") << 2 << "^" 
+            << (m_pow2_exp[2*i] & ((1<<30)-1));
+          if (m_pow2_exp[2*i+1] == 2004012) out << " + " << 0;
+          else out << (m_pow2_exp[2*i+1]>>30?" + ":" - ") << 2 << "^"
+            << (m_pow2_exp[2*i+1] & ((1<<30)-1));
+        }
+        out << "\n";
+      }
       return out.str ();
     }
 
@@ -1056,6 +1088,14 @@ namespace LatMRG {
          }
          }
          */
+    }
+  template<typename Int, typename Dbl>
+    void MRGLattice<Int, Dbl>::setPower2(int* coeffs) {
+      this->m_power2 = true;
+      this->m_pow2_exp = new int[2*this->m_order];
+      for (int i = 0; i < this->m_order*2; i++) {
+        this->m_pow2_exp[i] = coeffs[i];
+      }
     }
 
   extern template class MRGLattice<std::int64_t, double>;
