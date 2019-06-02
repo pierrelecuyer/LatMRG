@@ -6,7 +6,7 @@ Criterion (if SPECTRAL [bool]use_dual ReducType NormaType)
 # Conditions on projections: maxDim > minDim, maxDim > projDim[i] > minDim
 [int]numProj # Number of projection dimension (1 is sequential, not 1 dimension)
 [int]minDim [int]maxDim # min coordinate to include in a projection. max coordinate to include in a projection
-[int]projDim[0] ... projDim[numProj-1] # max coordinate to use in projections of dimension i
+(if numProj > 1 [int]projDim[0] ... projDim[numProj-1]) # max coordinate to use in projections of dimension i
 [int]max_gen # Number of generators to keep
 [double]timeLimit # Time for the program in seconds
 # IF GenType == MRG

@@ -1,0 +1,11 @@
+MRG
+SPECTRAL true FULL BESTLAT
+true
+1
+1 35
+50
+3600
+2 61 -1
+5
+POW2 60 60 -1 -1 60 60 -1 -1
+true true
