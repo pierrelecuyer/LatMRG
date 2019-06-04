@@ -1,14 +1,12 @@
 #!/bin/sh
-./bin/SeekRe examples/inputs/seekre/pow2/pow2_31_3_3.dat > 31_3_3.res &
+./bin/SeekRe examples/inputs/seekre/pow2/pow2_31_31_3.dat > 31_31_3.res &
 sleep 600
-./bin/SeekRe examples/inputs/seekre/pow2/pow2_31_4_4.dat > 31_4_4.res &
+./bin/SeekRe examples/inputs/seekre/pow2/pow2_31_41_4.dat > 31_41_4.res &
 sleep 600
-./bin/SeekRe examples/inputs/seekre/pow2/pow2_31_5_5.dat > 31_5_5.res &
+./bin/SeekRe examples/inputs/seekre/pow2/pow2_31_51_5.dat > 31_51_5.res &
 sleep 600
-./bin/SeekRe examples/inputs/seekre/pow2/pow2_31_5_6.dat > 31_5_6.res &
+./bin/SeekRe examples/inputs/seekre/pow2/pow2_61_31_3.dat > 61_31_3.res &
 sleep 600
-./bin/SeekRe examples/inputs/seekre/pow2/pow2_31_6_6.dat > 31_6_6.res &
+./bin/SeekRe examples/inputs/seekre/pow2/pow2_61_41_4.dat > 61_41_4.res &
 sleep 600
-./bin/SeekRe examples/inputs/seekre/pow2/pow2_31_6_7.dat > 31_6_7.res &
-sleep 600
-./bin/SeekRe examples/inputs/seekre/pow2/pow2_31_full.dat > 31_full.res &
+./bin/SeekRe examples/inputs/seekre/pow2/pow2_61_51_5.dat > 61_51_5.res &
