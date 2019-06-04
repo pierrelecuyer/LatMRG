@@ -1,4 +1,4 @@
-# LatMRG
+# [LatMRG](https://savamarc.github.io/LatMRG)
 
 *A software package to test and search for new linear congruential random number
 generators*
