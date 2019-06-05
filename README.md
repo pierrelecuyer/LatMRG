@@ -1,24 +1,24 @@
 # [LatMRG](https://savamarc.github.io/LatMRG)
 
-*A software package to test and search for new linear congruential random number
-generators*
-
 ## About this software
 
-The documentation of this software is segmented in multiple locations that each
-contain different information:
-- This page that contains a list of features and installation instructions.
-  Beware, since Github cannot render mathematical equations, you need to be
-  a bit familiar with the subject to read it.
-- A more comprehensive description of the software, both in terms of number of
-  features listed and explanation of the concepts.
-- A tutorial containing examples using both the executables and the library.
-- The API documentation for the library.
+**LatMRG** is a sofware packaged developped in the Simulation and Optimisation
+laboratory at the Département d'informatique et de recherche opérationnelle at
+Université de Montréal. It is intended as the most up to date and feature
+complete tool to search and test **Multiple Recursive** and similar **Random 
+Number Generators**. There is a large variety of such generators:
+- Linear Congruential Generators (LCG)
+- Multiple Recursive Generators (MRG)
+- Combined Multiple Recursive Generators
+- Add-with-Carry (AWC) and Subtract-with-Burrow (SWB) Generators
+- Multiply with Carry (MWC) Generators
+- Matrix Multiple Recursive Generators (MMRG)
+The goal of this software is to provide reliable theoretical tests of uniformity
+for these generators, as well as tools to search for good and bad ones with
+regards to these tests.
 
 *LatMRG* is a collection of executables and a library available freely to
-research and test linear congruential random number generators. The goal of this
-software is to provide reliable theoretical tests to the uniformity of the
-large family of linear congruential random number generators. For short, in the
+research the aforementioned random number generators. For short, in the
 documentation of this library, linear congruential random number generators
 might simply be called random number generators and even RNG. **Theoretical
 tests are not an alternative to statistical testing** but rather a complement,
@@ -40,10 +40,28 @@ types of RNG: simple and multiple recursive congruential generators, combined
 recursive generators, add-with-carry and subtract-with-burrow,
 multiply-with-carry and matrix congruential generators.
 
+The documentation of this software is segmented in multiple locations that each
+contain different information:
+- This page that contains a list of features and installation instructions.
+  Beware, since Github cannot render mathematical equations, you need to be
+  a bit familiar with the subject to read it.
+- A more comprehensive description of the software, both in terms of number of
+  features listed and explanation of the concepts.
+- A tutorial containing examples using both the executables and the library.
+- The API documentation for the library.
+
 This software aims at both
 - Providing extensive functionnality through executables
 - Providing easy and ready to use and interface with representations of RNGs to
   expand the software and build 
+
+## A Word on Multiple Recursive Random Number Generators
+
+Although most of today's generator use faster scrambling schemes without
+detectable errors in statistical tests, linear generators still are relevant in
+Monte Carlo simulations. This is because the points they output have a lattice
+structure which can be studied to verify if the generator is suitable for a
+specific usage.
 
 ## Getting it to work
 
