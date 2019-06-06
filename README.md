@@ -1,6 +1,4 @@
-# [LatMRG](https://savamarc.github.io/LatMRG)
-
-## About this software
+# About LatMRG
 
 **LatMRG** is a sofware packaged developped in the Simulation and Optimisation
 laboratory at the Département d'informatique et de recherche opérationnelle at
@@ -18,7 +16,7 @@ The goal of this software is to provide reliable theoretical tests of uniformity
 for these generators, as well as tools to search for good and bad ones with
 regards to these tests.
 
-*LatMRG* is a collection of executables and a library available freely to
+LatMRG is a collection of executables and a library available freely to
 research the aforementioned random number generators. For short, in the
 documentation of this library, linear congruential random number generators
 might simply be called random number generators, RNG or even MRG. The linearity
@@ -63,7 +61,7 @@ starting point to perform such tests.
 ### Use appropriate RNGs
 
 There are a plethora of pseudo-random engines described on the web, and even more
-implementations of such engines proposed. Examples include:
+implementations of such engines. Examples include:
 - [PCG](http://www.pcg-random.org/)
 - [Vigna's take](http://xoshiro.di.unimi.it/) on xorshift generators
 - [SplitMix](http://dx.doi.org/10.1145/2714064.2660195) generators available in
@@ -81,41 +79,55 @@ use case.
 
 ## Getting it to work
 
-*LatMRG* is a command line utility that is built and tested to work on Linux
-only. This software should also work without much issues on macOS, but we do not
-provide instructions for building on something else than Linux. Any user getting
-the library to run on Windows or macOS would be welcome to provide us with his
+LatMRG tested to work on Linux only. It should also work without much hasle in
+macOS. Since this program is a command line utility, Windows users will probably
+be able to use it smoothly once the new
+[terminal](https://github.com/microsoft/terminal) launches. Any user getting
+the library to run on Windows or macOS is welcome to provide us with his
 or her process so that it can be added to this guide.
 
 ### Dependencies
 
 LatMRG currently depends on
 * [LatticeTester](https://github.com/umontreal-simul/latcommon): a utility library
-upon which *LatMRG* builds. It currently is necessary to have this library in the
-repository to compile *LatMRG*.
-* [NTL](http://www.shoup.net/ntl/index.html): *LatMRG* heavily (and shamelesly)
+developped in our laboratory upon which LatMRG builds. This library is bundled
+in the repository and automatically compiled with LatMRG.
+* [NTL](http://www.shoup.net/ntl/index.html): LatticeTester heavily (and shamelesly)
 uses the **Number Theory Library** developped by Victor Shoup. Make sure this is
-installed with the NTL_THREADS=off option. This has to be in a standard path
-as of now because *LatMRG* does not detect it otherwise.
-* (*Factoring, free DLC*)[yafu](https://sourceforge.net/projects/yafu/): this factorization
-utility unlocks some of the functionnality of *LatMRG*! To do so,
+installed with the NTL_THREADS=off option.
+* [gmp](https://gmplib.org/): The GNU multiple precision library, needed by NTL.
+This is packaged in most linux distrubtions. Be sure to also install the
+library's header files.
+* [yafu](https://sourceforge.net/projects/yafu/): this factorization
+utility unlocks some of the functionnality of LatMRG! To do so,
 simply download the program and extract the `yafu` executable in `./data`. The
 makefile will then include a preprocessor definition that will allow factoring.
 
-
 ### Configuring the build
 
-LatMRG currently only has a very simple makefile that should work on most Linux
-distributions. Assuming you have NTL installed in `/usr/local`, you can simply
-call
+LatMRG currently only has a very simple makefile. If NTL is not installed in a
+default prefix such as `/usr/local`, or if you use `clang` instead of `gcc` you
+will need to modify it manually before building LatMRG. The following commands
+will build the library and executables.
 ```
 git clone --recursive https://github.com/savamarc/LatMRG.git
-cd LatMRG
+cd LatMRG/latticetester
+./waf configure
+cd ..
 make
 ```
 
 This will pull and build the LatMRG library in `./LatMRG/lib`, and the executable
-programs in `./LatMRG/bin`.
+programs in `./LatMRG/bin`. There is currently no way to install LatMRG in
+standard path to ease the usage of the library or invoke it via the command line.
+
+##Todo List
+
+Here is a list of things that need to be done on this repository:
+- Implement a good IO for executable. Make them fully command line instead of
+using config files for more flexibility and scripting potential.
+- Have the makefile look for dependencies
+- Have an installation option
 
 ### Current maintainer(s)
 
