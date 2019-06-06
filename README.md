@@ -121,7 +121,7 @@ This will pull and build the LatMRG library in `./LatMRG/lib`, and the executabl
 programs in `./LatMRG/bin`. There is currently no way to install LatMRG in
 standard path to ease the usage of the library or invoke it via the command line.
 
-##Todo List
+## Todo List
 
 Here is a list of things that need to be done on this repository:
 - Implement a good IO for executable. Make them fully command line instead of
