@@ -4,15 +4,16 @@
 
 **LatMRG** is a sofware packaged developped in the Simulation and Optimisation
 laboratory at the Département d'informatique et de recherche opérationnelle at
-Université de Montréal. It is intended as the most up to date and feature
+Université de Montréal intended as the most up to date and feature
 complete tool to search and test **Multiple Recursive** and similar **Random 
 Number Generators**. There is a large variety of such generators:
 - Linear Congruential Generators (LCG)
-- Multiple Recursive Generators (MRG)
-- Combined Multiple Recursive Generators
+- Multiple Recursive Congruential Generators (MRG)
+- Combined Multiple Recursive Congruential Generators
 - Add-with-Carry (AWC) and Subtract-with-Burrow (SWB) Generators
 - Multiply with Carry (MWC) Generators
 - Matrix Multiple Recursive Generators (MMRG)
+
 The goal of this software is to provide reliable theoretical tests of uniformity
 for these generators, as well as tools to search for good and bad ones with
 regards to these tests.
@@ -20,25 +21,16 @@ regards to these tests.
 *LatMRG* is a collection of executables and a library available freely to
 research the aforementioned random number generators. For short, in the
 documentation of this library, linear congruential random number generators
-might simply be called random number generators and even RNG. **Theoretical
-tests are not an alternative to statistical testing** but rather a complement,
-guarateeing a certain uniformity that is especially desirable in stochastic and
-physics simulation.
+might simply be called random number generators, RNG or even MRG. The linearity
+of generators in this family implies that the points they output have a lot
+of structure and can be studied easily. All the generators considered here
+possess a **Lattice Structure** that LatMRG can extract and study.
 
-Linear congruential random number generators possess a very particular **lattice
-structure** that can be analysed to obtain a wide range of information about the
-generator. *LatMRG* uses the [LatticeTester](https://github.com/umontreal-simul/latticetester)
-library to perform operations on this lattice such as the spectral test but also
-implements a few more functions to easily build those lattices and test the
-period length of the random number generators.
-
-Linear congruential random number generators are a large and widely used family
-of random number generator that itself branches in many specific implementations
-with different parameters. The library tries to extensively cover the
-construction of such generators by implementing classes to represent various
-types of RNG: simple and multiple recursive congruential generators, combined
-recursive generators, add-with-carry and subtract-with-burrow,
-multiply-with-carry and matrix congruential generators.
+Studying
+this lattice can yield mesures called **Figures of Merit** that can assess of
+the uniformity of the point distribution of the lattice. It is also possible
+to know if the points of the generator are all on only a few hyperplans via the
+lattice. Finally, LatMRG can also test the the period length of MRG generators.
 
 The documentation of this software is segmented in multiple locations that each
 contain different information:
@@ -55,13 +47,37 @@ This software aims at both
 - Providing easy and ready to use and interface with representations of RNGs to
   expand the software and build 
 
-## A Word on Multiple Recursive Random Number Generators
+## Domains of Use and Caveats
 
-Although most of today's generator use faster scrambling schemes without
-detectable errors in statistical tests, linear generators still are relevant in
-Monte Carlo simulations. This is because the points they output have a lattice
-structure which can be studied to verify if the generator is suitable for a
-specific usage.
+### Test your RNGs
+
+This software only provides **theoretical tests** on RNG. **Theoretical
+tests are not an alternative to statistical testing** but a complement to it.
+A combination of parameters that LatMRG describes as good might not be useable
+in practice because, although the points are well distributed, they do not
+appear to be random. Any combination of parameters found via LatMRG that is
+implemented should also be submited to **statistical tests**.
+[This](https://github.com/lemire/testingRNG) Github repository provides a good
+starting point to perform such tests.
+
+### Use appropriate RNGs
+
+There are a plethora of pseudo-random engines described on the web, and even more
+implementations of such engines proposed. Examples include:
+- [PCG](http://www.pcg-random.org/)
+- [Vigna's take](http://xoshiro.di.unimi.it/) on xorshift generators
+- [SplitMix](http://dx.doi.org/10.1145/2714064.2660195) generators available in
+  Java
+
+These random number generators provide a good quality of randomness as they
+usually pass standard statistical tests well and are quite fast. This makes them
+great multi-purpose RNGs, but they should
+be used with care. They usually do not have the theoretical background necessary
+to assess the uniformity of high dimension vectors generated by taking points
+they output sequentially. This can cause problems in Monte Carlo simulations,
+notably in physics, finance and statistics. Generators built with LatMRG can be
+parametrized as to not have this problem, making them a better choice for this
+use case.
 
 ## Getting it to work
 
