@@ -788,7 +788,7 @@ WARN_FORMAT            = "$file:$line: $text"
 # messages should be written. If left blank the output is written to standard
 # error (stderr).
 
-WARN_LOGFILE           = ./doc/warn.log
+WARN_LOGFILE           = ./docs/doc/warn.log
 
 #---------------------------------------------------------------------------
 # Configuration options related to the input files
@@ -800,7 +800,7 @@ WARN_LOGFILE           = ./doc/warn.log
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = ./include ./src ./doc/dox
+INPUT                  = ./include ./src ./docs/doc/dox
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -895,7 +895,7 @@ EXAMPLE_RECURSIVE      = NO
 # that contain images that are to be included in the documentation (see the
 # \image command).
 
-IMAGE_PATH             = ./doc/images
+IMAGE_PATH             = ./docs/doc/images
 
 # The INPUT_FILTER tag can be used to specify a program that doxygen should
 # invoke to filter for each input file. Doxygen will invoke the filter program
@@ -1687,7 +1687,7 @@ EXTRA_PACKAGES         = amsmath amsfonts
 # to HTML_HEADER.
 # This tag requires that the tag GENERATE_LATEX is set to YES.
 
-LATEX_HEADER           = ./doc/style/header.tex
+LATEX_HEADER           = ./docs/doc/style/header.tex
 
 # The LATEX_FOOTER tag can be used to specify a personal LaTeX footer for the
 # generated LaTeX document. The footer should contain everything after the last
@@ -1717,10 +1717,10 @@ LATEX_EXTRA_STYLESHEET =
 # markers available.
 # This tag requires that the tag GENERATE_LATEX is set to YES.
 
-LATEX_EXTRA_FILES      = ./doc/style/tcode.sty ./doc/style/command.sty \
-                         ./doc/style/lmac.tex ./doc/style/html.sty \
-                         ./doc/style/myarticle.sty ./doc/style/mybold.sty \
-                         ./doc/style/mycal.sty ./doc/style/mymathbb.sty
+LATEX_EXTRA_FILES      = ./docs/doc/style/tcode.sty ./docs/doc/style/command.sty \
+                         ./docs/doc/style/lmac.tex ./docs/doc/style/html.sty \
+                         ./docs/doc/style/myarticle.sty ./docs/doc/style/mybold.sty \
+                         ./docs/doc/style/mycal.sty ./docs/doc/style/mymathbb.sty
 
 # If the PDF_HYPERLINKS tag is set to YES, the LaTeX that is generated is
 # prepared for conversion to PDF (using ps2pdf or pdflatex). The PDF file will
