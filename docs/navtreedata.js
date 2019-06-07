@@ -87,7 +87,7 @@ var NAVTREEINDEX =
 "class_lat_m_r_g_1_1_lat_config.html#a8bb6b8ae4a2359f92ad18aee11af6118",
 "class_lat_m_r_g_1_1_m_r_g_lattice_lac.html#addd2ba38b4403cb301a92eeee4862d8a",
 "class_lat_m_r_g_1_1_report_lat.html#aa25f322edbead91b62a27ce66f516514",
-"intro.html#MWC_sec"
+"intro.html#MMRG_sec"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -1,5 +1,6 @@
 var NAVTREEINDEX4 =
 {
+"intro.html#MMRG_sec":[2,2,0],
 "intro.html#MWC_sec":[2,2,1],
 "intro.html#combo_sec":[2,2,2],
 "intro.html#computing_short":[2,3],

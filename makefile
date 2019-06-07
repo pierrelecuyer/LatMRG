@@ -149,7 +149,7 @@ doc:
 	$(SEP)
 	@echo 'Building the documentation'
 	@echo
-	doxygen doc/doc-gen
+	doxygen docs/doc/doc-gen
 	@echo 'Documentation now in ./docs'
 	@echo
 
@@ -263,7 +263,11 @@ clean_progs:
 	rm -f $(PRO_DIR)/*.o
 
 clean_doc:
-	rm -rf ./docs/*
+	rm -rf docs/*.html
+	rm -rf docs/*.js
+	rm -rf docs/*.png
+	rm -rf docs/*.css
+	rm -rf docs/search
 
 clean_examples:
 	rm -rf $(BIN_DIR)/examples
