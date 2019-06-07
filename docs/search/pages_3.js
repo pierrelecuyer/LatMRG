@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['making_20your_20own_20programs',['Making your own programs',['../dev.html',1,'index']]],
-  ['maxperiod',['MaxPeriod',['../_max_period.html',1,'usage']]]
+  ['latmrg_20guide',['LatMRG Guide',['../index.html',1,'']]],
+  ['latmain',['LatMain',['../_lat_main.html',1,'usage']]]
 ];

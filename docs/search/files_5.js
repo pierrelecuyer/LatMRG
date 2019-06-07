@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['korobovlattice_2ecc',['KorobovLattice.cc',['../_korobov_lattice_8cc.html',1,'']]],
-  ['korobovlattice_2eh',['KorobovLattice.h',['../_korobov_lattice_8h.html',1,'']]]
+  ['findmk_2edox',['FindMK.dox',['../_find_m_k_8dox.html',1,'']]],
+  ['formatter_2eh',['Formatter.h',['../_formatter_8h.html',1,'']]],
+  ['formatterimpl_2eh',['FormatterImpl.h',['../_formatter_impl_8h.html',1,'']]]
 ];

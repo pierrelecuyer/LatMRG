@@ -1,9 +1,10 @@
 var searchData=
 [
-  ['table_2ecc',['Table.cc',['../_table_8cc.html',1,'']]],
-  ['table_2eh',['Table.h',['../_table_8h.html',1,'']]],
-  ['tablecolumn_2eh',['TableColumn.h',['../_table_column_8h.html',1,'']]],
-  ['tablecolumnimpl_2eh',['TableColumnImpl.h',['../_table_column_impl_8h.html',1,'']]],
-  ['testprojections_2ecc',['TestProjections.cc',['../_test_projections_8cc.html',1,'']]],
-  ['testprojections_2eh',['TestProjections.h',['../_test_projections_8h.html',1,'']]]
+  ['reportfooter_2eh',['ReportFooter.h',['../_report_footer_8h.html',1,'']]],
+  ['reportfooterlat_2eh',['ReportFooterLat.h',['../_report_footer_lat_8h.html',1,'']]],
+  ['reportheader_2eh',['ReportHeader.h',['../_report_header_8h.html',1,'']]],
+  ['reportheaderlat_2eh',['ReportHeaderLat.h',['../_report_header_lat_8h.html',1,'']]],
+  ['reportlat_2ecc',['ReportLat.cc',['../_report_lat_8cc.html',1,'']]],
+  ['reportlat_2eh',['ReportLat.h',['../_report_lat_8h.html',1,'']]],
+  ['results_2edox',['results.dox',['../results_8dox.html',1,'']]]
 ];

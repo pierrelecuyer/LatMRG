@@ -22,7 +22,7 @@ var searchData=
   ['comp',['comp',['../class_lat_m_r_g_1_1_lat_config.html#a06493a88cecd2f7e79b1845950ba67d9',1,'LatMRG::LatConfig::comp()'],['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a352173e2e8de40e338a6cecbf654da4e',1,'LatMRG::MRGLattice::comp()']]],
   ['compfactor',['CompFactor',['../class_lat_m_r_g_1_1_int_factorization_1_1_comp_factor.html',1,'LatMRG::IntFactorization']]],
   ['compon',['compon',['../class_lat_m_r_g_1_1_seek_config.html#a51e659cf39b1737d205b7023cb7bc913',1,'LatMRG::SeekConfig']]],
-  ['component',['Component',['../struct_lat_m_r_g_1_1_component.html',1,'LatMRG']]],
+  ['component',['Component',['../struct_lat_m_r_g_1_1_component.html',1,'LatMRG::Component&lt; Int &gt;'],['../results_8dox.html#a76c9707059261ceaceed7f8c949d939d',1,'component():&#160;results.dox']]],
   ['computefigureofmerit',['ComputeFigureOfMerit',['../namespace_lat_m_r_g.html#acb984e624e8346fd27ead45279eb9ef6',1,'LatMRG']]],
   ['const_2ecc',['Const.cc',['../_const_8cc.html',1,'']]],
   ['const_2eh',['Const.h',['../_const_8h.html',1,'']]],

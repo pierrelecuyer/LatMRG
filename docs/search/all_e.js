@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['making_20your_20own_20programs',['Making your own programs',['../dev.html',1,'index']]],
   ['m',['m',['../class_lat_m_r_g_1_1_modulus.html#a04b6c2e7301c1f34970ad214f628ed44',1,'LatMRG::Modulus::m()'],['../usage_8dox.html#a85221d61f5799fbb9790d6d2be69de5d',1,'m():&#160;usage.dox']]],
   ['m_5fa',['m_a',['../class_lat_m_r_g_1_1_korobov_lattice.html#a0e4860a2f27fb1436c4c79652418f110',1,'LatMRG::KorobovLattice::m_a()'],['../class_lat_m_r_g_1_1_m_m_r_g_lattice.html#a5f8110e77a7bc45c495c99c4ac629afd',1,'LatMRG::MMRGLattice::m_A()'],['../class_lat_m_r_g_1_1_mixmax_m_m_r_g.html#aed0eee57838533d3c5cbfd15acae922d',1,'LatMRG::MixmaxMMRG::m_A()']]],
   ['m_5facoef',['m_aCoef',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#af691e89983fb399bb6ce4e8ff6c35042',1,'LatMRG::MRGLattice']]],

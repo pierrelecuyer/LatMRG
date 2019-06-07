@@ -9,5 +9,6 @@ var searchData=
   ['case',['case',['../_lat_main_8dox.html#a45eee2299c56bf31a34b7c418af29d74',1,'LatMain.dox']]],
   ['comp',['comp',['../class_lat_m_r_g_1_1_lat_config.html#a06493a88cecd2f7e79b1845950ba67d9',1,'LatMRG::LatConfig::comp()'],['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a352173e2e8de40e338a6cecbf654da4e',1,'LatMRG::MRGLattice::comp()']]],
   ['compon',['compon',['../class_lat_m_r_g_1_1_seek_config.html#a51e659cf39b1737d205b7023cb7bc913',1,'LatMRG::SeekConfig']]],
+  ['component',['component',['../results_8dox.html#a76c9707059261ceaceed7f8c949d939d',1,'results.dox']]],
   ['criter',['criter',['../class_lat_m_r_g_1_1_lat_config.html#ad78e6accdf602037a174e71ee7f4f399',1,'LatMRG::LatConfig::criter()'],['../class_lat_m_r_g_1_1_seek_config.html#a6b82ad4a08a576bd31fd9a99b98306c1',1,'LatMRG::SeekConfig::criter()']]]
 ];

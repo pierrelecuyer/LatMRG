@@ -5,6 +5,8 @@ var searchData=
   ['b_5f1',['b_1',['../usage_8dox.html#a26306771f5ae54189d39c3c771498af3',1,'usage.dox']]],
   ['b_5f2',['b_2',['../usage_8dox.html#a1692fb07718877d328234f908962f7d0',1,'usage.dox']]],
   ['b_5f4',['b_4',['../usage_8dox.html#a0bbbb83f540085d9a195522ca3f988bb',1,'usage.dox']]],
+  ['background_20and_20theory',['Background and Theory',['../background.html',1,'']]],
+  ['background_2edox',['background.dox',['../background_8dox.html',1,'']]],
   ['bal',['BAL',['../_lat_main_8dox.html#a217927089dc1f4301ec318954b40b307',1,'LatMain.dox']]],
   ['bestlat_3c_2ftt_20_3e',['BestLat&lt;/tt &gt;',['../_lat_main_8dox.html#a1577f4ab7e9acaf6272e51609e832892',1,'LatMain.dox']]],
   ['beta',['Beta',['../class_lat_m_r_g_1_1_lat_config.html#ad124bf1283c5c8e908fe17c29025a108',1,'LatMRG::LatConfig::Beta()'],['../_lat_main_8dox.html#a2b7d3d617ef23572d1a7e712a840d6ff',1,'beta():&#160;LatMain.dox']]],
@@ -21,5 +23,5 @@ var searchData=
   ['buildnonlacunarybasis',['buildNonLacunaryBasis',['../class_lat_m_r_g_1_1_m_m_r_g_lattice.html#a1719a672eb50d32660a287752302e9c4',1,'LatMRG::MMRGLattice']]],
   ['buildprojection',['buildProjection',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a3e500b19d356a2d6fc4a9da6a0181f56',1,'LatMRG::MRGLattice']]],
   ['bibliography',['Bibliography',['../citelist.html',1,'']]],
-  ['background_20and_20overview',['Background and overview',['../intro.html',1,'index']]]
+  ['building_20and_20using_20latmrg',['Building and Using LatMRG',['../usage.html',1,'']]]
 ];

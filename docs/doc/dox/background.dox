@@ -1,11 +1,9 @@
 /**
- * \page intro Background and overview
+ * \page background Background and Theory
  *
  * \todo The file still contains the old background, but this should be rethought
  * and redone from the ground up. This should probably be stored in a pdf file
  * shipped with LatMRG.
- *
- * \page intro Background and overview
  *
  *   LatMRG is a software system implemented as a library of classes written
  * in the C++ language. 

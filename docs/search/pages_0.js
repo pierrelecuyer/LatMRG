@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['background_20and_20theory',['Background and Theory',['../background.html',1,'']]],
   ['bibliography',['Bibliography',['../citelist.html',1,'']]],
-  ['background_20and_20overview',['Background and overview',['../intro.html',1,'index']]]
+  ['building_20and_20using_20latmrg',['Building and Using LatMRG',['../usage.html',1,'']]]
 ];

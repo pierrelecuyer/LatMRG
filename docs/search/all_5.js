@@ -10,7 +10,6 @@ var searchData=
   ['decomptype',['DecompType',['../namespace_lat_m_r_g.html#abab34306ba3f65f06d4919d4ae54d3f1',1,'LatMRG']]],
   ['detach',['detach',['../class_lat_m_r_g_1_1_subject.html#a17ce73b8e5f11bb013678d48f3f87a78',1,'LatMRG::Subject']]],
   ['detailf',['detailF',['../class_lat_m_r_g_1_1_lat_config.html#a8f98dfdf0f80518d599b302d21dae560',1,'LatMRG::LatConfig']]],
-  ['dev_2edox',['dev.dox',['../dev_8dox.html',1,'']]],
   ['dispatchlatupdate',['dispatchLatUpdate',['../class_lat_m_r_g_1_1_lattice_test.html#a9fd52f15c924c8d789ae047dff2f4b57',1,'LatMRG::LatticeTest::dispatchLatUpdate(LatticeTester::IntLattice&lt; Int, Int, Dbl, Dbl &gt; &amp;)'],['../class_lat_m_r_g_1_1_lattice_test.html#a632c5d429989effae7cb90edf84a933f',1,'LatMRG::LatticeTest::dispatchLatUpdate(LatticeTester::IntLattice&lt; Int, Int, Dbl, Dbl &gt; &amp;lat, int i)']]],
   ['dispatchresultupdate',['dispatchResultUpdate',['../class_lat_m_r_g_1_1_lattice_test.html#ac0c37f783d6544a787af816ed06a5b53',1,'LatMRG::LatticeTest']]],
   ['dispatchtestcompleted',['dispatchTestCompleted',['../class_lat_m_r_g_1_1_lattice_test.html#a33af1515db46023707faea356097a7e0',1,'LatMRG::LatticeTest']]],

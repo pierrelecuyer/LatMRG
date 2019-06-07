@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['results',['Results',['../results.html',1,'']]]
+  ['maxperiod',['MaxPeriod',['../_max_period.html',1,'usage']]]
 ];

@@ -1,5 +1,5 @@
 /**
- * \page dev Making your own programs
+ * \page dev Examples and Library Usage
  *
  *   LatMRG offers more flexibility than just providing a set of
  * executable programs. One can also use the modules provided to write one
@@ -17,7 +17,6 @@
  *    for more details on this.
  *
  * \todo Replace section numbers with appropriate links.
- *
  *
  *   # Using the classes of LatMRG
  *

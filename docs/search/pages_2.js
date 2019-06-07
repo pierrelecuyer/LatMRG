@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['latmrg_20manual',['LatMRG Manual',['../index.html',1,'']]],
-  ['latmain',['LatMain',['../_lat_main.html',1,'usage']]]
+  ['findmk',['FindMK',['../_find_m_k.html',1,'usage']]]
 ];
