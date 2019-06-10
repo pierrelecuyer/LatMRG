@@ -122,14 +122,41 @@ Carry Generators</h2>
 <p>The sequence \(\{x_n\}\) can be used to generate random \(\mathcal{U}(0,1)\) numbers with an arbitrary number of digits in base \(b\) with </p><p class="formulaDsp">
 \[ u_n = \sum_{j=1}^L x_{Ln + j + 1} b^{-j}. \]
 </p>
-<p> This kind of generator is equivalent to a LCG of the form <b>X</b> (<a class="el" href="citelist.html#CITEREF_rTEZ93a">[52]</a>).</p>
-<p>It turns out that AWC/SWB generators have a few faults in theoretical tests. <a class="el" href="citelist.html#CITEREF_rMAR94a">[41]</a> suggested a similar kind of recurrence to solve this issue. </p><p class="formulaDsp">
-\[ \begin{array}{lll} x_n &amp; = &amp; (a_1 x_{n-1} + \cdots + a_k x_{n-k} + c_{n-1})d \pmod b,\\ c_n &amp; = &amp; \lfloor (a_0 x_n + a_1 x_{n-1} + \cdots + a_k x_{n-k})/b\rfloor. \end{array} \]
+<p> By taking \(M\) as follows, </p><center> <table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadLeft">Generator  </th><th class="markdownTableHeadCenter">M   </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyLeft">AWC  </td><td class="markdownTableBodyCenter">\(b^r+b^s-1\)   </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyLeft">AWC-c  </td><td class="markdownTableBodyCenter">\(b^r+b^s+1\)   </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyLeft">SWB-I  </td><td class="markdownTableBodyCenter">\(b^r-b^s+1\)   </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyLeft">SWB-II  </td><td class="markdownTableBodyCenter">\(b^r-b^s-1\)   </td></tr>
+</table>
+</center><p> We can build an equivalence between AWC/SWB generators and the following LCG (<a class="el" href="citelist.html#CITEREF_rTEZ93a">[52]</a>) </p><p class="formulaDsp">
+\begin{align} X_n &amp; = AX_{n-1} \pmod M \\ v_n &amp; = X_n / M \\ w_n &amp; = X_{Ln}/M. \end{align}
 </p>
-<p> This engine uses the same output function as AWC/SWB generators \( u_n = \sum_{j=1}^L x_{Ln + j + 1} b^{-j} \) and has a similar equivalence with LCGs: ** DESCRIBE CONDITIONS AND EQUIVALENCE**</p>
+<p> When we say equivalence, this is in the sense that, with the right initial state, the output \(w_i\) and \(u_i\) have the same decimal digits in base \(b\) up to the precision of \(u_i\). That is: \(u_i = b^{-L} \lfloor b^L w_i \rfloor\).</p>
+<p>It turns out that AWC/SWB generators have a few faults in theoretical tests. <a class="el" href="citelist.html#CITEREF_rMAR94a">[41]</a> suggested a similar kind of recurrence to solve this issue called <b>multiply-with-carry</b> (MWC) </p><p class="formulaDsp">
+\[ \begin{array}{lll} x_n &amp; = &amp; (a_1 x_{n-1} + \cdots + a_k x_{n-k} + c_{n-1})d \pmod b,\\ c_n &amp; = &amp; \lfloor (a_0 x_n + a_1 x_{n-1} + \cdots + a_k x_{n-k})/b\rfloor, \end{array} \]
+</p>
+<p> where \(\gcd(a_0, b) = 1\) and \(1 \equiv -a_0d \pmod b\). This engine uses the same output function as AWC/SWB generators \( u_n = \sum_{j=1}^L x_{Ln + j + 1} b^{-j} \) and the results of <a class="el" href="citelist.html#CITEREF_rTEZ93a">[52]</a> can be tweaked as in <a class="el" href="citelist.html#CITEREF_rCOU97a">[9]</a>. Take \(M = \sum_{l = 0}^k a_k b^l\) and \(0 &lt; A &lt; m\) with \(1 \equiv Ab \pmod m\), then the same recurrence </p><p class="formulaDsp">
+\begin{align} X_n &amp; = AX_{n-1} \pmod M \\ v_n &amp; = X_n / M \\ w_n &amp; = X_{Ln}/M. \end{align}
+</p>
+<p> is equivalent to the MWC generator with the same precision: \(u_i = b^{-L} \lfloor b^L w_i \rfloor\).</p>
 <h2><a class="anchor" id="back_gen_comb"></a>
 Combined Generators</h2>
-<p>Generators using a carry can easily be constructed to have a large period and to operate very fast, but the fact that they are equivalent to LCGs means that their structure is most of the time flawed.</p>
+<p>Generators using a carry can easily be constructed to have a large period and to operate very fast, but the fact that they are equivalent to LCGs means that their structure is most of the time flawed, especially in 2 dimensions. To solve this problem, it was suggested to use multiple MRGs and to combine their output. This reduces the computing cost of big MRGs, while obtaining much better distribution than carry generators.</p>
+<p>Let sequences \(\{\{x_n^{(1)}\},\{x_n^{(2)}\},\ldots,\{x_n^{(\ell)}\}\}\) and \(\{\{u_n^{(1)}\},\{u_n^{(2)}\},\ldots,\{u_n^{(\ell)}\}\}\) be produced by MRGs with \(a_{i,j}\) the j-th coefficient of the i-th recurrence, \(k_i\) the order of the i-th recurrence and \(m_i\) the modulus of the i-th recurrence. It is possible to get pseudo-random numbers as: </p><p class="formulaDsp">
+\[ \begin{array}{lll} \tilde{u}_n &amp; = &amp; \left(\sum_{i = 1}^\ell \delta_{i} x_n^{(i)} \pmod {m_1} \right) / m_1 \\ w_n &amp; = &amp; \sum_{i = 1}^\ell \frac{\delta_{i} x^{(i)}_n}{m_i} \pmod 1. \end{array} \]
+</p>
+<p><a class="el" href="citelist.html#CITEREF_rLEC96b">[32]</a> presents a way to build a MRG that has an output \(\{u_n\}\) identical to \(\{w_n\}\) if their first \(k = \max(k_1, \ldots, k_\ell)\) output values are the same. Define </p><p class="formulaDsp">
+\begin{align} m &amp; = \prod_{i = 1}^\ell m_i \\ b &amp; = \sum_{i=1}^\ell \frac{\delta_i b_i m}{m_i} \pmod m \\ n_j &amp; \text{with } 1 \equiv n_j (m /m_j) \pmod {m_j},\ 1 \leq j \leq \ell \\ a_j &amp; = \sum_{i=1}^\ell \frac{a_{i,j} n_i m}{m_i} \pmod m,\ 1 \leq j \leq k. \end{align}
+</p>
+<p> Then if \((u_0, \ldots, u_{k-1}) = (w_0, \ldots, w_{k-1})\), then \(w_n = u_n\) for all \(n\in\mathbb{N}\) given </p><p class="formulaDsp">
+\begin{align} x_n &amp; = a_1 x_{n-1} + \cdots + a_k x_{n-k} + b \pmod m \\ u_n &amp; = x_n/m. \end{align}
+</p>
 <h2><a class="anchor" id="back_gen_mat"></a>
 Matrix Generators</h2>
 <h1><a class="anchor" id="back_other"></a>

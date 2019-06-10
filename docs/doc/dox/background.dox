@@ -90,28 +90,88 @@
  * \f[
  *   u_n = \sum_{j=1}^L x_{Ln + j + 1} b^{-j}.
  * \f]
- * This kind of generator is equivalent to a LCG of the form **X** (\cite rTEZ93a).
+ * By taking \f$M\f$ as follows,
+ * <center>
+ * | Generator |  M        |
+ * | :-------- | :-------------: |
+ * | AWC       | \f$b^r+b^s-1\f$ |
+ * | AWC-c     | \f$b^r+b^s+1\f$ |
+ * | SWB-I     | \f$b^r-b^s+1\f$ |
+ * | SWB-II    | \f$b^r-b^s-1\f$ |
+ * </center>
+ * We can build an equivalence between AWC/SWB generators and the following LCG
+ * (\cite rTEZ93a)
+ * \f{align}{
+ *   X_n & = AX_{n-1} \pmod M \\
+ *   v_n & = X_n / M \\
+ *   w_n & = X_{Ln}/M.
+ * \f}
+ * When we say equivalence, this is in the sense that, with the right initial
+ * state, the output \f$w_i\f$ and
+ * \f$u_i\f$ have the same decimal digits in base \f$b\f$ up to the precision of
+ * \f$u_i\f$. That is: \f$u_i = b^{-L} \lfloor b^L w_i \rfloor\f$.
  *
  * It turns out that AWC/SWB generators have a few faults in theoretical tests.
- * \cite rMAR94a suggested a similar kind of recurrence to solve this issue.
+ * \cite rMAR94a suggested a similar kind of recurrence to solve this issue
+ * called **multiply-with-carry** (MWC)
  * \f[
  *   \begin{array}{lll}
  *     x_n & = & (a_1 x_{n-1} + \cdots + a_k x_{n-k} + c_{n-1})d \pmod b,\\
- *     c_n & = & \lfloor (a_0 x_n + a_1 x_{n-1} + \cdots + a_k x_{n-k})/b\rfloor.
+ *     c_n & = & \lfloor (a_0 x_n + a_1 x_{n-1} + \cdots + a_k x_{n-k})/b\rfloor,
  *   \end{array}
  * \f]
+ * where \f$\gcd(a_0, b) = 1\f$ and \f$1 \equiv -a_0d \pmod b\f$.
  * This engine uses the same output function as AWC/SWB generators
  * \f$
  *   u_n = \sum_{j=1}^L x_{Ln + j + 1} b^{-j}
- * \f$ and has a similar equivalence with LCGs:
- * ** DESCRIBE CONDITIONS AND EQUIVALENCE**
+ * \f$ and the results of \cite rTEZ93a can be tweaked as in \cite rCOU97a.
+ * Take \f$M = \sum_{l = 0}^k a_k b^l\f$ and \f$0 < A < m\f$ with
+ * \f$1 \equiv Ab \pmod m\f$, then the same recurrence
+ * \f{align}{
+ *   X_n & = AX_{n-1} \pmod M \\
+ *   v_n & = X_n / M \\
+ *   w_n & = X_{Ln}/M.
+ * \f}
+ * is equivalent to the MWC generator with the same precision:
+ * \f$u_i = b^{-L} \lfloor b^L w_i \rfloor\f$.
  *
  * \subsection back_gen_comb Combined Generators
  * 
  * Generators using a carry can easily be constructed to have a large period and
  * to operate very fast, but the fact that they are equivalent to LCGs means
- * that their structure is most of the time flawed.
- * 
+ * that their structure is most of the time flawed, especially in 2 dimensions.
+ * To solve this problem, it was suggested to use multiple MRGs and to combine
+ * their output. This reduces the computing cost of big MRGs, while obtaining
+ * much better distribution than carry generators.
+ *
+ * Let sequences \f$\{\{x_n^{(1)}\},\{x_n^{(2)}\},\ldots,\{x_n^{(\ell)}\}\}\f$
+ * and \f$\{\{u_n^{(1)}\},\{u_n^{(2)}\},\ldots,\{u_n^{(\ell)}\}\}\f$ be produced by
+ * MRGs with \f$a_{i,j}\f$ the j-th coefficient of the i-th recurrence,
+ * \f$k_i\f$ the order of the i-th recurrence and \f$m_i\f$ the modulus of the
+ * i-th recurrence. It is possible to get
+ * pseudo-random numbers as:
+ * \f[
+ *   \begin{array}{lll}
+ *     \tilde{u}_n & = & \left(\sum_{i = 1}^\ell \delta_{i} x_n^{(i)} \pmod {m_1} \right) / m_1 \\
+ *     w_n & = & \sum_{i = 1}^\ell \frac{\delta_{i} x^{(i)}_n}{m_i} \pmod 1.
+ *   \end{array}
+ * \f]
+ *
+ * \cite rLEC96b presents a way to build a MRG that has an output \f$\{u_n\}\f$
+ * identical to \f$\{w_n\}\f$ if their first \f$k = \max(k_1, \ldots, k_\ell)\f$
+ * output values are the same. Define
+ * \f{align}{
+ *   m & = \prod_{i = 1}^\ell m_i \\
+ *   b & = \sum_{i=1}^\ell \frac{\delta_i b_i m}{m_i} \pmod m \\
+ *   n_j & \text{with } 1 \equiv n_j (m /m_j) \pmod {m_j},\ 1 \leq j \leq \ell \\
+ *   a_j & = \sum_{i=1}^\ell \frac{a_{i,j} n_i m}{m_i} \pmod m,\ 1 \leq j \leq k.
+ * \f}
+ * Then if \f$(u_0, \ldots, u_{k-1}) = (w_0, \ldots, w_{k-1})\f$, then \f$w_n = u_n\f$
+ * for all \f$n\in\mathbb{N}\f$ given
+ * \f{align}{
+ *   x_n & = a_1 x_{n-1} + \cdots + a_k x_{n-k} + b \pmod m \\
+ *   u_n & = x_n/m.
+ * \f}
  *
  * \subsection back_gen_mat Matrix Generators
  *
