@@ -8,5 +8,6 @@ var searchData=
   ['dispatchtestinit',['dispatchTestInit',['../class_lat_m_r_g_1_1_lattice_test.html#a4f1b6ecff36790a3427c9fb141fac380',1,'LatMRG::LatticeTest']]],
   ['dotest',['doTest',['../class_lat_m_r_g_1_1_lat_test_all.html#a9616336ebbef5e49ddf0e0dc9f03c18e',1,'LatMRG::LatTestAll']]],
   ['dotestdir',['doTestDir',['../class_lat_m_r_g_1_1_lat_test_all.html#ad49b7ffe327ea97dffd72905b180ba22',1,'LatMRG::LatTestAll']]],
-  ['doubleformatter',['DoubleFormatter',['../class_lat_m_r_g_1_1_double_formatter.html#a862b3af693f621f1d99424c2cdeb6d44',1,'LatMRG::DoubleFormatter']]]
+  ['doubleformatter',['DoubleFormatter',['../class_lat_m_r_g_1_1_double_formatter.html#a862b3af693f621f1d99424c2cdeb6d44',1,'LatMRG::DoubleFormatter']]],
+  ['dual',['dual',['../intro_8dox.html#aa4b1b8ec0282fbcf4f9bd6b2395aa8ba',1,'intro.dox']]]
 ];

@@ -26,6 +26,7 @@ var searchData=
   ['computefigureofmerit',['ComputeFigureOfMerit',['../namespace_lat_m_r_g.html#acb984e624e8346fd27ead45279eb9ef6',1,'LatMRG']]],
   ['const_2ecc',['Const.cc',['../_const_8cc.html',1,'']]],
   ['const_2eh',['Const.h',['../_const_8h.html',1,'']]],
+  ['coordinates',['coordinates',['../intro_8dox.html#a47077804a5bda7739905d45163388c43',1,'intro.dox']]],
   ['createwriter',['createWriter',['../class_lat_m_r_g_1_1_lat_test_all.html#ab3ee8c36123da62f1129fc5309dc50f8',1,'LatMRG::LatTestAll']]],
   ['criter',['criter',['../class_lat_m_r_g_1_1_lat_config.html#ad78e6accdf602037a174e71ee7f4f399',1,'LatMRG::LatConfig::criter()'],['../class_lat_m_r_g_1_1_seek_config.html#a6b82ad4a08a576bd31fd9a99b98306c1',1,'LatMRG::SeekConfig::criter()']]]
 ];

@@ -15,6 +15,7 @@ var searchData=
   ['threef',['threeF',['../class_lat_m_r_g_1_1_modulus.html#a6cabe8bdba3dd0c556a0ffc25e763e2a',1,'LatMRG::Modulus']]],
   ['time',['time',['../usage_8dox.html#a96bf98f744f900ada4de233aa2f444ea',1,'usage.dox']]],
   ['timer',['timer',['../class_lat_m_r_g_1_1_lattice_test.html#a04f2e8b9e20be26a48ed416ad39bcb05',1,'LatMRG::LatticeTest::timer()'],['../class_lat_m_r_g_1_1_primes.html#a91f2e8aeb71f189482f43b285557a8b5',1,'LatMRG::Primes::timer()']]],
+  ['tools',['tools',['../intro_8dox.html#a96fb6567e738fca6691f212b5b38b765',1,'intro.dox']]],
   ['true',['true',['../_lat_main_8dox.html#a2bcb8f573c171af7b72430d86cf7f754',1,'LatMain.dox']]],
   ['true_3c_2ftt_20_3e',['true&lt;/tt &gt;',['../_lat_main_8dox.html#a5b8d6e2af64103ad6d65f1c69eb8dddb',1,'LatMain.dox']]],
   ['type',['type',['../usage_8dox.html#afa0450d4eb77d82a632616bf0ece59a9',1,'usage.dox']]]

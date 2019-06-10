@@ -2,6 +2,7 @@ var searchData=
 [
   ['random',['RANDOM',['../namespace_lat_m_r_g.html#a1fd35b5cabbc11ccb440e722240ca3e8a57df570a60b5ea66ef4a74640b026c8b',1,'LatMRG']]],
   ['rank1',['RANK1',['../namespace_lat_m_r_g.html#ab4948e899f8c3a6fb82cff009283061eadd58e47c779d21d1ee568cde751a730b',1,'LatMRG']]],
+  ['ratio',['ratio',['../intro_8dox.html#ae20ca56deb544dc9f4a77d3a4bdbb879',1,'intro.dox']]],
   ['rcou97a',['rCOU97a',['../_lat_main_8dox.html#af7e384e31997feeeaaea95b25af154cf',1,'LatMain.dox']]],
   ['read',['read',['../class_lat_m_r_g_1_1_int_factorization.html#a36b134c8902b97a0fefbfa9b9ea5acac',1,'LatMRG::IntFactorization::read()'],['../class_lat_m_r_g_1_1_param_reader_lat.html#aba61e2da35aa647a812df2d3f342d09d',1,'LatMRG::ParamReaderLat::read()'],['../class_lat_m_r_g_1_1_param_reader_seek.html#adf661cdb62a05b0f19376d76236a1645',1,'LatMRG::ParamReaderSeek::read()']]],
   ['readcalctype',['readCalcType',['../class_lat_m_r_g_1_1_param_reader_ext.html#ac1fc70600f10948401494690b1615713',1,'LatMRG::ParamReaderExt']]],
@@ -43,6 +44,7 @@ var searchData=
   ['reverse',['reverse',['../class_lat_m_r_g_1_1_poly_p_e.html#a27b998434144c47a1022e3a35d6def55',1,'LatMRG::PolyPE']]],
   ['rfis90a',['rFIS90a',['../_lat_main_8dox.html#aeda1cfd1fc9b7030fdffcd8f65426515',1,'LatMain.dox']]],
   ['rho',['rho',['../class_lat_m_r_g_1_1_m_r_g_component.html#a9f6201d54f33a427ef0dd1408114f0bf',1,'LatMRG::MRGComponent']]],
+  ['rlec97c',['rLEC97c',['../intro_8dox.html#a6d280fdaaf1721904a9c030816a2a84b',1,'intro.dox']]],
   ['rogers_3c_2ftt_20_3e',['Rogers&lt;/tt &gt;',['../_lat_main_8dox.html#ae0f100fdf7e8de05df7b880e8413564f',1,'LatMain.dox']]],
   ['rscal',['RScal',['../_lat_main_8dox.html#af79a3d24ebdef30741f371e7a041d201',1,'LatMain.dox']]],
   ['run',['run',['../class_lat_m_r_g_1_1_test_projections.html#a2d150ddc0e522e6493d54eabdfa55e78',1,'LatMRG::TestProjections::run(bool stationary, bool last, double minVal[])'],['../class_lat_m_r_g_1_1_test_projections.html#aebced2aa004cdc0d561d6c42ce12ee36',1,'LatMRG::TestProjections::run(bool stationary, bool last, double minVal[], const LatticeTester::Weights &amp;weights)'],['../class_lat_m_r_g_1_1_test_projections.html#a1adca55e7bb979b1443e18fb9058f1a9',1,'LatMRG::TestProjections::run(ProjIterator &amp;projit, double minVal[], const LatticeTester::Weights &amp;weights)']]]

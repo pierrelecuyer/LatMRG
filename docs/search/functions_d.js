@@ -4,6 +4,7 @@ var searchData=
   ['paramreaderlat',['ParamReaderLat',['../class_lat_m_r_g_1_1_param_reader_lat.html#a18a48bc154f12198b7f5be5fd9a92f2f',1,'LatMRG::ParamReaderLat']]],
   ['paramreaderseek',['ParamReaderSeek',['../class_lat_m_r_g_1_1_param_reader_seek.html#a850602429457baa487ddc79ef8d07151',1,'LatMRG::ParamReaderSeek::ParamReaderSeek()'],['../class_lat_m_r_g_1_1_param_reader_seek.html#a3d7c56a04a0f8670a459e55f03333140',1,'LatMRG::ParamReaderSeek::ParamReaderSeek(std::string fname)']]],
   ['permaxpowprime',['perMaxPowPrime',['../class_lat_m_r_g_1_1_modulus.html#acf1ad354631a47d0847af9787699b550',1,'LatMRG::Modulus']]],
+  ['points',['points',['../intro_8dox.html#aed62071fee8a73fbebd5b5af0b229a77',1,'intro.dox']]],
   ['polype',['PolyPE',['../class_lat_m_r_g_1_1_poly_p_e.html#a7a5c9e82ff08a212ce7fb74c69ea938d',1,'LatMRG::PolyPE']]],
   ['powermod',['powerMod',['../class_lat_m_r_g_1_1_poly_p_e.html#af3cda9c809c5e0a43b07e27c75137cc0',1,'LatMRG::PolyPE']]],
   ['prepanddisp',['prepAndDisp',['../class_lat_m_r_g_1_1_lat_test_beyer.html#af633c32be52c753f61df7ed0538f7c0c',1,'LatMRG::LatTestBeyer::prepAndDisp()'],['../class_lat_m_r_g_1_1_lat_test_palpha.html#af222fbee009af56bfd80b9447f26efc0',1,'LatMRG::LatTestPalpha::prepAndDisp()'],['../class_lat_m_r_g_1_1_lat_test_spectral.html#acc78338dfcb576274f6a2bab489e78ba',1,'LatMRG::LatTestSpectral::prepAndDisp()']]],

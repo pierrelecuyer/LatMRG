@@ -23,14 +23,44 @@ for the JavaScript code in this file
 */
 var NAVTREE =
 [
-  [ "LatMRG Manual", "index.html", [
-    [ "LatMRG Guide", "index.html", [
-      [ "User's guide", "index.html#latmrg_guide", [
-        [ "Content Outline", "index.html#latmrg_guide_out", null ]
-      ] ],
-      [ "Overview", "index.html#latmrg_overview", null ]
+  [ "LatMRG Guide", "index.html", [
+    [ "User's guide", "index.html#latmrg_guide", [
+      [ "Content Outline", "index.html#latmrg_guide_out", null ]
     ] ],
-    [ "Background and Theory", "background.html", [
+    [ "Overview", "index.html#latmrg_overview", null ],
+    [ "Theory on Lattices", "lattice_back.html", [
+      [ "Lattices on the Integers", "lattice_back.html#lattices_def", [
+        [ "Definitions", "lattice_back.html#lattices_def_def", null ],
+        [ "Algorithms on lattices", "lattice_back.html#lattices_def_algo", null ]
+      ] ],
+      [ "Measures of Uniformity", "lattice_back.html#sec_merit", [
+        [ "Shortest Nonzero Lattice Vector and Spectral Test", "lattice_back.html#sec_merit_short", [
+          [ "The Spectral Test", "lattice_back.html#sec_merit_spectral", null ]
+        ] ],
+        [ "Lattice Reduction Algorithms", "lattice_back.html#sec_latred", [
+          [ "Pairwise reduction", "lattice_back.html#sec_latred_dieter", null ],
+          [ "Lenstra-Lenstra-Lovasz reduction", "lattice_back.html#sec_latred_lll", null ],
+          [ "Block Korkine-Zolotarev Reduction", "lattice_back.html#sec_latred_bkz", null ],
+          [ "A Quick Note on Precision", "lattice_back.html#sec_latred_precision", null ]
+        ] ],
+        [ "Shortest Vector Computation", "lattice_back.html#sec_svp", null ]
+      ] ]
+    ] ],
+    [ "Theory of Random Numbers", "background.html", [
+      [ "Linear Congruential Engines", "background.html#back_gen", [
+        [ "Simple Congruential Generators", "background.html#back_gen_gen", null ],
+        [ "Carry Generators", "background.html#back_gen_carry", null ],
+        [ "Combined Generators", "background.html#back_gen_comb", null ],
+        [ "Matrix Generators", "background.html#back_gen_mat", null ]
+      ] ],
+      [ "Lattices and Merit", "background.html#back_other", [
+        [ "Lattice of a MRG", "background.html#back_lat", null ],
+        [ "Measures on MRGs", "background.html#back_merit", [
+          [ "Period Length", "background.html#back_merit_per", null ],
+          [ "Shortest Vector and Figures of Merit", "background.html#back_merit_spectral", null ]
+        ] ]
+      ] ],
+      [ "A Good Parameter Choice", "background.html#back_param", null ],
       [ "Lacunary indices", "background.html#lacunary", null ],
       [ "Figures of Merit", "background.html#merit", [
         [ "The spectral test", "background.html#spectral", null ],
@@ -87,10 +117,10 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_a_w_c_s_w_b_lattice_8cc.html",
-"class_lat_m_r_g_1_1_korobov_lattice.html#ac31230e2f9451c688315346bab660010",
-"class_lat_m_r_g_1_1_m_r_g_lattice_factory.html#abd3e394ad5c8f63ea2feaf79aee48955",
-"class_lat_m_r_g_1_1_report_lat.html#a05420ee67978167b7461f42f23a9c951",
-"functions_z.html"
+"class_lat_m_r_g_1_1_korobov_lattice.html",
+"class_lat_m_r_g_1_1_m_r_g_lattice.html#aec06b42e4c2b6b0b89ced04e7fd62b3a",
+"class_lat_m_r_g_1_1_report_header.html#a5ef56dfa4bdea81dd101bd680d037751",
+"functions_vars_j.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

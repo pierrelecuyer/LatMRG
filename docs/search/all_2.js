@@ -8,6 +8,7 @@ var searchData=
   ['alpha',['alpha',['../class_lat_m_r_g_1_1_lat_config.html#af4f1f313e3ec2f0508ae4f192b32077e',1,'LatMRG::LatConfig::alpha()'],['../class_lat_m_r_g_1_1_seek_config.html#af3b4fa51894545d216de436821a78eea',1,'LatMRG::SeekConfig::alpha()']]],
   ['alpha_3c_2fem_20_3e',['alpha&lt;/em &gt;',['../_lat_main_8dox.html#a26e94f62f466fdddf69ca53608b8b120',1,'LatMain.dox']]],
   ['app_5ffact',['APP_FACT',['../namespace_lat_m_r_g.html#ad049f9925bbec6f1e1b8097723c01d95adc39f6458d387d2cfc655b1f02d4f3d7',1,'LatMRG']]],
+  ['applications',['applications',['../intro_8dox.html#ade5c06301603f31beaa945dc44dc6541',1,'intro.dox']]],
   ['approxtotgen',['ApproxTotGen',['../struct_lat_m_r_g_1_1_component.html#a30b43f941cb89a1280114286d6efebec',1,'LatMRG::Component']]],
   ['arbitraryindices',['ARBITRARYINDICES',['../namespace_lat_m_r_g.html#ab24055f29985bdc83f514e803c4f7bdaa44a10b67651488cf044f3bdabad7fe15',1,'LatMRG']]],
   ['are',['are',['../_lat_main_8dox.html#a40be03c5c9e5680308fb3430cab99d0a',1,'LatMain.dox']]],

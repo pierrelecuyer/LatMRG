@@ -14,8 +14,8 @@
  *
  * This page summarizes the contents and the possible uses of LatMRG. The rest
  * of this guide covers the following:
- * - \ref background contains the theoretical knowledge needed to understand the basics
- *   of LatMRG.
+ * - \ref lattice_back and \ref background contain the theoretical knowledge
+ *   needed to understand the basics of LatMRG.
  * - \ref usage presents the executable programs and their usage. It also
  *   also contains compilation instruction for LatMRG.
  * - \ref dev presents segments of code highlighting some functionnalities of

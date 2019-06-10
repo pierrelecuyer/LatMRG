@@ -21,6 +21,7 @@ var searchData=
   ['doubleformatter',['DoubleFormatter',['../class_lat_m_r_g_1_1_double_formatter.html',1,'LatMRG::DoubleFormatter'],['../class_lat_m_r_g_1_1_double_formatter.html#a862b3af693f621f1d99424c2cdeb6d44',1,'LatMRG::DoubleFormatter::DoubleFormatter()']]],
   ['doubleformatter_2ecc',['DoubleFormatter.cc',['../_double_formatter_8cc.html',1,'']]],
   ['doubleformatter_2eh',['DoubleFormatter.h',['../_double_formatter_8h.html',1,'']]],
+  ['dual',['dual',['../intro_8dox.html#aa4b1b8ec0282fbcf4f9bd6b2395aa8ba',1,'intro.dox']]],
   ['dualf',['dualF',['../class_lat_m_r_g_1_1_lat_config.html#ae9a1b12d0e700c6e0d70a911cf187873',1,'LatMRG::LatConfig::dualF()'],['../class_lat_m_r_g_1_1_seek_config.html#a4305bf88f656dd79bd8e61641c030ab0',1,'LatMRG::SeekConfig::dualF()']]],
   ['duration',['duration',['../class_lat_m_r_g_1_1_seek_config.html#a9055bf84944ece84149ca0e5eed0f572',1,'LatMRG::SeekConfig']]]
 ];
