@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['latmrg_20guide',['LatMRG Guide',['../index.html',1,'']]],
   ['lac',['Lac',['../class_lat_m_r_g_1_1_lat_config.html#a0c099800d3c40b32de901d884a29c98e',1,'LatMRG::LatConfig']]],
   ['lacgroupsize',['lacGroupSize',['../class_lat_m_r_g_1_1_lat_config.html#a5abbcc8816e3b3d1ba599c6a600f76fb',1,'LatMRG::LatConfig::lacGroupSize()'],['../class_lat_m_r_g_1_1_seek_config.html#a7bf0862e1c24d01ab89e08d3a32e877f',1,'LatMRG::SeekConfig::lacGroupSize()']]],
   ['lacspacing',['lacSpacing',['../class_lat_m_r_g_1_1_lat_config.html#ac4c99b83aae25a0f142f5cb4d77f20be',1,'LatMRG::LatConfig::lacSpacing()'],['../class_lat_m_r_g_1_1_seek_config.html#a61fc422da1adf0699ccf6c9bb7bb6c6c',1,'LatMRG::SeekConfig::lacSpacing()']]],

@@ -24,14 +24,13 @@ for the JavaScript code in this file
 var NAVTREE =
 [
   [ "LatMRG Guide", "index.html", [
-    [ "User's guide", "index.html#latmrg_guide", [
-      [ "Content Outline", "index.html#latmrg_guide_out", null ]
+    [ "Overview", "index.html#overview", [
+      [ "Content Outline", "index.html#latmrg_guide_out", null ],
+      [ "Presentation of LatMRG", "index.html#presentation", null ]
     ] ],
-    [ "Overview", "index.html#latmrg_overview", null ],
     [ "Theory on Lattices", "lattice_back.html", [
       [ "Lattices on the Integers", "lattice_back.html#lattices_def", [
-        [ "Definitions", "lattice_back.html#lattices_def_def", null ],
-        [ "Algorithms on lattices", "lattice_back.html#lattices_def_algo", null ]
+        [ "Definitions", "lattice_back.html#lattices_def_def", null ]
       ] ],
       [ "Measures of Uniformity", "lattice_back.html#sec_merit", [
         [ "Shortest Nonzero Lattice Vector and Spectral Test", "lattice_back.html#sec_merit_short", [
@@ -75,8 +74,8 @@ var NAVTREE =
       [ "Computing a shortest nonzero vector or a reduced basis", "background.html#computing_short", null ],
       [ "Large numbers, matrices and polynomials", "background.html#numbers_sec", null ]
     ] ],
-    [ "Examples and Library Usage", "dev.html", null ],
-    [ "Building and Using LatMRG", "usage.html", "usage" ],
+    [ "Tutorial and Library Usage", "tutorial.html", null ],
+    [ "Compilation and Executables Usage", "usage.html", "usage" ],
     [ "Todo List", "todo.html", null ],
     [ "Bibliography", "citelist.html", null ],
     [ "Namespaces", "namespaces.html", [
@@ -120,7 +119,7 @@ var NAVTREEINDEX =
 "class_lat_m_r_g_1_1_korobov_lattice.html",
 "class_lat_m_r_g_1_1_m_r_g_lattice.html#aec06b42e4c2b6b0b89ced04e7fd62b3a",
 "class_lat_m_r_g_1_1_report_header.html#a5ef56dfa4bdea81dd101bd680d037751",
-"functions_vars_j.html"
+"functions_vars_k.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>LatMRG Guide: Building and Using LatMRG</title>
+<title>LatMRG Guide: Compilation and Executables Usage</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -94,19 +94,23 @@ $(document).ready(function(){initNavTree('usage.html','');});
 
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">Building and Using <a class="el" href="namespace_lat_m_r_g.html" title="This class implements the TableColumn interface.">LatMRG</a> </div>  </div>
+<div class="title">Compilation and Executables Usage </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>At the high-level, <em><a class="el" href="namespace_lat_m_r_g.html" title="This class implements the TableColumn interface.">LatMRG</a></em> provides 5 executable programs that can perform various tasks:</p>
-<ul>
+<div class="textblock"><h1><a class="anchor" id="compilation"></a>
+Building LatMRG</h1>
+<p><a class="el" href="namespace_lat_m_r_g.html" title="This class implements the TableColumn interface.">LatMRG</a> is available on <a href="https://github.com/savamarc/latmrg"><b>Github</b></a>.</p>
+<h1><a class="anchor" id="usage_exec"></a>
+LatMRG executables</h1>
+<p>At the high-level, <em><a class="el" href="namespace_lat_m_r_g.html" title="This class implements the TableColumn interface.">LatMRG</a></em> provides 4 executable programs that can perform various tasks:</p><ul>
 <li><a class="el" href="_find_m_k.html">FindMK</a>, a program to search for prime numbers that can be used as moduli.</li>
 <li><a class="el" href="_seek_main.html">SeekMain</a>, a program to search for MRG or certain specific MRG-like generators.</li>
 <li><a class="el" href="_max_period.html">MaxPeriod</a>, a program to test if a specific generator has a maximal period.</li>
 <li><a class="el" href="_lat_main.html">LatMain</a>, a program to compute figures of merit on a MRG.</li>
 </ul>
 <p>All these programs are designed to take their input from a file, but can output onto the command line, in files and even, sometimes, in files formatted to be the input of the other <em><a class="el" href="namespace_lat_m_r_g.html" title="This class implements the TableColumn interface.">LatMRG</a></em> executables. For more information on either one of those programs, have a look at the page specific to it. This page contains a detailed description of what can be computed with that program, the file format that has to be given as input and a description of the standard output. </p>
-<h1><a class="anchor" id="file_format"></a>
-About the file format</h1>
+<h2><a class="anchor" id="file_format"></a>
+About the file format</h2>
 <p>A standard notation is used throughout the pages describing the programs to describe the file format used by them. The description takes place in two parts :</p><ul>
 <li>We always present the layout of the file first in a "code" environment. This makes it so that you can see what the file will actually look like.</li>
 <li>We present a detailled description of every parameter and it's type.</li>

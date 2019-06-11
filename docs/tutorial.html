@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>LatMRG Guide: MaxPeriod</title>
+<title>LatMRG Guide: Tutorial and Library Usage</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -74,7 +74,7 @@ $(function() {
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('_max_period.html','');});
+$(document).ready(function(){initNavTree('tutorial.html','');});
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -94,57 +94,23 @@ $(document).ready(function(){initNavTree('_max_period.html','');});
 
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">MaxPeriod </div>  </div>
+<div class="title">Tutorial and Library Usage </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>This module contains a program to determine whether a given MRG has maximal period or not.</p>
-<p>The MRG generator has the form </p><p class="formulaDsp">
-\[ x_n = (a_1 x_{n-1} + \cdots+ a_k x_{n-k}) \mbox{ mod } m. \]
-</p>
-<p> The modulus \(m\) must be a prime number. To verify the conditions for maximal period, the factorizations of \(m-1\) and \(r = (m^k-1)/(m-1)\) are required. They can be found by the program or provided by the user in a file. The user must be aware that factoring \(r\) can take a <em>huge</em> amount of time for large integers. Integers are represented using the <code>ZZ</code> type from NTL.</p>
-<p>The program is called <code>MaxPeriod</code> and reads the parameters of the generator from a file. The data file must have the extension <a class="anchor" id="REF__MaxPeriod_ref_maxper"></a><code>.dat</code>. To run the program, the name of the data file must be given without extension on the command line. For example, if the data file is called <code>maxp1.dat</code>, then the program is run by calling</p>
-<p><code>MaxPeriod &lt;I, Z&gt; maxp1</code></p>
-<p>and the results will be written in file <code>maxp1.res</code>.</p>
-<p>The data file must have the following format: </p><pre class="fragment"> GenType
- m
- k
- decom1 [file1]
- decom2 [file2]
- a_1
- ...
- a_k
-</pre><center> <b>Data file format for <code>MaxPeriod</code></b> </center><p>The file must contain the following parameters in that order:</p>
-<dl>
-<dt><code>GenType</code>: </dt>
-<dd>This has to be <code>MRG</code>.  </dd>
-<dt><code>m</code>: </dt>
-<dd><code>&lt;int&gt;</code> the modulus of congruence of the MRG.  </dd>
-<dt><code>k</code>: </dt>
-<dd><code>&lt;int&gt;</code> the order of the MRG.  </dd>
-<dt><code>decom1 [file1]</code>: </dt>
-<dd><code>&lt;DecompType&gt; &lt;string&gt;</code> <code>file1</code> is needed depending on the value of <code>decom1</code>. This parameters specifies how the program will get the decomposition of <code>m-1</code>. <dl>
-<dt><code>Decomp</code>: </dt>
-<dd>the program will factorize \(m-1\). In this case, the field <code>file1</code> is unused and can be omitted. To factorize, the program uses <code>yafu</code>. It is the responsibility of the user to make sure that the factorization will take a reasonable time and that <code>yafu</code> is installed as specified in the installation instructions.  </dd>
-<dt><code>Write</code>: </dt>
-<dd>means the same as <code>Decomp</code>, except that the program will also write the prime factors found in a file with name <code>file1.fac</code>.  </dd>
-<dt><code>Read</code>: </dt>
-<dd>\(m-1\) is already factorized and the factors will be read from file <code>file1.fac</code>. The prime factors must be given as described in class <a class="el" href="class_lat_m_r_g_1_1_int_factorization.html" title="The class IntFactorization implements the decomposition of integers in factors, preferably prime (see...">LatMRG::IntFactorization</a>.  </dd>
-<dt><code>Prime</code>: </dt>
-<dd>the number is a prime number. Note that this is not possible for decom1.  </dd>
-</dl>
-</dd>
-<dt><code>decom2 [file2]</code>: </dt>
-<dd><code>&lt;DecompType&gt; &lt;string&gt;</code> <code>file1</code> is needed depending on the value of <code>decom1</code>. This parameters specifies how the program will get the decomposition of <code>r</code>. The argument <code>decom2</code> can take the values specified above for <code>decom1</code>.  </dd>
-<dt><code>a_1, ..., a_k</code>: </dt>
-<dd><code>&lt;int&gt;</code> the coefficients of the MRG that must each be given on a separate line.  </dd>
-</dl>
+<div class="textblock"><p><a class="el" href="namespace_lat_m_r_g.html" title="This class implements the TableColumn interface.">LatMRG</a> offers more flexibility than just providing a set of executable programs.</p>
+<p>One can also use the modules provided to write one own’s programs. For that, a C++ compiler and some knowledge about the C++ language are required. Instead of providing the parameters according to the format described in <a class="el" href="usage.html">Compilation and Executables Usage</a>, one sets those parameters (or data) by setting the appropriate variables or creating the appropriate objects. In this section, we introduce briefly the classes and low-level modules, which are described in Appendix B and C, respectively. It is important to recall that the multiplier’s and basis components can be implemented with different representations and that one must make sure to select the appropriate representation for the target application. See Section 3.2 for more details on this.</p>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000021">Todo:</a></b></dt><dd>Replace section numbers with appropriate links.</dd></dl>
+<h1>Using the classes of <a class="el" href="namespace_lat_m_r_g.html" title="This class implements the TableColumn interface.">LatMRG</a></h1>
+<p>The modules of <a class="el" href="namespace_lat_m_r_g.html" title="This class implements the TableColumn interface.">LatMRG</a> (excluding the executable programs) have been classified in two sets: lower-level and intermediate-level. The lower-level modules offer basic facilities for arithmetic operations and conversions, with different representations, for basis vectors and multipliers. They are described in the NTL documentation (see the URL <a href="http://shoup.net/ntl/doc/tour.html">http://shoup.net/ntl/doc/tour.html</a>).</p>
+<p>The intermediate-level classes inheriting from the virtual class <code>IntLattice</code> constructs lattice bases for different kinds of generators or point sets. The currently implementing classes are <code>Rank1Lattice</code>, <code>KorobovLattice</code> and <code>MRGLattice</code>. <code>IntLattice</code> itself offers tools for manipulating lattice bases, and generally does common operations on bases. The class <code>Reducer</code> performs tests on these lattices, such as finding the shortest vector in a lattice, and reducing a basis in the sense of Minkowski. Those classes are described in the following chapters. The programs described in <a class="el" href="usage.html">Compilation and Executables Usage</a> use those intermediate and lower-level classes in their implementation, and so, provide examples of how to use them.</p>
+<h1>Lower-level modules and Changing the representation</h1>
+<p>As discussed in section <a class="el" href="background.html#numbers_sec">Large numbers, matrices and polynomials</a>, the multiplier’s components can be implemented in the <code>long</code> or <code>ZZ</code> representation, while the basis components can be in the <code>double</code> or <code>RR</code> representation. To select the appropriate representation (see modules <code>Types</code> where all the basic possible types are selected), one should compile and link his programs with one of the libraries <code>liblatLLDD.a</code>, <code>liblatZZDD.a</code> or <code>liblatZZRR.a</code>. Generally speaking, the proper choice of representation depends on the size of the modulus \(m\). For example, if \(m\) is less than \(2^{25}\), then the library <code>liblatLLDD.a</code> should be appropriate. For most cases, the library <code>liblatZZDD.a</code> will be satisfactory. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="usage.html">Compilation and Executables Usage</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.15 </li>

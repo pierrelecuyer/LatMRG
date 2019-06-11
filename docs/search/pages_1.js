@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['examples_20and_20library_20usage',['Examples and Library Usage',['../dev.html',1,'']]]
+  ['compilation_20and_20executables_20usage',['Compilation and Executables Usage',['../usage.html',1,'']]]
 ];

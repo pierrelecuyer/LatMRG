@@ -1,16 +1,16 @@
 /**
- * \page dev Examples and Library Usage
+ * \page tutorial Tutorial and Library Usage
  *
- *   LatMRG offers more flexibility than just providing a set of
+ * LatMRG offers more flexibility than just providing a set of
  * executable programs. One can also use the modules provided to write one
  * own’s programs. For that, a C++ compiler and some knowledge about the C++
  * language are required. Instead of providing the parameters according to
  * the format described in \ref usage,
- *    one sets those parameters (or data) by setting the appropriate
+ * one sets those parameters (or data) by setting the appropriate
  * variables or creating the appropriate objects. In this section, we
  * introduce briefly the classes and low-level modules, which are described
  * in Appendix B and C,
- *    respectively. It is important to recall that the multiplier’s and basis
+ * respectively. It is important to recall that the multiplier’s and basis
  * components can be implemented with different representations and that one
  * must make sure to select the appropriate representation for the target
  * application. See Section 3.2

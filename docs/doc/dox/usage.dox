@@ -1,7 +1,13 @@
 /**
- * \page usage Building and Using LatMRG
+ * \page usage Compilation and Executables Usage
  * 
- * At the high-level, *LatMRG* provides 5 executable programs that can perform
+ * \section compilation Building LatMRG
+ *
+ * LatMRG is available on [**Github**](https://github.com/savamarc/latmrg).
+ *
+ * \section usage_exec LatMRG executables
+ *
+ * At the high-level, *LatMRG* provides 4 executable programs that can perform
  * various tasks:
  * - \subpage FindMK, a program to search for prime numbers that can be used
  * as moduli.
@@ -18,7 +24,7 @@
  * to it. This page contains a detailed description of what can be computed with
  * that program, the file format that has to be given as input and a description
  * of the standard output.
- * \section file_format About the file format
+ * \subsection file_format About the file format
  *
  * A standard notation is used throughout the pages describing the programs to
  * describe the file format used by them. The description takes place in two

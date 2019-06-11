@@ -47,5 +47,6 @@ var searchData=
   ['trace',['trace',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a3cc8f6c49f2353998321351d1a85f9c5',1,'LatMRG::MRGLattice']]],
   ['true',['true',['../_lat_main_8dox.html#a2bcb8f573c171af7b72430d86cf7f754',1,'LatMain.dox']]],
   ['true_3c_2ftt_20_3e',['true&lt;/tt &gt;',['../_lat_main_8dox.html#a5b8d6e2af64103ad6d65f1c69eb8dddb',1,'LatMain.dox']]],
+  ['tutorial_20and_20library_20usage',['Tutorial and Library Usage',['../tutorial.html',1,'']]],
   ['type',['type',['../usage_8dox.html#afa0450d4eb77d82a632616bf0ece59a9',1,'usage.dox']]]
 ];

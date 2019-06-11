@@ -21,6 +21,5 @@ var searchData=
   ['buildnabasis',['buildNaBasis',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a96b899d21b2d527bc26725cfe616a34d',1,'LatMRG::MRGLattice']]],
   ['buildnonlacunarybasis',['buildNonLacunaryBasis',['../class_lat_m_r_g_1_1_m_m_r_g_lattice.html#a1719a672eb50d32660a287752302e9c4',1,'LatMRG::MMRGLattice']]],
   ['buildprojection',['buildProjection',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a3e500b19d356a2d6fc4a9da6a0181f56',1,'LatMRG::MRGLattice']]],
-  ['bibliography',['Bibliography',['../citelist.html',1,'']]],
-  ['building_20and_20using_20latmrg',['Building and Using LatMRG',['../usage.html',1,'']]]
+  ['bibliography',['Bibliography',['../citelist.html',1,'']]]
 ];

@@ -1,6 +1,9 @@
 var usage =
 [
-    [ "About the file format", "usage.html#file_format", null ],
+    [ "Building LatMRG", "usage.html#compilation", null ],
+    [ "LatMRG executables", "usage.html#usage_exec", [
+      [ "About the file format", "usage.html#file_format", null ]
+    ] ],
     [ "FindMK", "_find_m_k.html", null ],
     [ "SeekMain", "_seek_main.html", [
       [ "SeekMain", "_seek_main.html#seek", [
