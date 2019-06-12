@@ -1,0 +1,16 @@
+GEN_TYPE
+Criterion (if SPECTRAL [bool]use_dual ReducType NormaType)
+          (if LENGTH   [bool]use_dual ReducType)
+tuples
+dimensions sequential
+dimensions tuples
+Normalizer
+num_gen
+time_limit
+# MRG
+modulo
+order
+multipliers
+check period
+# MWC
+# MMRG

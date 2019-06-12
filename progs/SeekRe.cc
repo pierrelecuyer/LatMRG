@@ -2,6 +2,7 @@
  * This program rewrites parts of SeekMain to be easier to understand and use
  * better design. For now this is the file in which I implement MWC gen searches.
  * */
+#define LATMRG_SEEK
 #include "Exec.h"
 
 // Number of generators to generate before testing time in nextGenerator
@@ -279,10 +280,7 @@ namespace {
         << LatticeTester::toStringNorma(normaType) << "\n";
     }
     std::cout << "On dimensions and projections:\n";
-    proj->resetDim();
-    while(!proj->end()) {
-      std::cout << proj->next() << "\n";
-    }
+    std::cout << proj->toString();
     std::cout << delim;
     std::cout << "Allowed running time: " << timeLimit << "s.\n";
     std::cout << "Actual CPU time: " << timer.toString() << "\n";
@@ -328,6 +326,7 @@ namespace {
       if (criterion == LatticeTester::SPECTRAL) tmp = meritS(lattice, norma);
       if (criterion == LatticeTester::BEYER) tmp = meritB(lattice, norma);
       results.append(tmp);
+      // Rejecting lattices that won't make it
       if (tmp < bestLattice->getMerit()) {
         results[0] = 1-best;
         return results;
@@ -364,6 +363,7 @@ namespace {
         if (criterion == LatticeTester::SPECTRAL) tmp = meritS(proj_lat, norma);
         if (criterion == LatticeTester::BEYER) tmp = meritB(proj_lat, norma);
         results.append(tmp);
+        // Rejecting lattices that won't make it
         if (tmp < bestLattice->getMerit()) {
           results[0] = 1-best;
           return results;
