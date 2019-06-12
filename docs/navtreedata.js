@@ -74,8 +74,8 @@ var NAVTREE =
       [ "Computing a shortest nonzero vector or a reduced basis", "background.html#computing_short", null ],
       [ "Large numbers, matrices and polynomials", "background.html#numbers_sec", null ]
     ] ],
-    [ "Tutorial and Library Usage", "tutorial.html", null ],
     [ "Compilation and Executables Usage", "usage.html", "usage" ],
+    [ "Tutorial and Library Usage", "tutorial.html", null ],
     [ "Todo List", "todo.html", null ],
     [ "Bibliography", "citelist.html", null ],
     [ "Namespaces", "namespaces.html", [
@@ -94,7 +94,7 @@ var NAVTREE =
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", "functions_dup" ],
         [ "Functions", "functions_func.html", "functions_func" ],
-        [ "Variables", "functions_vars.html", "functions_vars" ],
+        [ "Variables", "functions_vars.html", null ],
         [ "Typedefs", "functions_type.html", null ],
         [ "Enumerations", "functions_enum.html", null ],
         [ "Enumerator", "functions_eval.html", null ]
@@ -116,10 +116,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_a_w_c_s_w_b_lattice_8cc.html",
-"class_lat_m_r_g_1_1_korobov_lattice.html",
-"class_lat_m_r_g_1_1_m_r_g_lattice.html#aec06b42e4c2b6b0b89ced04e7fd62b3a",
-"class_lat_m_r_g_1_1_report_header.html#a5ef56dfa4bdea81dd101bd680d037751",
-"functions_vars_k.html"
+"class_lat_m_r_g_1_1_m_m_r_g_lattice.html#a87fe0234229df47baef80dd01999305e",
+"class_lat_m_r_g_1_1_projections.html#a9ab549b0a208b3e530ea14770ee0412d"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

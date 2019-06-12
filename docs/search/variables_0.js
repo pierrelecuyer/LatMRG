@@ -4,7 +4,7 @@ var searchData=
   ['_24a_5f2',['$a_2',['../usage_8dox.html#a935bbbcb051adbe48af9e9e2a1e660a0',1,'usage.dox']]],
   ['_24d',['$d',['../_lat_main_8dox.html#ad4d3d02cd03e45682df4ff6ac4078089',1,'LatMain.dox']]],
   ['_24i_5f1',['$i_1',['../_lat_main_8dox.html#a800c71e8708386584c0a441eef7b6806',1,'LatMain.dox']]],
-  ['_24k',['$k',['../_lat_main_8dox.html#acf492bcd3ba6c8d5562cf161fc72cdb4',1,'$k():&#160;LatMain.dox'],['../usage_8dox.html#ab6c3b5c427bb777d8a865deaee632370',1,'$k():&#160;usage.dox']]],
+  ['_24k',['$k',['../usage_8dox.html#acf492bcd3ba6c8d5562cf161fc72cdb4',1,'$k():&#160;usage.dox'],['../_lat_main_8dox.html#a2f997300d28fbf0d1daec115d6d1f60c',1,'$k():&#160;LatMain.dox']]],
   ['_24m',['$m',['../usage_8dox.html#abb7da234ba33b0ee3c8161f8c6720d98',1,'usage.dox']]],
   ['_24m_5f',['$M_',['../results_8dox.html#a47697e291049cbec380a95ce900cf623',1,'results.dox']]],
   ['_24p',['$p',['../_lat_main_8dox.html#a797d96cb2f4ada304aa65e0fb34653ae',1,'LatMain.dox']]],

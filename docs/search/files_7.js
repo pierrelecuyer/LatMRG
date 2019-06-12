@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['korobovlattice_2ecc',['KorobovLattice.cc',['../_korobov_lattice_8cc.html',1,'']]],
-  ['korobovlattice_2eh',['KorobovLattice.h',['../_korobov_lattice_8h.html',1,'']]]
+  ['latmain_2edox',['LatMain.dox',['../_lat_main_8dox.html',1,'']]]
 ];

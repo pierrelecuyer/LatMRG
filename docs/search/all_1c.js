@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['’s',['’s',['../usage_8dox.html#a5d4c2aa95d6bb38406ea8aa0e4d41dd4',1,'usage.dox']]]
+  ['…',['…',['../_lat_main_8dox.html#af637f57a76f3e92e134c143dc3571f1d',1,'LatMain.dox']]]
 ];

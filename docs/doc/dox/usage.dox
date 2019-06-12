@@ -3,7 +3,51 @@
  * 
  * \section compilation Building LatMRG
  *
- * LatMRG is available on [**Github**](https://github.com/savamarc/latmrg).
+ * LatMRG is available on [**Github**](https://github.com/savamarc/latmrg) and
+ * can be downloaded either via `git` or as a `.zip` archive. Once the
+ * you have the repository on a local machine, it is necessary to make sure that
+ * you have the correct dependencies installed:
+ * - [**NTL**](https://www.shoup.net/ntl/) is needed. Follow Shoup's instructions to
+ *   install the library compiled with the option `NTL_THREADS=off` in a standard path.
+ *   - [**gmp**](https://gmplib.org/) is a dependency for NTL. It should be packaged
+ *     by your linux distribution.
+ * - [**Lattice Tester**](https://github.com/umontreal-simul/latticetester) is a
+ *   submodule in the git repository. The instructions bellow present how to
+ *   download and compile Lattice Tester along LatMRG.
+ * - [**git**](https://git-scm.com) will greatly simplify the download process for
+ *   both LatMRG and Lattice Tester.
+ * - [**yafu**](https://sourceforge.net/projects/yafu/) is an external executable
+ *   that is used for factorization. It is used when testing period length.
+ *   If you want this functionnality, download and unpack the executable in the
+ *   `data` directory.
+ *
+ * To build the program, it will also be necessary to have a recent C++ compiler
+ * and Python interpreter installed. Note that we do not provide instructions
+ * to build the library under Windows or macOS, and that the software is only
+ * tested for the `x86_64` architecture. Also note that we currently do not use
+ * automatic `makefile` generation and that you will need to manually modify the
+ * makefile for any non standard path choices.
+ *
+ * First, download the source code via github as a `.zip` unpack it and open a
+ * terminal in that directory, or use git:
+ * ```
+ * git clone --recursive https://github.com/savamarc/LatMRG.git
+ * cd LatMRG
+ * ```
+ * If you downloaded the zip, you will also need to download and extract Lattice
+ * Tester. In the `latticetester` directory. Once this is done, the program can
+ * be compiled in only a few commands. Note that the first one is interractive.
+ * ```
+ * make config_latticetester
+ * make
+ * ```
+ * Once this is done, the executables can be invoked from the local directory
+ * as `./bin/Program data`.
+ *
+ * Note that there is no way to install the program somewhere else. If `yafu` is
+ * used by the program, it might be problematic to move the binaries. This is
+ * because the program uses a relative path to invoke `yafu`. We are aware of
+ * these issues and they will be fixed some time in the future.
  *
  * \section usage_exec LatMRG executables
  *
