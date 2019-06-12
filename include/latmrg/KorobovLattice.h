@@ -1,5 +1,5 @@
-#ifndef LatticeTester__KOROBOVLATTICE_H
-#define LatticeTester__KOROBOVLATTICE_H
+#ifndef LATMRG_KOROBOVLATTICE_H
+#define LATMRG_KOROBOVLATTICE_H
 
 #include "latticetester/Const.h"
 #include "latticetester/IntLattice.h"

@@ -1,5 +1,5 @@
-#ifndef MODULUS_H
-#define MODULUS_H
+#ifndef LATMRG_MODULUS_H
+#define LATMRG_MODULUS_H
 
 #include "latticetester/Util.h"
 

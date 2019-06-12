@@ -1,0 +1,1 @@
+#include "latmrg/FigureOfMerit.h"

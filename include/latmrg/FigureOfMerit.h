@@ -1,45 +1,26 @@
-#ifndef LATMRG_EXEC_H
-#define LATMRG_EXEC_H
-
-/**
- * This file contains functions, classes and code used in SeekRe. This file is
- * used to remove some of the clutter in SeekRe.cc. This is because some of the
- * functions needed already exist but need to be rewritten.
- * */
-#include <ctime>
-#include <cstdlib>
-#include <list>
-
-#include "latticetester/NormaBestLat.h"
-#include "latticetester/Random.h"
-#include "latticetester/Const.h"
-#include "latticetester/Reducer.h"
-
-#include "latmrg/MWCLattice.h"
-#include "latmrg/MMRGLattice.h"
-#include "latmrg/Chrono.h"
-#include "latmrg/ParamReaderExt.h"
-#include "latmrg/Projections.h"
-
-typedef NTL::ZZ Int;
-typedef double Dbl;
-typedef NTL::vector<Int> IntVec;
-typedef NTL::matrix<Int> IntMat;
-typedef NTL::vector<Dbl> DblVec;
-
-using LatticeTester::IntLattice;
-using LatticeTester::Normalizer;
+#ifndef LATMRG_FIGUREOFMERIT_H
+#define LATMRG_FIGUREOFMERIT_H
 
 namespace LatMRG {
 
   /**
-   * This class stores a lattice with the results to a test. This class is used
-   * to agregate the information of a test with its lattice. This class computes
-   * the merit of the lattice as the minimum of the results table given to it
-   * and implements comparison operators to compare the merit of multiple
-   * lattices.
+   * This class is intended to store everything you might need after performing
+   * computations on a lattice. It is intended as a return type for functions
+   * actually performing the computations.
+   *
+   * \todo add stuff here.
+   * This should contain:
+   * - It should be a template class, the lattice type behing what is the template
+   *   parameter
+   * - The projections set
+   * - The merit on each projection
+   * - The shortest vector in each projection
+   * - A recipe for merit computation
+   * - a method to compute merits
+   * - A set of weights to perform a figure of merit computation
+   * - ? a string describing the test
    * */
-  class Test{
+  class FigureOfMerit {
     public:
       Test(const std::string& lattice, const DblVec& results) {
         m_lattice = lattice;
@@ -123,10 +104,11 @@ namespace LatMRG {
   };
 
   /**
-   * This class stores a certain number of `Test` objects. When adding a `Test`
-   * to this class, it first checks
+   * This class stores a certain number of `FigureOfMerit` objects.
+   * New elements are only added if the list is not full or if they have a better
+   * merit than what is on the list.
    * */
-  class TestList{
+  class MeritList{
     public:
       /**
        * Creates a `TestList` that will hold at most `maxLength` `Test`.
@@ -207,10 +189,5 @@ namespace LatMRG {
       }
   };
 
-}
-
-// Variable definitions for executables only
-const std::string delim = "\n========================================"
-"========================================\n\n";
-
+} // end namespace LatMRG
 #endif

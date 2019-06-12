@@ -1,5 +1,5 @@
-#ifndef AWCSWBLATTICE_H
-#define AWCSWBLATTICE_H
+#ifndef LATMRG_AWCSWBLATTICE_H
+#define LATMRG_AWCSWBLATTICE_H
 
 #include "latticetester/Const.h"
 #include "latticetester/Lacunary.h"

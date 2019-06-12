@@ -1,5 +1,6 @@
-#ifndef INTFACTORIZATION_H
-#define INTFACTORIZATION_H
+#ifndef LATMRG_INTFACTORIZATION_H
+#define LATMRG_INTFACTORIZATION_H
+
 #include <vector>
 #include <list>
 #include <string>

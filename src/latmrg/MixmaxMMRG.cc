@@ -1,4 +1,4 @@
-#include "latmrg/mrgtypes/MixmaxMMRG.h"
+#include "latmrg/MixmaxMMRG.h"
 
 #include <NTL/ZZ.h>
 

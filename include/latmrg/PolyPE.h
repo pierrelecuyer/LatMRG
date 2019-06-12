@@ -1,5 +1,5 @@
-#ifndef POLY_H
-#define POLY_H
+#ifndef LATMRG_POLY_H
+#define LATMRG_POLY_H
 
 #include <sstream>
 #include <iostream>

@@ -1,5 +1,5 @@
-#ifndef PARAMREADEREXT_H
-#define PARAMREADEREXT_H
+#ifndef LATMRG_PARAMREADEREXT_H
+#define LATMRG_PARAMREADEREXT_H
 
 #include <iostream>
 #include <fstream>

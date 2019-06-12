@@ -1,5 +1,5 @@
-#ifndef	MRGCOMPONENT_H
-#define	MRGCOMPONENT_H
+#ifndef	LATMRG_MRGCOMPONENT_H
+#define	LATMRG_MRGCOMPONENT_H
 
 
 #include "latmrg/Const.h"

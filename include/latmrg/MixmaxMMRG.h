@@ -1,5 +1,5 @@
-#ifndef MIXMAXMMRG_H
-#define MIXMAXMMRG_H
+#ifndef LATMRG_MIXMAXMMRG_H
+#define LATMRG_MIXMAXMMRG_H
 
 #include <iostream>
 #include <map>

@@ -39,12 +39,12 @@ EX_BUILD = ./bin/examples
 
 # Other source files locations
 MRG_LOW = $(SRC_DIR)/latmrg
-MRG_HIGH  = $(SRC_DIR)/latmrg-high
-MRG_TYPES = $(SRC_DIR)/latmrg/mrgtypes
+#MRG_HIGH  = $(SRC_DIR)/latmrg-high
+#MRG_TYPES = $(SRC_DIR)/latmrg/mrgtypes
 
 # The source files are in SRC_DIR. This grabs subdirectories
-SRCS = $(wildcard $(MRG_LOW)/*.cc) $(wildcard $(MRG_HIGH)/*.cc) \
-       $(wildcard $(MRG_TYPES)/*.cc)
+SRCS = $(wildcard $(MRG_LOW)/*.cc)# $(wildcard $(MRG_HIGH)/*.cc) \
+#       $(wildcard $(MRG_TYPES)/*.cc)
 PROGS_CC = $(filter-out ./progs/SeekMain.cc, $(wildcard $(PRO_DIR)/*.cc))
 EX_CC = $(wildcard $(EX_DIR)/*.cc)
 
@@ -99,8 +99,8 @@ $(LIB_DIR):
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 	mkdir -p $(OBJ_DIR)/latmrg
-	mkdir -p $(OBJ_DIR)/latmrg/mrgtypes
-	mkdir -p $(OBJ_DIR)/latmrg-high
+	#mkdir -p $(OBJ_DIR)/latmrg/mrgtypes
+	#mkdir -p $(OBJ_DIR)/latmrg-high
 	@echo
 
 $(OBJ_DIR)/%.o:$(SRC_DIR)/%.cc $(INC_DIR)/%.h | message_obj $(OBJ_DIR)

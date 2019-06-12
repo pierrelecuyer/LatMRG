@@ -1,5 +1,5 @@
-#ifndef CHRONO_H
-#define CHRONO_H
+#ifndef LATMRG_CHRONO_H
+#define LATMRG_CHRONO_H
 
 #include <string>
 

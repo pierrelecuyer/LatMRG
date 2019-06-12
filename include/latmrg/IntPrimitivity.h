@@ -1,5 +1,5 @@
-#ifndef INTPRIMITIVITY_H
-#define INTPRIMITIVITY_H
+#ifndef LATMRG_INTPRIMITIVITY_H
+#define LATMRG_INTPRIMITIVITY_H
 
 #include "latticetester/ntlwrap.h"
 

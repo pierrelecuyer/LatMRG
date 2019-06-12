@@ -1,5 +1,5 @@
-#ifndef PRIMES_H
-#define PRIMES_H
+#ifndef LATMRG_PRIMES_H
+#define LATMRG_PRIMES_H
 
 #include <iostream>
 #include <fstream>

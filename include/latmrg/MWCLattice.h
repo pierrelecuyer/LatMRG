@@ -1,5 +1,5 @@
-#ifndef MWCLATTICE_H
-#define MWCLATTICE_H
+#ifndef LATMRG_MWCLATTICE_H
+#define LATMRG_MWCLATTICE_H
 
 #include "latticetester/Const.h"
 #include "latticetester/Lacunary.h"

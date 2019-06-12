@@ -1,5 +1,5 @@
-#ifndef MMRGLATTICE_H
-#define MMRGLATTICE_H
+#ifndef LATMRG_MMRGLATTICE_H
+#define LATMRG_MMRGLATTICE_H
 
 #include "latticetester/IntLattice.h"
 
