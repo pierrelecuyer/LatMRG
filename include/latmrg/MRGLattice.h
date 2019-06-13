@@ -27,10 +27,11 @@ namespace LatMRG {
    */
   template<typename Int, typename Dbl>
     class MRGLattice: public LatticeTester::IntLattice<Int, Int, Dbl, Dbl> {
-      private:
+      public:
+        typedef Dbl Float;
+        typedef Int Integ;
         typedef NTL::vector<Int> IntVec;
         typedef NTL::matrix<Int> IntMat;
-      public:
 
         /**
          * Constructor with modulus of congruence \f$m\f$, order of the 
@@ -152,6 +153,16 @@ namespace LatMRG {
          * */
         void setPower2(int* coeffs);
 
+        /**
+         * Builds a projection for this lattice on the set in indices in `proj`.
+         * This differs from the original implementation in `IntLattice` because
+         * it does not compute a dual lattice basis. `lattice` has to be
+         * initialized with the right dimension beforehand.
+         * */
+        void buildProjection(
+            LatticeTester::IntLattice<Int, Int, Dbl, Dbl>* lattice,
+            const LatticeTester::Coordinates& proj) override;
+
       protected:
 
         /**
@@ -201,16 +212,6 @@ namespace LatMRG {
          * Builds the basis of the MRG recurrence in case of lacunary indices.
          */
         void buildLaBasis (int d);
-
-        /**
-         * Builds a projection for this lattice on the set in indices in `proj`.
-         * This differs from the original implementation in `IntLattice` because
-         * it does not compute a dual lattice basis. `lattice` has to be
-         * initialized with the right dimension beforehand.
-         * */
-        void buildProjection(
-            LatticeTester::IntLattice<Int, Int, Dbl, Dbl>* lattice,
-            const LatticeTester::Coordinates& proj) override;
 
         /**
          * \name Used for the calculation of a combined MRG.
@@ -332,34 +333,10 @@ namespace LatMRG {
     m_rho = lat.m_rho;
     m_latType = lat.m_latType;
     m_lacunaryFlag = lat.m_lacunaryFlag;
+    init();
 
-    m_ip = new bool[this->m_order];
-    m_xi.SetLength (this->m_order);
-    m_aCoef.SetLength (this->m_order);
-    m_sta.SetDims (this->m_order, this->m_order);
-
-    int dim = this->getDim();
-    int rmax = std::max(this->m_order, dim);
-    this->m_wSI.SetDims (rmax, dim);
-
-    int i;
-    for (i = 0; i < this->m_order; i++)
+    for (int i = 0; i < this->m_order; i++)
       m_aCoef[i] = lat.m_aCoef[i];
-    /*
-       for (i = 0; i <= m_order; i++)
-       m_xi[i] = lat.m_xi[i];
-       for (i = 0; i <= m_order; i++)
-       m_ip[i] = lat.m_ip[i];
-
-       int j;
-       for (i = 0; i <= m_order; i++)
-       for (j = 0; j <= m_order; j++)
-       m_sta[i][j] = lat.m_sta[i][j];
-
-       for (i = 0; i <= maxDim; i++)
-       for (j = 0; j <= maxDim; j++)
-       m_wSI[i][j] = lat.m_wSI[i][j];
-       */
   }
 
 
@@ -370,6 +347,14 @@ namespace LatMRG {
     {
       if (this == &lat)
         return *this;
+      kill();
+      m_lossRho = lat.m_lossRho;
+      m_rho = lat.m_rho;
+      m_latType = lat.m_latType;
+      m_lacunaryFlag = lat.m_lacunaryFlag;
+
+      for (int i = 0; i < this->m_order; i++)
+        m_aCoef[i] = lat.m_aCoef[i];
       this->m_dim = lat.m_dim;
       this->copyBasis(lat);
       this->m_order = lat.m_order;
@@ -435,9 +420,6 @@ namespace LatMRG {
   template<typename Int, typename Dbl>
     void MRGLattice<Int, Dbl>::init()
     {
-      m_power2 = false;
-      m_pow2_exp = NULL;
-      kill();
       LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::init();
       m_xi.SetLength(this->m_order);
       m_aCoef.SetLength(this->m_order);
@@ -451,6 +433,8 @@ namespace LatMRG {
       int rmax = std::max(this->m_order, this->getDim());
       this->m_wSI.SetDims(rmax, this->getDim());
 
+      m_power2 = false;
+      m_pow2_exp = NULL;
       if (m_latType == ORBIT)
         initOrbit();
     }

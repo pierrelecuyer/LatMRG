@@ -1,66 +1,133 @@
+/*
+ * This file contains 
+ * */
 #ifndef LATMRG_TEST_H
 #define LATMRG_TEST_H
+
+#include "latticetester/IntLattice.h"
+#include "latticetester/Reducer.h"
+
+#include "latmrg/FigureOfMerit.h"
 
 namespace LatMRG {
 
   /**
-   * The next few methods compute a figure of merit depending on the specified
-   * figure of merit. The lattice has to be properly reduced when calling this.
+   * The methods in this namespace can compute the merit of a reduced lattice
+   * for a given projection and return it as a `Dbl`.
+   * \todo add extern definitions
    * */
-  // Shortest vector length
-  Dbl meritL(IntLattice<Int, Int, Dbl, Dbl>& lat,
-      Normalizer<Dbl>* norma) {
-    IntVec shortest(lat.getBasis()[0]);
-    Dbl tmp;
-    LatticeTester::ProdScal<Int>(shortest, shortest, shortest.length(), tmp);
-    return NTL::sqrt(tmp);
+  namespace Merit {
+
+    /**
+     * Computes the length of the shortest vector in the lattice.
+     * */
+    template<typename Lat>
+      typename Lat::Float meritL(Lat& lat) {
+        typename Lat::IntVec shortest(lat.getBasis()[0]);
+        typename Lat::Float tmp;
+        LatticeTester::ProdScal<typename Lat::Integ>(shortest, shortest, shortest.length(), tmp);
+        return NTL::sqrt(tmp);
+      }
+
+    /**
+     * Computes the value of the spectral test normalized with `norma`.
+     * */
+    template<typename Lat>
+      typename Lat::Float meritS(Lat& lat,
+          LatticeTester::Normalizer<typename Lat::Float>* norma) {
+        typename Lat::IntVec shortest(lat.getBasis()[0]);
+        typename Lat::Float tmp;
+        LatticeTester::ProdScal<typename Lat::Integ>(shortest, shortest, shortest.length(), tmp);
+        tmp = NTL::sqrt(tmp)/norma->getBound(shortest.length());
+        if (tmp > 1) tmp = typename Lat::Float(1)/tmp;
+        return tmp;
+      }
+
+    /**
+     * Computes the Beyer ration.
+     * \todo implement this
+     * */
+    template<typename Lat>
+      typename Lat::Float meritB(Lat& lat) {
+        return 0;
+      }
   }
 
-  // Spectral test
-  Dbl meritS(IntLattice<Int, Int, Dbl, Dbl>& lat,
-      Normalizer<Dbl>* norma) {
-    IntVec shortest(lat.getBasis()[0]);
-    Dbl tmp;
-    LatticeTester::ProdScal<Int>(shortest, shortest, shortest.length(), tmp);
-    tmp = NTL::sqrt(tmp)/norma->getBound(shortest.length());
-    if (tmp > 1) tmp = Dbl(1)/tmp;
-    return tmp;
+  /**
+   * Functions in this namespace perform lattice reductions.
+   * \todo have more flexibility in the reduction parameters
+   * */
+  namespace Reductions {
+
+    /**
+     * This performs a BKZ reduction and a shortest vector search.
+     * */
+    template<typename Int, typename Dbl>
+      void reduceFull(LatticeTester::IntLattice<Int, Int, Dbl, Dbl>& lat) {
+        LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lat);
+        red.redBKZ(0.999999, 10, LatticeTester::EXPONENT, lat.getDim());
+        red.shortestVector(lat.getNorm());
+      }
+
+    extern template void reduceFull(LatticeTester::IntLattice<std::int64_t, std::int64_t, double, double>& lat);
+    extern template void reduceFull(LatticeTester::IntLattice<NTL::ZZ, NTL::ZZ, double, double>& lat);
+    extern template void reduceFull(LatticeTester::IntLattice<NTL::ZZ, NTL::ZZ, NTL::RR, NTL::RR>& lat);
+
+    /**
+     * This performs the BKZ reduction.
+     * */
+    template<typename Int, typename Dbl>
+      void reduceBKZ(LatticeTester::IntLattice<Int, Int, Dbl, Dbl>& lat) {
+        LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lat);
+        red.redBKZ(0.999999, 10, LatticeTester::QUADRUPLE, lat.getDim());
+      }
+
+    extern template void reduceBKZ(LatticeTester::IntLattice<std::int64_t, std::int64_t, double, double>& lat);
+    extern template void reduceBKZ(LatticeTester::IntLattice<NTL::ZZ, NTL::ZZ, double, double>& lat);
+    extern template void reduceBKZ(LatticeTester::IntLattice<NTL::ZZ, NTL::ZZ, NTL::RR, NTL::RR>& lat);
+
+    /**
+     * This performs the LLL reduction.
+     * */
+    template<typename Int, typename Dbl>
+      void reduceLLL(LatticeTester::IntLattice<Int, Int, Dbl, Dbl>& lat) {
+        LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lat);
+        red.redLLLNTL(0.999999, LatticeTester::QUADRUPLE, lat.getDim());
+      }
+
+    extern template void reduceLLL(LatticeTester::IntLattice<std::int64_t, std::int64_t, double, double>& lat);
+    extern template void reduceLLL(LatticeTester::IntLattice<NTL::ZZ, NTL::ZZ, double, double>& lat);
+    extern template void reduceLLL(LatticeTester::IntLattice<NTL::ZZ, NTL::ZZ, NTL::RR, NTL::RR>& lat);
+
+    /**
+     * This performs the BKZ reduction before launching a search for a Minkowski
+     * reduced basis.
+     * */
+    template<typename Int, typename Dbl>
+      void reduceMink(LatticeTester::IntLattice<Int, Int, Dbl, Dbl>& lat) {
+        LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lat);
+        red.redBKZ(0.999999, 10, LatticeTester::QUADRUPLE, lat.getDim());
+        red.reductMinkowski(lat.getDim());
+      }
+
+    extern template void reduceMink(LatticeTester::IntLattice<std::int64_t, std::int64_t, double, double>& lat);
+    extern template void reduceMink(LatticeTester::IntLattice<NTL::ZZ, NTL::ZZ, double, double>& lat);
+    extern template void reduceMink(LatticeTester::IntLattice<NTL::ZZ, NTL::ZZ, NTL::RR, NTL::RR>& lat);
   }
 
-  // Beyer ratio
-  Dbl meritB(IntLattice<Int, Int, Dbl, Dbl>& lat,
-      Normalizer<Dbl>* norma) {
-    return 0;
-  }
-
-  void reduceFull(IntLattice<Int, Int, Dbl, Dbl>& lat) {
-    LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lat);
-    red.redBKZ(0.999999, 10, LatticeTester::EXPONENT, lat.getDim());
-    red.shortestVector(lat.getNorm());
-  }
-
-  void reduceBKZ(IntLattice<Int, Int, Dbl, Dbl>& lat) {
-    LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lat);
-    red.redBKZ(0.999999, 10, LatticeTester::QUADRUPLE, lat.getDim());
-  }
-
-  void reduceLLL(IntLattice<Int, Int, Dbl, Dbl>& lat) {
-    LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lat);
-    red.redLLLNTL(0.999999, LatticeTester::QUADRUPLE, lat.getDim());
-  }
-
-  void reduceMink(IntLattice<Int, Int, Dbl, Dbl>& lat) {
-    LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lat);
-    red.redBKZ(0.999999, 10, LatticeTester::QUADRUPLE, lat.getDim());
-    red.reductMinkowski(lat.getDim());
-  }
-
-  // The configuration of a problem
+#ifdef LATMRG_USE_CONFIG
+  /**
+   * This stores the configuration of a problem. This contains many parameters
+   * used in the executables and when using the `test()` function.
+   *
+   * This structure is intended to be included in executables only and needs to
+   * be compiled on demand. To do so, simply `#define LATMRG_USE_CONFIG` before
+   * including this header.
+   * */
   struct Config {
     // For period tests
     DecompType decompm1 = DECOMP, decompr = DECOMP;
     std::string filem1, filer;
-    TestList* bestLattice;
 
     // Data file read parameters
     GenType type;
@@ -97,33 +164,47 @@ namespace LatMRG {
     bool period;
   };
 
-  DblVec test(IntLattice<Int, Int, Dbl, Dbl> & lattice, Config& conf) {
+  bool fillConfig(int argc, char** argv);
+
+#ifdef LATMRG_USE_TEST
+  /**
+   * This performs a test on a lattice. That is, given a lattice and a `Config`
+   * it populates a `FigureOfMerit` objects and returns it.
+   * */
+  template<typename Lat>
+  FigureOfMerit<Lat> test(Lat & lattice, Config& conf) {
+    typedef typename Lat::Integ Int;
+    typedef typename Lat::IntVec IntVec;
+    typedef typename Lat::Float Dbl;
+
     LatticeTester::Normalizer<Dbl>* norma = lattice.getNormalizer(conf.normaType, 0, true);
-    DblVec results(0);
+    std::vector<Dbl> results;
+    std::vector<IntVec> vectors;
     lattice.buildBasis(conf.minDim);
     for (int i = conf.minDim; i <= conf.maxDim; i++){
       // Changing to the dual
       if (conf.use_dual) lattice.dualize();
       // Reducing the lattice
       if (conf.reduction == LatticeTester::FULL)
-        reduceFull(lattice);
+        Reductions::reduceFull(lattice);
       else if (conf.reduction == LatticeTester::LLL)
-        reduceLLL(lattice);
+        Reductions::reduceLLL(lattice);
       else if (conf.reduction == LatticeTester::BKZ)
-        reduceBKZ(lattice);
+        Reductions::reduceBKZ(lattice);
       else if (conf.reduction == LatticeTester::NOPRERED)
-        reduceMink(lattice);
+        Reductions::reduceMink(lattice);
       // Computing the merit of the lattice
       Dbl tmp;
-      if (conf.criterion == LatticeTester::LENGTH) tmp = meritL(lattice, norma);
-      if (conf.criterion == LatticeTester::SPECTRAL) tmp = meritS(lattice, norma);
-      if (conf.criterion == LatticeTester::BEYER) tmp = meritB(lattice, norma);
-      results.append(tmp);
+      if (conf.criterion == LatticeTester::LENGTH) tmp = Merit::meritL(lattice);
+      if (conf.criterion == LatticeTester::SPECTRAL) tmp = Merit::meritS(lattice, norma);
+      if (conf.criterion == LatticeTester::BEYER) tmp = Merit::meritB(lattice);
+      results.push_back(tmp);
+      vectors.push_back(lattice.getBasis()[0]);
 #ifdef LATMRG_SEEK
       // Rejecting lattices that won't make it
       if (tmp < conf.bestLattice->getMerit()) {
         results[0] = 1-conf.best;
-        return results;
+        return FigureOfMerit<Lat>();
       }
 #endif
       // Changing back to the primal and increasing the dimension
@@ -145,32 +226,40 @@ namespace LatMRG {
         if (conf.use_dual) proj_lat.dualize();
         // Reduction
         if (conf.reduction == LatticeTester::FULL)
-          reduceFull(proj_lat);
+          Reductions::reduceFull(proj_lat);
         else if (conf.reduction == LatticeTester::LLL)
-          reduceLLL(proj_lat);
+          Reductions::reduceLLL(proj_lat);
         else if (conf.reduction == LatticeTester::BKZ)
-          reduceBKZ(proj_lat);
+          Reductions::reduceBKZ(proj_lat);
         else if (conf.reduction == LatticeTester::NOPRERED)
-          reduceMink(proj_lat);
+          Reductions::reduceMink(proj_lat);
         // Figure of merit
         Dbl tmp;
-        if (conf.criterion == LatticeTester::LENGTH) tmp = meritL(proj_lat, norma);
-        else if (conf.criterion == LatticeTester::SPECTRAL) tmp = meritS(proj_lat, norma);
-        else if (conf.criterion == LatticeTester::BEYER) tmp = meritB(proj_lat, norma);
-        results.append(tmp);
+        if (conf.criterion == LatticeTester::LENGTH) tmp = Merit::meritL(proj_lat);
+        else if (conf.criterion == LatticeTester::SPECTRAL) tmp = Merit::meritS(proj_lat, norma);
+        else if (conf.criterion == LatticeTester::BEYER) tmp = Merit::meritB(proj_lat);
+        results.push_back(tmp);
+        vectors.push_back(lattice.getBasis()[0]);
 #ifdef LATMRG_SEEK
         // Rejecting lattices that won't make it
         if (tmp < conf.bestLattice->getMerit()) {
           results[0] = 1-conf.best;
-          return results;
+          return FigureOfMerit<Lat>();
         }
 #endif
       }
     }
 
+    FigureOfMerit<Lat> figure(lattice, *conf.proj);
+    figure.addMerit(results, vectors);
+    figure.setFinished();
+    figure.computeMerit("min");
+
     delete norma;
-    return results;
+    return figure;
   }
+#endif
+#endif
 
 } // end namespace LatMRG
 #endif

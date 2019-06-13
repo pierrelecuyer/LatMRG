@@ -7,8 +7,14 @@
  * - input file format correction
  * */
 
-#define LATMRG_TEST
+
 #include "Exec.h"
+
+#define LATMRG_USE_CONFIG
+#define LATMRG_USE_TEST
+#include "latmrg/Test.h"
+#include "latmrg/Projections.h"
+#include "latmrg/FigureOfMerit.h"
 
 using namespace LatMRG;
 using namespace LatticeTester::Random;
@@ -21,70 +27,42 @@ namespace {
   /**
    * Prints the results of the program execution.
    * */
-  void printResults() {
-    std::cout << "LatRe: A program to test Random Number Generators\n";
-    std::cout << delim;
-    std::cout << "Bellow are the results of the tests of " << conf.num_gen << " generators:\n";
-    std::cout << "Generator type: " << toStringGen(conf.type) << "\n";
-    if (conf.type == MRG) {
-      std::cout << "With modulus:   m = " << conf.modulo << " = " << conf.basis << "^"
-        << conf.exponent << (conf.rest>0?"+":"") << (conf.rest!=0?std::to_string(conf.rest):"") << "\n";
-      std::cout << "Of order:       k = " << conf.order << "\n";
-    } else if (conf.type == MWC) {
-    } else if (conf.type == MMRG) {
-    }
-    std::cout << "And " << (conf.period?"full":"any") << " period length\n";
-    std::cout << "The test was:\n";
-    std::cout << "Minimal " << (conf.normaType==LatticeTester::NONE?"":"normalized ")
-      << "shortest" << " non-zero vector length\n";
-    if (conf.normaType != LatticeTester::NONE) {
-      std::cout << "Normalizer used: "
-        << LatticeTester::toStringNorma(conf.normaType) << "\n";
-    }
-    std::cout << "On dimensions and projections:\n";
-    std::cout << conf.proj->toString();
-    std::cout << delim;
-    std::cout << "Allowed running time: " << conf.timeLimit << "s.\n";
-    std::cout << "Actual CPU time: " << timer.toString() << "\n";
-    std::cout << "Number of generators tested: " << conf.num_gen << "\n\n";
-    auto list = conf.bestLattice->getList();
-    for (auto it = list.begin(); it!= list.end(); it++) {
+  template<typename Lat>
+    void printResults(MeritList<Lat>& bestLattice) {
+      std::cout << "LatRe: A program to test Random Number Generators\n";
       std::cout << delim;
+      std::cout << "Bellow are the results of the tests of " << conf.num_gen << " generators:\n";
+      std::cout << "Generator type: " << toStringGen(conf.type) << "\n";
       if (conf.type == MRG) {
-        std::cout << "Coefficients:\n" << (*it).getLattice() << "\n";
-      } else if (conf.type == MWC) {}
-      else if (conf.type == MMRG) {}
-      std::cout << "Merit: " << (*it).getMerit() << "\n";
+        std::cout << "With modulus:   m = " << conf.modulo << " = " << conf.basis << "^"
+          << conf.exponent << (conf.rest>0?"+":"") << (conf.rest!=0?std::to_string(conf.rest):"") << "\n";
+        std::cout << "Of order:       k = " << conf.order << "\n";
+      } else if (conf.type == MWC) {
+      } else if (conf.type == MMRG) {
+      }
+      std::cout << "And " << (conf.period?"full":"any") << " period length\n";
+      std::cout << "The test was:\n";
+      std::cout << "Minimal " << (conf.normaType==LatticeTester::NONE?"":"normalized ")
+        << "shortest" << " non-zero vector length\n";
+      if (conf.normaType != LatticeTester::NONE) {
+        std::cout << "Normalizer used: "
+          << LatticeTester::toStringNorma(conf.normaType) << "\n";
+      }
+      std::cout << "On dimensions and projections:\n";
+      std::cout << conf.proj->toString();
+      std::cout << delim;
+      std::cout << "Allowed running time: " << conf.timeLimit << "s.\n";
+      std::cout << "Actual CPU time: " << timer.toString() << "\n";
+      std::cout << "Number of generators tested: " << conf.num_gen << "\n\n";
+      for (auto it = bestLattice.getList().begin(); it!= bestLattice.getList().end(); it++) {
+        std::cout << delim;
+        if (conf.type == MRG) {
+          std::cout << "Coefficients:\n" << (*it).getLattice() << "\n";
+        } else if (conf.type == MWC) {}
+        else if (conf.type == MMRG) {}
+        std::cout << "Merit: " << (*it).getMerit() << "\n";
+      }
     }
-  }
-
-
-  // This is the main program function. This instanciates evey generator to
-  // test and tests it.
-  void testGenerator() {
-    if (conf.type == MRG) {
-      IntVec temp(conf.order+1);
-      temp[0] = Int(0);
-      for (int i = 1; i < conf.order+1; i++) temp[i] = conf.mult[i-1];
-      MRGLattice<Int, Dbl> mrglat(conf.modulo, temp, conf.maxDim, conf.order, FULL);
-      Test the_test(mrglat.toString(), test(mrglat, conf));
-      conf.bestLattice->add(the_test);
-    } else if (conf.type == MWC) {
-      //MWCLattice<Int, Dbl>* mwclat = 0;
-      //mwclat = nextGenerator(mwclat);
-      //Dbl merit(test(*mwclat));
-      //if (merit > bestMerit) {
-      //  addLattice(mwclat, merit);
-      //}
-    } else if (conf.type == MMRG) {
-      //MMRGLattice<Int, Dbl>* mmrglat = 0;
-      // mmrglat = nextGenerator(mmrglat);
-      // Dbl merit(test(*mmrglat));
-      // if (merit > bestMerit) {
-      //   addLattice(mmrglat, merit);
-      // }
-    }
-  }
 
   // Reads parameters from config file.
   bool readConfigFile(int argc, char **argv) {
@@ -170,13 +148,33 @@ int main (int argc, char **argv) {
   conf.filem1 = "./tempm1" + std::to_string(rand());
   conf.filer = "./tempr" + std::to_string(rand());
   readConfigFile(argc, argv);
-  conf.bestLattice = new TestList(conf.num_gen, true);
   conf.proj = new Projections(conf.numProj, conf.minDim, conf.projDim);
   timer.init();
+
   // Testing the generator(s)
-  testGenerator();
-  printResults();
-  delete conf.bestLattice;
+  if (conf.type == MRG) {
+    MeritList<MRGLattice<Int, Dbl>> bestLattice(conf.num_gen, true);
+    IntVec temp(conf.order+1);
+    temp[0] = Int(0);
+    for (int i = 1; i < conf.order+1; i++) temp[i] = conf.mult[i-1];
+    MRGLattice<Int, Dbl> mrglat(conf.modulo, temp, conf.maxDim, conf.order, FULL);
+    bestLattice.add(test(mrglat, conf));
+    printResults(bestLattice);
+  } else if (conf.type == MWC) {
+    //MWCLattice<Int, Dbl>* mwclat = 0;
+    //mwclat = nextGenerator(mwclat);
+    //Dbl merit(test(*mwclat));
+    //if (merit > bestMerit) {
+    //  addLattice(mwclat, merit);
+    //}
+  } else if (conf.type == MMRG) {
+    //MMRGLattice<Int, Dbl>* mmrglat = 0;
+    // mmrglat = nextGenerator(mmrglat);
+    // Dbl merit(test(*mmrglat));
+    // if (merit > bestMerit) {
+    //   addLattice(mmrglat, merit);
+    // }
+  }
   delete conf.proj;
   return 0;
 }
