@@ -24,10 +24,9 @@ namespace LatMRG {
    */
   template<typename Int, typename Dbl>
     class MMRGLattice: public LatticeTester::IntLattice<Int, Int, Dbl, Dbl> {
-      private:
+      public:
         typedef NTL::vector<Int> IntVec;
         typedef NTL::matrix<Int> IntMat;
-      public:
 
         /**
          * Constructor with modulus of congruence \f$m\f$, generator matrix 

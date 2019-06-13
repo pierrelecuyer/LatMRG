@@ -66,10 +66,9 @@ namespace LatMRG {
    */
   template<typename Int, typename Dbl>
     class MWCLattice: public MRGLattice<Int, Dbl> {
-      private:
+      public:
         typedef NTL::vector<Int> IntVec;
         typedef NTL::matrix<Int> IntMat;
-      public:
 
         /**
          * b is the modulo.

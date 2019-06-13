@@ -8,6 +8,7 @@
 #include "latticetester/Reducer.h"
 
 #include "latmrg/FigureOfMerit.h"
+#include "latmrg/Const.h"
 
 namespace LatMRG {
 
@@ -138,6 +139,8 @@ namespace LatMRG {
     bool use_dual;
 #ifdef LATMRG_SEEK
     bool best;
+    int num_gen = 0;
+    Dbl currentMerit;
 #endif
     // Projection
     int numProj;
@@ -146,7 +149,7 @@ namespace LatMRG {
     Projections* proj;
 
     double timeLimit;
-    int num_gen;
+    int max_gen;
 
     // MRG Specific parameters
     IntVec mult; // MRG multipliers
@@ -202,9 +205,8 @@ namespace LatMRG {
       vectors.push_back(lattice.getBasis()[0]);
 #ifdef LATMRG_SEEK
       // Rejecting lattices that won't make it
-      if (tmp < conf.bestLattice->getMerit()) {
-        results[0] = 1-conf.best;
-        return FigureOfMerit<Lat>();
+      if (tmp < conf.currentMerit) {
+        return FigureOfMerit<Lat>(lattice, *conf.proj);
       }
 #endif
       // Changing back to the primal and increasing the dimension
@@ -218,7 +220,7 @@ namespace LatMRG {
       lattice.buildBasis(conf.projDim[i-1]+1);
       while(!conf.proj->end(1)) {
         // Building the projection
-        IntLattice<Int, Int, Dbl, Dbl> proj_lat(conf.modulo, conf.order, i, true);
+        LatticeTester::IntLattice<Int, Int, Dbl, Dbl> proj_lat(conf.modulo, conf.order, i, true);
         LatticeTester::Coordinates iter(conf.proj->next());
         lattice.buildProjection(&proj_lat, iter);
         norma->setLogDensity(Dbl(-i*log(conf.modulo)
@@ -242,9 +244,8 @@ namespace LatMRG {
         vectors.push_back(lattice.getBasis()[0]);
 #ifdef LATMRG_SEEK
         // Rejecting lattices that won't make it
-        if (tmp < conf.bestLattice->getMerit()) {
-          results[0] = 1-conf.best;
-          return FigureOfMerit<Lat>();
+        if (tmp < conf.currentMerit) {
+          return FigureOfMerit<Lat>(lattice, *conf.proj);
         }
 #endif
       }

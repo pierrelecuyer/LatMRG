@@ -20,6 +20,7 @@
 #include "latmrg/Chrono.h"
 #include "latmrg/ParamReaderExt.h"
 #include "latmrg/Projections.h"
+#include "latmrg/FigureOfMerit.h"
 
 typedef NTL::ZZ Int;
 typedef double Dbl;
@@ -27,12 +28,12 @@ typedef NTL::vector<Int> IntVec;
 typedef NTL::matrix<Int> IntMat;
 typedef NTL::vector<Dbl> DblVec;
 
+#define LATMRG_USE_CONFIG
+#define LATMRG_USE_TEST
+#include "latmrg/Test.h"
+
 using LatticeTester::IntLattice;
 using LatticeTester::Normalizer;
-
-namespace LatMRG {
-
-}
 
 // Variable definitions for executables only
 const std::string delim = "\n========================================"

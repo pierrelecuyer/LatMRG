@@ -6,15 +6,7 @@
  * - Read from generator file
  * - input file format correction
  * */
-
-
 #include "Exec.h"
-
-#define LATMRG_USE_CONFIG
-#define LATMRG_USE_TEST
-#include "latmrg/Test.h"
-#include "latmrg/Projections.h"
-#include "latmrg/FigureOfMerit.h"
 
 using namespace LatMRG;
 using namespace LatticeTester::Random;
@@ -31,7 +23,7 @@ namespace {
     void printResults(MeritList<Lat>& bestLattice) {
       std::cout << "LatRe: A program to test Random Number Generators\n";
       std::cout << delim;
-      std::cout << "Bellow are the results of the tests of " << conf.num_gen << " generators:\n";
+      std::cout << "Bellow are the results of the tests of " << conf.max_gen << " generators:\n";
       std::cout << "Generator type: " << toStringGen(conf.type) << "\n";
       if (conf.type == MRG) {
         std::cout << "With modulus:   m = " << conf.modulo << " = " << conf.basis << "^"
@@ -53,7 +45,7 @@ namespace {
       std::cout << delim;
       std::cout << "Allowed running time: " << conf.timeLimit << "s.\n";
       std::cout << "Actual CPU time: " << timer.toString() << "\n";
-      std::cout << "Number of generators tested: " << conf.num_gen << "\n\n";
+      std::cout << "Number of generators tested: " << conf.max_gen << "\n\n";
       for (auto it = bestLattice.getList().begin(); it!= bestLattice.getList().end(); it++) {
         std::cout << delim;
         if (conf.type == MRG) {
@@ -96,7 +88,7 @@ namespace {
       conf.projDim.push_back((unsigned)(tmp-1));
     }
     ln++;
-    reader.readInt(conf.num_gen, ln++, 0);
+    reader.readInt(conf.max_gen, ln++, 0);
     reader.readDouble(conf.timeLimit, ln++, 0);
     if (conf.type == MRG) {
       reader.readNumber3(conf.modulo, conf.basis, conf.exponent, conf.rest, ln++, 0);
@@ -153,7 +145,7 @@ int main (int argc, char **argv) {
 
   // Testing the generator(s)
   if (conf.type == MRG) {
-    MeritList<MRGLattice<Int, Dbl>> bestLattice(conf.num_gen, true);
+    MeritList<MRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
     IntVec temp(conf.order+1);
     temp[0] = Int(0);
     for (int i = 1; i < conf.order+1; i++) temp[i] = conf.mult[i-1];
