@@ -17,11 +17,9 @@ var searchData=
   ['comp',['comp',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a352173e2e8de40e338a6cecbf654da4e',1,'LatMRG::MRGLattice']]],
   ['compfactor',['CompFactor',['../class_lat_m_r_g_1_1_int_factorization_1_1_comp_factor.html',1,'LatMRG::IntFactorization']]],
   ['component',['component',['../results_8dox.html#a76c9707059261ceaceed7f8c949d939d',1,'results.dox']]],
-  ['computemerit',['computeMerit',['../class_lat_m_r_g_1_1_figure_of_merit.html#aeecea4c9c75ac4560b4da6dcfb9bd992',1,'LatMRG::FigureOfMerit']]],
-  ['config',['Config',['../struct_lat_m_r_g_1_1_config.html',1,'LatMRG']]],
+  ['computemerit',['computeMerit',['../class_lat_m_r_g_1_1_figure_of_merit.html#adc0c78ea0ad04f69f537254ce9d2743a',1,'LatMRG::FigureOfMerit']]],
   ['const_2ecc',['Const.cc',['../_const_8cc.html',1,'']]],
   ['const_2eh',['Const.h',['../_const_8h.html',1,'']]],
   ['coordinates',['coordinates',['../intro_8dox.html#a47077804a5bda7739905d45163388c43',1,'intro.dox']]],
-  ['criterion',['criterion',['../struct_lat_m_r_g_1_1_config.html#a81334d53d3ff87df304d4977ef0f8041',1,'LatMRG::Config']]],
   ['compilation_20and_20executables_20usage',['Compilation and Executables Usage',['../usage.html',1,'']]]
 ];

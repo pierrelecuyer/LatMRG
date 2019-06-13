@@ -1,4 +1,4 @@
 var namespaces_dup =
 [
-    [ "LatMRG", "namespace_lat_m_r_g.html", null ]
+    [ "LatMRG", "namespace_lat_m_r_g.html", "namespace_lat_m_r_g" ]
 ];

@@ -4,10 +4,9 @@ var searchData=
   ['theory_20on_20lattices',['Theory on Lattices',['../lattice_back.html',1,'']]],
   ['table',['table',['../_lat_main_8dox.html#ab463a405724dbf010e5c15af11933a6e',1,'LatMain.dox']]],
   ['terminal_3c_2ftt_20_3e',['Terminal&lt;/tt &gt;',['../_lat_main_8dox.html#acd21f468e997c4a0fb5c0829733fae04',1,'LatMain.dox']]],
-  ['test',['Test',['../class_lat_m_r_g_1_1_figure_of_merit.html#aabe6cdaa81ed67cfea6679e8cb35620e',1,'LatMRG::FigureOfMerit::Test()'],['../_lat_main_8dox.html#a360a0ed7be177dae99a8932c7ea37896',1,'test():&#160;LatMain.dox'],['../namespace_lat_m_r_g.html#a56c72371ba3a144349f71ebc8d46674e',1,'LatMRG::test()']]],
+  ['test',['test',['../_lat_main_8dox.html#a360a0ed7be177dae99a8932c7ea37896',1,'LatMain.dox']]],
   ['test_2ecc',['Test.cc',['../_test_8cc.html',1,'']]],
   ['test_2eh',['Test.h',['../_test_8h.html',1,'']]],
-  ['testlist',['TestList',['../class_lat_m_r_g_1_1_merit_list.html#aca98a02479929aebd926c14830af86c7',1,'LatMRG::MeritList']]],
   ['tex',['tex',['../_lat_main_8dox.html#a3901b5556111f0eab9b0d4f6a4853d8c',1,'tex():&#160;LatMain.dox'],['../_lat_main_8dox.html#afb082316abc67ded1c8f9494e95b72a3',1,'tex(the output will be written in LaTeX format in a file). In the last *two cases:&#160;LatMain.dox']]],
   ['tex_3c_2fcode_20_3e',['tex&lt;/code &gt;',['../usage_8dox.html#af8f42680300b38a2f3e2dc0512534aa6',1,'usage.dox']]],
   ['tex_3c_2ftt_20_3e',['Tex&lt;/tt &gt;',['../_lat_main_8dox.html#a680b4ce94bc8483a82b3ce4c2ff7c0b0',1,'LatMain.dox']]],
@@ -19,7 +18,6 @@ var searchData=
   ['tick',['tick',['../class_lat_m_r_g_1_1_chrono.html#a88dffe4529cf202e8664f2e8afac1dcd',1,'LatMRG::Chrono']]],
   ['time',['time',['../usage_8dox.html#a96bf98f744f900ada4de233aa2f444ea',1,'usage.dox']]],
   ['timeformat',['TimeFormat',['../class_lat_m_r_g_1_1_chrono.html#aeb39423e55e377aac6b2aa7a2006108a',1,'LatMRG::Chrono']]],
-  ['timelimit',['timeLimit',['../struct_lat_m_r_g_1_1_config.html#a7cb361b3f43d34377ad342a1481199f6',1,'LatMRG::Config']]],
   ['timeover',['timeOver',['../class_lat_m_r_g_1_1_chrono.html#a1f10d7e8705dfa18488c73000dc164a0',1,'LatMRG::Chrono']]],
   ['timer',['timer',['../class_lat_m_r_g_1_1_primes.html#a91f2e8aeb71f189482f43b285557a8b5',1,'LatMRG::Primes']]],
   ['todo_20list',['Todo List',['../todo.html',1,'']]],
@@ -37,5 +35,5 @@ var searchData=
   ['true',['true',['../_lat_main_8dox.html#a2bcb8f573c171af7b72430d86cf7f754',1,'LatMain.dox']]],
   ['true_3c_2ftt_20_3e',['true&lt;/tt &gt;',['../_lat_main_8dox.html#a5b8d6e2af64103ad6d65f1c69eb8dddb',1,'LatMain.dox']]],
   ['tutorial_20and_20library_20usage',['Tutorial and Library Usage',['../tutorial.html',1,'']]],
-  ['type',['type',['../struct_lat_m_r_g_1_1_config.html#ad10518f6f634de0fd2237df44a1e0b52',1,'LatMRG::Config::type()'],['../usage_8dox.html#afa0450d4eb77d82a632616bf0ece59a9',1,'type():&#160;usage.dox']]]
+  ['type',['type',['../usage_8dox.html#afa0450d4eb77d82a632616bf0ece59a9',1,'usage.dox']]]
 ];

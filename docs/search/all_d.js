@@ -15,5 +15,7 @@ var searchData=
   ['le2',['le2',['../usage_8dox.html#af5a3f702b7e3ddea6eba96fe30f579b3',1,'usage.dox']]],
   ['lemme2',['lemme2',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a396e072c6ff183750b593b28edf20e97',1,'LatMRG::MRGLattice']]],
   ['limit',['limit',['../usage_8dox.html#ab797035fe6c39d1d53ad3f87bf64ff85',1,'usage.dox']]],
-  ['lt',['lt',['../_lat_main_8dox.html#a857c8c8ca640fb2283d751a715bd1ee9',1,'LatMain.dox']]]
+  ['lt',['lt',['../_lat_main_8dox.html#a857c8c8ca640fb2283d751a715bd1ee9',1,'LatMain.dox']]],
+  ['merit',['Merit',['../namespace_lat_m_r_g_1_1_merit.html',1,'LatMRG']]],
+  ['reductions',['Reductions',['../namespace_lat_m_r_g_1_1_reductions.html',1,'LatMRG']]]
 ];

@@ -16,6 +16,7 @@ var searchData=
   ['initstates',['initStates',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a73561c6e51b52d3cb9b6613728799a5f',1,'LatMRG::MRGLattice']]],
   ['insertion',['insertion',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a84c2882d4eed257da8723b0b733ac58c',1,'LatMRG::MRGLattice']]],
   ['instructions',['instructions',['../usage_8dox.html#a3d0ea6b37e8cdb2fdadce74bf28eebe0',1,'usage.dox']]],
+  ['integ',['Integ',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a0d1866316569e7004910b8a435018153',1,'LatMRG::MRGLattice']]],
   ['intfactorization',['IntFactorization',['../class_lat_m_r_g_1_1_int_factorization.html',1,'LatMRG::IntFactorization&lt; Int &gt;'],['../class_lat_m_r_g_1_1_int_factorization.html#a513290fb20f9e20925c3f7c9148a325e',1,'LatMRG::IntFactorization::IntFactorization(const Int &amp;x)'],['../class_lat_m_r_g_1_1_int_factorization.html#a36054e558556bcff6d5381b165917c93',1,'LatMRG::IntFactorization::IntFactorization(const char *fname=0)'],['../class_lat_m_r_g_1_1_int_factorization.html#a3be9875a318fa2d8a89eabebdef60679',1,'LatMRG::IntFactorization::IntFactorization(const IntFactorization &amp;f)']]],
   ['intfactorization_2ecc',['IntFactorization.cc',['../_int_factorization_8cc.html',1,'']]],
   ['intfactorization_2eh',['IntFactorization.h',['../_int_factorization_8h.html',1,'']]],

@@ -16,5 +16,5 @@ var dir_0884b15a7641f5bacee43c6a51860fc7 =
     [ "ParamReaderExt.cc", "_param_reader_ext_8cc.html", null ],
     [ "PolyPE.cc", "_poly_p_e_8cc.html", null ],
     [ "Projections.cc", "_projections_8cc.html", null ],
-    [ "Test.cc", "_test_8cc.html", null ]
+    [ "Test.cc", "_test_8cc.html", "_test_8cc" ]
 ];

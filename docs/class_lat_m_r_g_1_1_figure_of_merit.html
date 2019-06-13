@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.15"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>LatMRG Guide: LatMRG::FigureOfMerit Class Reference</title>
+<title>LatMRG Guide: LatMRG::FigureOfMerit&lt; Lat &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -95,10 +95,11 @@ $(document).ready(function(){initNavTree('class_lat_m_r_g_1_1_figure_of_merit.ht
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-types">Private Types</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="class_lat_m_r_g_1_1_figure_of_merit-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">LatMRG::FigureOfMerit Class Reference</div>  </div>
+<div class="title">LatMRG::FigureOfMerit&lt; Lat &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -109,74 +110,125 @@ $(document).ready(function(){initNavTree('class_lat_m_r_g_1_1_figure_of_merit.ht
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aeecea4c9c75ac4560b4da6dcfb9bd992"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#aeecea4c9c75ac4560b4da6dcfb9bd992">computeMerit</a> ()</td></tr>
-<tr class="memdesc:aeecea4c9c75ac4560b4da6dcfb9bd992"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the minimum of <code>m_results</code> and stores it in <code>m_merit</code>.  <a href="#aeecea4c9c75ac4560b4da6dcfb9bd992">More...</a><br /></td></tr>
-<tr class="separator:aeecea4c9c75ac4560b4da6dcfb9bd992"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab0ffca5419f2c5f25cbdc8cce8c1249b"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#ab0ffca5419f2c5f25cbdc8cce8c1249b">getLattice</a> ()</td></tr>
-<tr class="memdesc:ab0ffca5419f2c5f25cbdc8cce8c1249b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the string associated with this test.  <a href="#ab0ffca5419f2c5f25cbdc8cce8c1249b">More...</a><br /></td></tr>
-<tr class="separator:ab0ffca5419f2c5f25cbdc8cce8c1249b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acb80ade0f94c68b7499a103af8bcede0"><td class="memItemLeft" align="right" valign="top">Dbl&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#acb80ade0f94c68b7499a103af8bcede0">getMerit</a> ()</td></tr>
-<tr class="memdesc:acb80ade0f94c68b7499a103af8bcede0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>m_merit</code>.  <a href="#acb80ade0f94c68b7499a103af8bcede0">More...</a><br /></td></tr>
-<tr class="separator:acb80ade0f94c68b7499a103af8bcede0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a13a1aad725a7d91ff68b582be2799712"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a13a1aad725a7d91ff68b582be2799712">operator!=</a> (const <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#aabe6cdaa81ed67cfea6679e8cb35620e">Test</a> &amp;right)</td></tr>
-<tr class="memdesc:a13a1aad725a7d91ff68b582be2799712"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares <code>m_merit</code>.  <a href="#a13a1aad725a7d91ff68b582be2799712">More...</a><br /></td></tr>
-<tr class="separator:a13a1aad725a7d91ff68b582be2799712"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a467c8c7b8b618f6499da987e2f79dec3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a467c8c7b8b618f6499da987e2f79dec3">operator&lt;</a> (const <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#aabe6cdaa81ed67cfea6679e8cb35620e">Test</a> &amp;right)</td></tr>
-<tr class="memdesc:a467c8c7b8b618f6499da987e2f79dec3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares <code>m_merit</code>.  <a href="#a467c8c7b8b618f6499da987e2f79dec3">More...</a><br /></td></tr>
-<tr class="separator:a467c8c7b8b618f6499da987e2f79dec3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a40f7eda0f4a5ebd51f32c69f2ffc9a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a7a40f7eda0f4a5ebd51f32c69f2ffc9a">operator&lt;=</a> (const <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#aabe6cdaa81ed67cfea6679e8cb35620e">Test</a> &amp;right)</td></tr>
-<tr class="memdesc:a7a40f7eda0f4a5ebd51f32c69f2ffc9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares <code>m_merit</code>.  <a href="#a7a40f7eda0f4a5ebd51f32c69f2ffc9a">More...</a><br /></td></tr>
-<tr class="separator:a7a40f7eda0f4a5ebd51f32c69f2ffc9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4760a195cea86feb7108e4e180a33721"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a4760a195cea86feb7108e4e180a33721">operator==</a> (const <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#aabe6cdaa81ed67cfea6679e8cb35620e">Test</a> &amp;right)</td></tr>
-<tr class="memdesc:a4760a195cea86feb7108e4e180a33721"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares <code>m_merit</code>.  <a href="#a4760a195cea86feb7108e4e180a33721">More...</a><br /></td></tr>
-<tr class="separator:a4760a195cea86feb7108e4e180a33721"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8d8b8e036bdd29a08d836c7261f9775c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a8d8b8e036bdd29a08d836c7261f9775c">operator&gt;</a> (const <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#aabe6cdaa81ed67cfea6679e8cb35620e">Test</a> &amp;right)</td></tr>
-<tr class="memdesc:a8d8b8e036bdd29a08d836c7261f9775c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares <code>m_merit</code>.  <a href="#a8d8b8e036bdd29a08d836c7261f9775c">More...</a><br /></td></tr>
-<tr class="separator:a8d8b8e036bdd29a08d836c7261f9775c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5ace87173e04086cb4200e43de47eace"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a5ace87173e04086cb4200e43de47eace">operator&gt;=</a> (const <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#aabe6cdaa81ed67cfea6679e8cb35620e">Test</a> &amp;right)</td></tr>
-<tr class="memdesc:a5ace87173e04086cb4200e43de47eace"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares <code>m_merit</code>.  <a href="#a5ace87173e04086cb4200e43de47eace">More...</a><br /></td></tr>
-<tr class="separator:a5ace87173e04086cb4200e43de47eace"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aabe6cdaa81ed67cfea6679e8cb35620e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#aabe6cdaa81ed67cfea6679e8cb35620e">Test</a> (const std::string &amp;<a class="el" href="_lat_main_8dox.html#a2f6251da96f34cb21e457bc99f332a5d">lattice</a>, const DblVec &amp;<a class="el" href="_lat_main_8dox.html#ac7afd42f128caaa8265262e56f3b5ec6">results</a>)</td></tr>
-<tr class="separator:aabe6cdaa81ed67cfea6679e8cb35620e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afcb03bb3f7c500b00329a355326943b1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#afcb03bb3f7c500b00329a355326943b1">FigureOfMerit</a> ()</td></tr>
+<tr class="separator:afcb03bb3f7c500b00329a355326943b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab824d0e19bad1f8a8c88349a404acc4c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#ab824d0e19bad1f8a8c88349a404acc4c">FigureOfMerit</a> (const Lat &amp;<a class="el" href="_lat_main_8dox.html#a2f6251da96f34cb21e457bc99f332a5d">lattice</a>, const <a class="el" href="class_lat_m_r_g_1_1_projections.html">Projections</a> &amp;proj)</td></tr>
+<tr class="memdesc:ab824d0e19bad1f8a8c88349a404acc4c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the object for <code>lattice</code> and <code>proj</code>.  <a href="#ab824d0e19bad1f8a8c88349a404acc4c">More...</a><br /></td></tr>
+<tr class="separator:ab824d0e19bad1f8a8c88349a404acc4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac223c30ffb16b209b4d0b38f62501748"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#ac223c30ffb16b209b4d0b38f62501748">addMerit</a> (std::vector&lt; <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a739faa2efa53f137053cfc6cc70174ec">Dbl</a> &gt; &amp;merits, std::vector&lt; typename Lat::IntVec &gt; &amp;vectors)</td></tr>
+<tr class="memdesc:ac223c30ffb16b209b4d0b38f62501748"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets <code>m_merits</code> to <code>merits</code> and <code>m_vectors</code> to <code>vectors</code>.  <a href="#ac223c30ffb16b209b4d0b38f62501748">More...</a><br /></td></tr>
+<tr class="separator:ac223c30ffb16b209b4d0b38f62501748"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc0c78ea0ad04f69f537254ce9d2743a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#adc0c78ea0ad04f69f537254ce9d2743a">computeMerit</a> (const std::string strat)</td></tr>
+<tr class="memdesc:adc0c78ea0ad04f69f537254ce9d2743a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the minimum, if <code>strat == "min"</code>, or the maximum, if <code>strat == "max"</code>, of <code>m_merits</code> and stores it in <code>m_merit</code>.  <a href="#adc0c78ea0ad04f69f537254ce9d2743a">More...</a><br /></td></tr>
+<tr class="separator:adc0c78ea0ad04f69f537254ce9d2743a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeaedeb63c35b0bd078cb5a29ff05e844"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#aeaedeb63c35b0bd078cb5a29ff05e844">finished</a> ()</td></tr>
+<tr class="memdesc:aeaedeb63c35b0bd078cb5a29ff05e844"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>m_finished</code>.  <a href="#aeaedeb63c35b0bd078cb5a29ff05e844">More...</a><br /></td></tr>
+<tr class="separator:aeaedeb63c35b0bd078cb5a29ff05e844"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3871c326d9aa35dfc7f0432a846da630"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a3871c326d9aa35dfc7f0432a846da630">getLattice</a> ()</td></tr>
+<tr class="memdesc:a3871c326d9aa35dfc7f0432a846da630"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the string associated with this test.  <a href="#a3871c326d9aa35dfc7f0432a846da630">More...</a><br /></td></tr>
+<tr class="separator:a3871c326d9aa35dfc7f0432a846da630"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33bc04646af174536e4a957af57c419c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a739faa2efa53f137053cfc6cc70174ec">Dbl</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a33bc04646af174536e4a957af57c419c">getMerit</a> ()</td></tr>
+<tr class="memdesc:a33bc04646af174536e4a957af57c419c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns <code>m_merit</code>.  <a href="#a33bc04646af174536e4a957af57c419c">More...</a><br /></td></tr>
+<tr class="separator:a33bc04646af174536e4a957af57c419c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef4ab31221f2c62973e8ef777408d419"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#aef4ab31221f2c62973e8ef777408d419">operator!=</a> (const <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">FigureOfMerit</a>&lt; Lat &gt; &amp;right)</td></tr>
+<tr class="memdesc:aef4ab31221f2c62973e8ef777408d419"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares <code>m_merit</code>.  <a href="#aef4ab31221f2c62973e8ef777408d419">More...</a><br /></td></tr>
+<tr class="separator:aef4ab31221f2c62973e8ef777408d419"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3435a15ed70ee964e01c75c2d0d94a9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#aa3435a15ed70ee964e01c75c2d0d94a9">operator&lt;</a> (const <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">FigureOfMerit</a>&lt; Lat &gt; &amp;right)</td></tr>
+<tr class="memdesc:aa3435a15ed70ee964e01c75c2d0d94a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares <code>m_merit</code>.  <a href="#aa3435a15ed70ee964e01c75c2d0d94a9">More...</a><br /></td></tr>
+<tr class="separator:aa3435a15ed70ee964e01c75c2d0d94a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25733b95771385f877e6ee4e6300d4fd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a25733b95771385f877e6ee4e6300d4fd">operator&lt;=</a> (const <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">FigureOfMerit</a>&lt; Lat &gt; &amp;right)</td></tr>
+<tr class="memdesc:a25733b95771385f877e6ee4e6300d4fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares <code>m_merit</code>.  <a href="#a25733b95771385f877e6ee4e6300d4fd">More...</a><br /></td></tr>
+<tr class="separator:a25733b95771385f877e6ee4e6300d4fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac62b39663a2a730e72a6d84e2296f03b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#ac62b39663a2a730e72a6d84e2296f03b">operator==</a> (const <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">FigureOfMerit</a>&lt; Lat &gt; &amp;right)</td></tr>
+<tr class="memdesc:ac62b39663a2a730e72a6d84e2296f03b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares <code>m_merit</code>.  <a href="#ac62b39663a2a730e72a6d84e2296f03b">More...</a><br /></td></tr>
+<tr class="separator:ac62b39663a2a730e72a6d84e2296f03b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee7de33f37fb537015c98aec31d2bdf7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#aee7de33f37fb537015c98aec31d2bdf7">operator&gt;</a> (const <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">FigureOfMerit</a>&lt; Lat &gt; &amp;right)</td></tr>
+<tr class="memdesc:aee7de33f37fb537015c98aec31d2bdf7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares <code>m_merit</code>.  <a href="#aee7de33f37fb537015c98aec31d2bdf7">More...</a><br /></td></tr>
+<tr class="separator:aee7de33f37fb537015c98aec31d2bdf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8287809babcd07e8a89362cca08cfd01"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a8287809babcd07e8a89362cca08cfd01">operator&gt;=</a> (const <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">FigureOfMerit</a>&lt; Lat &gt; &amp;right)</td></tr>
+<tr class="memdesc:a8287809babcd07e8a89362cca08cfd01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares <code>m_merit</code>.  <a href="#a8287809babcd07e8a89362cca08cfd01">More...</a><br /></td></tr>
+<tr class="separator:a8287809babcd07e8a89362cca08cfd01"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae8ced005b332715e38ba6bab9927481d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#ae8ced005b332715e38ba6bab9927481d">setFinished</a> ()</td></tr>
+<tr class="memdesc:ae8ced005b332715e38ba6bab9927481d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets finished to <code>true</code>.  <a href="#ae8ced005b332715e38ba6bab9927481d">More...</a><br /></td></tr>
+<tr class="separator:ae8ced005b332715e38ba6bab9927481d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-types"></a>
+Private Types</h2></td></tr>
+<tr class="memitem:a739faa2efa53f137053cfc6cc70174ec"><td class="memItemLeft" align="right" valign="top">typedef Lat::Float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a739faa2efa53f137053cfc6cc70174ec">Dbl</a></td></tr>
+<tr class="separator:a739faa2efa53f137053cfc6cc70174ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a78ad23d4bec8dee74c43fa4bbe78bd1a"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a78ad23d4bec8dee74c43fa4bbe78bd1a">m_lattice</a></td></tr>
-<tr class="memdesc:a78ad23d4bec8dee74c43fa4bbe78bd1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">The lattice that has been tested.  <a href="#a78ad23d4bec8dee74c43fa4bbe78bd1a">More...</a><br /></td></tr>
-<tr class="separator:a78ad23d4bec8dee74c43fa4bbe78bd1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a113c4fb80293dc71d200902e4a494ff6"><td class="memItemLeft" align="right" valign="top">Dbl&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a113c4fb80293dc71d200902e4a494ff6">m_merit</a></td></tr>
-<tr class="memdesc:a113c4fb80293dc71d200902e4a494ff6"><td class="mdescLeft">&#160;</td><td class="mdescRight">The merit of the lattice.  <a href="#a113c4fb80293dc71d200902e4a494ff6">More...</a><br /></td></tr>
-<tr class="separator:a113c4fb80293dc71d200902e4a494ff6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef8aeb7556d64adc88f7ea4755f96bc7"><td class="memItemLeft" align="right" valign="top">DblVec&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#aef8aeb7556d64adc88f7ea4755f96bc7">m_results</a></td></tr>
-<tr class="memdesc:aef8aeb7556d64adc88f7ea4755f96bc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">The normalized results of the test.  <a href="#aef8aeb7556d64adc88f7ea4755f96bc7">More...</a><br /></td></tr>
-<tr class="separator:aef8aeb7556d64adc88f7ea4755f96bc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8eec1b955c0eca825c26ec9dbb2f57b3"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a8eec1b955c0eca825c26ec9dbb2f57b3">m_best_worst</a></td></tr>
+<tr class="memdesc:a8eec1b955c0eca825c26ec9dbb2f57b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indice of the best or worst value in <code>m_merits</code>.  <a href="#a8eec1b955c0eca825c26ec9dbb2f57b3">More...</a><br /></td></tr>
+<tr class="separator:a8eec1b955c0eca825c26ec9dbb2f57b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a9f8b92284987a581c8712dfac71039"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a1a9f8b92284987a581c8712dfac71039">m_finished</a></td></tr>
+<tr class="memdesc:a1a9f8b92284987a581c8712dfac71039"><td class="mdescLeft">&#160;</td><td class="mdescRight"><code>true</code> if this contains a merit value for all projections, <code>false</code> otherwise.  <a href="#a1a9f8b92284987a581c8712dfac71039">More...</a><br /></td></tr>
+<tr class="separator:a1a9f8b92284987a581c8712dfac71039"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4d80e5b315a7d79af1608181a998c59"><td class="memItemLeft" align="right" valign="top">Lat&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#ac4d80e5b315a7d79af1608181a998c59">m_lattice</a></td></tr>
+<tr class="memdesc:ac4d80e5b315a7d79af1608181a998c59"><td class="mdescLeft">&#160;</td><td class="mdescRight">The lattice that has been tested.  <a href="#ac4d80e5b315a7d79af1608181a998c59">More...</a><br /></td></tr>
+<tr class="separator:ac4d80e5b315a7d79af1608181a998c59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f3d07138f41e148ff360d2c8b29af76"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a739faa2efa53f137053cfc6cc70174ec">Dbl</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a3f3d07138f41e148ff360d2c8b29af76">m_merit</a></td></tr>
+<tr class="memdesc:a3f3d07138f41e148ff360d2c8b29af76"><td class="mdescLeft">&#160;</td><td class="mdescRight">The merit of the lattice.  <a href="#a3f3d07138f41e148ff360d2c8b29af76">More...</a><br /></td></tr>
+<tr class="separator:a3f3d07138f41e148ff360d2c8b29af76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9aa636301352994f52da987fef682bf5"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a739faa2efa53f137053cfc6cc70174ec">Dbl</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a9aa636301352994f52da987fef682bf5">m_merits</a></td></tr>
+<tr class="memdesc:a9aa636301352994f52da987fef682bf5"><td class="mdescLeft">&#160;</td><td class="mdescRight">The merit for each test in the same sequence as the projections in <code>m_projSet</code>.  <a href="#a9aa636301352994f52da987fef682bf5">More...</a><br /></td></tr>
+<tr class="separator:a9aa636301352994f52da987fef682bf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50e55a1473c70b7ecf1031475c86d4b3"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a50e55a1473c70b7ecf1031475c86d4b3">m_numProj</a></td></tr>
+<tr class="memdesc:a50e55a1473c70b7ecf1031475c86d4b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">The number of projections this has been tested over.  <a href="#a50e55a1473c70b7ecf1031475c86d4b3">More...</a><br /></td></tr>
+<tr class="separator:a50e55a1473c70b7ecf1031475c86d4b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a033a2c1238c3f1eb3b82e34e66b1fac6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_lat_m_r_g_1_1_projections.html">Projections</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a033a2c1238c3f1eb3b82e34e66b1fac6">m_projSet</a></td></tr>
+<tr class="memdesc:a033a2c1238c3f1eb3b82e34e66b1fac6"><td class="mdescLeft">&#160;</td><td class="mdescRight">The projections used in this object.  <a href="#a033a2c1238c3f1eb3b82e34e66b1fac6">More...</a><br /></td></tr>
+<tr class="separator:a033a2c1238c3f1eb3b82e34e66b1fac6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94d9212ac4479e6f241d0adef0141d2c"><td class="memItemLeft" align="right" valign="top">std::vector&lt; typename Lat::IntVec &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a94d9212ac4479e6f241d0adef0141d2c">m_vectors</a></td></tr>
+<tr class="memdesc:a94d9212ac4479e6f241d0adef0141d2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The shortest vectors for each projection in the same sequence as in <code>m_projSet</code>.  <a href="#a94d9212ac4479e6f241d0adef0141d2c">More...</a><br /></td></tr>
+<tr class="separator:a94d9212ac4479e6f241d0adef0141d2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>This class is intended to store everything you might need after performing computations on a lattice. </p>
-<p>It is intended as a return type for functions actually performing the computations.</p>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000002">Todo:</a></b></dt><dd>add stuff here. This should contain:<ul>
-<li>It should be a template class, the lattice type behing what is the template parameter</li>
-<li>The projections set</li>
-<li>The merit on each projection</li>
-<li>The shortest vector in each projection</li>
-<li>A recipe for merit computation</li>
-<li>a method to compute merits</li>
-<li>A set of weights to perform a figure of merit computation</li>
-<li>? a string describing the test </li>
-</ul>
-</dd></dl>
-</div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="aeecea4c9c75ac4560b4da6dcfb9bd992"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeecea4c9c75ac4560b4da6dcfb9bd992">&#9670;&nbsp;</a></span>computeMerit()</h2>
+<div class="textblock"><h3>template&lt;typename Lat&gt;<br />
+class LatMRG::FigureOfMerit&lt; Lat &gt;</h3>
+
+<p>This class is intended to store everything you might need after performing computations on a lattice. </p>
+<p>It is intended as a return type for functions actually performing the computations. </p>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a id="a739faa2efa53f137053cfc6cc70174ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a739faa2efa53f137053cfc6cc70174ec">&#9670;&nbsp;</a></span>Dbl</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename Lat &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void LatMRG::FigureOfMerit::computeMerit </td>
+          <td class="memname">typedef Lat::Float <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::<a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a739faa2efa53f137053cfc6cc70174ec">Dbl</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="afcb03bb3f7c500b00329a355326943b1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afcb03bb3f7c500b00329a355326943b1">&#9670;&nbsp;</a></span>FigureOfMerit() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Lat &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::<a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">FigureOfMerit</a> </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -189,21 +241,162 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Computes the minimum of <code>m_results</code> and stores it in <code>m_merit</code>. </p>
-
 </div>
 </div>
-<a id="ab0ffca5419f2c5f25cbdc8cce8c1249b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab0ffca5419f2c5f25cbdc8cce8c1249b">&#9670;&nbsp;</a></span>getLattice()</h2>
+<a id="ab824d0e19bad1f8a8c88349a404acc4c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab824d0e19bad1f8a8c88349a404acc4c">&#9670;&nbsp;</a></span>FigureOfMerit() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename Lat &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::string LatMRG::FigureOfMerit::getLattice </td>
+          <td class="memname"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::<a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">FigureOfMerit</a> </td>
+          <td>(</td>
+          <td class="paramtype">const Lat &amp;&#160;</td>
+          <td class="paramname"><em>lattice</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="class_lat_m_r_g_1_1_projections.html">Projections</a> &amp;&#160;</td>
+          <td class="paramname"><em>proj</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Initializes the object for <code>lattice</code> and <code>proj</code>. </p>
+<p>This won't contain any merit value. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="ac223c30ffb16b209b4d0b38f62501748"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac223c30ffb16b209b4d0b38f62501748">&#9670;&nbsp;</a></span>addMerit()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Lat &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::addMerit </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a739faa2efa53f137053cfc6cc70174ec">Dbl</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>merits</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; typename Lat::IntVec &gt; &amp;&#160;</td>
+          <td class="paramname"><em>vectors</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets <code>m_merits</code> to <code>merits</code> and <code>m_vectors</code> to <code>vectors</code>. </p>
+
+</div>
+</div>
+<a id="adc0c78ea0ad04f69f537254ce9d2743a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adc0c78ea0ad04f69f537254ce9d2743a">&#9670;&nbsp;</a></span>computeMerit()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Lat &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::computeMerit </td>
+          <td>(</td>
+          <td class="paramtype">const std::string&#160;</td>
+          <td class="paramname"><em>strat</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Computes the minimum, if <code>strat == "min"</code>, or the maximum, if <code>strat == "max"</code>, of <code>m_merits</code> and stores it in <code>m_merit</code>. </p>
+
+</div>
+</div>
+<a id="aeaedeb63c35b0bd078cb5a29ff05e844"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeaedeb63c35b0bd078cb5a29ff05e844">&#9670;&nbsp;</a></span>finished()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Lat &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::finished </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns <code>m_finished</code>. </p>
+
+</div>
+</div>
+<a id="a3871c326d9aa35dfc7f0432a846da630"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3871c326d9aa35dfc7f0432a846da630">&#9670;&nbsp;</a></span>getLattice()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Lat &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::getLattice </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -220,17 +413,19 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="acb80ade0f94c68b7499a103af8bcede0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acb80ade0f94c68b7499a103af8bcede0">&#9670;&nbsp;</a></span>getMerit()</h2>
+<a id="a33bc04646af174536e4a957af57c419c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a33bc04646af174536e4a957af57c419c">&#9670;&nbsp;</a></span>getMerit()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename Lat &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">Dbl LatMRG::FigureOfMerit::getMerit </td>
+          <td class="memname"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a739faa2efa53f137053cfc6cc70174ec">Dbl</a> <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::getMerit </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -247,19 +442,21 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a13a1aad725a7d91ff68b582be2799712"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a13a1aad725a7d91ff68b582be2799712">&#9670;&nbsp;</a></span>operator!=()</h2>
+<a id="aef4ab31221f2c62973e8ef777408d419"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef4ab31221f2c62973e8ef777408d419">&#9670;&nbsp;</a></span>operator!=()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename Lat &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool LatMRG::FigureOfMerit::operator!= </td>
+          <td class="memname">bool <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::operator!= </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#aabe6cdaa81ed67cfea6679e8cb35620e">Test</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">FigureOfMerit</a>&lt; Lat &gt; &amp;&#160;</td>
           <td class="paramname"><em>right</em></td><td>)</td>
           <td></td>
         </tr>
@@ -276,19 +473,21 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a467c8c7b8b618f6499da987e2f79dec3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a467c8c7b8b618f6499da987e2f79dec3">&#9670;&nbsp;</a></span>operator&lt;()</h2>
+<a id="aa3435a15ed70ee964e01c75c2d0d94a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3435a15ed70ee964e01c75c2d0d94a9">&#9670;&nbsp;</a></span>operator&lt;()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename Lat &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool LatMRG::FigureOfMerit::operator&lt; </td>
+          <td class="memname">bool <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::operator&lt; </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#aabe6cdaa81ed67cfea6679e8cb35620e">Test</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">FigureOfMerit</a>&lt; Lat &gt; &amp;&#160;</td>
           <td class="paramname"><em>right</em></td><td>)</td>
           <td></td>
         </tr>
@@ -305,19 +504,21 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a7a40f7eda0f4a5ebd51f32c69f2ffc9a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7a40f7eda0f4a5ebd51f32c69f2ffc9a">&#9670;&nbsp;</a></span>operator&lt;=()</h2>
+<a id="a25733b95771385f877e6ee4e6300d4fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a25733b95771385f877e6ee4e6300d4fd">&#9670;&nbsp;</a></span>operator&lt;=()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename Lat &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool LatMRG::FigureOfMerit::operator&lt;= </td>
+          <td class="memname">bool <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::operator&lt;= </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#aabe6cdaa81ed67cfea6679e8cb35620e">Test</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">FigureOfMerit</a>&lt; Lat &gt; &amp;&#160;</td>
           <td class="paramname"><em>right</em></td><td>)</td>
           <td></td>
         </tr>
@@ -334,19 +535,21 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a4760a195cea86feb7108e4e180a33721"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4760a195cea86feb7108e4e180a33721">&#9670;&nbsp;</a></span>operator==()</h2>
+<a id="ac62b39663a2a730e72a6d84e2296f03b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac62b39663a2a730e72a6d84e2296f03b">&#9670;&nbsp;</a></span>operator==()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename Lat &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool LatMRG::FigureOfMerit::operator== </td>
+          <td class="memname">bool <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::operator== </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#aabe6cdaa81ed67cfea6679e8cb35620e">Test</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">FigureOfMerit</a>&lt; Lat &gt; &amp;&#160;</td>
           <td class="paramname"><em>right</em></td><td>)</td>
           <td></td>
         </tr>
@@ -363,19 +566,21 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a8d8b8e036bdd29a08d836c7261f9775c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8d8b8e036bdd29a08d836c7261f9775c">&#9670;&nbsp;</a></span>operator&gt;()</h2>
+<a id="aee7de33f37fb537015c98aec31d2bdf7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aee7de33f37fb537015c98aec31d2bdf7">&#9670;&nbsp;</a></span>operator&gt;()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename Lat &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool LatMRG::FigureOfMerit::operator&gt; </td>
+          <td class="memname">bool <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::operator&gt; </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#aabe6cdaa81ed67cfea6679e8cb35620e">Test</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">FigureOfMerit</a>&lt; Lat &gt; &amp;&#160;</td>
           <td class="paramname"><em>right</em></td><td>)</td>
           <td></td>
         </tr>
@@ -392,19 +597,21 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a5ace87173e04086cb4200e43de47eace"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5ace87173e04086cb4200e43de47eace">&#9670;&nbsp;</a></span>operator&gt;=()</h2>
+<a id="a8287809babcd07e8a89362cca08cfd01"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8287809babcd07e8a89362cca08cfd01">&#9670;&nbsp;</a></span>operator&gt;=()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename Lat &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool LatMRG::FigureOfMerit::operator&gt;= </td>
+          <td class="memname">bool <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::operator&gt;= </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#aabe6cdaa81ed67cfea6679e8cb35620e">Test</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">FigureOfMerit</a>&lt; Lat &gt; &amp;&#160;</td>
           <td class="paramname"><em>right</em></td><td>)</td>
           <td></td>
         </tr>
@@ -421,31 +628,22 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="aabe6cdaa81ed67cfea6679e8cb35620e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aabe6cdaa81ed67cfea6679e8cb35620e">&#9670;&nbsp;</a></span>Test()</h2>
+<a id="ae8ced005b332715e38ba6bab9927481d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae8ced005b332715e38ba6bab9927481d">&#9670;&nbsp;</a></span>setFinished()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename Lat &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">LatMRG::FigureOfMerit::Test </td>
+          <td class="memname">void <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::setFinished </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>lattice</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
-          <td class="paramtype">const DblVec &amp;&#160;</td>
-          <td class="paramname"><em>results</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -455,20 +653,76 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Sets finished to <code>true</code>. </p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a78ad23d4bec8dee74c43fa4bbe78bd1a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a78ad23d4bec8dee74c43fa4bbe78bd1a">&#9670;&nbsp;</a></span>m_lattice</h2>
+<a id="a8eec1b955c0eca825c26ec9dbb2f57b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8eec1b955c0eca825c26ec9dbb2f57b3">&#9670;&nbsp;</a></span>m_best_worst</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename Lat &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::string LatMRG::FigureOfMerit::m_lattice</td>
+          <td class="memname">long <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::m_best_worst</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Indice of the best or worst value in <code>m_merits</code>. </p>
+
+</div>
+</div>
+<a id="a1a9f8b92284987a581c8712dfac71039"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a9f8b92284987a581c8712dfac71039">&#9670;&nbsp;</a></span>m_finished</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Lat &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::m_finished</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><code>true</code> if this contains a merit value for all projections, <code>false</code> otherwise. </p>
+
+</div>
+</div>
+<a id="ac4d80e5b315a7d79af1608181a998c59"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac4d80e5b315a7d79af1608181a998c59">&#9670;&nbsp;</a></span>m_lattice</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Lat &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Lat <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::m_lattice</td>
         </tr>
       </table>
   </td>
@@ -482,17 +736,19 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a113c4fb80293dc71d200902e4a494ff6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a113c4fb80293dc71d200902e4a494ff6">&#9670;&nbsp;</a></span>m_merit</h2>
+<a id="a3f3d07138f41e148ff360d2c8b29af76"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f3d07138f41e148ff360d2c8b29af76">&#9670;&nbsp;</a></span>m_merit</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename Lat &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">Dbl LatMRG::FigureOfMerit::m_merit</td>
+          <td class="memname"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a739faa2efa53f137053cfc6cc70174ec">Dbl</a> <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::m_merit</td>
         </tr>
       </table>
   </td>
@@ -506,17 +762,19 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="aef8aeb7556d64adc88f7ea4755f96bc7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aef8aeb7556d64adc88f7ea4755f96bc7">&#9670;&nbsp;</a></span>m_results</h2>
+<a id="a9aa636301352994f52da987fef682bf5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9aa636301352994f52da987fef682bf5">&#9670;&nbsp;</a></span>m_merits</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename Lat &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">DblVec LatMRG::FigureOfMerit::m_results</td>
+          <td class="memname">std::vector&lt;<a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a739faa2efa53f137053cfc6cc70174ec">Dbl</a>&gt; <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::m_merits</td>
         </tr>
       </table>
   </td>
@@ -526,7 +784,85 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>The normalized results of the test. </p>
+<p>The merit for each test in the same sequence as the projections in <code>m_projSet</code>. </p>
+
+</div>
+</div>
+<a id="a50e55a1473c70b7ecf1031475c86d4b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a50e55a1473c70b7ecf1031475c86d4b3">&#9670;&nbsp;</a></span>m_numProj</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Lat &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::m_numProj</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The number of projections this has been tested over. </p>
+
+</div>
+</div>
+<a id="a033a2c1238c3f1eb3b82e34e66b1fac6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a033a2c1238c3f1eb3b82e34e66b1fac6">&#9670;&nbsp;</a></span>m_projSet</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Lat &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_lat_m_r_g_1_1_projections.html">Projections</a> <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::m_projSet</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The projections used in this object. </p>
+
+</div>
+</div>
+<a id="a94d9212ac4479e6f241d0adef0141d2c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a94d9212ac4479e6f241d0adef0141d2c">&#9670;&nbsp;</a></span>m_vectors</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Lat &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;typename Lat::IntVec&gt; <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::m_vectors</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The shortest vectors for each projection in the same sequence as in <code>m_projSet</code>. </p>
 
 </div>
 </div>

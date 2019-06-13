@@ -9,6 +9,7 @@ var searchData=
   ['seekmain_2edox',['SeekMain.dox',['../_seek_main_8dox.html',1,'']]],
   ['seta',['setA',['../class_lat_m_r_g_1_1_m_r_g_component.html#a0689f092b93c27cda47fb64ef070132d',1,'LatMRG::MRGComponent']]],
   ['setf',['setF',['../class_lat_m_r_g_1_1_int_primitivity.html#a3ec66d9832ed9b3d42782c1998de8f06',1,'LatMRG::IntPrimitivity::setF()'],['../class_lat_m_r_g_1_1_poly_p_e.html#a8b8655a4a007accd203ea28481ec2037',1,'LatMRG::PolyPE::setF(const typename ModInt&lt; Int &gt;::IntVecP &amp;C)'],['../class_lat_m_r_g_1_1_poly_p_e.html#a10ab3b1ac479a321f45c24ac81b4dcea',1,'LatMRG::PolyPE::setF(const IntVec &amp;C)']]],
+  ['setfinished',['setFinished',['../class_lat_m_r_g_1_1_figure_of_merit.html#ae8ced005b332715e38ba6bab9927481d',1,'LatMRG::FigureOfMerit']]],
   ['setlac',['setLac',['../class_lat_m_r_g_1_1_m_m_r_g_lattice.html#ad8cc39e559b2c84ca394df77bc864677',1,'LatMRG::MMRGLattice::setLac()'],['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a211cbe7dfc739b4abc570a72ca887491',1,'LatMRG::MRGLattice::setLac()']]],
   ['setlossrho',['setLossRho',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#afdc666fdfa766053d27d7604b3fc4c5b',1,'LatMRG::MRGLattice']]],
   ['setm',['setM',['../class_lat_m_r_g_1_1_poly_p_e.html#a51904d5aa16d54db5444df0e1f9ce283',1,'LatMRG::PolyPE']]],

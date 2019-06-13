@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['test',['Test',['../class_lat_m_r_g_1_1_figure_of_merit.html#aabe6cdaa81ed67cfea6679e8cb35620e',1,'LatMRG::FigureOfMerit::Test()'],['../namespace_lat_m_r_g.html#a56c72371ba3a144349f71ebc8d46674e',1,'LatMRG::test()']]],
-  ['testlist',['TestList',['../class_lat_m_r_g_1_1_merit_list.html#aca98a02479929aebd926c14830af86c7',1,'LatMRG::MeritList']]],
   ['tex',['tex',['../_lat_main_8dox.html#afb082316abc67ded1c8f9494e95b72a3',1,'LatMain.dox']]],
   ['the',['the',['../usage_8dox.html#a0aab771c40a286ab6ba544de29bd6d43',1,'usage.dox']]],
   ['tick',['tick',['../class_lat_m_r_g_1_1_chrono.html#a88dffe4529cf202e8664f2e8afac1dcd',1,'LatMRG::Chrono']]],

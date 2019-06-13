@@ -1,5 +1,7 @@
 var class_lat_m_r_g_1_1_m_r_g_lattice =
 [
+    [ "Float", "class_lat_m_r_g_1_1_m_r_g_lattice.html#a0d13fe0b1e27856cdb1dfb8b522b7938", null ],
+    [ "Integ", "class_lat_m_r_g_1_1_m_r_g_lattice.html#a0d1866316569e7004910b8a435018153", null ],
     [ "IntMat", "class_lat_m_r_g_1_1_m_r_g_lattice.html#abde17c64fc9cb697f3ee2d0348aee9c4", null ],
     [ "IntVec", "class_lat_m_r_g_1_1_m_r_g_lattice.html#a810de7b954bba39df2d6d4f05249f249", null ],
     [ "MRGLattice", "class_lat_m_r_g_1_1_m_r_g_lattice.html#a37bb5c20c82ba8cfb39e13e7f3d78199", null ],

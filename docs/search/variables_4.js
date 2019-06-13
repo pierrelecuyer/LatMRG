@@ -8,6 +8,5 @@ var searchData=
   ['case',['case',['../_lat_main_8dox.html#a45eee2299c56bf31a34b7c418af29d74',1,'LatMain.dox']]],
   ['comp',['comp',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a352173e2e8de40e338a6cecbf654da4e',1,'LatMRG::MRGLattice']]],
   ['component',['component',['../results_8dox.html#a76c9707059261ceaceed7f8c949d939d',1,'results.dox']]],
-  ['coordinates',['coordinates',['../intro_8dox.html#a47077804a5bda7739905d45163388c43',1,'intro.dox']]],
-  ['criterion',['criterion',['../struct_lat_m_r_g_1_1_config.html#a81334d53d3ff87df304d4977ef0f8041',1,'LatMRG::Config']]]
+  ['coordinates',['coordinates',['../intro_8dox.html#a47077804a5bda7739905d45163388c43',1,'intro.dox']]]
 ];
