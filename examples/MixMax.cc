@@ -110,32 +110,88 @@ int main ()
 
   Config conf;
   conf.type = MMRG;
-  conf.criterion = LatticeTester::SPECTRAL;
+  conf.criterion = LatticeTester::LENGTH;
   conf.reduction = LatticeTester::FULL;
+  //conf.normaType = LatticeTester::BESTLAT;
   conf.use_dual = true;
+  NTL::vector<Int> Lac;
   for (int i = 0; i < num_confs; i++) {
+    std::cout << "Config " << i << "\n";
     MixmaxMMRG<Int> matrix (Configs[i].m, Configs[i].k, Configs[i].d, Configs[i].c);
     conf.modulo = Configs[i].m;
     conf.order = Configs[i].k;
+    // Testing proposition 1
     {
+      int size = 3;
+      Lac.resize(size);
+      Lac[0]=1;
+      Lac[1]=Configs[i].k;
+      Lac[2]=Configs[i].k+1;
       std::vector<std::size_t> max_coords;
-      max_coords.push_back(0);
-      max_coords.push_back(10);
-      max_coords.push_back(Configs[i].k);
-      Projections proj(3, 1, max_coords);
+      max_coords.push_back(size-1);
+      max_coords.push_back(size-1);
+      Projections proj(2, size, max_coords);
       conf.proj = &proj;
-      conf.numProj = 3;
-      conf.minDim = 1;
-      conf.maxDim = 0;
-      conf.projDim = max_coords;
 
       MMRGLattice<Int, Dbl> mixmax(Configs[i].m, matrix.getMatrix(), Configs[i].k+2, Configs[i].k);
+      mixmax.setLac(LatticeTester::Lacunary<Int>(Lac, size));
       auto FoM = test(mixmax, conf);
       FoM.computeMerit("min");
 
+      std::cout << "Proposition 1:\n";
       std::cout << "merit: " << FoM.getMerit() << "\n";
       std::cout << "Worst proj: " << FoM.worstProj() << "\n";
-      std::cout << "Short vector: " << FoM.worstVect() << "\n";
+      std::cout << "Short vector: " << FoM.worstVect() << "\n\n";
+    }
+    // Testing proposition 4
+    {
+      int size = 5;
+      Lac.resize(size);
+      Lac[0]=4;
+      Lac[1]=5;
+      Lac[2]=Configs[i].k+3;
+      Lac[3]=Configs[i].k+4;
+      Lac[4]=Configs[i].k+5;
+      std::vector<std::size_t> max_coords;
+      max_coords.push_back(size-1);
+      Projections proj(1, size, max_coords);
+      conf.proj = &proj;
+
+      MMRGLattice<Int, Dbl> mixmax(Configs[i].m, matrix.getMatrix(), Configs[i].k+6, Configs[i].k);
+      mixmax.setLac(LatticeTester::Lacunary<Int>(Lac, size));
+      auto FoM = test(mixmax, conf);
+      FoM.computeMerit("min");
+
+      std::cout << "Proposition 4:\n";
+      std::cout << "merit: " << FoM.getMerit() << "\n";
+      std::cout << "Worst proj: " << FoM.worstProj() << "\n";
+      std::cout << "Short vector: " << FoM.worstVect() << "\n\n";
+    }
+    // Testing proposition 6
+    {
+      int size = 7;
+      Lac.resize(size);
+      Lac[0]=4;
+      Lac[1]=5;
+      Lac[2]=6;
+      Lac[3]=Configs[i].k+3;
+      Lac[4]=Configs[i].k+4;
+      Lac[5]=Configs[i].k+5;
+      Lac[6]=Configs[i].k+6;
+      std::vector<std::size_t> max_coords;
+      max_coords.push_back(size-1);
+      Projections proj(1, size, max_coords);
+      conf.proj = &proj;
+
+      MMRGLattice<Int, Dbl> mixmax(Configs[i].m, matrix.getMatrix(), Configs[i].k+7, Configs[i].k);
+      mixmax.setLac(LatticeTester::Lacunary<Int>(Lac, size));
+      auto FoM = test(mixmax, conf);
+      FoM.computeMerit("min");
+
+      std::cout << "Proposition 6:\n";
+      std::cout << "merit: " << FoM.getMerit() << "\n";
+      std::cout << "Worst proj: " << FoM.worstProj() << "\n";
+      std::cout << "Short vector: " << FoM.worstVect() << "\n\n";
     }
 
   }

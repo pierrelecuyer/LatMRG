@@ -16,6 +16,8 @@ namespace {
   Config conf;
   // Program global objects
   Chrono timer; // program timer
+  int numProj, minDim, maxDim;
+  std::vector<std::size_t> projDim;
 
   // MRG specific parameters
   MRGComponent<Int>* mrg;
@@ -114,7 +116,7 @@ namespace {
       delay++;
     } while ((A[conf.order] == 0) || (conf.period && !mrg->maxPeriod(A)));
     if (lattice) delete lattice;
-    return new MRGLattice<Int, Dbl>(conf.modulo, A, conf.maxDim, conf.order, FULL);
+    return new MRGLattice<Int, Dbl>(conf.modulo, A, maxDim, conf.order, FULL);
   }
 
   MRGLattice<Int, Dbl>* nextGeneratorPow2(MRGLattice<Int, Dbl>* lattice) {
@@ -161,7 +163,7 @@ namespace {
       delay++;
     } while ((A[conf.order] == 0) || (conf.period && !mrg->maxPeriod(A)));
     if (lattice) delete lattice;
-    MRGLattice<Int, Dbl>* lat = new MRGLattice<Int, Dbl>(conf.modulo, A, conf.maxDim, conf.order, FULL);
+    MRGLattice<Int, Dbl>* lat = new MRGLattice<Int, Dbl>(conf.modulo, A, maxDim, conf.order, FULL);
     lat->setPower2(coefficients);
     return lat;
   }
@@ -213,7 +215,7 @@ namespace {
       for (int j = 0; j<conf.order; j++) 
         A[i][j] = A[i][j]%conf.modulo;
     if (lattice) delete lattice;
-    return new MMRGLattice<Int, Dbl>(conf.modulo, A, conf.maxDim, conf.order);
+    return new MMRGLattice<Int, Dbl>(conf.modulo, A, maxDim, conf.order);
   }
 
   /*
@@ -303,19 +305,19 @@ namespace {
     reader.readBool(conf.best, ln++, 0);
     // This code corrects the projections so that it always builds a valid
     // projection specification
-    reader.readInt(conf.numProj, ln++, 0);
-    reader.readInt(conf.minDim, ln, 0);
-    reader.readInt(conf.maxDim, ln++, 1);
-    conf.projDim.push_back((unsigned)(conf.maxDim-1));
-    for (int i = 0; i<conf.numProj-1; i++) {
+    reader.readInt(numProj, ln++, 0);
+    reader.readInt(minDim, ln, 0);
+    reader.readInt(maxDim, ln++, 1);
+    projDim.push_back((unsigned)(maxDim-1));
+    for (int i = 0; i<numProj-1; i++) {
       int tmp;
       reader.readInt(tmp, ln, i);
       // If the projection is requested only on indices smaller or equal to the
       // dimension, we learn nothing, this is corrected
-      tmp = (unsigned)tmp>conf.projDim.size()+1?tmp:conf.projDim.size()+1;
-      conf.projDim.push_back((unsigned)(tmp-1));
+      tmp = (unsigned)tmp>projDim.size()+1?tmp:projDim.size()+1;
+      projDim.push_back((unsigned)(tmp-1));
     }
-    if (conf.numProj > 1) ln++;
+    if (numProj > 1) ln++;
     reader.readInt(conf.max_gen, ln++, 0);
     reader.readDouble(conf.timeLimit, ln++, 0);
     if (conf.type == MRG) {
@@ -339,10 +341,10 @@ namespace {
       reader.readBool(conf.period, ln, 0);
       // Making sure that minDim is big enough to provide usefull tests (if
       // full period is required) this changes other dimensions accordingly
-      conf.minDim = (!conf.period||conf.minDim>conf.order) ? conf.minDim : (conf.order+1);
-      conf.maxDim = conf.maxDim>conf.minDim ? conf.maxDim : conf.minDim;
-      for (unsigned int i = 0; i < conf.projDim.size(); i++) {
-        conf.projDim[i] = (conf.projDim[i]<(unsigned)(conf.minDim-1))?(unsigned)(conf.minDim-1):conf.projDim[i];
+      minDim = (!conf.period||minDim>conf.order) ? minDim : (conf.order+1);
+      maxDim = maxDim>minDim ? maxDim : minDim;
+      for (unsigned int i = 0; i < projDim.size(); i++) {
+        projDim[i] = (projDim[i]<(unsigned)(minDim-1))?(unsigned)(minDim-1):projDim[i];
       }
       if (conf.period) {
         // Using default parameters for period or not
@@ -366,10 +368,10 @@ namespace {
       reader.readBool(conf.period, ln, 0);
       // Making sure that minDim is big enough to provide usefull tests (if
       // full period is required) this changes other dimensions accordingly
-      conf.minDim = (!conf.period||conf.minDim>conf.order) ? conf.minDim : (conf.order+1);
-      conf.maxDim = conf.maxDim>conf.minDim ? conf.maxDim : conf.minDim;
-      for (unsigned int i = 0; i < conf.projDim.size(); i++) {
-        conf.projDim[i] = (conf.projDim[i]<(unsigned)(conf.minDim-1))?(unsigned)(conf.minDim-1):conf.projDim[i];
+      minDim = (!conf.period||minDim>conf.order) ? minDim : (conf.order+1);
+      maxDim = maxDim>minDim ? maxDim : minDim;
+      for (unsigned int i = 0; i < projDim.size(); i++) {
+        projDim[i] = (projDim[i]<(unsigned)(minDim-1))?(unsigned)(minDim-1):projDim[i];
       }
       if (conf.period) {
         // Using default parameters for period or not
@@ -402,7 +404,7 @@ int main (int argc, char **argv)
   readConfigFile(argc, argv);
   // Dynamically allocated objects
   mrg = new MRGComponent<Int>(conf.modulo, conf.order, conf.decompm1, conf.filem1.c_str(), conf.decompr, conf.filer.c_str());
-  conf.proj = new Projections(conf.numProj, conf.minDim, conf.projDim);
+  conf.proj = new Projections(numProj, minDim, projDim);
   timer.init();
 
   // Launching the tests

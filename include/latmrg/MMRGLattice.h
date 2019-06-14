@@ -387,6 +387,7 @@ namespace LatMRG {
     {
       m_lac = lac;
       m_lacunaryFlag = true;
+      m_numberLacIndices = m_lac.getSize();
     }
 
 

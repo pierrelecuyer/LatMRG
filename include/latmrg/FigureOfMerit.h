@@ -128,7 +128,10 @@ namespace LatMRG {
        * */
       LatticeTester::Coordinates worstProj(){
         m_projSet.resetDim();
-        for (int i = 0; i < m_best_worst; i++) ++m_projSet;
+        m_projSet.next();
+        for (int i = 1; i < m_best_worst; i++) {
+          ++m_projSet;
+        }
         return m_projSet.getProj();
       }
 

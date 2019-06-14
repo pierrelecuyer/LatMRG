@@ -101,6 +101,11 @@ namespace LatMRG {
        * */
       int getDim();
 
+      int minDim() {return m_minDim;}
+      int maxDim() {return m_projDim[0]+1;}
+      int numProj() {return m_numDim;}
+      std::vector<std::size_t>& projDim() {return m_projDim;}
+
       /**
        * Returns a string describing this object of the form
        * ```

@@ -15,6 +15,8 @@ namespace {
   Config conf;
   // Program global objects
   Chrono timer;
+  int numProj, minDim, maxDim;
+  std::vector<std::size_t> projDim;
 
   /**
    * Prints the results of the program execution.
@@ -75,17 +77,17 @@ namespace {
       conf.reduction = LatticeTester::NOPRERED;
       ln++;
     }
-    reader.readInt(conf.numProj, ln++, 0);
-    reader.readInt(conf.minDim, ln, 0);
-    reader.readInt(conf.maxDim, ln++, 1);
-    conf.projDim.push_back((unsigned)(conf.maxDim-1));
-    for (int i = 0; i<conf.numProj-1; i++) {
+    reader.readInt(numProj, ln++, 0);
+    reader.readInt(minDim, ln, 0);
+    reader.readInt(maxDim, ln++, 1);
+    projDim.push_back((unsigned)(maxDim-1));
+    for (int i = 0; i<numProj-1; i++) {
       int tmp;
       reader.readInt(tmp, ln, i);
       // If the projection is requested only on indices smaller or equal to the
       // dimension, we learn nothing, this is corrected
-      tmp = (unsigned)tmp>conf.projDim.size()+1?tmp:conf.projDim.size()+1;
-      conf.projDim.push_back((unsigned)(tmp-1));
+      tmp = (unsigned)tmp>projDim.size()+1?tmp:projDim.size()+1;
+      projDim.push_back((unsigned)(tmp-1));
     }
     ln++;
     reader.readInt(conf.max_gen, ln++, 0);
@@ -93,16 +95,16 @@ namespace {
     if (conf.type == MRG) {
       reader.readNumber3(conf.modulo, conf.basis, conf.exponent, conf.rest, ln++, 0);
       reader.readLong(conf.order, ln++, 0);
-      // Making sure that conf.minDim is big enough to provide usefull tests (if
+      // Making sure that minDim is big enough to provide usefull tests (if
       // full period is required) this changes other dimensions accordingly
       conf.mult.SetLength(conf.order);
       reader.readMVect(conf.mult, ln, 0, conf.order, 0);
       ln++;
       reader.readBool(conf.period, ln, 0);
-      conf.minDim = (!conf.period||conf.minDim>conf.order) ? conf.minDim : (conf.order+1);
-      conf.maxDim = conf.maxDim>conf.minDim ? conf.maxDim : conf.minDim;
-      for (unsigned int i = 0; i < conf.projDim.size(); i++) {
-        conf.projDim[i] = (conf.projDim[i]<(unsigned)(conf.minDim-1))?(unsigned)(conf.minDim-1):conf.projDim[i];
+      minDim = (!conf.period||minDim>conf.order) ? minDim : (conf.order+1);
+      maxDim = maxDim>minDim ? maxDim : minDim;
+      for (unsigned int i = 0; i < projDim.size(); i++) {
+        projDim[i] = (projDim[i]<(unsigned)(minDim-1))?(unsigned)(minDim-1):projDim[i];
       }
       if (conf.period) {
         // Using default parameters
@@ -140,7 +142,7 @@ int main (int argc, char **argv) {
   conf.filem1 = "./tempm1" + std::to_string(rand());
   conf.filer = "./tempr" + std::to_string(rand());
   readConfigFile(argc, argv);
-  conf.proj = new Projections(conf.numProj, conf.minDim, conf.projDim);
+  conf.proj = new Projections(numProj, minDim, projDim);
   timer.init();
 
   // Testing the generator(s)
@@ -149,7 +151,7 @@ int main (int argc, char **argv) {
     IntVec temp(conf.order+1);
     temp[0] = Int(0);
     for (int i = 1; i < conf.order+1; i++) temp[i] = conf.mult[i-1];
-    MRGLattice<Int, Dbl> mrglat(conf.modulo, temp, conf.maxDim, conf.order, FULL);
+    MRGLattice<Int, Dbl> mrglat(conf.modulo, temp, maxDim, conf.order, FULL);
     bestLattice.add(test(mrglat, conf));
     printResults(bestLattice);
   } else if (conf.type == MWC) {

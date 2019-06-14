@@ -143,9 +143,6 @@ namespace LatMRG {
     Dbl currentMerit;
 #endif
     // Projection
-    int numProj;
-    int minDim, maxDim;
-    std::vector<std::size_t> projDim;
     Projections* proj;
 
     double timeLimit;
@@ -179,12 +176,13 @@ namespace LatMRG {
     typedef typename Lat::Integ Int;
     typedef typename Lat::IntVec IntVec;
     typedef typename Lat::Float Dbl;
+    Projections* proj(conf.proj);
 
     LatticeTester::Normalizer<Dbl>* norma = lattice.getNormalizer(conf.normaType, 0, true);
     std::vector<Dbl> results;
     std::vector<IntVec> vectors;
-    lattice.buildBasis(conf.minDim);
-    for (int i = conf.minDim; i <= conf.maxDim; i++){
+    lattice.buildBasis(proj->minDim());
+    for (int i = proj->minDim(); i <= proj->maxDim(); i++){
       // Changing to the dual
       if (conf.use_dual) lattice.dualize();
       // Reducing the lattice
@@ -211,14 +209,14 @@ namespace LatMRG {
 #endif
       // Changing back to the primal and increasing the dimension
       if (conf.use_dual) lattice.dualize();
-      lattice.incDim();
+      if (proj->minDim() < proj->maxDim()) lattice.incDim();
     }
 
     // Testing projections if there are anyo
     // This is done separately because sequential testing is much more efficient
-    for (int i = 2; i <= conf.numProj; i++) {
+    for (int i = 2; i <= proj->numProj(); i++) {
       conf.proj->resetDim(i);
-      lattice.buildBasis(conf.projDim[i-1]+1);
+      lattice.buildBasis(proj->projDim()[i-1]+1);
       while(!conf.proj->end(1)) {
         // Building the projection
         LatticeTester::IntLattice<Int, Int, Dbl, Dbl> proj_lat(conf.modulo, conf.order, i, true);
@@ -236,6 +234,7 @@ namespace LatMRG {
           Reductions::reduceBKZ(proj_lat);
         else if (conf.reduction == LatticeTester::NOPRERED)
           Reductions::reduceMink(proj_lat);
+
         // Figure of merit
         Dbl tmp;
         if (conf.criterion == LatticeTester::LENGTH) tmp = Merit::meritL(proj_lat);

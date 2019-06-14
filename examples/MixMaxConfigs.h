@@ -29,7 +29,7 @@ struct MixMaxConfig {
 
 const int num_confs = 3;
 MixMaxConfig Configs[3] = {MixMaxConfig(NTL::power_ZZ(2,61)-1, 8, Int(0), NTL::power_ZZ(2,53)+1),
-MixMaxConfig(NTL::power_ZZ(2,61)-1, 240, Int(487013230256099140), NTL::power_ZZ(2,51)+1),
-MixMaxConfig(NTL::power_ZZ(2,61)-1, 17, Int(0), NTL::power_ZZ(2,36)+1)};
+MixMaxConfig(NTL::power_ZZ(2,61)-1, 17, Int(0), NTL::power_ZZ(2,36)+1),
+MixMaxConfig(NTL::power_ZZ(2,61)-1, 240, Int(487013230256099140), NTL::power_ZZ(2,51)+1)};
 
 #endif
