@@ -214,7 +214,8 @@ namespace LatMRG {
       lattice.incDim();
     }
 
-    // Testing projections if there are any
+    // Testing projections if there are anyo
+    // This is done separately because sequential testing is much more efficient
     for (int i = 2; i <= conf.numProj; i++) {
       conf.proj->resetDim(i);
       lattice.buildBasis(conf.projDim[i-1]+1);

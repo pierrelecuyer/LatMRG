@@ -18,7 +18,6 @@ namespace LatMRG {
    * This class is used to manipulate easily MMRG of Mixmax types as
    * described by Savvidy [CITE PAPER].
    */
-
   template<typename Int>
     class MixmaxMMRG {
       private:
@@ -28,21 +27,21 @@ namespace LatMRG {
         /**
          * Constructor for the four-parameters family.
          */
-        MixmaxMMRG(Int modulus, int & N, Int & s, Int & m, Int & b);
+        MixmaxMMRG(Int modulus, int N, Int & s, Int & m, Int & b);
 
         /**
          * Constructor for the three-parameters family. 
          * The four-parameter family reduces to the three-parameter family with 
          * \f$b=2-2m\f$.
          */
-        MixmaxMMRG(Int modulus, int & N, Int & s, Int & m);
+        MixmaxMMRG(Int modulus, int N, Int & s, Int & m);
 
         /**
          * Constructor for the two-parameters family.
          * The three-parameter family reduces to the two-parameter family with 
          * \f$m=1\f$.
          */
-        MixmaxMMRG(Int modulus, int & N, Int & s);
+        MixmaxMMRG(Int modulus, int N, Int & s);
 
         /**
          * Destructor.
@@ -64,7 +63,7 @@ namespace LatMRG {
          * This method build the matrix for the MMRG recurrence according
          * to the selected parameters for the four-parameters family of generators.
          */
-        void buildMatrix(Int modulus, int & N, Int & s, Int & m, Int & b);
+        void buildMatrix(Int modulus, int N, Int & s, Int & m, Int & b);
 
         /**
          * The modulus used for the MMRG.
@@ -101,7 +100,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-  MixmaxMMRG<Int>::MixmaxMMRG(Int modulus, int & N, Int & s, Int & m, Int & b)
+  MixmaxMMRG<Int>::MixmaxMMRG(Int modulus, int N, Int & s, Int & m, Int & b)
   {
     m_modulus = modulus;
     m_order = N;
@@ -115,7 +114,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-  MixmaxMMRG<Int>::MixmaxMMRG(Int modulus, int & N, Int & s, Int & m)
+  MixmaxMMRG<Int>::MixmaxMMRG(Int modulus, int N, Int & s, Int & m)
   {
     m_modulus = modulus;
     m_order = N;
@@ -129,7 +128,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-  MixmaxMMRG<Int>::MixmaxMMRG(Int modulus, int & N, Int & s)
+  MixmaxMMRG<Int>::MixmaxMMRG(Int modulus, int N, Int & s)
   {
     m_modulus = modulus;
     m_order = N;
@@ -149,7 +148,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-  void MixmaxMMRG<Int>::buildMatrix(Int modulus, int & N, Int & s, Int & m, Int & b)
+  void MixmaxMMRG<Int>::buildMatrix(Int modulus, int N, Int & s, Int & m, Int & b)
   {
     m_A.kill();
     m_A.resize(N,N);

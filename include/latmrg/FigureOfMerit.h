@@ -120,6 +120,20 @@ namespace LatMRG {
       void setFinished() { m_finished = true;}
 
       /**
+       * Returns the shortest vector in the lattice for the worst projection.
+       * */
+      typename Lat::IntVec worstVect() {return m_vectors[m_best_worst];}
+
+      /**
+       * */
+      LatticeTester::Coordinates worstProj(){
+        m_projSet.resetDim();
+        for (int i = 0; i < m_best_worst; i++) ++m_projSet;
+        return m_projSet.getProj();
+      }
+
+
+      /**
        * Returns `m_finished`.
        * */
       bool finished() { return m_finished;}
