@@ -2,6 +2,8 @@
 #define LATMRG_FIGUREOFMERIT_H
 
 #include <list>
+#include <sstream>
+#include <iomanip>
 
 #include "latmrg/Projections.h"
 
@@ -129,7 +131,7 @@ namespace LatMRG {
       LatticeTester::Coordinates worstProj(){
         m_projSet.resetDim();
         m_projSet.next();
-        for (int i = 1; i < m_best_worst; i++) {
+        for (int i = 1; i <= m_best_worst; i++) {
           ++m_projSet;
         }
         return m_projSet.getProj();
@@ -146,6 +148,28 @@ namespace LatMRG {
        * */
       Dbl getMerit(){
         return m_merit;
+      }
+
+      std::string toStringMerit() {
+        std::ostringstream stream;
+        stream << "Merit: " << getMerit() << "\n" << "Worst Projection: "
+          << worstProj() << "\n" << "Shortest Vector for this projection: "
+          << worstVect() << "\n";
+        return stream.str();
+      }
+
+      std::string toStringProjections() {
+        std::ostringstream stream;
+        stream << "Merit for all projections\n";
+        m_projSet.resetDim();
+        int i = 0;
+        while (!m_projSet.end()) {
+          stream << "Merit " << std::setw(8) << m_merits[i]
+            << " in projection " << ++m_projSet << "\n"
+            << "Shortest vector for this projection: " << m_vectors[i] << "\n";
+          i++;
+        }
+        return stream.str();
       }
 
       /// Returns the string associated with this test.

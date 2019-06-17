@@ -7,6 +7,7 @@ dimensions tuples
 Normalizer
 num_gen
 time_limit
+detail_level (0 = only merit 1 = all proj)
 # MRG
 modulo
 order

@@ -154,6 +154,9 @@ namespace LatMRG {
     // MWC Specific parameters
     Int b; // modulo of MWC recurence
 
+    // MMRG Specific parameters
+    IntMat matrix;
+
     // Shared components names
     std::int64_t order; // k for MRG and MMRG
     Int modulo; // m for MRG and MMRG
@@ -241,7 +244,7 @@ namespace LatMRG {
         else if (conf.criterion == LatticeTester::SPECTRAL) tmp = Merit::meritS(proj_lat, norma);
         else if (conf.criterion == LatticeTester::BEYER) tmp = Merit::meritB(proj_lat);
         results.push_back(tmp);
-        vectors.push_back(lattice.getBasis()[0]);
+        vectors.push_back(proj_lat.getBasis()[0]);
 #ifdef LATMRG_SEEK
         // Rejecting lattices that won't make it
         if (tmp < conf.currentMerit) {

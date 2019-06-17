@@ -53,6 +53,9 @@ int parse_option(char* option, int& i, int argc) {
     fout.open(argument);
     out = &fout;
     return 0;
+  } else if (!(strcmp(name, "v") && strcmp(name, "verbose"))) {
+    std::cout << "No implementation for verbose option.\n";
+    return 0;
   } else {
     std::cout << "Unknown option\n";
   }
@@ -60,6 +63,28 @@ int parse_option(char* option, int& i, int argc) {
 }
 
 int parse_param(char* option, int& i, int argc) {
+  char name[40];
+  char argument[40] = "";
+  // Splitting the option name and the argument
+  if (option[1] == '-') {
+    strcpy(name, option+2);
+    for (unsigned int i = 0; i < strlen(name); i++) {
+      if (name[i] == '=') {
+        strcpy(argument, name+i+1);
+        name[i] = '\0';
+        break;
+      }
+    }
+  } else {
+    strcpy(name, option+1);
+    if (name[1] == '=') strcpy(argument, name+2);
+    name[1] = '\0';
+  }
+
+  // The first layer of if/elses filters between the different modes
+  if (exec_mode == "lat") {
+  } else if (exec_mode == "seek") {
+  }
   return 0;
 }
 

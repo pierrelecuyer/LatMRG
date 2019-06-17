@@ -16,6 +16,7 @@ namespace {
   // Program global objects
   Chrono timer;
   int numProj, minDim, maxDim;
+  int detail;
   std::vector<std::size_t> projDim;
 
   /**
@@ -54,7 +55,11 @@ namespace {
           std::cout << "Coefficients:\n" << (*it).getLattice() << "\n";
         } else if (conf.type == MWC) {}
         else if (conf.type == MMRG) {}
-        std::cout << "Merit: " << (*it).getMerit() << "\n";
+        if (detail == 0) {
+          std::cout << (*it).toStringMerit();
+        } else if (detail == 1) {
+          std::cout << (*it).toStringProjections();
+        }
       }
     }
 
@@ -92,6 +97,7 @@ namespace {
     ln++;
     reader.readInt(conf.max_gen, ln++, 0);
     reader.readDouble(conf.timeLimit, ln++, 0);
+    reader.readInt(detail, ln++, 0);
     if (conf.type == MRG) {
       reader.readNumber3(conf.modulo, conf.basis, conf.exponent, conf.rest, ln++, 0);
       reader.readLong(conf.order, ln++, 0);
@@ -122,8 +128,29 @@ namespace {
       //b = NTL::power2_ZZ(power);
       //reader.readLong(conf.exponent, ln++, 0);
     } else if (conf.type == MMRG) {
-      //reader.readNumber3(modulo, conf.basis, conf.exponent, conf.rest, ln++, 0);
-      //reader.readLong(order, ln++, 0);
+      reader.readNumber3(conf.modulo, conf.basis, conf.exponent, conf.rest, ln++, 0);
+      reader.readLong(conf.order, ln++, 0);
+      // Making sure that minDim is big enough to provide usefull tests (if
+      // full period is required) this changes other dimensions accordingly
+      conf.matrix.SetSize(conf.order, conf.order);
+      reader.readBMat(conf.matrix, ln, 0, conf.order);
+      reader.readBool(conf.period, ln, 0);
+      minDim = (!conf.period||minDim>conf.order) ? minDim : (conf.order+1);
+      maxDim = maxDim>minDim ? maxDim : minDim;
+      for (unsigned int i = 0; i < projDim.size(); i++) {
+        projDim[i] = (projDim[i]<(unsigned)(minDim-1))?(unsigned)(minDim-1):projDim[i];
+      }
+      if (conf.period) {
+        // Using default parameters
+        bool def;
+        reader.readBool(def, ln, 1);
+        if (!def) {
+          reader.readDecompType(conf.decompm1, ln, 2);
+          reader.readString(conf.filem1, ln, 3);
+          reader.readDecompType(conf.decompr, ln, 4);
+          reader.readString(conf.filer, ln, 5);
+        }
+      }
     }
     return true;
   }
@@ -162,12 +189,13 @@ int main (int argc, char **argv) {
     //  addLattice(mwclat, merit);
     //}
   } else if (conf.type == MMRG) {
-    //MMRGLattice<Int, Dbl>* mmrglat = 0;
-    // mmrglat = nextGenerator(mmrglat);
-    // Dbl merit(test(*mmrglat));
-    // if (merit > bestMerit) {
-    //   addLattice(mmrglat, merit);
-    // }
+    MeritList<MMRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
+    IntVec temp(conf.order+1);
+    temp[0] = Int(0);
+    for (int i = 1; i < conf.order+1; i++) temp[i] = conf.mult[i-1];
+    MRGLattice<Int, Dbl> mrglat(conf.modulo, temp, maxDim, conf.order, FULL);
+    bestLattice.add(test(mrglat, conf));
+    printResults(bestLattice);
   }
   delete conf.proj;
   return 0;
