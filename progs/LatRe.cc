@@ -132,7 +132,7 @@ namespace {
       reader.readLong(conf.order, ln++, 0);
       // Making sure that minDim is big enough to provide usefull tests (if
       // full period is required) this changes other dimensions accordingly
-      conf.matrix.SetSize(conf.order, conf.order);
+      conf.matrix.resize(conf.order, conf.order);
       reader.readBMat(conf.matrix, ln, 0, conf.order);
       reader.readBool(conf.period, ln, 0);
       minDim = (!conf.period||minDim>conf.order) ? minDim : (conf.order+1);
@@ -190,11 +190,8 @@ int main (int argc, char **argv) {
     //}
   } else if (conf.type == MMRG) {
     MeritList<MMRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
-    IntVec temp(conf.order+1);
-    temp[0] = Int(0);
-    for (int i = 1; i < conf.order+1; i++) temp[i] = conf.mult[i-1];
-    MRGLattice<Int, Dbl> mrglat(conf.modulo, temp, maxDim, conf.order, FULL);
-    bestLattice.add(test(mrglat, conf));
+    MMRGLattice<Int, Dbl> mmrglat(conf.modulo, conf.matrix, maxDim, conf.order);
+    bestLattice.add(test(mmrglat, conf));
     printResults(bestLattice);
   }
   delete conf.proj;
