@@ -46,7 +46,7 @@ var searchData=
   ['m_5fparameter3',['m_parameter3',['../class_lat_m_r_g_1_1_mixmax_m_m_r_g.html#af0daddf76480fcc57de556ad4938e5ef',1,'LatMRG::MixmaxMMRG']]],
   ['m_5fpow2_5fexp',['m_pow2_exp',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#af29ed6ee5861c5b3464076740d4da3a0',1,'LatMRG::MRGLattice']]],
   ['m_5fpower2',['m_power2',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a13ec7ed55d4ba00cf1254c45e35f3768',1,'LatMRG::MRGLattice']]],
-  ['m_5fprojdim',['m_projDim',['../class_lat_m_r_g_1_1_projections.html#a982da37d753e79e2c12bdda8d2a5f4fb',1,'LatMRG::Projections']]],
+  ['m_5fprojdim',['m_projDim',['../class_lat_m_r_g_1_1_projections.html#a5d72f07d6211165e1361333c13dab0c6',1,'LatMRG::Projections']]],
   ['m_5fprojset',['m_projSet',['../class_lat_m_r_g_1_1_figure_of_merit.html#a033a2c1238c3f1eb3b82e34e66b1fac6',1,'LatMRG::FigureOfMerit']]],
   ['m_5frho',['m_rho',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#af8af81b987902e843604b3a2456d2212',1,'LatMRG::MRGLattice']]],
   ['m_5fs',['m_s',['../class_lat_m_r_g_1_1_a_w_c_s_w_b_lattice.html#aa9319409fa9e0a6523e11b160a442bdf',1,'LatMRG::AWCSWBLattice']]],

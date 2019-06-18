@@ -1,10 +1,26 @@
 # About LatMRG
 
-**LatMRG** is a sofware packaged developped in the Simulation and Optimisation
-laboratory at the Département d'informatique et de recherche opérationnelle at
-Université de Montréal intended as the most up to date and feature
+**LatMRG** is a sofware package intended as the most up to date and feature
 complete tool to search and test **Multiple Recursive** and similar **Random 
-Number Generators**. There is a large variety of such generators:
+Number Generators**. The generators considered here are all linear and this 
+linearity means that they all have a **lattice structure** of some sort.
+
+The goal of this software is to provide reliable theoretical tests of uniformity
+for these generators, as well as tools to search for good and bad ones with
+regards to these tests. These tests often rely on the length of short(est)
+vectors in the lattice, hence the main feature of LatMRG is to be able to
+efficiently reduce a lattice, be it via **Branch-and-Bound** to find the
+shortest vector or with **LLL** reduction and **Block Korkine-Zolotarev**
+reduction.
+
+Once a a short vector has been found, it is possible to compute the **Spectral
+Test** and various **Figures of Merit** on a generator. These can be used to
+compare the uniformity of the generators.
+
+The family of generators that LatMRG can study is large. You could say that we
+cover multiple different families of generators, but all the generators
+targeted by LatMRG share similar theoretical properties. Generators we target
+are
 - Linear Congruential Generators (LCG)
 - Multiple Recursive Congruential Generators (MRG)
 - Combined Multiple Recursive Congruential Generators
@@ -12,62 +28,22 @@ Number Generators**. There is a large variety of such generators:
 - Multiply with Carry (MWC) Generators
 - Matrix Multiple Recursive Generators (MMRG)
 
-The goal of this software is to provide reliable theoretical tests of uniformity
-for these generators, as well as tools to search for good and bad ones with
-regards to these tests.
-
-LatMRG is a collection of executables and a library available freely to
-research the aforementioned random number generators. For short, in the
-documentation of this library, linear congruential random number generators
-might simply be called random number generators, RNG or even MRG. The linearity
-of generators in this family implies that the points they output have a lot
-of structure and can be studied easily. All the generators considered here
-possess a **Lattice Structure** that LatMRG can extract and study.
-
-Studying
-this lattice can yield mesures called **Figures of Merit** that can assess of
-the uniformity of the point distribution of the lattice. It is also possible
-to know if the points of the generator are all on only a few hyperplans via the
-lattice. Finally, LatMRG can also test the the period length of MRG generators.
-
 The documentation of this software is segmented in multiple locations that each
 contain different information:
-- This page that contains a list of features and installation instructions.
-  Beware, since Github cannot render mathematical equations, you need to be
-  a bit familiar with the subject to read it.
-- A more comprehensive description of the software, both in terms of number of
-  features listed and explanation of the concepts.
-- A tutorial containing examples using both the executables and the library.
-- The API documentation for the library.
-
-This software aims at both
-- Providing extensive functionnality through executables
-- Providing easy and ready to use and interface with representations of RNGs to
-  expand the software and build 
-
-## Domains of Use and Caveats
-
-### Test your RNGs
-
-This software only provides **theoretical tests** on RNG. **Theoretical
-tests are not an alternative to statistical testing** but a complement to it.
-A combination of parameters that LatMRG describes as good might not be useable
-in practice because, although the points are well distributed, they do not
-appear to be random. Any combination of parameters found via LatMRG that is
-implemented should also be submited to **statistical tests**.
-[This](https://github.com/lemire/testingRNG) Github repository provides a good
-starting point to perform such tests.
+- You can easily [get started](https://savamarc.github.io/LatMRG/usage.html) by
+  intalling and using the executables
+- [Survey the contents of LatMRG](https://savamarc.github.io/LatMRG) in the full
+  guide
+- [Read the theory](https://savamarc.github.io/LatMRG/background.html) behind LatMRG
+- [Look at examples](https://savamarc.github.io/LatMRG/tutorial.html) and learn
+  how LatMRG can be used as a library
+- Access the full [API documentation](https://savamarc.github.io/LatMRG/annotated.html) for the library.
 
 ### Use appropriate RNGs
 
 There are a plethora of pseudo-random engines described on the web, and even more
-implementations of such engines. Examples include:
-- [PCG](http://www.pcg-random.org/)
-- [Vigna's take](http://xoshiro.di.unimi.it/) on xorshift generators
-- [SplitMix](http://dx.doi.org/10.1145/2714064.2660195) generators available in
-  Java
-
-These random number generators provide a good quality of randomness as they
+implementations of such engines in many programming languages.
+These random number generators provide a seemingly good quality of randomness as they
 usually pass standard statistical tests well and are quite fast. This makes them
 great multi-purpose RNGs, but they should
 be used with care. They usually do not have the theoretical background necessary
@@ -77,7 +53,7 @@ notably in physics, finance and statistics. Generators built with LatMRG can be
 parametrized as to not have this problem, making them a better choice for this
 use case.
 
-## Getting it to work
+# Getting it to work
 
 LatMRG tested to work on Linux only. It should also work without much hasle in
 macOS. Since this program is a command line utility, Windows users will probably
@@ -86,7 +62,7 @@ be able to use it smoothly once the new
 the library to run on Windows or macOS is welcome to provide us with his
 or her process so that it can be added to this guide.
 
-### Dependencies
+## Dependencies
 
 LatMRG currently depends on
 * [LatticeTester](https://github.com/umontreal-simul/latcommon): a utility library
@@ -103,7 +79,7 @@ utility unlocks some of the functionnality of LatMRG! To do so,
 simply download the program and extract the `yafu` executable in `./data`. The
 makefile will then include a preprocessor definition that will allow factoring.
 
-### Configuring the build
+## Configuring the build
 
 LatMRG currently only has a very simple makefile. If NTL is not installed in a
 default prefix such as `/usr/local`, or if you use `clang` instead of `gcc` you

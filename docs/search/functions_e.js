@@ -7,6 +7,6 @@ var searchData=
   ['posinsert',['posInsert',['../class_lat_m_r_g_1_1_merit_list.html#abede0de262a1eb188170b9f7ea3c88fd',1,'LatMRG::MeritList']]],
   ['powermod',['powerMod',['../class_lat_m_r_g_1_1_poly_p_e.html#af3cda9c809c5e0a43b07e27c75137cc0',1,'LatMRG::PolyPE']]],
   ['primes',['Primes',['../class_lat_m_r_g_1_1_primes.html#a971062650e59fef3785444626b3b8729',1,'LatMRG::Primes']]],
-  ['projdim',['projDim',['../class_lat_m_r_g_1_1_projections.html#aedd5750c10a908c9f119b389e65bc963',1,'LatMRG::Projections']]],
-  ['projections',['Projections',['../class_lat_m_r_g_1_1_projections.html#a2a43a51473bfa1293b106d8f581e2478',1,'LatMRG::Projections']]]
+  ['projdim',['projDim',['../class_lat_m_r_g_1_1_projections.html#a0ebf6145037b082eb850ca94d4f5aa50',1,'LatMRG::Projections']]],
+  ['projections',['Projections',['../class_lat_m_r_g_1_1_projections.html#a608d792c8c3d60ec8fafdeb0f8f6872a',1,'LatMRG::Projections']]]
 ];
