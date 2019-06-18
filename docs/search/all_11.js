@@ -19,6 +19,7 @@ var searchData=
   ['primepower',['PRIMEPOWER',['../namespace_lat_m_r_g.html#a86edf8445f847038592d741fd49b2b09a7677349e86aa9f7110f03320a428cfc6',1,'LatMRG']]],
   ['primes',['Primes',['../class_lat_m_r_g_1_1_primes.html',1,'LatMRG::Primes&lt; Int &gt;'],['../class_lat_m_r_g_1_1_primes.html#a971062650e59fef3785444626b3b8729',1,'LatMRG::Primes::Primes()']]],
   ['primes_2eh',['Primes.h',['../_primes_8h.html',1,'']]],
+  ['projdim',['projDim',['../class_lat_m_r_g_1_1_projections.html#aedd5750c10a908c9f119b389e65bc963',1,'LatMRG::Projections']]],
   ['projections',['Projections',['../class_lat_m_r_g_1_1_projections.html',1,'LatMRG::Projections'],['../class_lat_m_r_g_1_1_projections.html#a2a43a51473bfa1293b106d8f581e2478',1,'LatMRG::Projections::Projections()']]],
   ['projections_2ecc',['Projections.cc',['../_projections_8cc.html',1,'']]],
   ['projections_2eh',['Projections.h',['../_projections_8h.html',1,'']]]

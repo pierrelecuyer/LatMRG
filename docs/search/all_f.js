@@ -11,5 +11,6 @@ var searchData=
   ['norm_3c_2fem_20_3e',['Norm&lt;/em &gt;',['../_lat_main_8dox.html#a369c0f4191a4b8e620bfe0e753c64948',1,'LatMain.dox']]],
   ['not',['not',['../_lat_main_8dox.html#af9673ae40c1f1b094fb412d4930c4ae4',1,'LatMain.dox']]],
   ['nscal',['NScal',['../_lat_main_8dox.html#a2026824722d928aa88778d1340145f3d',1,'LatMain.dox']]],
-  ['number',['number',['../_lat_main_8dox.html#afec9c847a2d44b9f00bce85593b267a5',1,'LatMain.dox']]]
+  ['number',['number',['../_lat_main_8dox.html#afec9c847a2d44b9f00bce85593b267a5',1,'LatMain.dox']]],
+  ['numproj',['numProj',['../class_lat_m_r_g_1_1_projections.html#ab7a632e9c399c42a24fa16eb95c57220',1,'LatMRG::Projections']]]
 ];

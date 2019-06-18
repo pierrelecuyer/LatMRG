@@ -94,10 +94,10 @@ $(document).ready(function(){initNavTree('class_lat_m_r_g_1_1_m_m_r_g_lattice.ht
 
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
-<a href="#pri-types">Private Types</a> &#124;
 <a href="class_lat_m_r_g_1_1_m_m_r_g_lattice-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">LatMRG::MMRGLattice&lt; Int, Dbl &gt; Class Template Reference</div>  </div>
@@ -112,6 +112,13 @@ Inheritance diagram for LatMRG::MMRGLattice&lt; Int, Dbl &gt;:</div>
   <img src="class_lat_m_r_g_1_1_m_m_r_g_lattice.png" alt=""/>
  </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:ad230c2785782fa3319c68993cfb42373"><td class="memItemLeft" align="right" valign="top">typedef NTL::matrix&lt; Int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_m_m_r_g_lattice.html#ad230c2785782fa3319c68993cfb42373">IntMat</a></td></tr>
+<tr class="separator:ad230c2785782fa3319c68993cfb42373"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5d12cab864679c3cc6df7113ba070ea"><td class="memItemLeft" align="right" valign="top">typedef NTL::vector&lt; Int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_m_m_r_g_lattice.html#ac5d12cab864679c3cc6df7113ba070ea">IntVec</a></td></tr>
+<tr class="separator:ac5d12cab864679c3cc6df7113ba070ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a0d516b80f10df8d3d63aa7742d1139cb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_m_m_r_g_lattice.html#a0d516b80f10df8d3d63aa7742d1139cb">MMRGLattice</a> (const Int &amp;<a class="el" href="usage_8dox.html#a85221d61f5799fbb9790d6d2be69de5d">m</a>, const <a class="el" href="class_lat_m_r_g_1_1_m_m_r_g_lattice.html#ad230c2785782fa3319c68993cfb42373">IntMat</a> &amp;A, int maxDim, int r, LatticeTester::NormType norm=LatticeTester::L2NORM, <a class="el" href="namespace_lat_m_r_g.html#a86edf8445f847038592d741fd49b2b09">LatticeType</a> lat=<a class="el" href="namespace_lat_m_r_g.html#a86edf8445f847038592d741fd49b2b09aadd01ce47ad19c016e7dcaf75dc70810">FULL</a>)</td></tr>
@@ -222,13 +229,6 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a7e75cbf4cc9c3996f7771f5707e16291"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a52a2f52345e66358713a0e0cd7f2637b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_lat_m_r_g_1_1_m_m_r_g_lattice.html#ac5d12cab864679c3cc6df7113ba070ea">IntVec</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_m_m_r_g_lattice.html#a52a2f52345e66358713a0e0cd7f2637b">m_xi</a></td></tr>
 <tr class="separator:a52a2f52345e66358713a0e0cd7f2637b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-types"></a>
-Private Types</h2></td></tr>
-<tr class="memitem:ad230c2785782fa3319c68993cfb42373"><td class="memItemLeft" align="right" valign="top">typedef NTL::matrix&lt; Int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_m_m_r_g_lattice.html#ad230c2785782fa3319c68993cfb42373">IntMat</a></td></tr>
-<tr class="separator:ad230c2785782fa3319c68993cfb42373"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac5d12cab864679c3cc6df7113ba070ea"><td class="memItemLeft" align="right" valign="top">typedef NTL::vector&lt; Int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_m_m_r_g_lattice.html#ac5d12cab864679c3cc6df7113ba070ea">IntVec</a></td></tr>
-<tr class="separator:ac5d12cab864679c3cc6df7113ba070ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename Int, typename Dbl&gt;<br />
@@ -246,19 +246,11 @@ class LatMRG::MMRGLattice&lt; Int, Dbl &gt;</h3>
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename Int , typename Dbl &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">typedef NTL::matrix&lt;Int&gt; <a class="el" href="class_lat_m_r_g_1_1_m_m_r_g_lattice.html">LatMRG::MMRGLattice</a>&lt; Int, Dbl &gt;::<a class="el" href="class_lat_m_r_g_1_1_m_m_r_g_lattice.html#ad230c2785782fa3319c68993cfb42373">IntMat</a></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 </div>
@@ -270,19 +262,11 @@ template&lt;typename Int , typename Dbl &gt; </div>
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename Int , typename Dbl &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">typedef NTL::vector&lt;Int&gt; <a class="el" href="class_lat_m_r_g_1_1_m_m_r_g_lattice.html">LatMRG::MMRGLattice</a>&lt; Int, Dbl &gt;::<a class="el" href="class_lat_m_r_g_1_1_m_m_r_g_lattice.html#ac5d12cab864679c3cc6df7113ba070ea">IntVec</a></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 </div>

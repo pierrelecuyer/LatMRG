@@ -29,6 +29,8 @@ var searchData=
   ['tostringgeneratormatrix',['toStringGeneratorMatrix',['../class_lat_m_r_g_1_1_m_m_r_g_lattice.html#a763aca1a6a28a331520d239f62904739',1,'LatMRG::MMRGLattice']]],
   ['tostringimplemcond',['toStringImplemCond',['../namespace_lat_m_r_g.html#abc84bd6bef937f4ffac109ede7af5fa1',1,'LatMRG']]],
   ['tostringlattice',['toStringLattice',['../namespace_lat_m_r_g.html#ad105b228d0090792d8b41c0a52af8d7d',1,'LatMRG']]],
+  ['tostringmerit',['toStringMerit',['../class_lat_m_r_g_1_1_figure_of_merit.html#a6a64a2413caee5016f0460376066c4d4',1,'LatMRG::FigureOfMerit']]],
+  ['tostringprojections',['toStringProjections',['../class_lat_m_r_g_1_1_figure_of_merit.html#aa08c6a4109356d03dbd07a8c87305fae',1,'LatMRG::FigureOfMerit']]],
   ['tostringsearchmethod',['toStringSearchMethod',['../namespace_lat_m_r_g.html#aa88775cbc0c5bccec7a30e8a360d59df',1,'LatMRG']]],
   ['tovector',['toVector',['../class_lat_m_r_g_1_1_poly_p_e.html#a2341fa0666cdf4a4f95a116c7b40f6da',1,'LatMRG::PolyPE']]],
   ['trace',['trace',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a3cc8f6c49f2353998321351d1a85f9c5',1,'LatMRG::MRGLattice']]],

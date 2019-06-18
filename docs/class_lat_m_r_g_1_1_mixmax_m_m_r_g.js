@@ -1,11 +1,11 @@
 var class_lat_m_r_g_1_1_mixmax_m_m_r_g =
 [
     [ "IntMat", "class_lat_m_r_g_1_1_mixmax_m_m_r_g.html#ac57a23ab7347737282cc02a1c2b86a33", null ],
-    [ "MixmaxMMRG", "class_lat_m_r_g_1_1_mixmax_m_m_r_g.html#a68f988ce24be388add2c0a6cb88b6da3", null ],
-    [ "MixmaxMMRG", "class_lat_m_r_g_1_1_mixmax_m_m_r_g.html#a1c9199b74af9a426d0377b481da6b33a", null ],
-    [ "MixmaxMMRG", "class_lat_m_r_g_1_1_mixmax_m_m_r_g.html#a43d1f5184625b7b789267f592291da4a", null ],
+    [ "MixmaxMMRG", "class_lat_m_r_g_1_1_mixmax_m_m_r_g.html#a45c0e14c25cc161c9fa58175f69abe83", null ],
+    [ "MixmaxMMRG", "class_lat_m_r_g_1_1_mixmax_m_m_r_g.html#aa42ef83695938afb4319a9771d4779a7", null ],
+    [ "MixmaxMMRG", "class_lat_m_r_g_1_1_mixmax_m_m_r_g.html#ac0044085bb324e589cd72abea3ddb084", null ],
     [ "~MixmaxMMRG", "class_lat_m_r_g_1_1_mixmax_m_m_r_g.html#af82c71e1a4b680396960cc048cf17572", null ],
-    [ "buildMatrix", "class_lat_m_r_g_1_1_mixmax_m_m_r_g.html#a988e318e1d7e38f2dc857d72f21ad31d", null ],
+    [ "buildMatrix", "class_lat_m_r_g_1_1_mixmax_m_m_r_g.html#a82077ed71fa67ca4c7fa05deec1ce254", null ],
     [ "getMatrix", "class_lat_m_r_g_1_1_mixmax_m_m_r_g.html#ae6bf97083ef04ddc3dc06802ce086386", null ],
     [ "getOrder", "class_lat_m_r_g_1_1_mixmax_m_m_r_g.html#a9216e84a4b1edfa1b78e78c10b5ad8d6", null ],
     [ "m_A", "class_lat_m_r_g_1_1_mixmax_m_m_r_g.html#aed0eee57838533d3c5cbfd15acae922d", null ],
