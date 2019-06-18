@@ -1,11 +1,12 @@
 MRG
 SPECTRAL true FULL BESTLAT
 false
-1
+2
 1 35
 12 12
 10
 30
 2 31 -1
 8
+RANDOM 1 1 1 1 1 1 1 1
 true true

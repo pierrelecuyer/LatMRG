@@ -53,7 +53,7 @@ namespace LatMRG {
        * `m_projDim[i]` is the maximal indice used by projections when
        * `m_currentDim == i+1`.
        * */
-      std::vector<std::size_t> m_projDim;
+      std::vector<int> m_projDim;
 
     public:
 
@@ -69,7 +69,7 @@ namespace LatMRG {
        * Projections in dimension `i` use `i` indices in the range
        * `[0, projDim[i-1]]` with at least one of them at least `minDim-1`.
        * */
-      Projections(int dimProj, int minDim, std::vector<std::size_t>& projDim);
+      Projections(int dimProj, int minDim, std::vector<int>& projDim);
 
       /**
        * If `dim==0` this will return true if this calling next will not get a
@@ -104,7 +104,7 @@ namespace LatMRG {
       int minDim() {return m_minDim;}
       int maxDim() {return m_projDim[0]+1;}
       int numProj() {return m_numDim;}
-      std::vector<std::size_t>& projDim() {return m_projDim;}
+      std::vector<int>& projDim() {return m_projDim;}
 
       /**
        * Returns a string describing this object of the form

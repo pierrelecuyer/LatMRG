@@ -1,7 +1,7 @@
 #include "latmrg/Projections.h"
 
 namespace LatMRG {
-  Projections::Projections(int dimProj, int minDim, std::vector<std::size_t>& projDim){
+  Projections::Projections(int dimProj, int minDim, std::vector<int>& projDim){
     m_numDim = dimProj;
     m_projDim.resize(dimProj);
     m_minDim = minDim;
@@ -14,9 +14,12 @@ namespace LatMRG {
   //============================================================================
 
   bool Projections::end(int dim) {
-    if (m_currentDim == 0 || m_curProj.size() == 0) return false;
+    if (m_currentDim == 0 || m_curProj.size() == 0) {
+      if (dim == 1 && !(m_projDim[m_currentDim-1] >= m_currentDim)) return true;
+      return false;
+    }
     //std::cout << LatticeTester::Coordinates(m_curProj) << "\n";
-    bool cond = m_curProj.back() == m_projDim[m_currentDim-1];
+    bool cond = (int)m_curProj.back() == m_projDim[m_currentDim-1];
     //std::cout << "cond: " << cond << " dim: " << dim << "\n";
     // Exhausted all options
     if (dim == 0 && m_currentDim == m_numDim) {
@@ -24,12 +27,13 @@ namespace LatMRG {
       // Second coordinate is in last possible spot (see how we increment in
       // `next()`)
       //std::cout << "dim 0: " << (m_curProj[1] == (m_projDim[m_numDim-1]-m_numDim+2)) << "\n";
-      return m_curProj[1] == (m_projDim[m_numDim-1]-m_numDim+2);
+      return (int)m_curProj[1] == (m_projDim[m_numDim-1]-m_numDim+2);
     }
     if (dim == 1) {
+      if (!(m_projDim[m_currentDim-1] >= m_currentDim)) return true;
       if (m_currentDim == 1 || m_currentDim == 2) return cond;
       //std::cout << "dim 1: " << (m_curProj[1] == (m_projDim[m_currentDim-1]-m_currentDim+2)) << "\n";
-      return m_curProj[1] == (m_projDim[m_currentDim-1]-m_currentDim+2);
+      return (int)m_curProj[1] == (m_projDim[m_currentDim-1]-m_currentDim+2);
     }
     return false;
   }
@@ -45,7 +49,7 @@ namespace LatMRG {
       return LatticeTester::Coordinates(m_curProj);
     }
     // Checking dimension change
-    if (end(1)) {
+    while (end(1)) {
       m_currentDim++;
       m_curProj.resize(0);
     }
@@ -67,7 +71,7 @@ namespace LatMRG {
     } else  {
       // Incrementing a vector that can be incremented
       int i = m_currentDim-1;
-      while (m_curProj[i] == m_projDim[m_currentDim-1]-m_currentDim+1+i) i--;
+      while ((int)m_curProj[i] == m_projDim[m_currentDim-1]-m_currentDim+1+i) i--;
       m_curProj[i]++;
       for(i+=1; i<m_currentDim; i++) {
         m_curProj[i] = m_curProj[i-1]+1;

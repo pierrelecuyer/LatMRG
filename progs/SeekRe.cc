@@ -17,7 +17,7 @@ namespace {
   // Program global objects
   Chrono timer; // program timer
   int numProj, minDim, maxDim;
-  std::vector<std::size_t> projDim;
+  std::vector<int> projDim;
 
   // MRG specific parameters
   MRGComponent<Int>* mrg;
@@ -264,7 +264,7 @@ namespace {
       else if (conf.type == MMRG) {
         std::cout << "Matrix:\n" << (*it).getLattice() << "\n";
       }
-      std::cout << "Merit: " << (*it).getMerit() << "\n";
+      std::cout << (*it).toStringMerit();
     }
   }
 
@@ -308,14 +308,16 @@ namespace {
     reader.readInt(numProj, ln++, 0);
     reader.readInt(minDim, ln, 0);
     reader.readInt(maxDim, ln++, 1);
-    projDim.push_back((unsigned)(maxDim-1));
+    projDim.push_back((maxDim-1));
     for (int i = 0; i<numProj-1; i++) {
       int tmp;
       reader.readInt(tmp, ln, i);
       // If the projection is requested only on indices smaller or equal to the
       // dimension, we learn nothing, this is corrected
-      tmp = (unsigned)tmp>projDim.size()+1?tmp:projDim.size()+1;
-      projDim.push_back((unsigned)(tmp-1));
+      if (tmp > 0 && tmp < i+3) {
+        tmp = i+3;
+      }
+      projDim.push_back(tmp-1);
     }
     if (numProj > 1) ln++;
     reader.readInt(conf.max_gen, ln++, 0);
@@ -344,7 +346,7 @@ namespace {
       minDim = (!conf.period||minDim>conf.order) ? minDim : (conf.order+1);
       maxDim = maxDim>minDim ? maxDim : minDim;
       for (unsigned int i = 0; i < projDim.size(); i++) {
-        projDim[i] = (projDim[i]<(unsigned)(minDim-1))?(unsigned)(minDim-1):projDim[i];
+        if (projDim[i] >= 0) projDim[i] = (projDim[i]<(minDim-1))?(minDim-1):projDim[i];
       }
       if (conf.period) {
         // Using default parameters for period or not
@@ -371,7 +373,7 @@ namespace {
       minDim = (!conf.period||minDim>conf.order) ? minDim : (conf.order+1);
       maxDim = maxDim>minDim ? maxDim : minDim;
       for (unsigned int i = 0; i < projDim.size(); i++) {
-        projDim[i] = (projDim[i]<(unsigned)(minDim-1))?(unsigned)(minDim-1):projDim[i];
+        if (projDim[i] > 0) projDim[i] = (projDim[i]<(minDim-1))?(minDim-1):projDim[i];
       }
       if (conf.period) {
         // Using default parameters for period or not
