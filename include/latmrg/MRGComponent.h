@@ -1,7 +1,6 @@
 #ifndef	LATMRG_MRGCOMPONENT_H
 #define	LATMRG_MRGCOMPONENT_H
 
-
 #include "latmrg/Const.h"
 #include "latmrg/PolyPE.h"
 #include "latmrg/IntFactorization.h"
@@ -11,7 +10,6 @@
 #include <NTL/mat_poly_ZZ.h>
 
 #include <string>
-
 
 namespace LatMRG {
 
