@@ -153,6 +153,7 @@ namespace {
           reader.readString(conf.filer, ln, 5);
         }
       }
+    } else if (conf.type == COMBO) {
     }
     return true;
   }
@@ -195,6 +196,7 @@ int main (int argc, char **argv) {
     MMRGLattice<Int, Dbl> mmrglat(conf.modulo, conf.matrix, maxDim, conf.order);
     bestLattice.add(test(mmrglat, conf));
     printResults(bestLattice);
+  } else if (conf.type == COMBO) {
   }
   delete conf.proj;
   return 0;

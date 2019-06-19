@@ -34,16 +34,16 @@ namespace LatMRG {
         typedef NTL::matrix<Int> IntMat;
 
         /**
-         * Constructor with modulus of congruence \f$m\f$, order of the 
-         * recurrence \f$k\f$, multipliers \f$a\f$, maximal dimension `MaxDim`, 
-         * and lattice type `Latt`. `a` has to be a vector of k+1 components 
-         * with `a[i]`=\f$a_i\f$ for compatibility with other classes. Vectors 
-         * and (square) matrices of the basis have maximal dimension `maxDim`, 
-         * and the indices of vectors and matrices vary from dimension 1 to 
+         * Constructor with modulus of congruence \f$m\f$, order of the
+         * recurrence \f$k\f$, multipliers \f$a\f$, maximal dimension `MaxDim`,
+         * and lattice type `Latt`. `a` has to be a vector of k+1 components
+         * with `a[i]`=\f$a_i\f$ for compatibility with other classes. Vectors
+         * and (square) matrices of the basis have maximal dimension `maxDim`,
+         * and the indices of vectors and matrices vary from dimension 1 to
          * `maxDim`. The norm to be used for the basis vectors is `norm`.
          */
-        MRGLattice (const Int & m, const IntVec & a, int maxDim, int k, 
-            LatticeType latt, 
+        MRGLattice (const Int & m, const IntVec & a, int maxDim, int k,
+            LatticeType latt,
             LatticeTester::NormType norm = LatticeTester::L2NORM);
 
         /**
@@ -51,16 +51,16 @@ namespace LatMRG {
          * a single number.
          */
         MRGLattice (const Int & m, const Int & a, int maxDim,
-            LatticeType latt, 
+            LatticeType latt,
             LatticeTester::NormType norm = LatticeTester::L2NORM);
 
         /**
          * As in the constructor above but the basis is built for the lacunary
-         * indices `lac`. `a` has to be a vector of k+1 components 
+         * indices `lac`. `a` has to be a vector of k+1 components
          * with `a[i]`=\f$a_i\f$ for compatibility with other classes.
          */
-        MRGLattice (const Int & m, const IntVec & a, int maxDim, int k, 
-            IntVec & lac, LatticeType latt, 
+        MRGLattice (const Int & m, const IntVec & a, int maxDim, int k,
+            IntVec & lac, LatticeType latt,
             LatticeTester::NormType norm = LatticeTester::L2NORM);
 
         /**
@@ -166,7 +166,7 @@ namespace LatMRG {
       protected:
 
         /**
-         * Initializes a square matrix of order \f$k\f$. This initial matrix 
+         * Initializes a square matrix of order \f$k\f$. This initial matrix
          * contains a system of generators for the given group of states.
          */
         void initStates ();
@@ -195,9 +195,9 @@ namespace LatMRG {
 
         /**
          * Increments the basis by 1 in case of lacunary indices.
-         * Uses the method described in the article: P. L'Ecuyer and R. Couture, 
-         * "An Implementation of the Lattice and Spectral Tests for Multiple 
-         * Recursive Linear Random Number Generators", INFORMS Journal on 
+         * Uses the method described in the article: P. L'Ecuyer and R. Couture,
+         * "An Implementation of the Lattice and Spectral Tests for Multiple
+         * Recursive Linear Random Number Generators", INFORMS Journal on
          * Computing, 9, 2 (1997), page 206--217. Section 3, "Lacunary indices".
          */
         void incDimLaBasis (int);
@@ -260,7 +260,7 @@ namespace LatMRG {
         /**
          * Matrix that contains the vectors that can be used to generate the
          * basis for an arbitrary dimension. This matrix is of order k and if
-         * we want to build the full lattice, this matrix is the identity 
+         * we want to build the full lattice, this matrix is the identity
          * matrix. **Marc-Antoine** This matrix is different in some way that I
          * don't quite understand if we use lacunary indices.
          */
@@ -370,7 +370,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int, typename Dbl>
-    MRGLattice<Int, Dbl>::MRGLattice(const Int & m, const IntVec & a, int maxDim, 
+    MRGLattice<Int, Dbl>::MRGLattice(const Int & m, const IntVec & a, int maxDim,
         int k, LatticeType lat, LatticeTester::NormType norm):
       LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::IntLattice(
           m, k, maxDim, norm)
@@ -387,7 +387,7 @@ namespace LatMRG {
   //============================================================================
 
   template<typename Int, typename Dbl>
-    MRGLattice<Int, Dbl>::MRGLattice(const Int & m, const Int & a, int maxDim, 
+    MRGLattice<Int, Dbl>::MRGLattice(const Int & m, const Int & a, int maxDim,
         LatticeType lat, LatticeTester::NormType norm):
       LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::IntLattice(
           m, 1, maxDim, norm)
@@ -402,7 +402,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int, typename Dbl>
-    MRGLattice<Int, Dbl>::MRGLattice(const Int & m, const IntVec & a, int maxDim, 
+    MRGLattice<Int, Dbl>::MRGLattice(const Int & m, const IntVec & a, int maxDim,
         int k, IntVec & I, LatticeType lat, LatticeTester::NormType norm):
       LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::IntLattice (
           m, k, maxDim, norm), m_lac(I, maxDim), m_ip(0)
@@ -507,7 +507,7 @@ namespace LatMRG {
         if(m_power2) {
           out << " = ";
           if (m_pow2_exp[2*i] == 2004012) out << 0;
-          else out << (m_pow2_exp[2*i]>>30?" ":"-") << 2 << "^" 
+          else out << (m_pow2_exp[2*i]>>30?" ":"-") << 2 << "^"
             << (m_pow2_exp[2*i] & ((1<<30)-1));
           if (m_pow2_exp[2*i+1] == 2004012) out << " + " << 0;
           else out << (m_pow2_exp[2*i+1]>>30?" + ":" - ") << 2 << "^"
@@ -695,12 +695,12 @@ namespace LatMRG {
         }
       }
 
-      /* On veut s'assurer que la base m_v soit triangulaire (pour satisfaire 
-       * les conditions de l'article \cite{rLEC94e} [sec. 3, conditions sur 
-       * V_i >= i]) et de plein rang (on remplace les lignes = 0 par lignes 
-       * avec m sur la diagonale). 
+      /* On veut s'assurer que la base m_v soit triangulaire (pour satisfaire
+       * les conditions de l'article \cite{rLEC94e} [sec. 3, conditions sur
+       * V_i >= i]) et de plein rang (on remplace les lignes = 0 par lignes
+       * avec m sur la diagonale).
        * */
-      LatticeTester::Triangularization<IntMat>(this->m_wSI, this->m_vSI, ord, IMax, 
+      LatticeTester::Triangularization<IntMat>(this->m_wSI, this->m_vSI, ord, IMax,
           this->m_modulo);
       LatticeTester::CalcDual<IntMat>(this->m_vSI, this->m_wSI, IMax, this->m_modulo);
 
@@ -748,7 +748,7 @@ namespace LatMRG {
         }
       }
     }
-  
+
   //============================================================================
 
   template<typename Int, typename Dbl>
@@ -777,7 +777,7 @@ namespace LatMRG {
         for (int i1 = 0; i1 < dim-1; i1++) {
 
           Int tempScalDual;
-          LatticeTester::ProdScal<Int> (tempLineBasis, this->m_wSI[i1], dim, 
+          LatticeTester::ProdScal<Int> (tempLineBasis, this->m_wSI[i1], dim,
               tempScalDual);
           LatticeTester::Quotient (tempScalDual, this->m_modulo, tempScalDual);
           this->m_t1 = tempScalDual * this->m_vSI[i1][dim - 1];
@@ -806,7 +806,7 @@ namespace LatMRG {
         if (tempScalDualBis != 0)
           tempScalDualBis = -tempScalDualBis;
 
-        LatticeTester::Quotient (tempScalDualBis, this->m_vSI[dim - 1][dim - 1], 
+        LatticeTester::Quotient (tempScalDualBis, this->m_vSI[dim - 1][dim - 1],
             tempScalDualBis);
         this->m_dualbasis[dim - 1][j] = tempScalDualBis;
       }
@@ -878,16 +878,16 @@ namespace LatMRG {
         } else if (m_latType == RECURRENT) {
           PolyPE<Int>::setM (this->m_modulo);
           /* Je crois que la version sunos devait fonctionner correctement.
-           * Je crois qu'Ajmal a créé des bugs dans la version mcs, qui se sont 
-           * propagés à mcs2, xds98, ..., c++. Je n'ai pas réussi à trouver 
-           * l'erreur: les résultats de plusieurs exemples dans sunos ne 
-           * concordent pas avec les résultats des versions subséquentes. Voir 
+           * Je crois qu'Ajmal a créé des bugs dans la version mcs, qui se sont
+           * propagés à mcs2, xds98, ..., c++. Je n'ai pas réussi à trouver
+           * l'erreur: les résultats de plusieurs exemples dans sunos ne
+           * concordent pas avec les résultats des versions subséquentes. Voir
            * l'exemple 4 dans l'article
            *    AUTHOR="P. L'Ecuyer and R. Couture",
            *    TITLE="An Implementation of the Lattice and Spectral Tests for
            *           Multiple Recursive Linear Random Number Generators"
            * A CORRIGER: comparer avec /u/lecuyer/stochas/latmrg/sunos/
-           * Voir la déf du m effectif comparé au vrai m dans LATIO. 
+           * Voir la déf du m effectif comparé au vrai m dans LATIO.
            * Je soupçonne que cela pourrait être l'origine des erreurs.
            */
 
@@ -917,7 +917,7 @@ namespace LatMRG {
               // ********* ATTENTION: MulMod (a, b, c, d) est très différent
               // pour les types long et ZZ (voir ZZ.txt). C'est pourquoi on
               // utilise MulMod (a, b, c) même s'il est plus lent. *********
-              m_xi[this->m_order - j - 1] = NTL::MulMod (m_xi[this->m_order], m_aCoef[j], 
+              m_xi[this->m_order - j - 1] = NTL::MulMod (m_xi[this->m_order], m_aCoef[j],
                   this->m_modulo);
               m_xi[this->m_order - j] += m_xi[this->m_order - j - 1];
             }
@@ -944,7 +944,7 @@ namespace LatMRG {
             this->m_t1 = m_aCoef[i] * m_sta[this->m_order - i + 1][0];
             statmp[this->m_order-1] += this->m_t1;
           }
-          LatticeTester::Modulo(statmp[this->m_order-1], this->m_modulo, 
+          LatticeTester::Modulo(statmp[this->m_order-1], this->m_modulo,
               statmp[this->m_order-1]);
           // On memorise l'etat suivant.
           for (int i = 0; i < this->m_order-1; i++)
@@ -994,7 +994,7 @@ namespace LatMRG {
         LatticeTester::Modulo (statmp[j], this->m_modulo, statmp[j]);
         if (!NTL::IsZero (statmp[j])) {
           if (!m_ip[j]) {
-            LatticeTester::Euclide (statmp[j], this->m_modulo, this->m_t1, this->m_t2, this->m_t3, 
+            LatticeTester::Euclide (statmp[j], this->m_modulo, this->m_t1, this->m_t2, this->m_t3,
                 m_t4, m_sta[j][j]);
             for (int i = j + 1; i < this->m_order; i++) {
               m_sta[j][i] = this->m_t1 * statmp[i];
@@ -1004,7 +1004,7 @@ namespace LatMRG {
             return;
 
           } else {
-            LatticeTester::Euclide (m_sta[j][j], statmp[j], this->m_t1, this->m_t2, this->m_t3, 
+            LatticeTester::Euclide (m_sta[j][j], statmp[j], this->m_t1, this->m_t2, this->m_t3,
                 m_t4, m_sta[j][j]);
             NTL::clear (statmp[j]);
             for (int i = j + 1; i < this->m_order; i++) {

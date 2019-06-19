@@ -256,6 +256,8 @@ namespace LatMRG {
         field = RANK1;
       else if (strcasecmp(val.c_str(), "MMRG") == 0)
         field = MMRG;
+      else if (strcasecmp(val.c_str(), "COMBO") == 0)
+        field = COMBO;
       else
         LatticeTester::MyExit(1, "readGenType:   NO SUCH CASE");
     }

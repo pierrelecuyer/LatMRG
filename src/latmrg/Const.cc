@@ -41,6 +41,8 @@ namespace LatMRG
         return "KOROBOV";
       case RANK1:
         return "RANK1";
+      case COMBO:
+        return "COMBO";
       default:
         return "***** GenType: IMPOSSIBLE CASE ";
     }
