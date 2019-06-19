@@ -7,5 +7,6 @@ var searchData=
   ['checkproduct',['checkProduct',['../class_lat_m_r_g_1_1_int_factorization.html#a79648ca62d09bf762011df449314943e',1,'LatMRG::IntFactorization']]],
   ['chrono',['Chrono',['../class_lat_m_r_g_1_1_chrono.html#a9d3a4fb5f75b0f9024e12562923d3720',1,'LatMRG::Chrono']]],
   ['clear',['clear',['../class_lat_m_r_g_1_1_int_factorization.html#a22a9feccf36806716a629fdda93b6d85',1,'LatMRG::IntFactorization']]],
+  ['combolattice',['ComboLattice',['../class_lat_m_r_g_1_1_combo_lattice.html#aaec88d819c7d0112066eeeefe0462f78',1,'LatMRG::ComboLattice']]],
   ['computemerit',['computeMerit',['../class_lat_m_r_g_1_1_figure_of_merit.html#adc0c78ea0ad04f69f537254ce9d2743a',1,'LatMRG::FigureOfMerit']]]
 ];

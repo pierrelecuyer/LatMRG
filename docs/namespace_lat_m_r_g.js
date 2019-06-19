@@ -2,6 +2,7 @@ var namespace_lat_m_r_g =
 [
     [ "AWCSWBLattice", "class_lat_m_r_g_1_1_a_w_c_s_w_b_lattice.html", "class_lat_m_r_g_1_1_a_w_c_s_w_b_lattice" ],
     [ "Chrono", "class_lat_m_r_g_1_1_chrono.html", "class_lat_m_r_g_1_1_chrono" ],
+    [ "ComboLattice", "class_lat_m_r_g_1_1_combo_lattice.html", "class_lat_m_r_g_1_1_combo_lattice" ],
     [ "FigureOfMerit", "class_lat_m_r_g_1_1_figure_of_merit.html", "class_lat_m_r_g_1_1_figure_of_merit" ],
     [ "IntFactorization", "class_lat_m_r_g_1_1_int_factorization.html", "class_lat_m_r_g_1_1_int_factorization" ],
     [ "IntPrimitivity", "class_lat_m_r_g_1_1_int_primitivity.html", "class_lat_m_r_g_1_1_int_primitivity" ],

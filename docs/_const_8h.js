@@ -12,7 +12,8 @@ var _const_8h =
       [ "MWC", "_const_8h.html#ab4948e899f8c3a6fb82cff009283061ea9a98771a3304da67b9ed878d6e0aa1c9", null ],
       [ "KOROBOV", "_const_8h.html#ab4948e899f8c3a6fb82cff009283061ea08708af287e2aa238f5e0517ae6f476b", null ],
       [ "RANK1", "_const_8h.html#ab4948e899f8c3a6fb82cff009283061eadd58e47c779d21d1ee568cde751a730b", null ],
-      [ "MMRG", "_const_8h.html#ab4948e899f8c3a6fb82cff009283061ea704886e207cd0fadc91d5bcc0139a78d", null ]
+      [ "MMRG", "_const_8h.html#ab4948e899f8c3a6fb82cff009283061ea704886e207cd0fadc91d5bcc0139a78d", null ],
+      [ "COMBO", "_const_8h.html#ab4948e899f8c3a6fb82cff009283061ead6c0d4e17150b4a449106a8a9c55c9b7", null ]
     ] ],
     [ "ImplemCond", "_const_8h.html#ad049f9925bbec6f1e1b8097723c01d95", [
       [ "NO_COND", "_const_8h.html#ad049f9925bbec6f1e1b8097723c01d95ad9ab360d18c9302b90dd714d35a0c132", null ],

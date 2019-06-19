@@ -14,7 +14,7 @@ var searchData=
   ['finished',['finished',['../class_lat_m_r_g_1_1_figure_of_merit.html#aeaedeb63c35b0bd078cb5a29ff05e844',1,'LatMRG::FigureOfMerit']]],
   ['fish31_3c_2fcode_20_3e',['fish31&lt;/code &gt;',['../usage_8dox.html#a97888aeb57b65a560a329f6889f2f53a',1,'usage.dox']]],
   ['flag_3c_2fem_20_3e',['flag&lt;/em &gt;',['../_lat_main_8dox.html#acba0a39b88688a12062625f4b8d52a46',1,'LatMain.dox']]],
-  ['float',['Float',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a0d13fe0b1e27856cdb1dfb8b522b7938',1,'LatMRG::MRGLattice']]],
+  ['float',['Float',['../class_lat_m_r_g_1_1_combo_lattice.html#a72a31e9f984452c0ced8660e15eba7cb',1,'LatMRG::ComboLattice::Float()'],['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a0d13fe0b1e27856cdb1dfb8b522b7938',1,'LatMRG::MRGLattice::Float()']]],
   ['follow',['follow',['../_lat_main_8dox.html#a8229dbd7aeefd3a2fab86a34a62c387a',1,'LatMain.dox']]],
   ['form_3c_2fem_20_3e',['Form&lt;/em &gt;',['../_lat_main_8dox.html#a6bdffa32c052e24c88de48907dbc2fef',1,'LatMain.dox']]],
   ['four',['Four',['../class_lat_m_r_g_1_1_modulus.html#abeb5a1387ef0acfd428b6be6bfbc7f9c',1,'LatMRG::Modulus']]],

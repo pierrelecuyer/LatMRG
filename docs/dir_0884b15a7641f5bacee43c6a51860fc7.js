@@ -2,6 +2,7 @@ var dir_0884b15a7641f5bacee43c6a51860fc7 =
 [
     [ "AWCSWBLattice.cc", "_a_w_c_s_w_b_lattice_8cc.html", null ],
     [ "Chrono.cc", "_chrono_8cc.html", null ],
+    [ "ComboLattice.cc", "_combo_lattice_8cc.html", "_combo_lattice_8cc" ],
     [ "Const.cc", "_const_8cc.html", "_const_8cc" ],
     [ "FigureOfMerit.cc", "_figure_of_merit_8cc.html", null ],
     [ "IntFactorization.cc", "_int_factorization_8cc.html", null ],

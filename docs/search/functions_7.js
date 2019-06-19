@@ -13,6 +13,7 @@ var searchData=
   ['getinvfactorlist',['getInvFactorList',['../class_lat_m_r_g_1_1_int_factorization.html#aad1d044734e5534825805ab64de7707e',1,'LatMRG::IntFactorization']]],
   ['getk',['getK',['../class_lat_m_r_g_1_1_poly_p_e.html#a4a085d267f6a46c2b5a6c54b9cd47bb1',1,'LatMRG::PolyPE']]],
   ['getlac',['getLac',['../class_lat_m_r_g_1_1_m_m_r_g_lattice.html#a1d3848dd1b631954cb544ca1e50f3bdd',1,'LatMRG::MMRGLattice::getLac()'],['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a29c94383b6977bec1f14ddb48d58f91c',1,'LatMRG::MRGLattice::getLac()']]],
+  ['getlatcombo',['getLatCombo',['../namespace_lat_m_r_g.html#a01952705ceac08a25eec316c16b7cc00',1,'LatMRG::getLatCombo(std::vector&lt; MRGComponent&lt; Int &gt;&gt; &amp;comp, int maxDim)'],['../namespace_lat_m_r_g.html#a209e47ed820ffc3645417f3541e1bbfe',1,'LatMRG::getLatCombo(std::vector&lt; MRGComponent&lt; std::int64_t &gt;&gt; &amp;comp, int maxDim)'],['../namespace_lat_m_r_g.html#ac7631f0e814bcb3f0fa36c4955f34744',1,'LatMRG::getLatCombo(std::vector&lt; MRGComponent&lt; NTL::ZZ &gt;&gt; &amp;comp, int maxDim)']]],
   ['getlattice',['getLattice',['../class_lat_m_r_g_1_1_figure_of_merit.html#a3871c326d9aa35dfc7f0432a846da630',1,'LatMRG::FigureOfMerit']]],
   ['getlist',['getList',['../class_lat_m_r_g_1_1_merit_list.html#a16506064eb3b5a6f9fdd702433a2f522',1,'LatMRG::MeritList']]],
   ['getlossrho',['getLossRho',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#afd791d608bbcc8906b3b23c6643ee0be',1,'LatMRG::MRGLattice']]],

@@ -3,7 +3,7 @@ var searchData=
   ['searchmethod',['SearchMethod',['../namespace_lat_m_r_g.html#a1fd35b5cabbc11ccb440e722240ca3e8',1,'LatMRG']]],
   ['sec',['SEC',['../class_lat_m_r_g_1_1_chrono.html#aeb39423e55e377aac6b2aa7a2006108aadefcae3075f8ae6b2a5ba3546444fbae',1,'LatMRG::Chrono']]],
   ['second',['second',['../class_lat_m_r_g_1_1_chrono.html#a968fa7e40a5ad71a121381585ba3f2da',1,'LatMRG::Chrono']]],
-  ['section',['section',['../usage_8dox.html#ac470d3152d9a00aeffa8bb56f9d9eb7c',1,'section():&#160;usage.dox'],['../_lat_main_8dox.html#aa8d0daa4d3d3137affc13b23ca626cf1',1,'Section():&#160;LatMain.dox']]],
+  ['section',['Section',['../_lat_main_8dox.html#aa8d0daa4d3d3137affc13b23ca626cf1',1,'Section():&#160;LatMain.dox'],['../usage_8dox.html#ac470d3152d9a00aeffa8bb56f9d9eb7c',1,'section():&#160;usage.dox']]],
   ['seed_3c_2fem_20_3e',['seed&lt;/em &gt;',['../_lat_main_8dox.html#a17059e183b0682414521a88859a9b451',1,'LatMain.dox']]],
   ['seekmain',['SeekMain',['../_seek_main.html',1,'usage']]],
   ['seekmain_2edox',['SeekMain.dox',['../_seek_main_8dox.html',1,'']]],

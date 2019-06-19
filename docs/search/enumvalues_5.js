@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['korobov',['KOROBOV',['../namespace_lat_m_r_g.html#ab4948e899f8c3a6fb82cff009283061ea08708af287e2aa238f5e0517ae6f476b',1,'LatMRG']]]
+  ['hms',['HMS',['../class_lat_m_r_g_1_1_chrono.html#aeb39423e55e377aac6b2aa7a2006108aa1a016cef1a3e30622fc12887bac8bb49',1,'LatMRG::Chrono']]],
+  ['hours',['HOURS',['../class_lat_m_r_g_1_1_chrono.html#aeb39423e55e377aac6b2aa7a2006108aaf2a99a85d74719b7199bc76a4af58d5d',1,'LatMRG::Chrono']]]
 ];

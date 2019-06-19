@@ -4,6 +4,7 @@ var dir_8be9fa745236e63deff07f5f1b560ea6 =
       [ "AWCSWBLattice", "class_lat_m_r_g_1_1_a_w_c_s_w_b_lattice.html", "class_lat_m_r_g_1_1_a_w_c_s_w_b_lattice" ]
     ] ],
     [ "Chrono.h", "_chrono_8h.html", "_chrono_8h" ],
+    [ "ComboLattice.h", "_combo_lattice_8h.html", "_combo_lattice_8h" ],
     [ "Const.h", "_const_8h.html", "_const_8h" ],
     [ "FigureOfMerit.h", "_figure_of_merit_8h.html", [
       [ "FigureOfMerit", "class_lat_m_r_g_1_1_figure_of_merit.html", "class_lat_m_r_g_1_1_figure_of_merit" ],
