@@ -30,15 +30,15 @@ namespace LatMRG {
         MixmaxMMRG(Int modulus, int N, Int & s, Int & m, Int & b);
 
         /**
-         * Constructor for the three-parameters family. 
-         * The four-parameter family reduces to the three-parameter family with 
+         * Constructor for the three-parameters family.
+         * The four-parameter family reduces to the three-parameter family with
          * \f$b=2-2m\f$.
          */
         MixmaxMMRG(Int modulus, int N, Int & s, Int & m);
 
         /**
          * Constructor for the two-parameters family.
-         * The three-parameter family reduces to the two-parameter family with 
+         * The three-parameter family reduces to the two-parameter family with
          * \f$m=1\f$.
          */
         MixmaxMMRG(Int modulus, int N, Int & s);

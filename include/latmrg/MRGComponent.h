@@ -17,7 +17,7 @@ namespace LatMRG {
    * This class is used to implement a MRG component in a combined MRG. It
    * exists in order to avoid creating numerous relatively heavy `MRGLattice`
    * objects to represent MRG components. Each MRG component is defined by a
-   * modulus \f$m\f$, an order \f$k\f$ and 
+   * modulus \f$m\f$, an order \f$k\f$ and
    * - either a vector of multipliers \f$a\f$,
    * where \f$a[i]\f$ represents \f$a_i\f$. This MRG satisfies the recurrence
    * \f[
@@ -240,7 +240,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    MRGComponent<Int>::MRGComponent (long p, long e, long c, const IntMat & A0, 
+    MRGComponent<Int>::MRGComponent (long p, long e, long c, const IntMat & A0,
         int k0)
     {
       module.init(p, e, c);
@@ -254,7 +254,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    MRGComponent<Int>::MRGComponent (long p, long e, long c, const IntVec & a0, 
+    MRGComponent<Int>::MRGComponent (long p, long e, long c, const IntVec & a0,
         int k0)
     {
       module.init(p, e, c);
@@ -269,7 +269,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    MRGComponent<Int>::MRGComponent (const MRGComponent<Int> & lat) : 
+    MRGComponent<Int>::MRGComponent (const MRGComponent<Int> & lat) :
       k(lat.k)//, ifm1(lat.ifm1), ifr(lat.ifr)
   {
     module = lat.module;
@@ -287,7 +287,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    MRGComponent<Int> & MRGComponent<Int>::operator= 
+    MRGComponent<Int> & MRGComponent<Int>::operator=
     (const MRGComponent<Int> & lat)
     {
       if (this != &lat) {
@@ -384,7 +384,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    MRGComponent<Int>::MRGComponent (Modulus<Int> & modu, int k, 
+    MRGComponent<Int>::MRGComponent (Modulus<Int> & modu, int k,
         DecompType decom1, const char *filem1, DecompType decor,
         const char *filer)
     {
@@ -392,7 +392,7 @@ namespace LatMRG {
 
       LatticeTester::PrimeType status = LatticeTester::IntFactor<Int>::isPrime (
           modu.m, 100);
-      if (status == LatticeTester::PRIME 
+      if (status == LatticeTester::PRIME
           || LatticeTester::PROB_PRIME == status) {
         modu.primeF = true;
       } else {

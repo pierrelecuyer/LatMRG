@@ -84,7 +84,7 @@ namespace LatMRG {
        *
        * If this object is not initialized, this fills it with the first
        * projection with indices from `0` to `m_minDim-1`. It then adds
-       * coordinates up to `m_projDim[0]`. It then returns coordinates 
+       * coordinates up to `m_projDim[0]`. It then returns coordinates
        * */
       LatticeTester::Coordinates next();
 

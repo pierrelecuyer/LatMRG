@@ -37,7 +37,7 @@ namespace LatMRG {
 
 #ifdef HAVE_WINDOWS_H
 
-  void Chrono::tick () 
+  void Chrono::tick ()
   {
     if (currentProcess == NULL)
       currentProcess = GetCurrentProcess();
@@ -59,7 +59,7 @@ namespace LatMRG {
   // ANSI C timer
 
   void Chrono::tick ()
-    /* 
+    /*
      * Function returning the CPU time used by a program since it was
      * started. This function is ANSI C compliant.
      */
@@ -128,7 +128,7 @@ namespace LatMRG {
     Chrono now;
     now.tick();
     double temps;                     // Time elapsed, in seconds
-    temps = (static_cast<double>(now.microsec) - 
+    temps = (static_cast<double>(now.microsec) -
         static_cast<double>(microsec)) / 1.E+6 +
       static_cast<double>(now.second) -
       static_cast<double>(second);

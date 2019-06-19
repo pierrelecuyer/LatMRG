@@ -144,7 +144,7 @@ namespace LatMRG {
   //=========================================================================
 
   template<typename Int, typename Dbl>
-    KorobovLattice<Int, Dbl> & KorobovLattice<Int, Dbl>::operator= 
+    KorobovLattice<Int, Dbl> & KorobovLattice<Int, Dbl>::operator=
     (const KorobovLattice & lat)
     {
       if (this == &lat)

@@ -1,5 +1,5 @@
 /*
- * This file contains 
+ * This file contains
  * */
 #ifndef LATMRG_TEST_H
 #define LATMRG_TEST_H
@@ -175,93 +175,93 @@ namespace LatMRG {
    * it populates a `FigureOfMerit` objects and returns it.
    * */
   template<typename Lat>
-  FigureOfMerit<Lat> test(Lat & lattice, Config& conf) {
-    typedef typename Lat::Integ Int;
-    typedef typename Lat::IntVec IntVec;
-    typedef typename Lat::Float Dbl;
-    Projections* proj(conf.proj);
+    FigureOfMerit<Lat> test(Lat & lattice, Config& conf) {
+      typedef typename Lat::Integ Int;
+      typedef typename Lat::IntVec IntVec;
+      typedef typename Lat::Float Dbl;
+      Projections* proj(conf.proj);
 
-    LatticeTester::Normalizer<Dbl>* norma = lattice.getNormalizer(conf.normaType, 0, true);
-    std::vector<Dbl> results;
-    std::vector<IntVec> vectors;
-    lattice.buildBasis(proj->minDim());
-    for (int i = proj->minDim(); i <= proj->maxDim(); i++){
-      // Changing to the dual
-      if (conf.use_dual) lattice.dualize();
-      // Reducing the lattice
-      if (conf.reduction == LatticeTester::FULL)
-        Reductions::reduceFull(lattice);
-      else if (conf.reduction == LatticeTester::LLL)
-        Reductions::reduceLLL(lattice);
-      else if (conf.reduction == LatticeTester::BKZ)
-        Reductions::reduceBKZ(lattice);
-      else if (conf.reduction == LatticeTester::NOPRERED)
-        Reductions::reduceMink(lattice);
-      // Computing the merit of the lattice
-      Dbl tmp;
-      if (conf.criterion == LatticeTester::LENGTH) tmp = Merit::meritL(lattice);
-      if (conf.criterion == LatticeTester::SPECTRAL) tmp = Merit::meritS(lattice, norma);
-      if (conf.criterion == LatticeTester::BEYER) tmp = Merit::meritB(lattice);
-      results.push_back(tmp);
-      vectors.push_back(lattice.getBasis()[0]);
-#ifdef LATMRG_SEEK
-      // Rejecting lattices that won't make it
-      if (tmp < conf.currentMerit) {
-        return FigureOfMerit<Lat>(lattice, *conf.proj);
-      }
-#endif
-      // Changing back to the primal and increasing the dimension
-      if (conf.use_dual) lattice.dualize();
-      if (proj->minDim() < proj->maxDim()) lattice.incDim();
-    }
-
-    // Testing projections if there are anyo
-    // This is done separately because sequential testing is much more efficient
-    for (int i = 2; i <= proj->numProj(); i++) {
-      conf.proj->resetDim(i);
-      lattice.buildBasis(proj->projDim()[i-1]+1);
-      while(!conf.proj->end(1)) {
-        // Building the projection
-        LatticeTester::IntLattice<Int, Int, Dbl, Dbl> proj_lat(conf.modulo, conf.order, i, true);
-        LatticeTester::Coordinates iter(conf.proj->next());
-        lattice.buildProjection(&proj_lat, iter);
-        norma->setLogDensity(Dbl(-i*log(conf.modulo)
-              +log(abs(NTL::determinant(proj_lat.getBasis())))));
-        if (conf.use_dual) proj_lat.dualize();
-        // Reduction
+      LatticeTester::Normalizer<Dbl>* norma = lattice.getNormalizer(conf.normaType, 0, true);
+      std::vector<Dbl> results;
+      std::vector<IntVec> vectors;
+      lattice.buildBasis(proj->minDim());
+      for (int i = proj->minDim(); i <= proj->maxDim(); i++){
+        // Changing to the dual
+        if (conf.use_dual) lattice.dualize();
+        // Reducing the lattice
         if (conf.reduction == LatticeTester::FULL)
-          Reductions::reduceFull(proj_lat);
+          Reductions::reduceFull(lattice);
         else if (conf.reduction == LatticeTester::LLL)
-          Reductions::reduceLLL(proj_lat);
+          Reductions::reduceLLL(lattice);
         else if (conf.reduction == LatticeTester::BKZ)
-          Reductions::reduceBKZ(proj_lat);
+          Reductions::reduceBKZ(lattice);
         else if (conf.reduction == LatticeTester::NOPRERED)
-          Reductions::reduceMink(proj_lat);
-
-        // Figure of merit
+          Reductions::reduceMink(lattice);
+        // Computing the merit of the lattice
         Dbl tmp;
-        if (conf.criterion == LatticeTester::LENGTH) tmp = Merit::meritL(proj_lat);
-        else if (conf.criterion == LatticeTester::SPECTRAL) tmp = Merit::meritS(proj_lat, norma);
-        else if (conf.criterion == LatticeTester::BEYER) tmp = Merit::meritB(proj_lat);
+        if (conf.criterion == LatticeTester::LENGTH) tmp = Merit::meritL(lattice);
+        if (conf.criterion == LatticeTester::SPECTRAL) tmp = Merit::meritS(lattice, norma);
+        if (conf.criterion == LatticeTester::BEYER) tmp = Merit::meritB(lattice);
         results.push_back(tmp);
-        vectors.push_back(proj_lat.getBasis()[0]);
+        vectors.push_back(lattice.getBasis()[0]);
 #ifdef LATMRG_SEEK
         // Rejecting lattices that won't make it
         if (tmp < conf.currentMerit) {
           return FigureOfMerit<Lat>(lattice, *conf.proj);
         }
 #endif
+        // Changing back to the primal and increasing the dimension
+        if (conf.use_dual) lattice.dualize();
+        if (proj->minDim() < proj->maxDim()) lattice.incDim();
       }
+
+      // Testing projections if there are anyo
+      // This is done separately because sequential testing is much more efficient
+      for (int i = 2; i <= proj->numProj(); i++) {
+        conf.proj->resetDim(i);
+        lattice.buildBasis(proj->projDim()[i-1]+1);
+        while(!conf.proj->end(1)) {
+          // Building the projection
+          LatticeTester::IntLattice<Int, Int, Dbl, Dbl> proj_lat(conf.modulo, conf.order, i, true);
+          LatticeTester::Coordinates iter(conf.proj->next());
+          lattice.buildProjection(&proj_lat, iter);
+          norma->setLogDensity(Dbl(-i*log(conf.modulo)
+                +log(abs(NTL::determinant(proj_lat.getBasis())))));
+          if (conf.use_dual) proj_lat.dualize();
+          // Reduction
+          if (conf.reduction == LatticeTester::FULL)
+            Reductions::reduceFull(proj_lat);
+          else if (conf.reduction == LatticeTester::LLL)
+            Reductions::reduceLLL(proj_lat);
+          else if (conf.reduction == LatticeTester::BKZ)
+            Reductions::reduceBKZ(proj_lat);
+          else if (conf.reduction == LatticeTester::NOPRERED)
+            Reductions::reduceMink(proj_lat);
+
+          // Figure of merit
+          Dbl tmp;
+          if (conf.criterion == LatticeTester::LENGTH) tmp = Merit::meritL(proj_lat);
+          else if (conf.criterion == LatticeTester::SPECTRAL) tmp = Merit::meritS(proj_lat, norma);
+          else if (conf.criterion == LatticeTester::BEYER) tmp = Merit::meritB(proj_lat);
+          results.push_back(tmp);
+          vectors.push_back(proj_lat.getBasis()[0]);
+#ifdef LATMRG_SEEK
+          // Rejecting lattices that won't make it
+          if (tmp < conf.currentMerit) {
+            return FigureOfMerit<Lat>(lattice, *conf.proj);
+          }
+#endif
+        }
+      }
+
+      FigureOfMerit<Lat> figure(lattice, *conf.proj);
+      figure.addMerit(results, vectors);
+      figure.setFinished();
+      figure.computeMerit("min");
+
+      delete norma;
+      return figure;
     }
-
-    FigureOfMerit<Lat> figure(lattice, *conf.proj);
-    figure.addMerit(results, vectors);
-    figure.setFinished();
-    figure.computeMerit("min");
-
-    delete norma;
-    return figure;
-  }
 #endif
 #endif
 

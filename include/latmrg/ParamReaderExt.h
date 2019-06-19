@@ -142,15 +142,15 @@ namespace LatMRG {
             IntVec & Lac, GenType genType);
 
         /**
-         * Reads the lacunary configuration specified in the input file. If 
+         * Reads the lacunary configuration specified in the input file. If
          * *lacunaryType* is NONE, then the projection is done without lacunary
          * indices. If *lacunaryType* is SUBVECTOR, the projection is performed
          * using only the specified coordinates for each vector (*m_numberLacIndices*
-         * coordinates per vector) until the dimension *toDim* is reached. Finally, 
+         * coordinates per vector) until the dimension *toDim* is reached. Finally,
          * if *lacunaryType* is ARBITRARYINDICES, the projection is performed using
-         * the specified indices (*m_numberLacIndices* of them). 
+         * the specified indices (*m_numberLacIndices* of them).
          */
-        void readMMRGLacunary(int ordre, int fromDim, int toDim, unsigned int & ln, 
+        void readMMRGLacunary(int ordre, int fromDim, int toDim, unsigned int & ln,
             bool & lacunary, LacunaryType & lacunaryType, int & m_numberLacIndices,
             IntVec & Lac, GenType genType);
 
@@ -471,7 +471,7 @@ namespace LatMRG {
           if (i < toDim) {
             conv (Lac[i], Q + j);
             i++;
-          } else 
+          } else
             return;
         }
         Q += Q1;
@@ -494,7 +494,7 @@ namespace LatMRG {
 
         // storing the lacunary indices for each vector
         IntVec vectorSubLac;
-        LatticeTester::CreateVect (vectorSubLac, numberLacIndices-1); 
+        LatticeTester::CreateVect (vectorSubLac, numberLacIndices-1);
         for (int i = 0; i < numberLacIndices; i++) {
           if (vectorSubLac[i] > ordre)
             LatticeTester::MyExit(1, "Lacunary indice too large. Must be smaller than the size of the generated vectors");
@@ -508,7 +508,7 @@ namespace LatMRG {
           Lac[i] = vectorSubLac[i - alpha * numberLacIndices] + alpha * ordre;
           if ( (i+1) % numberLacIndices == 0 )
             alpha++;
-        } 
+        }
         return;
 
       } else if (lacunaryType == ARBITRARYINDICES) {

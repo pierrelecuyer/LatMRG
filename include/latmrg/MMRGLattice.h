@@ -12,11 +12,11 @@ namespace LatMRG {
    * \todo Make this class not use/compute the dual if not asked.
    *
    * This class implements lattice basis built from M-MRG (matrix multiple
-   * recursive linear congruential generators). One must first call the 
+   * recursive linear congruential generators). One must first call the
    * constructor with a given congruence modulus \f$m\f$, a given generator
-   * matrix for the recurrence, and a maximal dimension for the basis. One must 
+   * matrix for the recurrence, and a maximal dimension for the basis. One must
    * then build the lattice basis associated to the generator matrix for a
-   * given dimension. Each MMRG is defined by a generator matrix \f$A\f$. This 
+   * given dimension. Each MMRG is defined by a generator matrix \f$A\f$. This
    * MMRG satisfies the recurrence
    * \f[
    *   X_n = A X_{n-1} \mod m.
@@ -29,11 +29,11 @@ namespace LatMRG {
         typedef NTL::matrix<Int> IntMat;
 
         /**
-         * Constructor with modulus of congruence \f$m\f$, generator matrix 
-         * \f$A\f$, dimension of generator matrix \f$r\f$, maximal dimension 
-         * `MaxDim`, and lattice type `Latt`. Vectors and (square) matrices of 
-         * the basis have maximal dimension `maxDim`, and the indices of 
-         * vectors and matrices vary from dimension 0 to `maxDim`-1. The norm 
+         * Constructor with modulus of congruence \f$m\f$, generator matrix
+         * \f$A\f$, dimension of generator matrix \f$r\f$, maximal dimension
+         * `MaxDim`, and lattice type `Latt`. Vectors and (square) matrices of
+         * the basis have maximal dimension `maxDim`, and the indices of
+         * vectors and matrices vary from dimension 0 to `maxDim`-1. The norm
          * to be used for the basis vectors is `norm`.
          */
         MMRGLattice (const Int & m, const IntMat & A, int maxDim, int r,
@@ -46,8 +46,8 @@ namespace LatMRG {
          */
         //PW_TODO à faire plus tard
         MMRGLattice (const Int & m, const IntMat & A, int maxDim, int r,
-            LacunaryType & lacunaryType, IntVec & lac, 
-            LatticeTester::NormType norm = LatticeTester::L2NORM, 
+            LacunaryType & lacunaryType, IntVec & lac,
+            LatticeTester::NormType norm = LatticeTester::L2NORM,
             LatticeType lat = FULL);
 
         /**
@@ -135,7 +135,7 @@ namespace LatMRG {
 
         /**
          * Increments the basis by 1 in case of non-lacunary indices.
-         */ 
+         */
         void incrementDimNonLacunaryBasis ();
 
         /**
@@ -178,7 +178,7 @@ namespace LatMRG {
 
         /**
          * Contains the number of lacunary indices
-         */ 
+         */
         int m_numberLacIndices;
 
         /**
@@ -198,7 +198,7 @@ namespace LatMRG {
          */
 
         /**
-         * \f$\clubsuit\f$ Seems to be use as working variables. 
+         * \f$\clubsuit\f$ Seems to be use as working variables.
          * To be completed. Erwan
          */
         IntMat m_sta;
@@ -221,7 +221,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int, typename Dbl>
-    MMRGLattice<Int, Dbl>::MMRGLattice(const Int & m, const IntMat & A, int maxDim, 
+    MMRGLattice<Int, Dbl>::MMRGLattice(const Int & m, const IntMat & A, int maxDim,
         int r, LatticeTester::NormType norm, LatticeType lat):
       LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::IntLattice(m, r, maxDim, norm)
   {
@@ -236,8 +236,8 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int, typename Dbl>
-    MMRGLattice<Int, Dbl>::MMRGLattice(const Int & m, const IntMat & A, int maxDim, 
-        int r, LacunaryType & lacunaryType, IntVec & lac, 
+    MMRGLattice<Int, Dbl>::MMRGLattice(const Int & m, const IntMat & A, int maxDim,
+        int r, LacunaryType & lacunaryType, IntVec & lac,
         LatticeTester::NormType norm, LatticeType lat):
       LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::IntLattice (m, r, maxDim, norm)
       //m_lac(lac, r)
@@ -324,7 +324,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int, typename Dbl>
-    MMRGLattice<Int, Dbl> & MMRGLattice<Int, Dbl>::operator= 
+    MMRGLattice<Int, Dbl> & MMRGLattice<Int, Dbl>::operator=
     (const MMRGLattice<Int, Dbl> & lat)
     {
       if (this == &lat)
@@ -508,7 +508,7 @@ namespace LatMRG {
       this->m_vecNorm.resize(dimension);
       this->m_dualvecNorm.resize(dimension);
 
-      int maxIndiceLac = NTL::conv<int>(m_lac[m_lac.getSize()-1]); 
+      int maxIndiceLac = NTL::conv<int>(m_lac[m_lac.getSize()-1]);
 
       // building the complete basis until: dimension = max lacunary indice
       //-----------------------------------------------------------------------
@@ -632,9 +632,9 @@ namespace LatMRG {
       int sizeA = this->getOrder();
 
       // ************* update of the primal lattice *************
-      //  - we add a new coordinate to each vector v_i, this value being 
-      //  determined by the MMRG recurrence (even if the original vectors have 
-      //  been transformed linearly and we must apply the same transformations 
+      //  - we add a new coordinate to each vector v_i, this value being
+      //  determined by the MMRG recurrence (even if the original vectors have
+      //  been transformed linearly and we must apply the same transformations
       //  to their last coordinates).
       //  - we add an extra vector (0,..., 0, m) to complete this dimension
       //    increased basis.
@@ -704,14 +704,14 @@ namespace LatMRG {
       //     temp *= NTL::conv<typename ModInt<Int>::IntMatP>(NTL::transpose(m_A));
       //   // PW_TODO : could be useful to keep A^k in memory to shorten computation
 
-      //   // update of the new v_i coordinates using the *temp* matrix and the 
-      //   // first coefficients of each line (can be seen as a seed vector). So 
-      //   // this *temp* matrix multiplied by this seed vector gives us the next 
+      //   // update of the new v_i coordinates using the *temp* matrix and the
+      //   // first coefficients of each line (can be seen as a seed vector). So
+      //   // this *temp* matrix multiplied by this seed vector gives us the next
       //   // values generated by the MMRG for the considered dimension.
       //   IntVec initialState;
       //   for (int i = 0; i < (newDimension-1); i++) {
       //     getSubLine(initialState, this->m_basis, i, 0, sizeA-1);
-      //     initialState = NTL::conv<IntVec>( 
+      //     initialState = NTL::conv<IntVec>(
       //         NTL::transpose(temp) * NTL::conv<typename ModInt<Int>::IntVecP>(initialState));
       //     this->m_basis[i][newDimension-1] = initialState[newDimension - n*sizeA -1];
       //   }
