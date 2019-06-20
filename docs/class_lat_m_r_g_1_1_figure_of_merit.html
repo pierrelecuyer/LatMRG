@@ -151,9 +151,14 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae8ced005b332715e38ba6bab9927481d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#ae8ced005b332715e38ba6bab9927481d">setFinished</a> ()</td></tr>
 <tr class="memdesc:ae8ced005b332715e38ba6bab9927481d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets finished to <code>true</code>.  <a href="#ae8ced005b332715e38ba6bab9927481d">More...</a><br /></td></tr>
 <tr class="separator:ae8ced005b332715e38ba6bab9927481d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66a8c01426e28eb4003b447f3bf55569"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a66a8c01426e28eb4003b447f3bf55569">toStringDim</a> ()</td></tr>
+<tr class="memdesc:a66a8c01426e28eb4003b447f3bf55569"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a string containing the merit of the generator for each dimension.  <a href="#a66a8c01426e28eb4003b447f3bf55569">More...</a><br /></td></tr>
+<tr class="separator:a66a8c01426e28eb4003b447f3bf55569"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6a64a2413caee5016f0460376066c4d4"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a6a64a2413caee5016f0460376066c4d4">toStringMerit</a> ()</td></tr>
+<tr class="memdesc:a6a64a2413caee5016f0460376066c4d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a string containing the merit of the generator, the projection for which this is obtained and the shortest vector for this projection.  <a href="#a6a64a2413caee5016f0460376066c4d4">More...</a><br /></td></tr>
 <tr class="separator:a6a64a2413caee5016f0460376066c4d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa08c6a4109356d03dbd07a8c87305fae"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#aa08c6a4109356d03dbd07a8c87305fae">toStringProjections</a> ()</td></tr>
+<tr class="memdesc:aa08c6a4109356d03dbd07a8c87305fae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a string that contains the merit for all projections and the shortest vector for all projections.  <a href="#aa08c6a4109356d03dbd07a8c87305fae">More...</a><br /></td></tr>
 <tr class="separator:aa08c6a4109356d03dbd07a8c87305fae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae3093a1abb306a782a335b86e1a86dc7"><td class="memItemLeft" align="right" valign="top">LatticeTester::Coordinates&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#ae3093a1abb306a782a335b86e1a86dc7">worstProj</a> ()</td></tr>
 <tr class="separator:ae3093a1abb306a782a335b86e1a86dc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -165,6 +170,8 @@ Public Member Functions</h2></td></tr>
 Private Types</h2></td></tr>
 <tr class="memitem:a739faa2efa53f137053cfc6cc70174ec"><td class="memItemLeft" align="right" valign="top">typedef Lat::Float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a739faa2efa53f137053cfc6cc70174ec">Dbl</a></td></tr>
 <tr class="separator:a739faa2efa53f137053cfc6cc70174ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac005d6d7db2c0a431a0f749dfc360207"><td class="memItemLeft" align="right" valign="top">typedef Lat::Integ&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#ac005d6d7db2c0a431a0f749dfc360207">Int</a></td></tr>
+<tr class="separator:ac005d6d7db2c0a431a0f749dfc360207"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -183,9 +190,6 @@ Private Attributes</h2></td></tr>
 <tr class="memitem:a9aa636301352994f52da987fef682bf5"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a739faa2efa53f137053cfc6cc70174ec">Dbl</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a9aa636301352994f52da987fef682bf5">m_merits</a></td></tr>
 <tr class="memdesc:a9aa636301352994f52da987fef682bf5"><td class="mdescLeft">&#160;</td><td class="mdescRight">The merit for each test in the same sequence as the projections in <code>m_projSet</code>.  <a href="#a9aa636301352994f52da987fef682bf5">More...</a><br /></td></tr>
 <tr class="separator:a9aa636301352994f52da987fef682bf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a50e55a1473c70b7ecf1031475c86d4b3"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a50e55a1473c70b7ecf1031475c86d4b3">m_numProj</a></td></tr>
-<tr class="memdesc:a50e55a1473c70b7ecf1031475c86d4b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">The number of projections this has been tested over.  <a href="#a50e55a1473c70b7ecf1031475c86d4b3">More...</a><br /></td></tr>
-<tr class="separator:a50e55a1473c70b7ecf1031475c86d4b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a033a2c1238c3f1eb3b82e34e66b1fac6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_lat_m_r_g_1_1_projections.html">Projections</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a033a2c1238c3f1eb3b82e34e66b1fac6">m_projSet</a></td></tr>
 <tr class="memdesc:a033a2c1238c3f1eb3b82e34e66b1fac6"><td class="mdescLeft">&#160;</td><td class="mdescRight">The projections used in this object.  <a href="#a033a2c1238c3f1eb3b82e34e66b1fac6">More...</a><br /></td></tr>
 <tr class="separator:a033a2c1238c3f1eb3b82e34e66b1fac6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -213,6 +217,30 @@ template&lt;typename Lat &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">typedef Lat::Float <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::<a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#a739faa2efa53f137053cfc6cc70174ec">Dbl</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac005d6d7db2c0a431a0f749dfc360207"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac005d6d7db2c0a431a0f749dfc360207">&#9670;&nbsp;</a></span>Int</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Lat &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef Lat::Integ <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::<a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html#ac005d6d7db2c0a431a0f749dfc360207">Int</a></td>
         </tr>
       </table>
   </td>
@@ -666,6 +694,36 @@ template&lt;typename Lat &gt; </div>
 
 </div>
 </div>
+<a id="a66a8c01426e28eb4003b447f3bf55569"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66a8c01426e28eb4003b447f3bf55569">&#9670;&nbsp;</a></span>toStringDim()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Lat &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::toStringDim </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns a string containing the merit of the generator for each dimension. </p>
+<p>This is, for each dimension, this will return the merit, worst projection and shortest vector for this projection. This may take some time because the merit is not pre computed for all projections. </p>
+
+</div>
+</div>
 <a id="a6a64a2413caee5016f0460376066c4d4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6a64a2413caee5016f0460376066c4d4">&#9670;&nbsp;</a></span>toStringMerit()</h2>
 
@@ -690,6 +748,8 @@ template&lt;typename Lat &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Returns a string containing the merit of the generator, the projection for which this is obtained and the shortest vector for this projection. </p>
 
 </div>
 </div>
@@ -717,6 +777,9 @@ template&lt;typename Lat &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Returns a string that contains the merit for all projections and the shortest vector for all projections. </p>
+<p>This string is very long. </p>
 
 </div>
 </div>
@@ -904,32 +967,6 @@ template&lt;typename Lat &gt; </div>
 </div><div class="memdoc">
 
 <p>The merit for each test in the same sequence as the projections in <code>m_projSet</code>. </p>
-
-</div>
-</div>
-<a id="a50e55a1473c70b7ecf1031475c86d4b3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a50e55a1473c70b7ecf1031475c86d4b3">&#9670;&nbsp;</a></span>m_numProj</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Lat &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">long <a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html">LatMRG::FigureOfMerit</a>&lt; Lat &gt;::m_numProj</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>The number of projections this has been tested over. </p>
 
 </div>
 </div>
