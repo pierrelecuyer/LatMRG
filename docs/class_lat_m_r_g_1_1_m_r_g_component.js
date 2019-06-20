@@ -10,7 +10,7 @@ var class_lat_m_r_g_1_1_m_r_g_component =
     [ "MRGComponent", "class_lat_m_r_g_1_1_m_r_g_component.html#af387c70310d4233312fcc07b26f6cbbd", null ],
     [ "~MRGComponent", "class_lat_m_r_g_1_1_m_r_g_component.html#a9ea942a19f6c62d700a7925e9fa03998", null ],
     [ "MRGComponent", "class_lat_m_r_g_1_1_m_r_g_component.html#a39240b5eb11144a8ba942c12d91037c8", null ],
-    [ "getM", "class_lat_m_r_g_1_1_m_r_g_component.html#a76e12f68f21ddd9e5f835f278197c27b", null ],
+    [ "getM", "class_lat_m_r_g_1_1_m_r_g_component.html#a75f5b3d8a524f4d7c356c7b6e617fbfb", null ],
     [ "init", "class_lat_m_r_g_1_1_m_r_g_component.html#a77930234d30d24bff60fcf1ac05148df", null ],
     [ "maxPeriod", "class_lat_m_r_g_1_1_m_r_g_component.html#a4263f4cddc7d798c0b346f82cc02cedb", null ],
     [ "maxPeriod", "class_lat_m_r_g_1_1_m_r_g_component.html#ab14e4f61853a5c4fce2e87454ee9cb61", null ],
