@@ -38,7 +38,7 @@ namespace LatMRG {
         n %= comp[j].getM();
 
         for (int i = 1; i <= k; i++) {
-          A[i] += comp[j].a[i]*n*modulo/comp[j].getM();
+          A[i] += comp[j].a[i-1]*n*modulo/comp[j].getM();
         }
       }
       // Modulo only once
@@ -97,6 +97,25 @@ namespace LatMRG {
         MRGLattice<Int, Dbl>& lat) : MRGLattice<Int, Dbl>(lat){
       m_comp = comp;
       m_number = comp.size();
+    }
+
+  template<typename Int, typename Dbl>
+    std::string ComboLattice<Int, Dbl>::toString() const {
+      std::ostringstream out;
+      out << "Number of components: " << m_number << "\n\n";
+      for (int i = 0; i < m_number; i++) {
+        Int m = m_comp[i].getM();
+        out << "Component " << i+1 << "\nm = " << m << "\nk = "
+          << m_comp[i].k << "\na = " << m_comp[i].a << "\n\n";
+      }
+      out << "Equivalent to\n";
+      out << "m = " << this->m_modulo << "\nk = " << this->m_order << "\n";
+      for (int i = 0; i < this->m_order; i++) {
+        out << "a_" << i+1 << " = " << this->m_aCoef[i];
+        out << "\n";
+      }
+      out << "\n";
+      return out.str();
     }
 
   extern template class ComboLattice<std::int64_t, double>;

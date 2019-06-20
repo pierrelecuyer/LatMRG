@@ -55,6 +55,7 @@ namespace LatMRG {
     }
     // Dimension 1: add a coordinate to the vector
     if (m_currentDim == 1) {
+      while(m_curProj.size() < (unsigned)(m_minDim-1)) m_curProj.push_back(m_curProj.size());
       m_curProj.push_back(m_curProj.size());
     } else if (m_curProj.size() == 0) {
       // Generating the first vector for a non-sequential projection in dim

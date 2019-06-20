@@ -593,7 +593,6 @@ namespace LatMRG {
 
       LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::incDim();
 
-
       const int dim = this->getDim();
       this->m_vSI.resize(dim, dim);
       this->m_wSI.resize(dim, dim);

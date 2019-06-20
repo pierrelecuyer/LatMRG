@@ -17,7 +17,9 @@ namespace {
   Chrono timer;
   int numProj, minDim, maxDim;
   int detail;
+  int num_comp;
   std::vector<int> projDim;
+  std::vector<MRGComponent<Int>> combo;
 
   /**
    * Prints the results of the program execution.
@@ -55,9 +57,14 @@ namespace {
           std::cout << "Coefficients:\n" << (*it).getLattice() << "\n";
         } else if (conf.type == MWC) {}
         else if (conf.type == MMRG) {}
+        else if (conf.type == COMBO) {
+          std::cout << (*it).getLattice();
+        }
         if (detail == 0) {
           std::cout << (*it).toStringMerit();
         } else if (detail == 1) {
+          std::cout << (*it).toStringDim();
+        } else if (detail == 2) {
           std::cout << (*it).toStringProjections();
         }
       }
@@ -154,6 +161,23 @@ namespace {
         }
       }
     } else if (conf.type == COMBO) {
+      reader.readInt(num_comp, ln++, 0);
+      // We assume we have an MRG from now on
+      for (int i = 0; i < num_comp; i++) {
+        // Variables
+        Int modulo;
+        IntVec mult;
+        std::int64_t order, basis, exponent, rest;
+
+        reader.readNumber3(modulo, basis, exponent, rest, ln++, 0);
+        reader.readLong(order, ln++, 0);
+        // Making sure that minDim is big enough to provide usefull tests (if
+        // full period is required) this changes other dimensions accordingly
+        mult.SetLength(order);
+        reader.readMVect(mult, ln, 0, order, 0);
+        ln++;
+        combo.push_back(MRGComponent<Int>(modulo, mult, order));
+      }
     }
     return true;
   }
@@ -197,6 +221,11 @@ int main (int argc, char **argv) {
     bestLattice.add(test(mmrglat, conf));
     printResults(bestLattice);
   } else if (conf.type == COMBO) {
+    MeritList<ComboLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
+    MRGLattice<Int, Dbl>* mrg = getLatCombo<Int, Dbl>(combo, maxDim);
+    ComboLattice<Int, Dbl> combolat(combo, *mrg);
+    bestLattice.add(test(combolat, conf));
+    printResults(bestLattice);
   }
   delete conf.proj;
   return 0;

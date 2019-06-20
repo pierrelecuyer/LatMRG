@@ -218,14 +218,14 @@ namespace LatMRG {
       // Testing projections if there are anyo
       // This is done separately because sequential testing is much more efficient
       for (int i = 2; i <= proj->numProj(); i++) {
-        conf.proj->resetDim(i);
+        proj->resetDim(i);
         lattice.buildBasis(proj->projDim()[i-1]+1);
-        while(!conf.proj->end(1)) {
+        while(!proj->end(1)) {
           // Building the projection
-          LatticeTester::IntLattice<Int, Int, Dbl, Dbl> proj_lat(conf.modulo, conf.order, i, true);
-          LatticeTester::Coordinates iter(conf.proj->next());
+          LatticeTester::IntLattice<Int, Int, Dbl, Dbl> proj_lat(lattice.getModulo(), lattice.getOrder(), i, true);
+          LatticeTester::Coordinates iter(proj->next());
           lattice.buildProjection(&proj_lat, iter);
-          norma->setLogDensity(Dbl(-i*log(conf.modulo)
+          norma->setLogDensity(Dbl(-i*log(lattice.getModulo())
                 +log(abs(NTL::determinant(proj_lat.getBasis())))));
           if (conf.use_dual) proj_lat.dualize();
           // Reduction
@@ -248,13 +248,13 @@ namespace LatMRG {
 #ifdef LATMRG_SEEK
           // Rejecting lattices that won't make it
           if (tmp < conf.currentMerit) {
-            return FigureOfMerit<Lat>(lattice, *conf.proj);
+            return FigureOfMerit<Lat>(lattice, *proj);
           }
 #endif
         }
       }
 
-      FigureOfMerit<Lat> figure(lattice, *conf.proj);
+      FigureOfMerit<Lat> figure(lattice, *proj);
       figure.addMerit(results, vectors);
       figure.setFinished();
       figure.computeMerit("min");

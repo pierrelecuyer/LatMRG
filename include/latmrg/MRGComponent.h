@@ -19,7 +19,7 @@ namespace LatMRG {
    * objects to represent MRG components. Each MRG component is defined by a
    * modulus \f$m\f$, an order \f$k\f$ and
    * - either a vector of multipliers \f$a\f$,
-   * where \f$a[i]\f$ represents \f$a_i\f$. This MRG satisfies the recurrence
+   * where \f$a[i-1]\f$ represents \f$a_i\f$. This MRG satisfies the recurrence
    * \f[
    *   x_n = (a_1 x_{n-1} + \cdots+ a_k x_{n-k}) \mbox{ mod } m
    * \f]
@@ -103,7 +103,8 @@ namespace LatMRG {
 
         /**
          * Returns `true` if coefficients \f$A\f$ give a MRG with maximal
-         * period; returns `false` otherwise.
+         * period; returns `false` otherwise. Note that when calling this class
+         * it is necessary that `a[i] = a_i`.
          */
         bool maxPeriod (const IntVec & A);
 
@@ -147,7 +148,7 @@ namespace LatMRG {
         /**
          * Returns the value of the modulus \f$m\f$ of the recurrence.
          */
-        Int getM() { return module.m; }
+        const Int getM() const { return module.m; }
 
         /**
          * The order \f$k\f$ of the recurrence.

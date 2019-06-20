@@ -17,6 +17,7 @@ namespace LatMRG {
   template<typename Lat>
     class FigureOfMerit {
       typedef typename Lat::Float Dbl;
+      typedef typename Lat::Integ Int;
 
       private:
       /**
@@ -34,11 +35,6 @@ namespace LatMRG {
        * The projections used in this object.
        * */
       Projections m_projSet;
-
-      /**
-       * The number of projections this has been tested over.
-       * */
-      long m_numProj;
 
       /**
        * The merit for each test in the same sequence as the projections in
@@ -150,6 +146,10 @@ namespace LatMRG {
         return m_merit;
       }
 
+      /**
+       * Returns a string containing the merit of the generator,  the projection
+       * for which this is obtained and the shortest vector for this projection.
+       * */
       std::string toStringMerit() {
         std::ostringstream stream;
         stream << "Merit: " << getMerit() << "\n" << "Worst Projection: "
@@ -158,6 +158,44 @@ namespace LatMRG {
         return stream.str();
       }
 
+      /**
+       * Returns a string containing the merit of the generator for each dimension.
+       * This is, for each dimension, this will return the merit, worst projection
+       * and shortest vector for this projection. This may take some time because
+       * the merit is not pre computed for all projections.
+       * */
+      std::string toStringDim() {
+        std::ostringstream stream;
+        stream << "Merit: " << getMerit() << "\n" << "Worst Projection: "
+          << worstProj() << "\n" << "Shortest Vector for this projection: "
+          << worstVect() << "\n\n";
+        int j = 0;
+        for (int i = 0; i < m_projSet.numProj(); i++){
+          m_projSet.resetDim(i+1);
+          LatticeTester::Coordinates worst;
+          int index = j;
+          Dbl merit = Dbl(1);
+          while (!m_projSet.end(1)) {
+            ++m_projSet;
+            if (merit > m_merits[j]) {
+              index = j;
+              merit = m_merits[j];
+              worst = m_projSet.getProj();
+            }
+            j++;
+          }
+          if (i == 0) stream << "Sequential\n";
+          else stream << "Dimension " << i+1 << "\n";
+          stream << "Merit " << std::setw(8) << m_merits[index] << "\nProje "
+            << worst << "\nShort " << m_vectors[index] << "\n\n";
+        }
+        return stream.str();
+      }
+
+      /**
+       * Returns a string that contains the merit for all projections and the
+       * shortest vector for all projections. This string is very long.
+       * */
       std::string toStringProjections() {
         std::ostringstream stream;
         stream << "Merit for all projections\n";
