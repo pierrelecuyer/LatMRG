@@ -1,6 +1,7 @@
 var class_lat_m_r_g_1_1_figure_of_merit =
 [
     [ "Dbl", "class_lat_m_r_g_1_1_figure_of_merit.html#a739faa2efa53f137053cfc6cc70174ec", null ],
+    [ "Int", "class_lat_m_r_g_1_1_figure_of_merit.html#ac005d6d7db2c0a431a0f749dfc360207", null ],
     [ "FigureOfMerit", "class_lat_m_r_g_1_1_figure_of_merit.html#afcb03bb3f7c500b00329a355326943b1", null ],
     [ "FigureOfMerit", "class_lat_m_r_g_1_1_figure_of_merit.html#ab824d0e19bad1f8a8c88349a404acc4c", null ],
     [ "addMerit", "class_lat_m_r_g_1_1_figure_of_merit.html#ac223c30ffb16b209b4d0b38f62501748", null ],
@@ -15,6 +16,7 @@ var class_lat_m_r_g_1_1_figure_of_merit =
     [ "operator>", "class_lat_m_r_g_1_1_figure_of_merit.html#aee7de33f37fb537015c98aec31d2bdf7", null ],
     [ "operator>=", "class_lat_m_r_g_1_1_figure_of_merit.html#a8287809babcd07e8a89362cca08cfd01", null ],
     [ "setFinished", "class_lat_m_r_g_1_1_figure_of_merit.html#ae8ced005b332715e38ba6bab9927481d", null ],
+    [ "toStringDim", "class_lat_m_r_g_1_1_figure_of_merit.html#a66a8c01426e28eb4003b447f3bf55569", null ],
     [ "toStringMerit", "class_lat_m_r_g_1_1_figure_of_merit.html#a6a64a2413caee5016f0460376066c4d4", null ],
     [ "toStringProjections", "class_lat_m_r_g_1_1_figure_of_merit.html#aa08c6a4109356d03dbd07a8c87305fae", null ],
     [ "worstProj", "class_lat_m_r_g_1_1_figure_of_merit.html#ae3093a1abb306a782a335b86e1a86dc7", null ],
@@ -24,7 +26,6 @@ var class_lat_m_r_g_1_1_figure_of_merit =
     [ "m_lattice", "class_lat_m_r_g_1_1_figure_of_merit.html#ac4d80e5b315a7d79af1608181a998c59", null ],
     [ "m_merit", "class_lat_m_r_g_1_1_figure_of_merit.html#a3f3d07138f41e148ff360d2c8b29af76", null ],
     [ "m_merits", "class_lat_m_r_g_1_1_figure_of_merit.html#a9aa636301352994f52da987fef682bf5", null ],
-    [ "m_numProj", "class_lat_m_r_g_1_1_figure_of_merit.html#a50e55a1473c70b7ecf1031475c86d4b3", null ],
     [ "m_projSet", "class_lat_m_r_g_1_1_figure_of_merit.html#a033a2c1238c3f1eb3b82e34e66b1fac6", null ],
     [ "m_vectors", "class_lat_m_r_g_1_1_figure_of_merit.html#a94d9212ac4479e6f241d0adef0141d2c", null ]
 ];

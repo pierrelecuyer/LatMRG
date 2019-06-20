@@ -211,7 +211,7 @@ class LatMRG::MRGComponent&lt; Int &gt;</h3>
 
 <p>This class is used to implement a MRG component in a combined MRG. </p>
 <p>It exists in order to avoid creating numerous relatively heavy <code><a class="el" href="class_lat_m_r_g_1_1_m_r_g_lattice.html" title="This class implements lattice basis built from multiple recursive linear congruential generators (MRG...">MRGLattice</a></code> objects to represent MRG components. Each MRG component is defined by a modulus \(m\), an order \(k\) and</p><ul>
-<li>either a vector of multipliers \(a\), where \(a[i]\) represents \(a_i\). This MRG satisfies the recurrence <p class="formulaDsp">
+<li>either a vector of multipliers \(a\), where \(a[i-1]\) represents \(a_i\). This MRG satisfies the recurrence <p class="formulaDsp">
 \[ x_n = (a_1 x_{n-1} + \cdots+ a_k x_{n-k}) \mbox{ mod } m \]
 </p>
 </li>
@@ -712,6 +712,7 @@ template&lt;typename Int &gt; </div>
 </div><div class="memdoc">
 
 <p>Returns <code>true</code> if coefficients \(A\) give a MRG with maximal period; returns <code>false</code> otherwise. </p>
+<p>Note that when calling this class it is necessary that <code>a[i] = a_i</code>. </p>
 
 </div>
 </div>

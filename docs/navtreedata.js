@@ -116,8 +116,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_a_w_c_s_w_b_lattice_8cc.html",
-"class_lat_m_r_g_1_1_int_primitivity.html#a070f25a5b95bb93a39f0eed3eb7cd868",
-"class_lat_m_r_g_1_1_param_reader_ext.html#a83423efb7e9b95bf72faec9d3d41f189"
+"class_lat_m_r_g_1_1_int_primitivity.html#a052b2cf875fc202c6c72f767bcb666e1",
+"class_lat_m_r_g_1_1_param_reader_ext.html#a72d532caf839e07b1f94745495bbffda"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

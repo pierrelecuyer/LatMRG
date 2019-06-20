@@ -39,7 +39,6 @@ var searchData=
   ['m_5fnumber',['m_number',['../class_lat_m_r_g_1_1_combo_lattice.html#a2c28e9fe8da8f3c7d941cd8d8faf3c0f',1,'LatMRG::ComboLattice::m_number()'],['../class_lat_m_r_g_1_1_int_factorization.html#a93296b9efc99cb82dd6ed68c43e3c7ca',1,'LatMRG::IntFactorization::m_number()']]],
   ['m_5fnumberlacindices',['m_numberLacIndices',['../class_lat_m_r_g_1_1_m_m_r_g_lattice.html#a1d7491a838502becb76a399a48d9227c',1,'LatMRG::MMRGLattice']]],
   ['m_5fnumdim',['m_numDim',['../class_lat_m_r_g_1_1_projections.html#a5747ab4779f6867cb361395994291b08',1,'LatMRG::Projections']]],
-  ['m_5fnumproj',['m_numProj',['../class_lat_m_r_g_1_1_figure_of_merit.html#a50e55a1473c70b7ecf1031475c86d4b3',1,'LatMRG::FigureOfMerit']]],
   ['m_5forder',['m_order',['../class_lat_m_r_g_1_1_mixmax_m_m_r_g.html#a55c5a52ccbed651c183824731074fdd3',1,'LatMRG::MixmaxMMRG']]],
   ['m_5fp',['m_p',['../class_lat_m_r_g_1_1_int_primitivity.html#a4862b2b67874461b3d780cda41d9d333',1,'LatMRG::IntPrimitivity']]],
   ['m_5fparameter1',['m_parameter1',['../class_lat_m_r_g_1_1_mixmax_m_m_r_g.html#a709e914b4c2167e813cce8907aa21d9d',1,'LatMRG::MixmaxMMRG']]],
