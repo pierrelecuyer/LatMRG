@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['nbsp',['nbsp',['../usage_8dox.html#a2fd2f3142f69c08027c5abcdacdc364d',1,'nbsp():&#160;usage.dox'],['../_lat_main_8dox.html#abf42996e32144f944bbef58c9197b52a',1,'nbsp():&#160;LatMain.dox']]],
+  ['nbsp',['nbsp',['../usage_8dox.html#aaf1dd5c14a51f504863520ef9dea2638',1,'usage.dox']]],
   ['new',['NEW',['../_lat_main_8dox.html#a9c1b136d80359ed32fc5521e42f262f6',1,'LatMain.dox']]],
   ['next',['next',['../class_lat_m_r_g_1_1_projections.html#a9ab549b0a208b3e530ea14770ee0412d',1,'LatMRG::Projections']]],
   ['nextm',['nextM',['../class_lat_m_r_g_1_1_primes.html#af10aec1069d0a74b31b94513f3cbb542',1,'LatMRG::Primes']]],
@@ -11,6 +11,6 @@ var searchData=
   ['norm_3c_2fem_20_3e',['Norm&lt;/em &gt;',['../_lat_main_8dox.html#a369c0f4191a4b8e620bfe0e753c64948',1,'LatMain.dox']]],
   ['not',['not',['../_lat_main_8dox.html#af9673ae40c1f1b094fb412d4930c4ae4',1,'LatMain.dox']]],
   ['nscal',['NScal',['../_lat_main_8dox.html#a2026824722d928aa88778d1340145f3d',1,'LatMain.dox']]],
-  ['number',['number',['../_lat_main_8dox.html#afec9c847a2d44b9f00bce85593b267a5',1,'LatMain.dox']]],
+  ['number',['number',['../_lat_main_8dox.html#aade81d788add5a0a08de38d51f460b6c',1,'LatMain.dox']]],
   ['numproj',['numProj',['../class_lat_m_r_g_1_1_projections.html#ab7a632e9c399c42a24fa16eb95c57220',1,'LatMRG::Projections']]]
 ];

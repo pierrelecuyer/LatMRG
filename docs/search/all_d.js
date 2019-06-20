@@ -11,7 +11,7 @@ var searchData=
   ['latzzdd',['latZZDD',['../_lat_main_8dox.html#a4adaec144086f196e93b21e981f8d8c6',1,'LatMain.dox']]],
   ['latzzdd_3c_2ftt_20_3e',['latZZDD&lt;/tt &gt;',['../usage_8dox.html#a0284b8e4d29f8a6e6622a0b1ff3d9f7a',1,'usage.dox']]],
   ['latzzrr_3c_2ftt_20_3e',['latZZRR&lt;/tt &gt;',['../usage_8dox.html#a0afcf9477b3793549d9c0d576b4c76bd',1,'usage.dox']]],
-  ['lcg',['LCG',['../namespace_lat_m_r_g.html#ab4948e899f8c3a6fb82cff009283061ea94058d727954dae2f0a4d63a908b3d83',1,'LatMRG::LCG()'],['../_lat_main_8dox.html#aafce50f034e245cf72e58859cc2707a5',1,'LCG():&#160;LatMain.dox']]],
+  ['lcg',['LCG',['../namespace_lat_m_r_g.html#ab4948e899f8c3a6fb82cff009283061ea94058d727954dae2f0a4d63a908b3d83',1,'LatMRG']]],
   ['le2',['le2',['../usage_8dox.html#af5a3f702b7e3ddea6eba96fe30f579b3',1,'usage.dox']]],
   ['lemme2',['lemme2',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a396e072c6ff183750b593b28edf20e97',1,'LatMRG::MRGLattice']]],
   ['limit',['limit',['../usage_8dox.html#ab797035fe6c39d1d53ad3f87bf64ff85',1,'usage.dox']]],

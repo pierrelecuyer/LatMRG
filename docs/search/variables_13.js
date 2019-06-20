@@ -1,14 +1,12 @@
 var searchData=
 [
   ['table',['table',['../_lat_main_8dox.html#ab463a405724dbf010e5c15af11933a6e',1,'LatMain.dox']]],
-  ['terminal_3c_2ftt_20_3e',['Terminal&lt;/tt &gt;',['../_lat_main_8dox.html#acd21f468e997c4a0fb5c0829733fae04',1,'LatMain.dox']]],
-  ['test',['test',['../_lat_main_8dox.html#a360a0ed7be177dae99a8932c7ea37896',1,'LatMain.dox']]],
+  ['test',['test',['../_lat_main_8dox.html#a67f0174220af8996e7d6bb6a0b56e810',1,'LatMain.dox']]],
   ['tex',['tex',['../_lat_main_8dox.html#a3901b5556111f0eab9b0d4f6a4853d8c',1,'LatMain.dox']]],
   ['tex_3c_2fcode_20_3e',['tex&lt;/code &gt;',['../usage_8dox.html#af8f42680300b38a2f3e2dc0512534aa6',1,'usage.dox']]],
-  ['tex_3c_2ftt_20_3e',['Tex&lt;/tt &gt;',['../_lat_main_8dox.html#a680b4ce94bc8483a82b3ce4c2ff7c0b0',1,'LatMain.dox']]],
   ['them',['them',['../_lat_main_8dox.html#aba378d60ed64b1d2e11bcd81cd7db318',1,'LatMain.dox']]],
   ['themselves',['themselves',['../usage_8dox.html#af3fdc9324e62bf50fd021d875c97e6db',1,'usage.dox']]],
-  ['thinsp',['thinsp',['../usage_8dox.html#a85bfe406b4ef7a2cd27c460393ee78c4',1,'thinsp():&#160;usage.dox'],['../_lat_main_8dox.html#acdfef9c833396449805b9fc7db1176bb',1,'thinsp():&#160;LatMain.dox']]],
+  ['thinsp',['thinsp',['../usage_8dox.html#a85bfe406b4ef7a2cd27c460393ee78c4',1,'thinsp():&#160;usage.dox'],['../_lat_main_8dox.html#a0ff0d5b479f007aa8ced58067da3995f',1,'thinsp():&#160;LatMain.dox']]],
   ['threef',['threeF',['../class_lat_m_r_g_1_1_modulus.html#a6cabe8bdba3dd0c556a0ffc25e763e2a',1,'LatMRG::Modulus']]],
   ['time',['time',['../usage_8dox.html#a96bf98f744f900ada4de233aa2f444ea',1,'usage.dox']]],
   ['timer',['timer',['../class_lat_m_r_g_1_1_primes.html#a91f2e8aeb71f189482f43b285557a8b5',1,'LatMRG::Primes']]],

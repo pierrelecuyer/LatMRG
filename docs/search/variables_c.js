@@ -7,7 +7,6 @@ var searchData=
   ['latzzdd',['latZZDD',['../_lat_main_8dox.html#a4adaec144086f196e93b21e981f8d8c6',1,'LatMain.dox']]],
   ['latzzdd_3c_2ftt_20_3e',['latZZDD&lt;/tt &gt;',['../usage_8dox.html#a0284b8e4d29f8a6e6622a0b1ff3d9f7a',1,'usage.dox']]],
   ['latzzrr_3c_2ftt_20_3e',['latZZRR&lt;/tt &gt;',['../usage_8dox.html#a0afcf9477b3793549d9c0d576b4c76bd',1,'usage.dox']]],
-  ['lcg',['LCG',['../_lat_main_8dox.html#aafce50f034e245cf72e58859cc2707a5',1,'LatMain.dox']]],
   ['le2',['le2',['../usage_8dox.html#af5a3f702b7e3ddea6eba96fe30f579b3',1,'usage.dox']]],
   ['limit',['limit',['../usage_8dox.html#ab797035fe6c39d1d53ad3f87bf64ff85',1,'usage.dox']]],
   ['lt',['lt',['../_lat_main_8dox.html#a857c8c8ca640fb2283d751a715bd1ee9',1,'LatMain.dox']]]

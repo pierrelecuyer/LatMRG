@@ -2,7 +2,7 @@ var searchData=
 [
   ['g',['g',['../_lat_main_8dox.html#a421ae2b997705c03742e15b57c9c2001',1,'LatMain.dox']]],
   ['gamma',['gamma',['../_lat_main_8dox.html#a97ca260078b88a7c820640d91f8b700e',1,'LatMain.dox']]],
-  ['generators',['generators',['../_lat_main_8dox.html#a89d02a7fa218d3c9dfb69def4513f830',1,'generators():&#160;LatMain.dox'],['../usage_8dox.html#a256546994efaffcf8f58b5bb967762df',1,'generators(10000 values of \f $a_5\f$):&#160;usage.dox']]],
+  ['generators',['generators',['../usage_8dox.html#a256546994efaffcf8f58b5bb967762df',1,'usage.dox']]],
   ['gentype',['GenType',['../namespace_lat_m_r_g.html#ab4948e899f8c3a6fb82cff009283061e',1,'LatMRG']]],
   ['getawcswbmod',['getAWCSWBmod',['../class_lat_m_r_g_1_1_a_w_c_s_w_b_lattice.html#ab382fb87905a75c381e66d06ddaa5d78',1,'LatMRG::AWCSWBLattice']]],
   ['getawcswborder',['getAWCSWBorder',['../class_lat_m_r_g_1_1_a_w_c_s_w_b_lattice.html#ad1ceddc442eedceeb6a5448a1329224e',1,'LatMRG::AWCSWBLattice']]],

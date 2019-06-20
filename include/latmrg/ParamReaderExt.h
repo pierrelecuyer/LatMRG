@@ -131,8 +131,7 @@ namespace LatMRG {
          * analyze lacunary indices that are not evenly spaced, put \f$s
          * = -t\f$ where <em>\f$t = \f$ MaxDim</em> and, on the \f$t\f$ lines
          * that follow, give the \f$t\f$ lacunary indices \f$i_1,…,i_t\f$,
-         * which are to be interpreted as in Section  {@link
-         * REF__sec1_sec_lacunary lacunary}. In all these cases, the `lacunary`
+         * which are to be interpreted as in Section. In all these cases, the `lacunary`
          * flag is set `true`. To analyze vectors of successive values (the
          * non-lacunary case), take \f$s=d=1\f$ or \f$s\ge\f$ *MaxDim*. In
          * this case, the `lacunary` flag is set `false`.

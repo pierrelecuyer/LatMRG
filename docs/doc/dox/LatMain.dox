@@ -19,7 +19,7 @@
  *
  *      LatMain <LD, ZD, ZR> file1 file2 ...
  *
- * Or even on complete directories, trying to execute on all files with the 
+ * Or even on complete directories, trying to execute on all files with the
  * extension `.dat` in them.
  *
  *      LatMain <LD, ZD, ZR> dir1 dir2 ...
@@ -36,7 +36,7 @@
  * you want to software to use. The type combo `ID` uses standard C++ 64-bits
  * integers (`std::int64_t` and std::uint64_t) to represent integers and the
  * `double` type to represent floating point numbers. This is
- * useful to test the program with "toy" examples and should be (more than) 
+ * useful to test the program with "toy" examples and should be (more than)
  * "good enough" to test generators conceived with (up to) 32-bits computers
  * in mind. The type combo `ZD` uses `NTL::ZZ` for arbitrary precision integer
  * representation and `double` for floating point numbers. This types combination
@@ -64,7 +64,7 @@
  * \f]
  * This program will output the result of each single test \f$m_I\f$ and the
  * global figure of merit. This program is conceived as a way to perform
- * in-depth testing of 
+ * in-depth testing of
  *
  * We now proceed by presenting the format of the input file of `LatMain` and
  * explain what each parameter is about. This also serves as a description of
@@ -262,8 +262,7 @@
  * \f$s\f$ larger or equal to *MaxDim*. To analyze lacunary indices that are
  * not evenly spaced, put \f$s = -t\f$ where <em>\f$t=\f$MaxDim</em> and
  * then, on the \f$t\f$ lines that follow, give the \f$t\f$ lacunary indices
- * \f$i_1,…,i_t\f$, which are interpreted as in Section  {@link
- * REF__sec1_sec_lacunary lacunary}.
+ * \f$i_1,…,i_t\f$, which are interpreted as in Section.
  * </dd>
  * <dt><em>MaxNodesBB</em>:</dt>
  * <dd>
@@ -312,7 +311,6 @@
  * </dl>
  *
  * The form of the data file for the Palpha test must be as shown in Fig.
- * {@link REF__LatMain_palpha_data palpha.data}.
  *
  * <center>
  *  <div class="LatSoft-fbox"><div class="LatSoft-parbox">
@@ -593,10 +591,8 @@
  * The data must be in a file with extension <tt>.dat</tt>. Lines whose first
  * non-blank character is a <tt>#</tt> are comments, and are dropped by the
  * reader program. The data fields have the following meaning: For the
- * spectral and Beyer tests, the format must be as given in Figure&nbsp;
- * {@link REF__LatMain_spectral_data spectral.data}. For the Palpha test, the
- * format must be as given in Figure&nbsp; {@link REF__LatMain_palpha_data
- * palpha.data} below.
+ * spectral and Beyer tests, the format must be as given in Figure. For the Palpha test, the
+ * format must be as given in Figure below.
  *
  * <dl><dt><em>Test</em> &lt;<em>Normalizer</em>&gt;:</dt>
  * <dd>
@@ -696,12 +692,12 @@
  * the test will be run for all successive dimensions from *td[0] = MinDim*
  * to *td[1] = MaxDim*.
  * </dd>
- * <dt><em>td[0]</em> &nbsp;<em>td[1]</em> …&nbsp;<em>td[d]</em>:</dt>
+ * <dt>`td[0] td[1] ... td[d]`:</dt>
  * <dd>
  * The test will be run for all successive dimensions from *td[0]* to
  * *td[1]*, then for all 2-dimensional projections for dimensions up to
- * *td[2]* (if \f$d\ge2\f$), for all 3-dimensional projections for
- * dimensions up to *td[3]* (if \f$d\ge3\f$), …, and for all
+ * *td[2]* (if \f$d\geq 2\f$), for all 3-dimensional projections for
+ * dimensions up to *td[3]* (if \f$d\geq 3\f$), ..., and for all
  * \f$d\f$-dimensional projections for dimensions up to *td[d]*. The simplest
  * case has \f$d=1\f$.
  * </dd>
@@ -744,13 +740,13 @@
  * modulus of that MLCG is given in the data file in the form (b): \f$(x y
  * z)\f$ with \f$z=0\f$ and \f$x\f$ prime, then what is analyzed is one of
  * those sublattices. This is done by dividing the modulus by the appropriate
- * power of \f$p\f$, as described in \cite rLEC94e&thinsp;. For example, if
+ * power of \f$p\f$, as described in \cite rLEC94e. For example, if
  * \f$p=2\f$ and \f$a \mod8 = 5\f$, then the modulus is divided by 4 as in
- * \cite rFIS90a, \cite rKNU81a&thinsp;.
+ * \cite rFIS90a, \cite rKNU81a.
  * </dd>
  * </dl>
  * </dd>
- * <dt><em>LacGroupSize &nbsp;LacSpacing</em>:</dt>
+ * <dt><em>LacGroupSize LacSpacing</em>:</dt>
  * <dd>
  * These data fields are positive integers, used to introduce lacunary
  * indices. If the respective values are \f$s\f$ and \f$d\f$, then we will
@@ -761,8 +757,7 @@
  * \f$s\f$ larger or equal to *MaxDim*. To analyze lacunary indices that are
  * not evenly spaced, put \f$s = -t\f$ where <em>\f$t=\f$MaxDim</em> and
  * then, on the \f$t\f$ lines that follow, give the \f$t\f$ lacunary indices
- * \f$i_1,…,i_t\f$, which are interpreted as in Section  {@link
- * REF__sec1_sec_lacunary lacunary}.
+ * \f$i_1,…,i_t\f$, which are interpreted as in Section.
  * </dd>
  * <dt><em>MaxNodesBB</em>:</dt>
  * <dd>
@@ -811,7 +806,6 @@
  * </dl>
  *
  * The form of the data file for the Palpha test must be as shown in Fig.
- * {@link REF__LatMain_palpha_data palpha.data}.
  *
  * <center>
  *  <div class="LatSoft-fbox"><div class="LatSoft-parbox">

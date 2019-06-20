@@ -11,6 +11,5 @@ var searchData=
   ['operator_3e_3d',['operator&gt;=',['../class_lat_m_r_g_1_1_figure_of_merit.html#a8287809babcd07e8a89362cca08cfd01',1,'LatMRG::FigureOfMerit']]],
   ['orbit',['ORBIT',['../namespace_lat_m_r_g.html#a86edf8445f847038592d741fd49b2b09a7193d9616b86142a852b828d15a03f84',1,'LatMRG']]],
   ['orbitseed',['orbitSeed',['../class_lat_m_r_g_1_1_m_r_g_component.html#a30a42afa4a8c3457a933363324a5af00',1,'LatMRG::MRGComponent']]],
-  ['order',['order',['../_lat_main_8dox.html#a98b62defe9ce6efa092386fd3e16eef6',1,'LatMain.dox']]],
   ['ordermax',['ORDERMAX',['../_m_m_r_g_lattice_8h.html#aeeebf1c13f34c453f372ff5672709009',1,'ORDERMAX():&#160;MMRGLattice.h'],['../_m_r_g_lattice_8h.html#aeeebf1c13f34c453f372ff5672709009',1,'ORDERMAX():&#160;MRGLattice.h']]]
 ];
