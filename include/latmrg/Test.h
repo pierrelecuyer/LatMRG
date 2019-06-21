@@ -45,7 +45,7 @@ namespace LatMRG {
       }
 
     /**
-     * Computes the Beyer ration.
+     * Computes the Beyer ratio.
      * \todo implement this
      * */
     template<typename Lat>
@@ -56,7 +56,8 @@ namespace LatMRG {
 
   /**
    * Functions in this namespace perform lattice reductions.
-   * \todo have more flexibility in the reduction parameters
+   * \todo have more flexibility in the reduction parameters so that LLL and BKZ
+   * floating point numbers precision can be changed if needed.
    * */
   namespace Reductions {
 
@@ -70,8 +71,17 @@ namespace LatMRG {
         red.shortestVector(lat.getNorm());
       }
 
+    /**
+     * Instanciation of `reduceFull()`.
+     * */
     extern template void reduceFull(LatticeTester::IntLattice<std::int64_t, std::int64_t, double, double>& lat);
+    /**
+     * Instanciation of `reduceFull()`.
+     * */
     extern template void reduceFull(LatticeTester::IntLattice<NTL::ZZ, NTL::ZZ, double, double>& lat);
+    /**
+     * Instanciation of `reduceFull()`.
+     * */
     extern template void reduceFull(LatticeTester::IntLattice<NTL::ZZ, NTL::ZZ, NTL::RR, NTL::RR>& lat);
 
     /**
@@ -83,8 +93,17 @@ namespace LatMRG {
         red.redBKZ(0.999999, 10, LatticeTester::QUADRUPLE, lat.getDim());
       }
 
+    /**
+     * Instanciation of `reduceBKZ()`.
+     * */
     extern template void reduceBKZ(LatticeTester::IntLattice<std::int64_t, std::int64_t, double, double>& lat);
+    /**
+     * Instanciation of `reduceBKZ()`.
+     * */
     extern template void reduceBKZ(LatticeTester::IntLattice<NTL::ZZ, NTL::ZZ, double, double>& lat);
+    /**
+     * Instanciation of `reduceBKZ()`.
+     * */
     extern template void reduceBKZ(LatticeTester::IntLattice<NTL::ZZ, NTL::ZZ, NTL::RR, NTL::RR>& lat);
 
     /**
@@ -96,8 +115,17 @@ namespace LatMRG {
         red.redLLLNTL(0.999999, LatticeTester::QUADRUPLE, lat.getDim());
       }
 
+    /**
+     * Instanciation of `reduceLLL()`.
+     * */
     extern template void reduceLLL(LatticeTester::IntLattice<std::int64_t, std::int64_t, double, double>& lat);
+    /**
+     * Instanciation of `reduceLLL()`.
+     * */
     extern template void reduceLLL(LatticeTester::IntLattice<NTL::ZZ, NTL::ZZ, double, double>& lat);
+    /**
+     * Instanciation of `reduceLLL()`.
+     * */
     extern template void reduceLLL(LatticeTester::IntLattice<NTL::ZZ, NTL::ZZ, NTL::RR, NTL::RR>& lat);
 
     /**
@@ -111,8 +139,17 @@ namespace LatMRG {
         red.reductMinkowski(lat.getDim());
       }
 
+    /**
+     * Instanciation of `reduceMink()`.
+     * */
     extern template void reduceMink(LatticeTester::IntLattice<std::int64_t, std::int64_t, double, double>& lat);
+    /**
+     * Instanciation of `reduceMink()`.
+     * */
     extern template void reduceMink(LatticeTester::IntLattice<NTL::ZZ, NTL::ZZ, double, double>& lat);
+    /**
+     * Instanciation of `reduceMink()`.
+     * */
     extern template void reduceMink(LatticeTester::IntLattice<NTL::ZZ, NTL::ZZ, NTL::RR, NTL::RR>& lat);
   }
 
@@ -166,8 +203,6 @@ namespace LatMRG {
     std::int64_t rest;
     bool period;
   };
-
-  bool fillConfig(int argc, char** argv);
 
 #ifdef LATMRG_USE_TEST
   /**

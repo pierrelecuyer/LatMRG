@@ -15,8 +15,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "latmrg/Const.h"
 #include <string>
+#include <iostream>
+
+#include "latmrg/Const.h"
 
 
 using namespace std;
@@ -48,6 +50,29 @@ namespace LatMRG
     }
   }
 
+  //============================================================================
+
+  int toGenString(GenType& type, const string& type_str) {
+    if (type_str == "MRG") {
+      type = MRG;
+    } else if (type_str == "LCG") {
+      type = LCG;
+    } else if (type_str == "MWC") {
+      type = MWC;
+    } else if (type_str == "KOROBOV") {
+      type = KOROBOV;
+    } else if (type_str == "RANK1") {
+      type = RANK1;
+    } else if (type_str == "MMRG") {
+      type = MMRG;
+    } else if (type_str == "COMBO") {
+      type = COMBO;
+    } else {
+      std::cerr << type_str << " is not a GenType.\n";
+      return 1;
+    }
+    return 0;
+  }
 
   //===========================================================================
 

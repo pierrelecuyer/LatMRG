@@ -22,6 +22,8 @@
 #include "latmrg/ParamReaderExt.h"
 #include "latmrg/Projections.h"
 #include "latmrg/FigureOfMerit.h"
+#include "latmrg/Const.h"
+#include "latmrg/Projections.h"
 
 typedef NTL::ZZ Int;
 typedef double Dbl;
@@ -39,5 +41,18 @@ using LatticeTester::Normalizer;
 // Variable definitions for executables only
 const std::string delim = "\n========================================"
 "========================================\n\n";
+#ifdef MRGLATTICE_MAIN_EXEC
+LatMRG::GenType type = LatMRG::MRG;
+LatticeTester::CriterionType criterion = LatticeTester::SPECTRAL;
+bool dual = true;
+LatticeTester::PreReductionType reduction = LatticeTester::FULL;
+LatticeTester::NormaType norma_type = LatticeTester::NONE;
+double time_limit = 3600.0;
+int max_gen = 50;
+
+// Values without default
+LatMRG::Projections* proj;
+#endif
+
 
 #endif

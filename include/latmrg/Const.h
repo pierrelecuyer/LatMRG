@@ -138,9 +138,14 @@ namespace LatMRG {
   std::string toStringDecomp (DecompType);
   std::string toStringImplemCond (ImplemCond);
   std::string toStringSearchMethod (SearchMethod);
-
   /**
    * @}
    */
+
+  /**
+   * `type = type_str`. Does not change the value of `type` if `type_str` does
+   * not specify a valid value. Returns 0 if a change took place.
+   * */
+  int toGenString(GenType& type, const std::string& type_str);
 }
 #endif
