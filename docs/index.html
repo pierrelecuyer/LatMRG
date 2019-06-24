@@ -105,7 +105,7 @@ Content Outline</h2>
 <p>This page summarizes the contents and the possible uses of <a class="el" href="namespace_lat_m_r_g.html">LatMRG</a>. The rest of this guide covers the following:</p><ul>
 <li><a class="el" href="lattice_back.html">Theory on Lattices</a> and <a class="el" href="background.html">Theory of Random Numbers</a> contain the theoretical knowledge needed to understand the basics of <a class="el" href="namespace_lat_m_r_g.html">LatMRG</a>.</li>
 <li><a class="el" href="usage.html">Compilation and Executables Usage</a> presents the executable programs and their usage. It also also contains compilation instruction for <a class="el" href="namespace_lat_m_r_g.html">LatMRG</a>.</li>
-<li>dev presents segments of code highlighting some functionnalities of <a class="el" href="namespace_lat_m_r_g.html">LatMRG</a></li>
+<li><a class="el" href="tutorial.html">Tutorial and Library Usage</a> presents segments of code highlighting some functionnalities of <a class="el" href="namespace_lat_m_r_g.html">LatMRG</a></li>
 <li>The full API documentation is also available in the <b>Namespace</b> and <b>Classes</b> tabs.</li>
 <li><a href="https://github.com/savamarc/LatMRG"><b>Getting back to Github</b></a></li>
 </ul>
@@ -117,9 +117,13 @@ Presentation of LatMRG</h2>
 </p>
 <p> The values outputed by these generators are then transformed as \(u_n = x_n/m\) to give another number sequence \(\{u_n\} \subset [0,1)\). This sequence can then be used as a random stream of \(\mathcal{U}[0,1)\) independent identically distributed random variables. This sequence is <b>NOT</b> random but it appears so with a good choice of \(m\in \mathbb{Z}_{&gt;0}\), \(k&gt;0\) and \(a = (a_1, \ldots, a_k) \in \mathbb{Z}_k\), this is what is called a <b>pseudo-random number sequence</b>.</p>
 <p>Given a set of indices \(I = \{i_1, \ldots, i_t\}\) it is possible to use the sequence of \(u_n\) to generate pseudo-random vectors of the form \(v = (u_{c + i_1}, \ldots, u_{c + i_t})\). Define \(\Psi_I = \{(u_{i_1}, \ldots, u_{i_t}) \ | \ 0 \leq x_1, \ldots, x_k &lt; m\}\). This set covers vectors \(v\) for all possible values of \(c\). This is the set of all vectors the generator can produce with indices spacing as in \(I\). The set </p><p class="formulaDsp">
-\[ L_t = \{k v + l w \ | \ k,l \in \mathbb{Z},\ v,w \in \Psi_I\} \]
+\[ L(I) = \{k v + l w \ | \ k,l \in \mathbb{Z},\ v,w \in \Psi_I\} \]
 </p>
 <p> is then a lattice spanned by the vectors produced by the generator. This structure is well know and can be studied extensively. This guide does not cover the theory behind lattices as it would be redundant with what is described in <a href="http://umontreal-simul.github.io/latticetester/">LatticeTester</a> which we is also written by us.</p>
+<p>Let \(\ell(I)\) be the shortest non-zero vector of \(L(I)\). It is possible to have an upper bound \(\ell^*(I)\) <a class="el" href="citelist.html#CITEREF_mCON99a">[5]</a> on the length of \(\ell_t(I)\) such that \(0 &lt; \ell(I) /\ell^*(I) \leq 1\). Given \(\mathcal{J}\) a set of sets of indices and \(\omega_I \in \mathbb{R},\ I \in \mathcal{J}\), it is possible to compute <b>Figures of Merit</b> on a generator as </p><p class="formulaDsp">
+\begin{align*} M_\mathcal{J} &amp;= \sum_{I \in \mathcal{J}} \omega_I \ell(I)/\ell^*(I) \\ Q_\mathcal{J} &amp; = \min_{I \in \mathcal{J}} \omega_I \ell(I)/\ell^*(I) \end{align*}
+</p>
+<p> The point of these figures of merit is that for a fixed set \(\mathcal{J}\) they are comparable for different generators. <a class="el" href="namespace_lat_m_r_g.html">LatMRG</a> builds figures of merit based on the well known <b>spectral test</b> <a class="el" href="citelist.html#CITEREF_rKNU97a">[23]</a>. More detail on how which figures of merit are constructed and available in <a class="el" href="namespace_lat_m_r_g.html">LatMRG</a> can be found in <a class="el" href="background.html#back_merit">Measures on MRGs</a>.</p>
 <p><a class="el" href="namespace_lat_m_r_g.html">LatMRG</a> got its name from <em>lattice</em> and <em>MRG</em> and, as its name hints, it is mainly intended as a tool to study the lattice of MRG and MRG-like random number generators. Studying this lattice can provide usefull information about the generator.</p><ul>
 <li>It can help assess that the points it outputs are as uniform as possible</li>
 <li>It can determine if the points are correlated on only a few hyperplans</li>

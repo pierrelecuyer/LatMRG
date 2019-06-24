@@ -18,7 +18,7 @@
  *   needed to understand the basics of LatMRG.
  * - \ref usage presents the executable programs and their usage. It also
  *   also contains compilation instruction for LatMRG.
- * - \ref dev presents segments of code highlighting some functionnalities of
+ * - \ref tutorial presents segments of code highlighting some functionnalities of
  *   LatMRG
  * - The full API documentation is also available in the **Namespace** and 
  *  **Classes** tabs.
@@ -53,13 +53,28 @@
  * the set of all vectors the generator can produce with indices spacing as
  * in \f$I\f$. The set
  * \f[
- *   L_t = \{k v + l w \ | \ k,l \in \mathbb{Z},\ v,w \in \Psi_I\}
+ *   L(I) = \{k v + l w \ | \ k,l \in \mathbb{Z},\ v,w \in \Psi_I\}
  * \f]
  * is then a lattice spanned by the vectors produced by the generator. This structure
  * is well know and can be studied extensively. This guide does not cover the
  * theory behind lattices as it would be redundant with what is described in
  * [LatticeTester](http://umontreal-simul.github.io/latticetester/) which we
  * is also written by us.
+ *
+ * Let \f$\ell(I)\f$ be the shortest non-zero vector of \f$L(I)\f$. It is possible
+ * to have an upper bound \f$\ell^*(I)\f$ \cite mCON99a on the length of \f$\ell_t(I)\f$ such that
+ * \f$0 < \ell(I) /\ell^*(I) \leq 1\f$. Given \f$\mathcal{J}\f$ a set of sets of
+ * indices and \f$\omega_I \in \mathbb{R},\ I \in \mathcal{J}\f$, it is possible
+ * to compute **Figures of Merit** on a generator as
+ * \f{align*}{
+ *   M_\mathcal{J} &= \sum_{I \in \mathcal{J}} \omega_I \ell(I)/\ell^*(I) \\
+ *   Q_\mathcal{J} & = \min_{I \in \mathcal{J}} \omega_I \ell(I)/\ell^*(I)
+ * \f}
+ * The point of these figures of merit is that for a fixed set \f$\mathcal{J}\f$
+ * they are comparable for different generators. LatMRG builds figures of merit
+ * based on the well known **spectral test** \cite rKNU97a.
+ * More detail on how which figures of merit are constructed and available in
+ * LatMRG can be found in \ref back_merit.
  *
  * LatMRG got its name from *lattice* and *MRG* and, as its name hints, it is
  * mainly intended as a tool to study the lattice of MRG and MRG-like random

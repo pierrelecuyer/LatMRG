@@ -101,7 +101,7 @@ $(document).ready(function(){initNavTree('usage.html','');});
 Building LatMRG</h1>
 <p><a class="el" href="namespace_lat_m_r_g.html">LatMRG</a> is available on <a href="https://github.com/savamarc/latmrg"><b>Github</b></a> and can be downloaded either via <code>git</code> or as a <code>.zip</code> archive. Once the you have the repository on a local machine, it is necessary to make sure that you have the correct dependencies installed:</p><ul>
 <li><a href="https://www.shoup.net/ntl/"><b>NTL</b></a> is needed. Follow Shoup's instructions to install the library compiled with the option <code>NTL_THREADS=off</code> in a standard path.<ul>
-<li><a href="https://gmplib.org/"><b>gmp</b></a> is a dependency for NTL. It should be packaged by your linux distribution.</li>
+<li><a href="https://gmplib.org/"><b>gmp</b></a> is a NTL dependency. It is packaged by most major Linux distributions. You will need to also download the header files of the library (usually in a <code>-dev</code> <code>devel</code> named package).</li>
 </ul>
 </li>
 <li><a href="https://github.com/umontreal-simul/latticetester"><b>Lattice Tester</b></a> is a submodule in the git repository. The instructions bellow present how to download and compile Lattice Tester along <a class="el" href="namespace_lat_m_r_g.html">LatMRG</a>.</li>
@@ -135,10 +135,9 @@ About the file format</h2>
 </pre> <center> <b>Example of a datafile layout</b> </center><p>If you see a double slash (<code>//</code>) in the layout, this is a comment to explain what is going on for this/those lines. It is not necessary to put it in the files to feed to the program. As written above, the parameters in brackets are optionnal parameters that do not always need to be there. Most often than not, their presence will be determined by the parameter on the same line as them. Also note that comments may be inserted after data, on the same line, separated from the data by at least one blank. Moreover, any line starting with <code>#</code> is considered as a comment and is discarded by the reading program.</p>
 <p>Each of the configuration must be in a file that has a <code>.dat</code> extension.</p>
 <p>After presenting the file template, we explain the meaning of all the fields of the data file. For every line, of the data file, the options for the mandatory fields are listed between inequality signs as <code>&lt;option1, option2, ...&gt;</code>. If this field takes a data and no particular value, this type is writen instead. The options for the optionnal/situationnal fields are listed in square brackets as <code>[option1, option2, ...]</code>. It looks like this: </p><dl>
-<dt>parameter name : </dt>
-<dd><p class="startdd"><code>&lt;case1, case2, case3&gt; [option1, option2]</code> <br />
-Description of the parameter</p>
-<dl>
+<dt>parameter name: </dt>
+<dd><code>&lt;case1, case2, case3&gt; [option1, option2]</code> <br />
+Description of the parameter  <dl>
 <dt><code>case1</code>: </dt>
 <dd>Description of the case  </dd>
 <dt><code>case2</code>: </dt>

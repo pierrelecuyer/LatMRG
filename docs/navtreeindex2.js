@@ -1,5 +1,7 @@
 var NAVTREEINDEX2 =
 {
+"class_lat_m_r_g_1_1_param_reader_ext.html#a6785102b6f4dc1954fd5e5aaab697b96":[8,0,0,17,15],
+"class_lat_m_r_g_1_1_param_reader_ext.html#a71296b10f83d1b4645d55d4b277c6cf3":[8,0,0,17,16],
 "class_lat_m_r_g_1_1_param_reader_ext.html#a72d532caf839e07b1f94745495bbffda":[8,0,0,17,0],
 "class_lat_m_r_g_1_1_param_reader_ext.html#a83423efb7e9b95bf72faec9d3d41f189":[8,0,0,17,8],
 "class_lat_m_r_g_1_1_param_reader_ext.html#a905845ed4d058d6c8d4adcad0cf20e1b":[8,0,0,17,12],
@@ -78,8 +80,8 @@ var NAVTREEINDEX2 =
 "dir_b7e23bc6b0cf26592cd9d056c23157f5.html":[9,0,0,0],
 "dir_d44c64559bbebec7f509842c48db8b23.html":[9,0,1],
 "files.html":[9,0],
-"functions.html":[8,3,0,0],
 "functions.html":[8,3,0],
+"functions.html":[8,3,0,0],
 "functions_b.html":[8,3,0,1],
 "functions_c.html":[8,3,0,2],
 "functions_d.html":[8,3,0,3],
@@ -149,8 +151,8 @@ var NAVTREEINDEX2 =
 "lattice_back.html#sec_merit_short":[1,1,0],
 "lattice_back.html#sec_merit_spectral":[1,1,0,0],
 "lattice_back.html#sec_svp":[1,1,2],
-"namespace_lat_m_r_g.html":[7,0,0],
 "namespace_lat_m_r_g.html":[8,0,0],
+"namespace_lat_m_r_g.html":[7,0,0],
 "namespace_lat_m_r_g_1_1_merit.html":[7,0,0,0],
 "namespace_lat_m_r_g_1_1_reductions.html":[7,0,0,1],
 "namespacemembers.html":[7,1,0],

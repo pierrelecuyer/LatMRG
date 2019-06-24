@@ -9,8 +9,9 @@
  * you have the correct dependencies installed:
  * - [**NTL**](https://www.shoup.net/ntl/) is needed. Follow Shoup's instructions to
  *   install the library compiled with the option `NTL_THREADS=off` in a standard path.
- *   - [**gmp**](https://gmplib.org/) is a dependency for NTL. It should be packaged
- *     by your linux distribution.
+ *   - [**gmp**](https://gmplib.org/) is a NTL dependency. It is packaged by most
+ *     major Linux distributions. You will need to also download the header files
+ *     of the library (usually in a `-dev` `devel` named package).
  * - [**Lattice Tester**](https://github.com/umontreal-simul/latticetester) is a
  *   submodule in the git repository. The instructions bellow present how to
  *   download and compile Lattice Tester along LatMRG.
@@ -108,10 +109,10 @@
  * optionnal/situationnal fields are listed in square brackets as `[option1, 
  * option2, ...]`. It looks like this:
  * <dl>
- * <dt>parameter name</dt> : <dd>`<case1, case2, case3> 
+ * <dt>parameter name</dt>: <dd>`<case1, case2, case3> 
  * [option1, option2]` \n
  * Description of the parameter
- *
+ * </dd>
  * <dl>
  * <dt>`case1`</dt>:
  * <dd>
@@ -137,6 +138,7 @@
  * </dd>
  * </dl>
  * </dd>
+ * </dl>
  * */
 
  * The following modules describe precompiled programs that can be executed

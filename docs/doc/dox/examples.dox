@@ -1,6 +1,13 @@
 /**
  * \page tutorial Tutorial and Library Usage
  *
+ * Most use cases should already be covered by the executable programs, but
+ * LatMRG is also distributed as a library to easily expand its functions.
+ * You might want to:
+ * - Perform tests in an order that we do not provide
+ * - Test unimplemented forms of generators
+ * - Implement new tests
+ *
  * LatMRG offers more flexibility than just providing a set of
  * executable programs. One can also use the modules provided to write one
  * own’s programs. For that, a C++ compiler and some knowledge about the C++

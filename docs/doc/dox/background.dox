@@ -258,7 +258,7 @@
  *   In this section, we give a quick recall of some definitions and
  * notation, as well as a short outline of what the package does. For more
  * details on the underlying theory and algorithms, see \cite rCOU96x,
- * \cite rLEC94e&thinsp; and other references given there. We classify the
+ * \cite rLEC94e and other references given there. We classify the
  * modules of LatMRG in three groups: (a) low-level, (b) intermediate-level,
  * and (c) high-level. Higher-level programs import facilities from the
  * lower-level ones.
@@ -295,7 +295,7 @@
  * \f$\mathbf{v}_1,…,\mathbf{v}_t\f$ are linearly independent vectors in
  * \f$\mathbb R^t\f$ which form a *basis* of the lattice. A
  * comprehensive treatment of such lattices can be found in
- * \cite mCON99a&thinsp;. The matrix \f$\mathbf{V}\f$, whose \f$i\f$th line
+ * \cite mCON99a. The matrix \f$\mathbf{V}\f$, whose \f$i\f$th line
  * is \f$\mathbf{v}_i\f$, is the corresponding *generator matrix* of
  * \f$L_t\f$. A lattice \f$L_t\f$ shifted by a constant vector
  * \f$\mathbf{v}_0\not L_t\f$, i.e., a point set of the form \f$L’_t =
@@ -367,11 +367,11 @@
  *   \f[
  *     P(z) = \left(z^k - \sum_{i=1}^k a_i z^{k-i}\right) \mod m, 
  *   \f]
- * is a primitive polynomial modulo \f$m\f$. Knuth \cite rKNU97a&thinsp;
+ * is a primitive polynomial modulo \f$m\f$. Knuth \cite rKNU97a
  * gives necessary and sufficient conditions for that, which are implemented
  * in our package. If \f$k=1\f$ and \f$m=p^e\f$, with \f$e > 1\f$, then the
  * maximal possible period is \f$2^{e-2}\f$ for \f$p=2\f$ and
- * \f$(p-1)p^{e-1}\f$ for \f$p > 2\f$ \cite rKNU97a, \cite rLEC90a&thinsp;.
+ * \f$(p-1)p^{e-1}\f$ for \f$p > 2\f$ \cite rKNU97a, \cite rLEC90a.
  *
  *   Instead of taking \f$u_n = x_n/m\f$ for the output, one can take a more
  * general linear combination of the components of the state vector, say
@@ -738,7 +738,7 @@
  * invertible matrix. In both cases, the dual basis is obtained by inverting
  * the matrix \f$\mathbf{V}’_t\f$. For LCGs in matrix form, bases for
  * \f$L_t\f$ and its dual can be constructed as explained in \cite rGRO88a,
- * \cite rLEC94e&thinsp;.
+ * \cite rLEC94e.
  *
  *   If one adds a constant \f$b\f$ on the right-hand-side of 
  * , before applying the modulo operation, then the
@@ -779,7 +779,7 @@
  * determined by the coordinates that belong to \f$I\f$. Using the class
  * <tt>IntLattice</tt>, one can build a basis for \f$L_t\f$ and its dual in
  * this more general case, and then perform lattice analysis as usual.
- * Further details and examples are given in \cite rLEC97c&thinsp;. For
+ * Further details and examples are given in \cite rLEC97c. For
  * \f$(i_1,…,i_t) = (0,…,t-1)\f$, one has \f$L_t(I) = L_t\f$.
  *
  *   To construct the basis in this case, one must compute the vector
@@ -813,7 +813,7 @@
  * \f$\ell_t\f$ to be as large as possible. Computing this \f$\ell_t\f$ for
  * an MRG and comparing with the best possible value, given \f$t\f$, \f$m\f$,
  * and \f$k\f$, is known as the *spectral test* in the literature on RNGs
- * \cite rKNU97a, \cite sFIS96a&thinsp;.
+ * \cite rKNU97a, \cite sFIS96a.
  *
  *   We can view the lattice as a way of packing the space by spheres of
  * radius \f$\ell_t/2\f$, with one sphere centered at each lattice point. In
@@ -827,7 +827,7 @@
  * largest possible value of \f$\delta_t\f$ for a lattice (i.e., the densest
  * packing by non-overlapping spheres arranged in a lattice). The quantity
  * \f$\gamma_t = 2(\delta_t^*)^{2/t}\f$ is called the *Hermite constant*
- * for dimension \f$t\f$ \cite mCON99a, \cite mGRU87a&thinsp;. It gives the
+ * for dimension \f$t\f$ \cite mCON99a, \cite mGRU87a. It gives the
  * upper bound \f$\ell_t^2\le(\ell_t^*(n))^2 = 2(n\delta_t^*)^{2/t} =
  * \gamma_t n^{2/t}\f$ for a lattice of density \f$1/n\f$. Knowing the
  * Hermite constants, or good approximations of them, is useful because it
@@ -838,17 +838,17 @@
  *
  *   The Hermite constants are known exactly only for \f$t\le8\f$, in which
  * case the densest lattice packings are attained by the *laminated* lattices
- * \cite mCON99a&thinsp;. Conway and Sloane \cite mCON99a&thinsp; (Table 1.2)
+ * \cite mCON99a. Conway and Sloane \cite mCON99a (Table 1.2)
  * give the values of \f$\delta_t^*\f$ for \f$t\le8\f$, and provide lower
  * and upper bounds on \f$\delta_t^*\f$ for other values of \f$t\f$. The
  * largest value of \f$\ell_t^2/n^{2/t}\f$ obtained so far for concrete
  * lattice constructions is a lower bound on \f$\gamma_t\f$, which we denote
  * by \f$\gamma_t^{\mathrm{B}}\f$. Such values are given in Table 1.2 of
- * \cite mCON99a&thinsp;, page 15, in terms of \f$\delta^*\f$. The laminated
+ * \cite mCON99a, page 15, in terms of \f$\delta^*\f$. The laminated
  * lattices, which give the lower bound
  * \f$\ell_t^2/n^{2/t} \ge\gamma_t^{\mathrm{L}} = 4
  * \lambda_t^{-1/t}\f$, where the constants \f$\lambda_t\f$ are given in
- * \cite mCON88a&thinsp; (Table 6.1, page 158) for \f$t\le48\f$, are the
+ * \cite mCON88a (Table 6.1, page 158) for \f$t\le48\f$, are the
  * best constructions in dimensions 1 to 29, except for dimensions 10 to 13.
  * (One has \f$\gamma_t^{\mathrm{L}} = \gamma_t\f$ for \f$t\le8\f$.)
  *
@@ -860,18 +860,18 @@
  * \f$\gamma_t\f$.
  *
  *   An upper bound on \f$\gamma_t\f$ is obtained via the bound of Rogers on
- * the density of sphere packings \cite mCON99a&thinsp;. This upper bound can
+ * the density of sphere packings \cite mCON99a. This upper bound can
  * be written as
  * \f[
  *   \gamma_t^{\mathrm{R}} = 4* 2^{2R(t)/t}
  *   \f]
- * where \f$R(t)\f$ can be found in Table&nbsp;1.2 of \cite mCON99a&thinsp;
+ * where \f$R(t)\f$ can be found in Table&nbsp;1.2 of \cite mCON99a
  * for \f$t\le24\f$, and can be approximated with \f$O(1/t)\f$ error and
  * approximately 4 decimal digits of precision, for \f$t\ge25\f$, by
  * \f[
  *     R(t) = \frac{t}{2} \log_2\left(\frac{t}{4\pi e}\right) + \frac{3}{2} \log_2 (t) - \log_2 \left(\frac{e}{\sqrt{\pi}}\right) + \frac{5.25}{t + 2.5}.
  *   \f]
- * Table&nbsp;1 in \cite rLEC99c&thinsp; gives the ratio
+ * Table&nbsp;1 in \cite rLEC99c gives the ratio
  * \f$(\gamma_t^{\mathrm{L}} / \gamma_t^{\mathrm{R}})^{1/2}\f$, of the
  * lower bound over the upper bound on \f$\ell_t\f$, for
  * \f$1\le t\le48\f$. This ratio tends to decrease with \f$t\f$, but not
@@ -889,9 +889,9 @@
  * \f$L_t\f$. For \f$p=1\f$, the length \f$\ell_t =
  * \Vert\mathbf{v}\Vert_1\f$ of the shortest vector \f$\mathbf{v}\f$ (or
  * \f$\Vert\mathbf{h}\Vert_1 - 1\f$ in some cases, see
- * \cite rKNU97a&thinsp;) is the minimal number of hyperplanes that cover all
+ * \cite rKNU97a) is the minimal number of hyperplanes that cover all
  * the points of \f$\Psi_t\f$. The following upper bound on \f$\ell_t\f$ in
- * this case was established by Marsaglia \cite rMAR68a&thinsp; by applying
+ * this case was established by Marsaglia \cite rMAR68a by applying
  * the general convex body theorem of Minkowski:
  * \f[
  *   \ell_t \le\ell_t^*(m^k) = (t! m^k)^{1/t} =: \gamma_t^M m^{k/t}.
@@ -926,7 +926,7 @@
  *   The figure of merit \f$M_{t_1} =
  * \min_{2\le s\le t_1} \ell_s/\ell_s^*(n)\f$ (with \f$d=1\f$) has been
  * widely used for ranking and selecting LCGs and MRGs \cite sFIS96a,
- * \cite rLEC99b, \cite rLEC99c&thinsp;. The quantity \f$M_{t_1,…,t_d}\f$ is
+ * \cite rLEC99b, \cite rLEC99c. The quantity \f$M_{t_1,…,t_d}\f$ is
  * a worst case over \f$(t_1-d) +
  * \sum_{s=2}^d \binom{t_s-1}{s-1}\f$ projections, and this number increases
  * quickly with \f$d\f$ unless the \f$t_s\f$ are very small. For example, if
@@ -952,7 +952,7 @@
  * relative lengths of the smallest and largest vectors in a *reduced* basis.
  * A basis can be *reduced* in different senses. One type of reduced basis
  * considered by this package is a *Minkowski-reduced lattice basis* (MRLB)
- * (see \cite rAFF85a, \cite rAFF88a, \cite rGRO88a&thinsp; for more
+ * (see \cite rAFF85a, \cite rAFF88a, \cite rGRO88a for more
  * details). Roughly, a MRLB is a basis for which the vectors are in some
  * sense the most orthogonal. The ratio of the sizes of the shortest and
  * longest vectors of a MRLB is called its *Beyer-quotient*. In general, a
@@ -973,7 +973,7 @@
  *   The quantity \f$\mathcal{P}_{\alpha}\f$ is a measure of non-uniformity
  * (i.e., discrepancy from the uniform distribution, the smaller the better),
  * which has been widely used in the context of quasi-Monte Carlo integration
- * (see, e.g., \cite vSLO94a&thinsp;). In the case where \f$\Psi_t = L_t
+ * (see, e.g., \cite vSLO94a). In the case where \f$\Psi_t = L_t
  * \cap[0,1)^t\f$ where \f$L_t\f$ is a lattice with dual \f$L_t^*\f$, one
  * has
  *   \f[
@@ -1017,7 +1017,7 @@
  * \f[
  *   \frac{t e^{xt}}{e^t-1} = \sum_{i=0}^{\infty}\frac{ B_i(x) t^i}{i!}.
  *   \f]
- * Hickernell \cite vHIC98c&thinsp; introduced generalizations of
+ * Hickernell \cite vHIC98c introduced generalizations of
  * \f$\mathcal{P}_{\alpha}\f$, incorporating weights and replacing the
  * simple sum in  by a more general norm.
  * One version of this weighted \f$\mathcal{P}_{\alpha}\f$, where the weight
@@ -1032,13 +1032,13 @@
  * for computing \f$\mathcal{P}_{2\alpha}(\Psi_t)\f$ in time \f$O(nt)\f$
  * when \f$\alpha\f$ is an integer and \f$\Psi_t\f$ is the intersection of
  * a lattice with \f$[0,1)^t\f$. Note that the
- * \f$D_{\mathcal{F},\alpha,p}(P)\f$ of \cite vHIC00b&thinsp; corresponds to
+ * \f$D_{\mathcal{F},\alpha,p}(P)\f$ of \cite vHIC00b corresponds to
  * \f$(\mathcal{P}_{2\alpha}(\Psi_t))^{1/2}\f$ for
  * \f$\Psi_t=P\f$, \f$p=2\f$, and \f$\beta_j=1\f$ for all \f$j\f$. LatMRG
  * provides tools for computing \f$\mathcal{P}_{\alpha}\f$ with or without
  * weights.
  *
- *   It has been proved (e.g., \cite vSLO94a&thinsp;, Theorem 4.4, page 83)
+ *   It has been proved (e.g., \cite vSLO94a, Theorem 4.4, page 83)
  * that for any \f$t\ge2\f$, \f$\alpha> 1\f$, and prime number \f$m >
  * e^{\alpha t/(\alpha-1)}\f$, there exists at least one LCG with modulus
  * \f$m\f$ such that
@@ -1048,7 +1048,7 @@
  * The latter quantity can then be used to normalize
  * \f$\mathcal{P}_{\alpha}\f$.
  *
- *   Alternatively, Hickernell et al. \cite vHIC01a&thinsp;, section 4.1,
+ *   Alternatively, Hickernell et al. \cite vHIC01a, section 4.1,
  * suggest using the figure of merit \f$g_t\f$, where
  *   \f{align}{
  *      g_t^2
@@ -1084,7 +1084,7 @@
  * \subsection MMRG_sec Matrix multiple recursive generators
  *
  *   MRGs in matrix form, which we denote MMRGs, have been introduced and
- * studied by Niederreiter \cite rNIE95b, \cite rNIE95c&thinsp;. The general
+ * studied by Niederreiter \cite rNIE95b, \cite rNIE95c. The general
  * recurrence has the form
  *   \f[
  *   \mathbf{x}_n = (A_1 \mathbf{x}_{n-1} + \cdots+ A_k \mathbf{x}_{n-k}) \mod m \tag{MMRG}
@@ -1098,7 +1098,7 @@
  * \f[
  *     f(x) = \det\left( x^k I - x^{k-1} A_1 - x^{k-2} A_2 - \cdots- A_k\right)
  *   \f]
- * is a primitive polynomial modulo \f$m\f$ \cite rNIE95b&thinsp;.
+ * is a primitive polynomial modulo \f$m\f$ \cite rNIE95b.
  *
  *   There are different ways of producing the output. We consider the
  * following 3 cases:
@@ -1119,12 +1119,12 @@
  *    \sum_{i=1}^w x_{n,i} m^{-i} \qquad\mbox{ for $n\ge0$}, \tag{out3}
  *   \f}
  * where \f$b_1,…,b_w\f$ are positive integers. Case 3 is that used in
- * \cite rNIE95b&thinsp; and does not give rise to a lattice structure for
+ * \cite rNIE95b and does not give rise to a lattice structure for
  * \f$\Psi_t\f$ in the usual sense. For both cases 1 and 2, the set
  * \f$\Psi_t\f$ is the intersection of a lattice \f$L_t\f$ with the unit
- * hypercube. Case 1 is used in \cite rNIE95c&thinsp;, where pseudorandom
+ * hypercube. Case 1 is used in \cite rNIE95c, where pseudorandom
  * numbers are generated in vector form, \f$w\f$ at a time. It is also
- * explained in \cite rNIE95c&thinsp; how to construct a basis for the
+ * explained in \cite rNIE95c how to construct a basis for the
  * lattice \f$L_t\f$ when \f$t\f$ is a multiple of \f$w\f$. (The
  * generalization to other values of \f$t\f$ is trivial.)
  *
@@ -1133,7 +1133,7 @@
  *   \subsection MWC_sec Multiply-with-carry
  *
  *   A *Multiply-with-Carry* (MWC) generator \cite rCOU95a, \cite rCOU97a,
- * \cite rKOC95a, \cite rMAR94a&thinsp; is based on the recurrence
+ * \cite rKOC95a, \cite rMAR94a is based on the recurrence
  *   \f{align}{
  *      x_n
  *      &
@@ -1179,7 +1179,7 @@
  * this inequality, we want the \f$a_{\ell}\f$ to be small, so that their
  * sum fits into a computer word (e.g., \f$a_1 + \cdots+ a_k \le b\f$). But
  * the coefficients should not be too small either, because in dimension \f$t
- * = k+1\f$, one has (see \cite rCOU97a&thinsp;):
+ * = k+1\f$, one has (see \cite rCOU97a):
  *   \f[
  *   \ell_t = (1 + a_1^2 + \cdots+ a_k^2)^{1/2}. \tag{dtkp1}
  *   \f]
@@ -1202,7 +1202,7 @@
  * component moduli, reduces to the component recurrence. The combined
  * generator can then be studied via this product generator, since one can
  * view the former as embedded in the latter, and since both have the same
- * set of recurrent states (see \cite rCOU96a&thinsp;). Facilities are
+ * set of recurrent states (see \cite rCOU96a). Facilities are
  * provided to analyze, for any given MRG, either the lattice \f$L_t\f$
  * generated by all possible initial states, or that generated by the set of
  * recurrent states (see <tt>LatticeType</tt> in module <tt>Const</tt> and in
@@ -1210,17 +1210,17 @@
  *
  *   Other types of combinations that have been proposed in the literature
  * are (often, depending on the parameters) closely approximated by
- * combinations of the above types \cite rLEC91b, \cite rLEC96b&thinsp;. They
+ * combinations of the above types \cite rLEC91b, \cite rLEC96b. They
  * can thus be analyzed with the present software.
  *
  *   \section computing_short Computing a shortest nonzero vector or a reduced basis
  *
  *   The class <tt>Reducer</tt> computes a shortest nonzero vector in a
  * lattice via the branch-and-bound (BB) algorithm proposed by
- * \cite mFIN85a&thinsp;, with some additional refinements. For large
+ * \cite mFIN85a, with some additional refinements. For large
  * dimensions \f$t\f$, this algorithm is much faster than the algorithm given
- * in \cite rDIE75a, \cite rKNU81a&thinsp;. The class also computes a
- * Minkowski reduced basis via the algorithm of \cite rAFF85a&thinsp;, which
+ * in \cite rDIE75a, \cite rKNU81a. The class also computes a
+ * Minkowski reduced basis via the algorithm of \cite rAFF85a, which
  * works by successive applications of the BB procedure for finding a
  * shortest vector. The bounds in the BB procedure are computed through a
  * Choleski decomposition performed in (double precision) floating-point
@@ -1238,10 +1238,10 @@
  * limit on size other than the size of the computer memory (and the CPU
  * time). For example, a generator with a modulus of a few hundred bits can
  * be analyzed easily. Operations on large integers are performed using the
- * GNU multi-precision package GMP \cite iGMP06a&thinsp;. GMP is a portable
+ * GNU multi-precision package GMP \cite iGMP06a. GMP is a portable
  * library written in C for arbitrary precision arithmetic on integers,
  * rational numbers, and floating-point numbers. For vectors, matrices of
- * large numbers and polynomials, we use NTL \cite iSHO05a&thinsp;. NTL is a
+ * large numbers and polynomials, we use NTL \cite iSHO05a. NTL is a
  * high-performance, portable C++ library providing data structures and
  * algorithms for manipulating arbitrary length integers, and for vectors,
  * matrices, and polynomials over the integers and over finite fields. NTL

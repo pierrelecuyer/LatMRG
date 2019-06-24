@@ -1,5 +1,7 @@
 var NAVTREEINDEX1 =
 {
+"class_lat_m_r_g_1_1_int_factorization_1_1_comp_factor.html#a2f25a42b210fa3f77164d11640e7dd7d":[8,0,0,4,0,0],
+"class_lat_m_r_g_1_1_int_primitivity.html":[8,0,0,5],
 "class_lat_m_r_g_1_1_int_primitivity.html#a052b2cf875fc202c6c72f767bcb666e1":[8,0,0,5,1],
 "class_lat_m_r_g_1_1_int_primitivity.html#a070f25a5b95bb93a39f0eed3eb7cd868":[8,0,0,5,10],
 "class_lat_m_r_g_1_1_int_primitivity.html#a137859e5e72e7b7feab7b722a6da2603":[8,0,0,5,12],
@@ -247,7 +249,5 @@ var NAVTREEINDEX1 =
 "class_lat_m_r_g_1_1_param_reader_ext.html#a33e98b2d49ec9b91c1370c7ce35445cb":[8,0,0,17,1],
 "class_lat_m_r_g_1_1_param_reader_ext.html#a4070adac3918ec9a756d717ca0dc42be":[8,0,0,17,22],
 "class_lat_m_r_g_1_1_param_reader_ext.html#a594baa76afdb00e65e409ea108fc4479":[8,0,0,17,20],
-"class_lat_m_r_g_1_1_param_reader_ext.html#a60ae285423a0b12575644ba7de61152f":[8,0,0,17,24],
-"class_lat_m_r_g_1_1_param_reader_ext.html#a6785102b6f4dc1954fd5e5aaab697b96":[8,0,0,17,15],
-"class_lat_m_r_g_1_1_param_reader_ext.html#a71296b10f83d1b4645d55d4b277c6cf3":[8,0,0,17,16]
+"class_lat_m_r_g_1_1_param_reader_ext.html#a60ae285423a0b12575644ba7de61152f":[8,0,0,17,24]
 };
