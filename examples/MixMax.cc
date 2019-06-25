@@ -127,7 +127,7 @@ int main ()
       Lac[0]=1;
       Lac[1]=Configs[i].k;
       Lac[2]=Configs[i].k+1;
-      std::vector<std::size_t> max_coords;
+      std::vector<int> max_coords;
       max_coords.push_back(size-1);
       max_coords.push_back(size-1);
       Projections proj(2, size, max_coords);
@@ -152,7 +152,7 @@ int main ()
       Lac[2]=Configs[i].k+3;
       Lac[3]=Configs[i].k+4;
       Lac[4]=Configs[i].k+5;
-      std::vector<std::size_t> max_coords;
+      std::vector<int> max_coords;
       max_coords.push_back(size-1);
       Projections proj(1, size, max_coords);
       conf.proj = &proj;
@@ -178,7 +178,7 @@ int main ()
       Lac[4]=Configs[i].k+4;
       Lac[5]=Configs[i].k+5;
       Lac[6]=Configs[i].k+6;
-      std::vector<std::size_t> max_coords;
+      std::vector<int> max_coords;
       max_coords.push_back(size-1);
       Projections proj(1, size, max_coords);
       conf.proj = &proj;

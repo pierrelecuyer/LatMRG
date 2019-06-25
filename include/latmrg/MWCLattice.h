@@ -156,6 +156,8 @@ namespace LatMRG {
         /**
          * This is a basic method to check if the MWC generator described by
          * `b` and `e` has full period.
+         *
+         * \todo finish this
          * */
         static int fullPeriod(const Int& b, const IntVec& e) {
           if(MWCLattice<Int, Dbl>::validate(b, e)) return 1;

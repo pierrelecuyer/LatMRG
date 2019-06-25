@@ -4,24 +4,75 @@
  * Most use cases should already be covered by the executable programs, but
  * LatMRG is also distributed as a library to easily expand its functions.
  * You might want to:
- * - Perform tests in an order that we do not provide
+ * - Perform tests in a sequence or on subsets that we do not provide
  * - Test unimplemented forms of generators
- * - Implement new tests
+ * - Implement new tests and figures of merit
  *
- * LatMRG offers more flexibility than just providing a set of
- * executable programs. One can also use the modules provided to write one
- * own’s programs. For that, a C++ compiler and some knowledge about the C++
- * language are required. Instead of providing the parameters according to
- * the format described in \ref usage,
- * one sets those parameters (or data) by setting the appropriate
- * variables or creating the appropriate objects. In this section, we
- * introduce briefly the classes and low-level modules, which are described
- * in Appendix B and C,
- * respectively. It is important to recall that the multiplier’s and basis
- * components can be implemented with different representations and that one
- * must make sure to select the appropriate representation for the target
- * application. See Section 3.2
- *    for more details on this.
+ * With some knowledge of the C++ programming language, it is possible to use
+ * the classes and functions of LatMRG as tools to write your own programs.
+ * This section first presents the main classes of the library and covers a few
+ * examples of its usage.
+ *
+ * \section classes_list Classes of LatMRG
+ *
+ * The most important feature of LatMRG is its capacity to represent MRG random
+ * number generators and their lattices. The library features two different
+ * classes in this regard, depending on the use case.
+ *
+ * `LatMRG::MRGLattice` is the main class to do so. This class allows the
+ * the storage of a MRG's parameters and also the reprensentation of a basis for
+ * this generator. This class also has an overridable interface to build the
+ * basis of the generator lattice for an arbitrary dimension.
+ *
+ * A common way to
+ * to use this class is to simply create a subclass that initializes the
+ * `MRGLattice` components in its constructor. Recall that most MRG type
+ * generators are equivalent to a MRG in some way and that it is generaly easy
+ * to just take a list of parameters and convert them. This is what is done in
+ * `LatMRG::ComboLattice`, `LatMRG::MWCLattice` and `LatMRG::AWCSWBLattice`.
+ * For example, the next few lines of code (and a few more declaration in the
+ * class body) are what initializes a
+ * `MWCLattice` with
+ * \f{align}{
+ *    x_n & = (e_1 x_{n-1} + \cdots + e_k x_{n-k} + c_{n-1})d\ \mathrm{mod} \ b, \\
+ *    c_n & = \lfloor (e_0 x_n + e_1 x_{n-1} + \cdots + e_k x_{n-k} + c_{n-1} )/b \rfloor, \\
+ *    u_n & = \sum_{i=1}^\infty x_{n+i-1} b^{-i}.
+ * \f}
+ * The resulting object can then be used in any function working on
+ * `MRGLattice`s seamlessly.
+ *
+ * \code{.cpp}
+ * template<typename Int>
+ *   Int LCGMod(const Int& b, const NTL::vector<Int>& e){
+ *     Int m(0);
+ *     for(int i = 0; i <= e.length(); i++) {
+ *       m += e[i] * NTL::power(b, i);
+ *     }
+ *     return m;
+ *   }
+ * 
+ * template<typename Int>
+ *   NTL::vector<Int> LCGCoeff(const Int& b, const NTL::vector<Int>& e){
+ *     Int mult = LCGMod(b,e);
+ *     std::cout << b << "\n";
+ *     Int a = NTL::InvMod(b, mult);
+ *     NTL::vector<Int> coeff;
+ *     coeff.SetLength(2);
+ *     coeff[1] = a;
+ *     return coeff;
+ *   }
+ *
+ * template<typename Int, typename Dbl>
+ *   MWCLattice<Int, Dbl>::MWCLattice(const Int & b, const IntVec & e, int k):
+ *     MRGLattice<Int, Dbl>(LCGMod(b, e), LCGCoeff(b,e), 1, 1, FULL)
+ * {
+ *   m_MWCmod = b;
+ *   m_MWCorder = k;
+ *   m_eCoef.SetLength(k+1);
+ *   for (int i = 0; i < k+1; i++)
+ *     m_eCoef[i] = e[i];
+ * }
+ * \endcode
  *
  * \todo Replace section numbers with appropriate links.
  *

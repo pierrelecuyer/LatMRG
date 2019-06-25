@@ -75,7 +75,9 @@ var NAVTREE =
       [ "Large numbers, matrices and polynomials", "background.html#numbers_sec", null ]
     ] ],
     [ "Compilation and Executables Usage", "usage.html", "usage" ],
-    [ "Tutorial and Library Usage", "tutorial.html", null ],
+    [ "Tutorial and Library Usage", "tutorial.html", [
+      [ "Classes of LatMRG", "tutorial.html#classes_list", null ]
+    ] ],
     [ "Todo List", "todo.html", null ],
     [ "Bibliography", "citelist.html", null ],
     [ "Namespaces", "namespaces.html", [
