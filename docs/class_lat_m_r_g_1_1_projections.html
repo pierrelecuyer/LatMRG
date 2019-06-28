@@ -102,12 +102,15 @@ $(document).ready(function(){initNavTree('class_lat_m_r_g_1_1_projections.html',
 </div><!--header-->
 <div class="contents">
 
+<p>A projection class that does exactly what we need when generating projections when testing a generator.  
+ <a href="class_lat_m_r_g_1_1_projections.html#details">More...</a></p>
+
 <p><code>#include &lt;latmrg/Projections.h&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a608d792c8c3d60ec8fafdeb0f8f6872a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_projections.html#a608d792c8c3d60ec8fafdeb0f8f6872a">Projections</a> (int dimProj, int <a class="el" href="class_lat_m_r_g_1_1_projections.html#a8641d09b0d1ef5721f9257e0819e8243">minDim</a>, std::vector&lt; int &gt; &amp;<a class="el" href="class_lat_m_r_g_1_1_projections.html#a0ebf6145037b082eb850ca94d4f5aa50">projDim</a>)</td></tr>
-<tr class="memdesc:a608d792c8c3d60ec8fafdeb0f8f6872a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a <a class="el" href="class_lat_m_r_g_1_1_projections.html">Projections</a> set.  <a href="#a608d792c8c3d60ec8fafdeb0f8f6872a">More...</a><br /></td></tr>
+<tr class="memdesc:a608d792c8c3d60ec8fafdeb0f8f6872a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a <a class="el" href="class_lat_m_r_g_1_1_projections.html" title="A projection class that does exactly what we need when generating projections when testing a generato...">Projections</a> set.  <a href="#a608d792c8c3d60ec8fafdeb0f8f6872a">More...</a><br /></td></tr>
 <tr class="separator:a608d792c8c3d60ec8fafdeb0f8f6872a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a036c762af724fac1c547d62545dcbd82"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_projections.html#a036c762af724fac1c547d62545dcbd82">end</a> (int dim=0)</td></tr>
 <tr class="memdesc:a036c762af724fac1c547d62545dcbd82"><td class="mdescLeft">&#160;</td><td class="mdescRight">If <code>dim==0</code> this will return true if this calling next will not get a new projection.  <a href="#a036c762af724fac1c547d62545dcbd82">More...</a><br /></td></tr>
@@ -151,7 +154,11 @@ Private Attributes</h2></td></tr>
 <tr class="memitem:a5d72f07d6211165e1361333c13dab0c6"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_projections.html#a5d72f07d6211165e1361333c13dab0c6">m_projDim</a></td></tr>
 <tr class="separator:a5d72f07d6211165e1361333c13dab0c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>A projection class that does exactly what we need when generating projections when testing a generator. </p>
+<p>This is initialized containing nothing and can iteratively return projections by calling <code><a class="el" href="class_lat_m_r_g_1_1_projections.html#a9ab549b0a208b3e530ea14770ee0412d" title="This returns the next projection for this set of projections.">next()</a></code>. This first goes a through a list of sequential projections and then gives a list of projections with non sequential indices.</p>
+<p>When iterating through this object, it returns <code>LatticeTester::Coordinates</code> objects. These contain coordinates starting from <code>0</code> to be used when accessing elements in vectors. Take care, some of the functions in this objects take integers starting at 1 that are transformed by the object. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a608d792c8c3d60ec8fafdeb0f8f6872a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a608d792c8c3d60ec8fafdeb0f8f6872a">&#9670;&nbsp;</a></span>Projections()</h2>
 
@@ -184,10 +191,10 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Creates a <a class="el" href="class_lat_m_r_g_1_1_projections.html">Projections</a> set. </p>
+<p>Creates a <a class="el" href="class_lat_m_r_g_1_1_projections.html" title="A projection class that does exactly what we need when generating projections when testing a generato...">Projections</a> set. </p>
 <p>It is necessary that <code>dimProj == length(projDim)</code>.</p>
 <p>This set will contain projections with sequential indices in dimensions <code>minDim</code> to <code>projDim[0]+1</code>. That means the projections will include sets <code>{0, ..., minDim-1}</code> through <code>{0, ..., projDim[0]}</code>.</p>
-<p>When the length of <code>projDim</code> is greater than 1, this set will contain non sequential projections in dimensions 2 through <code>dimProj</code>. <a class="el" href="class_lat_m_r_g_1_1_projections.html">Projections</a> in dimension <code>i</code> use <code>i</code> indices in the range <code>[0, projDim[i-1]]</code> with at least one of them at least <code>minDim-1</code>. </p>
+<p>When the length of <code>projDim</code> is greater than 1, this set will contain non sequential projections in dimensions 2 through <code>dimProj</code>. <a class="el" href="class_lat_m_r_g_1_1_projections.html" title="A projection class that does exactly what we need when generating projections when testing a generato...">Projections</a> in dimension <code>i</code> use <code>i</code> indices in the range <code>[0, projDim[i-1]]</code> with at least one of them at least <code>minDim-1</code>. </p>
 
 </div>
 </div>

@@ -76,7 +76,11 @@ var NAVTREE =
     ] ],
     [ "Compilation and Executables Usage", "usage.html", "usage" ],
     [ "Tutorial and Library Usage", "tutorial.html", [
-      [ "Classes of LatMRG", "tutorial.html#classes_list", null ]
+      [ "Classes of LatMRG", "tutorial.html#classes_list", [
+        [ "Types in LatMRG", "tutorial.html#classes_list_types", null ],
+        [ "MRG Representation", "tutorial.html#classes_list_mrg", null ],
+        [ "Testing and Reducing Lattices", "tutorial.html#classes_list_tests", null ]
+      ] ]
     ] ],
     [ "Todo List", "todo.html", null ],
     [ "Bibliography", "citelist.html", null ],

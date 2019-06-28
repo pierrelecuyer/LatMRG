@@ -1,26 +1,5 @@
 var searchData=
 [
-  ['searchmethod',['SearchMethod',['../namespace_lat_m_r_g.html#a1fd35b5cabbc11ccb440e722240ca3e8',1,'LatMRG']]],
-  ['sec',['SEC',['../class_lat_m_r_g_1_1_chrono.html#aeb39423e55e377aac6b2aa7a2006108aadefcae3075f8ae6b2a5ba3546444fbae',1,'LatMRG::Chrono']]],
-  ['second',['second',['../class_lat_m_r_g_1_1_chrono.html#a968fa7e40a5ad71a121381585ba3f2da',1,'LatMRG::Chrono']]],
-  ['section',['section',['../usage_8dox.html#ac470d3152d9a00aeffa8bb56f9d9eb7c',1,'usage.dox']]],
-  ['seed_3c_2fem_20_3e',['seed&lt;/em &gt;',['../_lat_main_8dox.html#a17059e183b0682414521a88859a9b451',1,'LatMain.dox']]],
-  ['seekmain',['SeekMain',['../_seek_main.html',1,'usage']]],
-  ['seekmain_2edox',['SeekMain.dox',['../_seek_main_8dox.html',1,'']]],
-  ['seta',['setA',['../class_lat_m_r_g_1_1_m_r_g_component.html#a0689f092b93c27cda47fb64ef070132d',1,'LatMRG::MRGComponent']]],
-  ['setf',['setF',['../class_lat_m_r_g_1_1_int_primitivity.html#a3ec66d9832ed9b3d42782c1998de8f06',1,'LatMRG::IntPrimitivity::setF()'],['../class_lat_m_r_g_1_1_poly_p_e.html#a8b8655a4a007accd203ea28481ec2037',1,'LatMRG::PolyPE::setF(const typename ModInt&lt; Int &gt;::IntVecP &amp;C)'],['../class_lat_m_r_g_1_1_poly_p_e.html#a10ab3b1ac479a321f45c24ac81b4dcea',1,'LatMRG::PolyPE::setF(const IntVec &amp;C)']]],
-  ['setfinished',['setFinished',['../class_lat_m_r_g_1_1_figure_of_merit.html#ae8ced005b332715e38ba6bab9927481d',1,'LatMRG::FigureOfMerit']]],
-  ['setlac',['setLac',['../class_lat_m_r_g_1_1_m_m_r_g_lattice.html#ad8cc39e559b2c84ca394df77bc864677',1,'LatMRG::MMRGLattice::setLac()'],['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a211cbe7dfc739b4abc570a72ca887491',1,'LatMRG::MRGLattice::setLac()']]],
-  ['setlossrho',['setLossRho',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#afdc666fdfa766053d27d7604b3fc4c5b',1,'LatMRG::MRGLattice']]],
-  ['setm',['setM',['../class_lat_m_r_g_1_1_poly_p_e.html#a51904d5aa16d54db5444df0e1f9ce283',1,'LatMRG::PolyPE']]],
-  ['setnumber',['setNumber',['../class_lat_m_r_g_1_1_int_factorization.html#af4818dbb2124b9b949ec11179e434314',1,'LatMRG::IntFactorization']]],
-  ['setpe',['setpe',['../class_lat_m_r_g_1_1_int_primitivity.html#a81a4b174eddf88604fb2da7fb19c6e55',1,'LatMRG::IntPrimitivity']]],
-  ['setpower2',['setPower2',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a08728d328f1de684f015fbfb21dbfd42',1,'LatMRG::MRGLattice']]],
-  ['setrho',['setRho',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#aa6d1e518fd4b368396a0f8348567886a',1,'LatMRG::MRGLattice']]],
-  ['setstatus',['setStatus',['../class_lat_m_r_g_1_1_int_factorization.html#a7383630d35fbadd8e202136e933717a0',1,'LatMRG::IntFactorization']]],
-  ['setval',['setVal',['../class_lat_m_r_g_1_1_poly_p_e.html#af9309c2d3641af45521725f6c3de2f75',1,'LatMRG::PolyPE::setVal(long j)'],['../class_lat_m_r_g_1_1_poly_p_e.html#a12072fe378ef32556b893ecefd640012',1,'LatMRG::PolyPE::setVal(const IntVec &amp;C)'],['../class_lat_m_r_g_1_1_poly_p_e.html#a880ba435ef8ea4540737321a6af84f33',1,'LatMRG::PolyPE::setVal(std::string &amp;str)']]],
-  ['slow',['slow',['../_lat_main_8dox.html#abbfbac98ba3ca9c0d3f3e9fec84a4d0c',1,'LatMain.dox']]],
-  ['sort',['sort',['../class_lat_m_r_g_1_1_int_factorization.html#ace0be7662c4e5501c5f1e5e6e7918e93',1,'LatMRG::IntFactorization']]],
-  ['spectral',['spectral',['../_lat_main_8dox.html#a46d02eb197e15851ecfa00ed2bb43071',1,'LatMain.dox']]],
-  ['subvector',['SUBVECTOR',['../namespace_lat_m_r_g.html#ab24055f29985bdc83f514e803c4f7bdaab76e637b32947ec260a58def7b11b6b7',1,'LatMRG']]]
+  ['unique',['unique',['../class_lat_m_r_g_1_1_int_factorization.html#a869b311a80e9a91899bfe5c51eb9843a',1,'LatMRG::IntFactorization']]],
+  ['usage_2edox',['usage.dox',['../usage_8dox.html',1,'']]]
 ];

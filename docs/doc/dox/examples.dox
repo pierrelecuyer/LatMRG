@@ -15,12 +15,35 @@
  *
  * \section classes_list Classes of LatMRG
  *
+ * \subsection classes_list_types Types in LatMRG
+ *
+ * If you browse the LatMRG source code, you will notice that a lot of classes
+ * are template classes. This is because the arithmetic can be done with a
+ * variable level of precision depending on the usage. Template classes feature
+ * readily available template instantiation with relevant types and types
+ * combinations in the library.
+ *
+ * For integers, types we use are fixed width 64 bits integers `std::int64_t`
+ * and the arbitrary precision integers of NTL `NTL::ZZ`. For floating point
+ * numbers, the template parameters types can be `double` or `NTL::RR`.
+ * Standard types `std::int64_t` and `double` perform much faster, but they
+ * have a limited precision. This is specially important for integers: lattices
+ * basis need to be stored exactly for the program to work properly. If you
+ * think you might need to store a number greater than `2^63-1`, it is best to
+ * use arbitrary precision integers.
+ * \remark If you manipulate integers that are bigger than `2^32`, the result of
+ * a multiplication can overflow. Multiplications will occur when building a
+ * lattice basis.
+ *
+ * \subsection classes_list_mrg MRG Representation
+ *
  * The most important feature of LatMRG is its capacity to represent MRG random
  * number generators and their lattices. The library features two different
  * classes in this regard, depending on the use case.
  *
  * `LatMRG::MRGLattice` is the main class to do so. This class allows the
- * the storage of a MRG's parameters and also the reprensentation of a basis for
+ * the storage of a MRG's parameters (a vector of multipliers, a modulo and an
+ * order) and also the reprensentation of a lattice basis for
  * this generator. This class also has an overridable interface to build the
  * basis of the generator lattice for an arbitrary dimension.
  *
@@ -50,7 +73,7 @@
  *     }
  *     return m;
  *   }
- * 
+ *
  * template<typename Int>
  *   NTL::vector<Int> LCGCoeff(const Int& b, const NTL::vector<Int>& e){
  *     Int mult = LCGMod(b,e);
@@ -73,6 +96,36 @@
  *     m_eCoef[i] = e[i];
  * }
  * \endcode
+ *
+ * The other class to store MRG generators is the `LatMRG::MRGComponent` class.
+ * Just like `MRGLattice`, this class stores the components of a MRG generator,
+ * but it cannot store a lattice basis. This is useful when you want to avoid
+ * having to store a heavy object only for generators componenets. This class
+ * also bundles a few utility function that can, for example, check if the
+ * components stored are that of a full period MRG.
+ *
+ * \subsection classes_list_tests Testing and Reducing Lattices
+ *
+ * Most of the reduction functions available in LatMRG come from the Lattice Tester
+ * library. By using this library, it is possible to
+ * - Compute the dual of an arbitrary basis
+ * - Perform BKZ, LLL and pairwise reduction of a lattice
+ * - Find the shortest non-zero vector in a lattice
+ * - Normalize the length of a short lattice vector
+ *
+ * LatMRG mainly implements two things, buiding up on Lattice Tester
+ * - Projections sets, in a way that is relevant to testing a random number generator
+ * - Figures of Merit computations based on the shortest vector length or on the
+ *   spectral test.
+ *
+ * `LatMRG::Projections` is the class representing projections. It can be
+ * considered as a set \f$\mathcal{I}\f$ of sets of indices and can be iterated
+ * over to obtain those sets of indices.
+ *
+ * The `test()` function can be found in `Test.h`. With the appropriate
+ * initialization, this function can compute a wide variety of figures of merit
+ * relevant to MRGs. Since this function is still a work in progress, its
+ * documentation is not yet available.
  *
  * \todo Replace section numbers with appropriate links.
  *
@@ -113,4 +166,4 @@
  * should be appropriate. For most cases, the library <tt>liblatZZDD.a</tt>
  * will be satisfactory.
  *
- */
+ * */

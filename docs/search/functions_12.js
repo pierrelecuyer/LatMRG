@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['unique',['unique',['../class_lat_m_r_g_1_1_int_factorization.html#a869b311a80e9a91899bfe5c51eb9843a',1,'LatMRG::IntFactorization']]]
+  ['val',['val',['../class_lat_m_r_g_1_1_chrono.html#a3ae7c251a7f2e09ead901b93f6f1eaa4',1,'LatMRG::Chrono']]],
+  ['validate',['validate',['../class_lat_m_r_g_1_1_m_w_c_lattice.html#a1d3cbb2f9e27eef1905f82f189d96ce3',1,'LatMRG::MWCLattice']]]
 ];

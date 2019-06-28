@@ -1,11 +1,18 @@
 var searchData=
 [
-  ['e',['e',['../class_lat_m_r_g_1_1_modulus.html#a4992d978a438cdbb21b22f6320bf2efa',1,'LatMRG::Modulus::e()'],['../intro_8dox.html#a7e39a18978a8753595b860e77d3eb0f6',1,'e():&#160;intro.dox']]],
-  ['eight',['Eight',['../class_lat_m_r_g_1_1_modulus.html#a8b5c8246471560f8f325847c5f1ca348',1,'LatMRG::Modulus']]],
-  ['end',['end',['../class_lat_m_r_g_1_1_projections.html#a036c762af724fac1c547d62545dcbd82',1,'LatMRG::Projections']]],
-  ['equal',['equal',['../_lat_main_8dox.html#a98035636b904e5d4a21fcf554769a217',1,'LatMain.dox']]],
-  ['equal_5fcoef',['EQUAL_COEF',['../namespace_lat_m_r_g.html#ad049f9925bbec6f1e1b8097723c01d95aa6f98d6ee60b601dd3f366499899cd67',1,'LatMRG']]],
-  ['example',['example',['../usage_8dox.html#a04d8422019e5e7c3b4c7235a0e349abc',1,'example():&#160;usage.dox'],['../_lat_main_8dox.html#a262ba2602ba2e4ca42a8802ea94fd3c2',1,'example():&#160;LatMain.dox']]],
-  ['examples_2edox',['examples.dox',['../examples_8dox.html',1,'']]],
-  ['exhaust',['EXHAUST',['../namespace_lat_m_r_g.html#a1fd35b5cabbc11ccb440e722240ca3e8af348ef97764bf697a7be024947e10330',1,'LatMRG']]]
+  ['f',['f',['../usage_8dox.html#ab1028d0c1942705bbf68da672518a52e',1,'f():&#160;usage.dox'],['../usage_8dox.html#ab84d4f4f8ad3cea418de33a2bbd1a0f5',1,'f(10\times1\times1\times1\times10)\f$:&#160;usage.dox']]],
+  ['factorize',['factorize',['../class_lat_m_r_g_1_1_int_factorization.html#a87697c2fd8388b6ba7af985fee17f12d',1,'LatMRG::IntFactorization']]],
+  ['figureofmerit',['FigureOfMerit',['../class_lat_m_r_g_1_1_figure_of_merit.html',1,'LatMRG::FigureOfMerit&lt; Lat &gt;'],['../class_lat_m_r_g_1_1_figure_of_merit.html#afcb03bb3f7c500b00329a355326943b1',1,'LatMRG::FigureOfMerit::FigureOfMerit()'],['../class_lat_m_r_g_1_1_figure_of_merit.html#ab824d0e19bad1f8a8c88349a404acc4c',1,'LatMRG::FigureOfMerit::FigureOfMerit(const Lat &amp;lattice, const Projections &amp;proj)']]],
+  ['figureofmerit_2ecc',['FigureOfMerit.cc',['../_figure_of_merit_8cc.html',1,'']]],
+  ['figureofmerit_2eh',['FigureOfMerit.h',['../_figure_of_merit_8h.html',1,'']]],
+  ['file',['file',['../usage_8dox.html#a014eea9fbc856edce76beb6c778a6f40',1,'usage.dox']]],
+  ['find',['find',['../class_lat_m_r_g_1_1_primes.html#a6e79280806db204fb84bc9643ed608de',1,'LatMRG::Primes::find(int e, int s, bool facto, std::ofstream &amp;fout)'],['../class_lat_m_r_g_1_1_primes.html#ab07604e4b0959d0a9ddda88a03803a2b',1,'LatMRG::Primes::find(int k, int e, int s, bool safe, bool facto, std::ofstream &amp;fout)'],['../class_lat_m_r_g_1_1_primes.html#ab0c718491d41c127ca88fb497ed41782',1,'LatMRG::Primes::find(int k, int e, long c1, long c2, bool safe, bool facto, std::ofstream &amp;fout)'],['../class_lat_m_r_g_1_1_primes.html#ac02e65aa3c922e777fa35a1e380705ea',1,'LatMRG::Primes::find(int k, int e, int s, const Int &amp;S1, const Int &amp;S2, bool safe, bool facto, std::ofstream &amp;fout)']]],
+  ['findmk',['FindMK',['../_find_m_k.html',1,'usage']]],
+  ['findmk_2edox',['FindMK.dox',['../_find_m_k_8dox.html',1,'']]],
+  ['finished',['finished',['../class_lat_m_r_g_1_1_figure_of_merit.html#aeaedeb63c35b0bd078cb5a29ff05e844',1,'LatMRG::FigureOfMerit']]],
+  ['fish31_3c_2fcode_20_3e',['fish31&lt;/code &gt;',['../usage_8dox.html#a97888aeb57b65a560a329f6889f2f53a',1,'usage.dox']]],
+  ['float',['Float',['../class_lat_m_r_g_1_1_combo_lattice.html#a72a31e9f984452c0ced8660e15eba7cb',1,'LatMRG::ComboLattice::Float()'],['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a0d13fe0b1e27856cdb1dfb8b522b7938',1,'LatMRG::MRGLattice::Float()']]],
+  ['four',['Four',['../class_lat_m_r_g_1_1_modulus.html#abeb5a1387ef0acfd428b6be6bfbc7f9c',1,'LatMRG::Modulus']]],
+  ['full',['FULL',['../namespace_lat_m_r_g.html#a86edf8445f847038592d741fd49b2b09aadd01ce47ad19c016e7dcaf75dc70810',1,'LatMRG']]],
+  ['fullperiod',['fullPeriod',['../class_lat_m_r_g_1_1_m_w_c_lattice.html#a47353f4be2df2e2943121967cb21661e',1,'LatMRG::MWCLattice']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['dual',['dual',['../intro_8dox.html#aa4b1b8ec0282fbcf4f9bd6b2395aa8ba',1,'intro.dox']]]
+  ['end',['end',['../class_lat_m_r_g_1_1_projections.html#a036c762af724fac1c547d62545dcbd82',1,'LatMRG::Projections']]]
 ];

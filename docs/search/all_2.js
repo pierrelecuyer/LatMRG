@@ -1,17 +1,18 @@
 var searchData=
 [
-  ['a',['a',['../class_lat_m_r_g_1_1_m_r_g_component.html#a253bd7aeddd4cfba1f8f1aa46ec57d3e',1,'LatMRG::MRGComponent::a()'],['../class_lat_m_r_g_1_1_m_r_g_component.html#a58184bae12cc19e4a186a444448b275e',1,'LatMRG::MRGComponent::A()']]],
-  ['a_5f2',['a_2',['../_lat_main_8dox.html#a5e4e6670046487327fec0f57da093ba0',1,'LatMain.dox']]],
-  ['add',['add',['../class_lat_m_r_g_1_1_merit_list.html#a72c739cadf6f21d61b0bdfc7825540cb',1,'LatMRG::MeritList']]],
-  ['addfactor',['addFactor',['../class_lat_m_r_g_1_1_int_factorization.html#afea18edc6935b70d58b5d577261d36e8',1,'LatMRG::IntFactorization']]],
-  ['addmerit',['addMerit',['../class_lat_m_r_g_1_1_figure_of_merit.html#ac223c30ffb16b209b4d0b38f62501748',1,'LatMRG::FigureOfMerit']]],
-  ['alpha_3c_2fem_20_3e',['alpha&lt;/em &gt;',['../_lat_main_8dox.html#a26e94f62f466fdddf69ca53608b8b120',1,'LatMain.dox']]],
-  ['app_5ffact',['APP_FACT',['../namespace_lat_m_r_g.html#ad049f9925bbec6f1e1b8097723c01d95adc39f6458d387d2cfc655b1f02d4f3d7',1,'LatMRG']]],
-  ['applications',['applications',['../intro_8dox.html#ade5c06301603f31beaa945dc44dc6541',1,'intro.dox']]],
-  ['arbitraryindices',['ARBITRARYINDICES',['../namespace_lat_m_r_g.html#ab24055f29985bdc83f514e803c4f7bdaa44a10b67651488cf044f3bdabad7fe15',1,'LatMRG']]],
-  ['are',['are',['../_lat_main_8dox.html#aab7a662b39ca14f9a51323a906322427',1,'LatMain.dox']]],
-  ['are_3c_20tt_20_3e',['are&lt; tt &gt;',['../_lat_main_8dox.html#a7776cfb6fce816d6b382bd54eb0a9c8e',1,'LatMain.dox']]],
-  ['awcswblattice',['AWCSWBLattice',['../class_lat_m_r_g_1_1_a_w_c_s_w_b_lattice.html',1,'LatMRG::AWCSWBLattice&lt; Int, Dbl &gt;'],['../class_lat_m_r_g_1_1_a_w_c_s_w_b_lattice.html#ab2c06aff7b155db1a880a53e924ff42e',1,'LatMRG::AWCSWBLattice::AWCSWBLattice(const Int &amp;b, int r, int s, int mode)'],['../class_lat_m_r_g_1_1_a_w_c_s_w_b_lattice.html#a4da879dede8eb666cf3dae3f994cb117',1,'LatMRG::AWCSWBLattice::AWCSWBLattice(const AWCSWBLattice&lt; Int, Dbl &gt; &amp;Lat)']]],
-  ['awcswblattice_2ecc',['AWCSWBLattice.cc',['../_a_w_c_s_w_b_lattice_8cc.html',1,'']]],
-  ['awcswblattice_2eh',['AWCSWBLattice.h',['../_a_w_c_s_w_b_lattice_8h.html',1,'']]]
+  ['b',['b',['../class_lat_m_r_g_1_1_modulus.html#adafc6998c59f307c80101b3ac581d517',1,'LatMRG::Modulus']]],
+  ['b2',['b2',['../class_lat_m_r_g_1_1_modulus.html#ae59f79e82048c6d62c3357eea32fb53c',1,'LatMRG::Modulus']]],
+  ['b_5f1',['b_1',['../usage_8dox.html#a26306771f5ae54189d39c3c771498af3',1,'usage.dox']]],
+  ['b_5f2',['b_2',['../usage_8dox.html#a1692fb07718877d328234f908962f7d0',1,'usage.dox']]],
+  ['b_5f4',['b_4',['../usage_8dox.html#a0bbbb83f540085d9a195522ca3f988bb',1,'usage.dox']]],
+  ['background_2edox',['background.dox',['../background_8dox.html',1,'']]],
+  ['bm1',['bm1',['../class_lat_m_r_g_1_1_modulus.html#a2992d9fdb3886f51a6783d388f81f0b6',1,'LatMRG::Modulus']]],
+  ['buildbasis',['buildBasis',['../class_lat_m_r_g_1_1_korobov_lattice.html#afa08788babfb57585fc5fe6d25533bc2',1,'LatMRG::KorobovLattice::buildBasis()'],['../class_lat_m_r_g_1_1_m_m_r_g_lattice.html#a0d9b65524cca2d6f84784b1ccb7a0576',1,'LatMRG::MMRGLattice::buildBasis()'],['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a410f0d9fbad7d804069bb6533d1f7b5e',1,'LatMRG::MRGLattice::buildBasis()']]],
+  ['buildlabasis',['buildLaBasis',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a6669b4813623d9a8cfd91e2f7e2a2b4b',1,'LatMRG::MRGLattice']]],
+  ['buildlacunarybasis',['buildLacunaryBasis',['../class_lat_m_r_g_1_1_m_m_r_g_lattice.html#a03c19d01cd1e19ebe24034e70e6628a0',1,'LatMRG::MMRGLattice']]],
+  ['buildmatrix',['buildMatrix',['../class_lat_m_r_g_1_1_mixmax_m_m_r_g.html#a82077ed71fa67ca4c7fa05deec1ce254',1,'LatMRG::MixmaxMMRG']]],
+  ['buildnabasis',['buildNaBasis',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a96b899d21b2d527bc26725cfe616a34d',1,'LatMRG::MRGLattice']]],
+  ['buildnonlacunarybasis',['buildNonLacunaryBasis',['../class_lat_m_r_g_1_1_m_m_r_g_lattice.html#a1719a672eb50d32660a287752302e9c4',1,'LatMRG::MMRGLattice']]],
+  ['buildprojection',['buildProjection',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a3e500b19d356a2d6fc4a9da6a0181f56',1,'LatMRG::MRGLattice']]],
+  ['bibliography',['Bibliography',['../citelist.html',1,'']]]
 ];

@@ -1,8 +1,9 @@
 var searchData=
 [
-  ['a',['a',['../class_lat_m_r_g_1_1_m_r_g_component.html#a253bd7aeddd4cfba1f8f1aa46ec57d3e',1,'LatMRG::MRGComponent::a()'],['../class_lat_m_r_g_1_1_m_r_g_component.html#a58184bae12cc19e4a186a444448b275e',1,'LatMRG::MRGComponent::A()']]],
-  ['a_5f2',['a_2',['../_lat_main_8dox.html#a5e4e6670046487327fec0f57da093ba0',1,'LatMain.dox']]],
-  ['alpha_3c_2fem_20_3e',['alpha&lt;/em &gt;',['../_lat_main_8dox.html#a26e94f62f466fdddf69ca53608b8b120',1,'LatMain.dox']]],
-  ['applications',['applications',['../intro_8dox.html#ade5c06301603f31beaa945dc44dc6541',1,'intro.dox']]],
-  ['are',['are',['../_lat_main_8dox.html#aab7a662b39ca14f9a51323a906322427',1,'LatMain.dox']]]
+  ['b',['b',['../class_lat_m_r_g_1_1_modulus.html#adafc6998c59f307c80101b3ac581d517',1,'LatMRG::Modulus']]],
+  ['b2',['b2',['../class_lat_m_r_g_1_1_modulus.html#ae59f79e82048c6d62c3357eea32fb53c',1,'LatMRG::Modulus']]],
+  ['b_5f1',['b_1',['../usage_8dox.html#a26306771f5ae54189d39c3c771498af3',1,'usage.dox']]],
+  ['b_5f2',['b_2',['../usage_8dox.html#a1692fb07718877d328234f908962f7d0',1,'usage.dox']]],
+  ['b_5f4',['b_4',['../usage_8dox.html#a0bbbb83f540085d9a195522ca3f988bb',1,'usage.dox']]],
+  ['bm1',['bm1',['../class_lat_m_r_g_1_1_modulus.html#a2992d9fdb3886f51a6783d388f81f0b6',1,'LatMRG::Modulus']]]
 ];
