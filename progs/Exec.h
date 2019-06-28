@@ -42,16 +42,20 @@ using LatticeTester::Normalizer;
 const std::string delim = "\n========================================"
 "========================================\n\n";
 #ifdef MRGLATTICE_MAIN_EXEC
-LatMRG::GenType type = LatMRG::MRG;
-LatticeTester::CriterionType criterion = LatticeTester::SPECTRAL;
+LatMRG::GenType gen_type = LatMRG::MRG;
+LatticeTester::CriterionType crit_type = LatticeTester::SPECTRAL;
 bool dual = true;
-LatticeTester::PreReductionType reduction = LatticeTester::FULL;
+LatticeTester::PreReductionType red_type = LatticeTester::FULL;
 LatticeTester::NormaType norma_type = LatticeTester::NONE;
 double time_limit = 3600.0;
 int max_gen = 50;
+int detail = 1;
+bool period = false;
 
 // Values without default
 LatMRG::Projections* proj;
+std::string gen_string;
+
 #endif
 
 

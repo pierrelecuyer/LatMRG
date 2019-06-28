@@ -40,8 +40,10 @@
 #include <iostream>
 #include <fstream>
 
-#define MRGLATTICE_MAIN_EXEC
-#include "Exec.h"
+//#define MRGLATTICE_MAIN_EXEC
+//#include "Exec.h"
+
+#include "TestLattice.h"
 
 //using namespace LatMRG;
 
@@ -56,17 +58,18 @@ std::ostream* out(&std::cout);
 void print_help() {
   *out << "Usage: MRGLattice [OPTIONS] MODE PARAMETERS\n\n";
   *out << "Available options:\n\t" << "-h, --help\n\t\tPrint this"
-   " message.\n\t-o, --output=FILE\n\t\tOutput to FILE\n\n";
+   " message.\n\t-o, --output=FILE\n\t\tOutput to FILE\n\t"
+   "-t, --types=[LD,ZD,ZR]\n\t\tUse corresponding types. (default: ZD)\n\n";
   *out << "Available modes:\n\t" << "lat\n\t\t" << "Study the"
     " lattice of a MRG generator.\n\t" << "seek\n\t\t" << "Search for"
     " new MRG generators.\n\t" << "mk\n\t\t" << "Find compatible "
     "modulus and order for MRG generators.\n\t" << "period\n\t\t" <<
     "Test the period of a MRG generator.\n\n";
   *out << "lat parameters:\n\t" << "    --gentype=[MRG,MWC,COMBO,MMRG]\n\t\t"
-    "Use generator type GenType (default: MRG).\n\t"
+    "Use generator type GenType. (default: MRG)\n\t"
     "    --criterion=[LENGTH,SPECTRAL, BEYER]\n\t\t"
-    "Criterion for the figure of merit (default: SPECTRAL).\n\t"
-    "    --dual=[true,false]\n\t\tCompute on the dual or no (default: true)\n\t"
+    "Criterion for the figure of merit. (default: SPECTRAL)\n\t"
+    "    --dual=[true,false]\n\t\tCompute on the dual or no. (default: true)\n\t"
     "    --reduction\n\t" << "    --normalizer\n\t" << "    --time\n\t"
     "    --projections\n\t" << "-a, --vector\n\t" << "-m, --modulo\n\t"
     "-k, --order\n";
@@ -103,6 +106,13 @@ int parse_option(char* option, int& i, int argc) {
     return 0;
   } else if (!(strcmp(name, "v") && strcmp(name, "verbose"))) {
     std::cerr << "No implementation for verbose option.\n";
+    return 0;
+  } else if (!(strcmp(name, "t") && strcmp(name, "types"))) {
+    if (strlen(argument) == 0) {
+      std::cerr << "Missing argument to option -t, --types\n";
+      return 1;
+    }
+    std::cerr << "No implementation for types option.\n";
     return 0;
   } else {
     std::cerr << "Unknown option\n";
@@ -236,5 +246,11 @@ int main(int argc, char** argv) {
   if (parse_arguments(argc, argv)) {
     print_help();
   }
-  return 0;
+  if (exec_mode == "lat") {
+    return TestLattice();
+  } else if (exec_mode == "seek") {
+  } else if (exec_mode == "mk") {
+  } else if (exec_mode == "period") {
+  }
+  return 1;
 }

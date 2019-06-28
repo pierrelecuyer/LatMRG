@@ -6,7 +6,7 @@
 #include "latticetester/Coordinates.h"
 
 namespace LatMRG {
-  /*
+  /**
    * A projection class that does exactly what we need when generating
    * projections when testing a generator.
    *
