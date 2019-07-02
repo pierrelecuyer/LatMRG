@@ -22,6 +22,7 @@ namespace {
   // MRG specific parameters
   MRGComponent<Int>* mrg;
   int* coeff = NULL;
+  int** comb_coeff;
 
   std::string construction;
 
@@ -212,10 +213,67 @@ namespace {
     // Correcting the matrix to a full matrix
     for (int i = 0; i<conf.order; i++) A *= A;
     for (int i = 0; i<conf.order; i++)
-      for (int j = 0; j<conf.order; j++) 
+      for (int j = 0; j<conf.order; j++)
         A[i][j] = A[i][j]%conf.modulo;
     if (lattice) delete lattice;
     return new MMRGLattice<Int, Dbl>(conf.modulo, A, maxDim, conf.order);
+  }
+
+  ComboLattice<Int, Dbl>* nextGenerator(ComboLattice<Int, Dbl>* lattice) {
+    // Setting up two vectors. MRGComponent and MRGLattice do not use the same
+    // vector format
+    std::vector<MRGComponent<Int>> components;
+    for (int k = 0; k < conf.num_comp; k++) {
+      IntVec A;
+      A.SetLength(conf.comb_order[k]+1);
+      NTL::clear(A);
+      int coefficients[2*conf.comb_order[k]];
+      int sign;
+      int delay = 0;
+      // The program will not run the maxPeriod function if it is not wanted with
+      // this condition
+      do {
+        if (delay >= DELAY) {
+          if (timer.timeOver(conf.timeLimit)) return NULL;
+          else delay = 0;
+        }
+        for (long i = 0; i<conf.comb_order[k]; i++) {
+          if (comb_coeff[k][2*i] < 0) {
+            // This is a placeholder value for a zero coefficient
+            coefficients[2*i] = coefficients[2*i+1] = 2004012;
+            A[i+1] = 0;
+            continue;
+          }
+          coefficients[2*i] = randInt(0, comb_coeff[k][2*i]);
+          sign = randInt(0,1);
+          {
+            Int tmp;
+            NTL::power2(tmp, coefficients[2*i]);
+            A[i+1] = Int(sign?1:-1) * tmp;
+          }
+          coefficients[2*i] ^= sign<<30;
+          if (!(comb_coeff[k][2*i+1] < 0)) {
+            coefficients[2*i+1] = randInt(0, comb_coeff[k][2*i+1]);
+            sign = randInt(0,1);
+            Int tmp;
+            NTL::power2(tmp, coefficients[2*i+1]);
+            A[i+1] += Int(sign?1:-1) * tmp;
+            coefficients[2*i+1] ^= (sign<<30);
+          }
+          else coefficients[2*i+1] = 2004012;
+        }
+        delay++;
+      } while ((A[conf.comb_order[k]] == 0) || (conf.comb_period[k] && !conf.comb_fact[k]->maxPeriod(A)));
+      IntVec B;
+      B.SetLength(conf.comb_order[k]);
+      for (int i = 0; i < conf.comb_order[k]; i++) B[i] = A[i+1];
+      components.push_back(MRGComponent<Int>(conf.comb_modulo[k], B, conf.comb_order[k]));
+    }
+    if (lattice) delete lattice;
+    MRGLattice<Int, Dbl>* mrg_lat = getLatCombo<Int, Dbl>(components, maxDim);
+    ComboLattice<Int, Dbl>* new_lat = new ComboLattice<Int, Dbl>(components, *mrg_lat);
+    delete mrg_lat;
+    return new_lat;
   }
 
   /*
@@ -238,7 +296,7 @@ namespace {
     std::cout << "And " << (conf.period?"full":"any") << " period length\n";
     std::cout << "The test was:\n" << (conf.best?"Best":"Worst") << " generators "
       "ranked by ";
-    if(conf.criterion == LatticeTester::SPECTRAL) std::cout << "minimal " 
+    if(conf.criterion == LatticeTester::SPECTRAL) std::cout << "minimal "
       << (conf.normaType==LatticeTester::NONE?"inverse":"normalized")
         << " shortest non-zero vector length (Spectral test)\n";
     else if (conf.criterion == LatticeTester::LENGTH) std::cout << "minimal"
@@ -263,6 +321,8 @@ namespace {
       } else if (conf.type == MWC) {}
       else if (conf.type == MMRG) {
         std::cout << "Matrix:\n" << (*it).getLattice() << "\n";
+      } else if (conf.type == COMBO) {
+        std::cout << (*it).getLattice() << "\n";
       }
       std::cout << (*it).toStringMerit();
     }
@@ -387,6 +447,43 @@ namespace {
         }
       }
       ln++;
+    } else if (conf.type == COMBO) {
+      reader.readInt(conf.num_comp, ln++, 0);
+      conf.comb_order.resize(conf.num_comp);
+      conf.comb_modulo.resize(conf.num_comp);
+      conf.comb_basis.resize(conf.num_comp);
+      conf.comb_exponent.resize(conf.num_comp);
+      conf.comb_rest.resize(conf.num_comp);
+      conf.comb_period.resize(conf.num_comp);
+      conf.comb_fact.resize(conf.num_comp);
+      comb_coeff = new int*[conf.num_comp];
+      for (int k = 0; k < conf.num_comp; k++) {
+        reader.readNumber3(conf.comb_modulo[k], conf.comb_basis[k], conf.comb_exponent[k], conf.comb_rest[k], ln++, 0);
+        reader.readLong(conf.comb_order[k], ln++, 0);
+        // Reading the construction method
+        // Using power of 2 by default
+        comb_coeff[k] = new int[2 * conf.comb_order[k]];
+        for (unsigned int i = 1; i < 2*conf.comb_order[k]-1; i++)
+          reader.readInt(comb_coeff[k][i-1], ln, i-1);
+        comb_coeff[k][2*conf.comb_order[k]-1] = conf.comb_exponent[k]-1;
+        comb_coeff[k][2*conf.comb_order[k]-2] = conf.comb_exponent[k]-1;
+        ln++;
+        bool period;
+        reader.readBool(period, ln, 0);
+        conf.comb_period[k] = period;
+        // Not making sure that the projections are adhequate in this case
+        if (conf.comb_period[k]) {
+          // No default parameters
+          reader.readDecompType(conf.decompm1, ln, 1);
+          reader.readString(conf.filem1, ln, 2);
+          reader.readDecompType(conf.decompr, ln, 3);
+          reader.readString(conf.filer, ln, 4);
+          conf.comb_fact[k] = new MRGComponent<Int>(conf.comb_modulo[k],
+              conf.comb_order[k], conf.decompm1, conf.filem1.c_str(),
+              conf.decompr, conf.filer.c_str());
+        }
+        ln++;
+      }
     }
     return true;
   }
@@ -404,8 +501,10 @@ int main (int argc, char **argv)
   conf.filem1 = "./tempm1" + std::to_string(rand());
   conf.filer = "./tempr" + std::to_string(rand());
   readConfigFile(argc, argv);
-  // Dynamically allocated objects
-  mrg = new MRGComponent<Int>(conf.modulo, conf.order, conf.decompm1, conf.filem1.c_str(), conf.decompr, conf.filer.c_str());
+  if (conf.type != COMBO) {
+    // Dynamically allocated objects
+    mrg = new MRGComponent<Int>(conf.modulo, conf.order, conf.decompm1, conf.filem1.c_str(), conf.decompr, conf.filer.c_str());
+  }
   conf.proj = new Projections(numProj, minDim, projDim);
   timer.init();
 
@@ -449,6 +548,23 @@ int main (int argc, char **argv)
       old = print_progress(old);
     }
     printResults(bestLattice);
+  } else if (conf.type == COMBO) {
+    ComboLattice<Int, Dbl>* combolat=0;
+    MeritList<ComboLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
+    while (!timer.timeOver(conf.timeLimit)) {
+      combolat = nextGenerator(combolat);
+      if (combolat == NULL) continue;
+      bestLattice.add(test(*combolat, conf));
+      conf.num_gen++;
+      conf.currentMerit = bestLattice.getMerit();
+      old = print_progress(old);
+    }
+    printResults(bestLattice);
+    for (int i = 0; i < conf.num_comp; i++) {
+      if (conf.comb_fact[i]) delete conf.comb_fact[i];
+      delete[] comb_coeff[i];
+    }
+    delete[] comb_coeff;
   }
   delete conf.proj;
   delete mrg;

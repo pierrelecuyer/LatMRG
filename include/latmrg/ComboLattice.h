@@ -73,7 +73,7 @@ namespace LatMRG {
          * Creates a ComboLattice for the set of MRG described in `comp` with a
          * MRG lattice as described in `lat`.
          *
-         * Ideally, `lat` has been initialized as a MRG
+         * Ideally, `lat` has been initialized with `getLatCombo`.
          * */
         ComboLattice(std::vector<MRGComponent<Int>>& comp,
             MRGLattice<Int, Dbl>& lat);

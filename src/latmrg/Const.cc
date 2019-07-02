@@ -145,7 +145,39 @@ namespace LatMRG
     }
   }
 
-
   //===========================================================================
+
+  int toCriterionString(LatticeTester::CriterionType& criter, const std::string& crit_str) {
+    if (crit_str == "LENGTH") {
+      criter = LatticeTester::LENGTH;
+    } else if (crit_str == "SPECTRAL") {
+      criter = LatticeTester::SPECTRAL;
+    } else if (crit_str == "BEYER") {
+      criter = LatticeTester::BEYER;
+    } else if (crit_str == "PALPHA") {
+      criter = LatticeTester::PALPHA;
+    } else if (crit_str == "BOUND_JS") {
+      criter = LatticeTester::BOUND_JS;
+    } else {
+      std::cerr << crit_str << " is not a CriterionType.\n";
+      return 1;
+    }
+    return 0;
+  }
+
+  //============================================================================
+
+  int toRedString(LatticeTester::PreReductionType& red, const std::string& red_str) {
+    if (red_str == "FULL") red = LatticeTester::FULL;
+    else if (red_str == "BKZ") red = LatticeTester::BKZ;
+    else if (red_str == "DIETER") red = LatticeTester::DIETER;
+    else if (red_str == "LLL") red = LatticeTester::LLL;
+    else if (red_str == "NOPRERED") red = LatticeTester::NOPRERED;
+    else {
+      std::cerr << red_str << " is not a PreReductionType\n";
+      return 1;
+    }
+    return 0;
+  }
 
 }

@@ -1,0 +1,16 @@
+COMBO
+SPECTRAL true FULL BESTLAT
+true
+1
+6 40
+50
+120
+2
+2 64 -2133
+5
+60 60 -1 -1 60 60 -1 -1
+true DECOMP file1 DECOMP file2
+2 64 -9089
+5
+-1 -1 60 60 -1 -1 60 60
+true DECOMP file3 DECOMP file4

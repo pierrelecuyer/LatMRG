@@ -194,6 +194,19 @@ namespace LatMRG {
     // MMRG Specific parameters
     IntMat matrix;
 
+    // Combo specific parameters
+#ifdef LATMRG_SEEK
+    int num_comp;
+    std::vector<std::int64_t> comb_order; // k for MRG and MMRG
+    IntVec comb_modulo; // m for MRG and MMRG
+    // modulo is basis^exponent+rest
+    std::vector<std::int64_t> comb_basis;
+    std::vector<std::int64_t> comb_exponent;
+    std::vector<std::int64_t> comb_rest;
+    std::vector<bool> comb_period;
+    std::vector<MRGComponent<Int>*> comb_fact;
+#endif
+
     // Shared components names
     std::int64_t order; // k for MRG and MMRG
     Int modulo; // m for MRG and MMRG
@@ -221,6 +234,8 @@ namespace LatMRG {
       std::vector<IntVec> vectors;
       lattice.buildBasis(proj->minDim());
       for (int i = proj->minDim(); i <= proj->maxDim(); i++){
+#ifdef LATMRG_LAT
+#endif
         // Changing to the dual
         if (conf.use_dual) lattice.dualize();
         // Reducing the lattice
@@ -253,6 +268,8 @@ namespace LatMRG {
       // Testing projections if there are anyo
       // This is done separately because sequential testing is much more efficient
       for (int i = 2; i <= proj->numProj(); i++) {
+#ifdef LATMRG_LAT
+#endif
         proj->resetDim(i);
         lattice.buildBasis(proj->projDim()[i-1]+1);
         while(!proj->end(1)) {

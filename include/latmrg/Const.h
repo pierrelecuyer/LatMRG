@@ -26,6 +26,7 @@
 #define LATMRG__CONST_H
 #include <string>
 
+#include "latticetester/Const.h"
 
 namespace LatMRG {
 
@@ -147,5 +148,17 @@ namespace LatMRG {
    * not specify a valid value. Returns 0 if a change took place.
    * */
   int toGenString(GenType& type, const std::string& type_str);
+
+  /**
+   * `criter = crit_str`. Does not change the value of `criter` if `crit_str` does
+   * not specify a valid value. Returns 0 if a change took place.
+   * */
+  int toCriterionString(LatticeTester::CriterionType& criter, const std::string& crit_str);
+
+  /**
+   * `red = red_str`. Does not change the value of `red` if `red_str` does
+   * not specify a valid value. Returns 0 if a change took place.
+   * */
+  int toRedString(LatticeTester::PreReductionType& red, const std::string& red_str);
 }
 #endif
