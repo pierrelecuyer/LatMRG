@@ -1,3 +1,9 @@
+#include <vector>
+
+#include "latmrg/Chrono.h"
+#define LATMRG_USE_CONFIG
+#define LATMRG_USE_TEST
+#include "latmrg/Test.h"
 /*
  * This file contains definitions for the executable.
  * */
@@ -5,7 +11,7 @@
 namespace {
   Config conf;
   // Program global objects
-  Chrono timer;
+  LatMRG::Chrono timer;
   int numProj, minDim, maxDim;
   int detail;
   int num_comp;

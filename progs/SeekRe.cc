@@ -3,7 +3,7 @@
  * better design. For now this is the file in which I implement MWC gen searches.
  * */
 #define LATMRG_SEEK
-#include "Exec.h"
+#include "ExecCommon.h"
 
 
 // Number of generators to generate before testing time in nextGenerator

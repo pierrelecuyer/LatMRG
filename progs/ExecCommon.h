@@ -1,5 +1,5 @@
-#ifndef LATMRG_EXEC_H
-#define LATMRG_EXEC_H
+#ifndef LATMRG_EXECCOMMON_H
+#define LATMRG_EXECCOMMON_H
 
 /**
  * This file contains functions, classes and code used in SeekRe. This file is

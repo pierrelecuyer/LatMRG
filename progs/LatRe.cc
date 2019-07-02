@@ -6,7 +6,7 @@
  * - Read from generator file
  * - input file format correction
  * */
-#include "Exec.h"
+#include "ExecCommon.h"
 
 using namespace LatMRG;
 using namespace LatticeTester::Random;

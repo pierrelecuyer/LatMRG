@@ -40,10 +40,10 @@
 #include <iostream>
 #include <fstream>
 
-//#define MRGLATTICE_MAIN_EXEC
-//#include "Exec.h"
-
 #include "TestLattice.h"
+
+#define MRGLATTICE_MAIN_EXEC
+#include "ExecCommon.h"
 
 //using namespace LatMRG;
 
@@ -146,48 +146,57 @@ int parse_param(char* option, int& i, int argc) {
         std::cerr << "Missing argument to parameter --gentype\n";
         return 1;
       }
-      return toGenString(type, std::string(argument));
-    } else if (!strcmp(argument, "criterion")) {
+      return toGenString(gen_type, std::string(argument));
+    } else if (!strcmp(name, "criterion")) {
       if (strlen(argument) == 0) {
         std::cerr << "Missing argument to parameter --criterion\n";
         return 1;
       }
-    } else if (!strcmp(argument, "dual")) {
+      return toCriterionString(crit_type, std::string(argument))
+    } else if (!strcmp(name, "dual")) {
       if (strlen(argument) == 0) {
         std::cerr << "Missing argument to parameter --dual\n";
         return 1;
       }
-    } else if (!strcmp(argument, "reduction")) {
+      if (!strcmp(argument, "true")) {
+        dual = true;
+        return 0;
+      } else if (!strcmp(argument, "false")){
+        dual = false;
+        return 0;
+      }
+    } else if (!strcmp(name, "reduction")) {
       if (strlen(argument) == 0) {
         std::cerr << "Missing argument to parameter --reduction\n";
         return 1;
       }
-    } else if (!strcmp(argument, "normalizer")) {
+      return toRedString(red_type, std::string(argument));
+    } else if (!strcmp(name, "normalizer")) {
       if (strlen(argument) == 0) {
         std::cerr << "Missing argument to parameter --normalizer\n";
         return 1;
       }
-    } else if (!strcmp(argument, "time")) {
+    } else if (!strcmp(name, "time")) {
       if (strlen(argument) == 0) {
         std::cerr << "Missing argument to parameter --time\n";
         return 1;
       }
-    } else if (!strcmp(argument, "projections")) {
+    } else if (!strcmp(name, "projections")) {
       if (strlen(argument) == 0) {
         std::cerr << "Missing argument to parameter --projections\n";
         return 1;
       }
-    } else if (!(strcmp(argument, "a") && strcmp(argument, "vector"))) {
+    } else if (!(strcmp(name, "a") && strcmp(name, "vector"))) {
       if (strlen(argument) == 0) {
         std::cerr << "Missing argument to parameter -a --vector\n";
         return 1;
       }
-    } else if (!(strcmp(argument, "m") && strcmp(argument, "modulo"))) {
+    } else if (!(strcmp(name, "m") && strcmp(name, "modulo"))) {
       if (strlen(argument) == 0) {
         std::cerr << "Missing argument to parameter -m --modulo\n";
         return 1;
       }
-    } else if (!(strcmp(argument, "k") && strcmp(argument, "order"))) {
+    } else if (!(strcmp(name, "k") && strcmp(name, "order"))) {
       if (strlen(argument) == 0) {
         std::cerr << "Missing argument to parameter -k --order\n";
         return 1;
@@ -247,7 +256,8 @@ int main(int argc, char** argv) {
     print_help();
   }
   if (exec_mode == "lat") {
-    return TestLattice();
+    return TestLattice(gen_type, crit_type, dual, red_type, norma_type,
+        time_limit, detail, period, *proj, gen_string);
   } else if (exec_mode == "seek") {
   } else if (exec_mode == "mk") {
   } else if (exec_mode == "period") {
