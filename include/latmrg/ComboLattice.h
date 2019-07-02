@@ -79,6 +79,11 @@ namespace LatMRG {
             MRGLattice<Int, Dbl>& lat);
 
         /**
+         * Copy constructor
+         * */
+        ComboLattice(const ComboLattice<Int, Dbl>& lat);
+
+        /**
          * Prints a string describing all the componenets and the equivalent MRG.
          * */
         std::string toString() const override;
@@ -97,6 +102,13 @@ namespace LatMRG {
         MRGLattice<Int, Dbl>& lat) : MRGLattice<Int, Dbl>(lat){
       m_comp = comp;
       m_number = comp.size();
+    }
+
+  template<typename Int, typename Dbl>
+    ComboLattice<Int, Dbl>::ComboLattice(const ComboLattice<Int, Dbl>& lat) :
+      MRGLattice<Int, Dbl>(lat){
+      m_comp = lat.m_comp;
+      m_number = lat.m_number;
     }
 
   template<typename Int, typename Dbl>

@@ -523,6 +523,7 @@ int main (int argc, char **argv)
       conf.currentMerit = bestLattice.getMerit();
       old = print_progress(old);
     }
+    if (mrglat) delete mrglat;
     printResults(bestLattice);
   } else if (conf.type == MWC) {
     MWCLattice<Int, Dbl>* mwclat = 0;
@@ -535,6 +536,7 @@ int main (int argc, char **argv)
       conf.currentMerit = bestLattice.getMerit();
       old = print_progress(old);
     }
+    if (mwclat) delete mwclat;
     printResults(bestLattice);
   } else if (conf.type == MMRG) {
     MMRGLattice<Int, Dbl>* mmrglat = 0;
@@ -547,6 +549,7 @@ int main (int argc, char **argv)
       conf.currentMerit = bestLattice.getMerit();
       old = print_progress(old);
     }
+    if (mmrglat) delete mmrglat;
     printResults(bestLattice);
   } else if (conf.type == COMBO) {
     ComboLattice<Int, Dbl>* combolat=0;
@@ -559,6 +562,7 @@ int main (int argc, char **argv)
       conf.currentMerit = bestLattice.getMerit();
       old = print_progress(old);
     }
+    if (combolat) delete combolat;
     printResults(bestLattice);
     for (int i = 0; i < conf.num_comp; i++) {
       if (conf.comb_fact[i]) delete conf.comb_fact[i];
