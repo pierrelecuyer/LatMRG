@@ -142,6 +142,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aaec88d819c7d0112066eeeefe0462f78"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_combo_lattice.html#aaec88d819c7d0112066eeeefe0462f78">ComboLattice</a> (std::vector&lt; <a class="el" href="class_lat_m_r_g_1_1_m_r_g_component.html">MRGComponent</a>&lt; Int &gt;&gt; &amp;<a class="el" href="class_lat_m_r_g_1_1_m_r_g_lattice.html#a352173e2e8de40e338a6cecbf654da4e">comp</a>, <a class="el" href="class_lat_m_r_g_1_1_m_r_g_lattice.html">MRGLattice</a>&lt; Int, Dbl &gt; &amp;lat)</td></tr>
 <tr class="memdesc:aaec88d819c7d0112066eeeefe0462f78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a <a class="el" href="class_lat_m_r_g_1_1_combo_lattice.html" title="This class represents a combined MRG.">ComboLattice</a> for the set of MRG described in <code>comp</code> with a MRG lattice as described in <code>lat</code>.  <a href="#aaec88d819c7d0112066eeeefe0462f78">More...</a><br /></td></tr>
 <tr class="separator:aaec88d819c7d0112066eeeefe0462f78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7eb901b85c72f49c10a247beb213bff3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_combo_lattice.html#a7eb901b85c72f49c10a247beb213bff3">ComboLattice</a> (const <a class="el" href="class_lat_m_r_g_1_1_combo_lattice.html">ComboLattice</a>&lt; Int, Dbl &gt; &amp;lat)</td></tr>
+<tr class="memdesc:a7eb901b85c72f49c10a247beb213bff3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor.  <a href="#a7eb901b85c72f49c10a247beb213bff3">More...</a><br /></td></tr>
+<tr class="separator:a7eb901b85c72f49c10a247beb213bff3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6801a34aa13e4925d25b67aa723a06d1"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_combo_lattice.html#a6801a34aa13e4925d25b67aa723a06d1">toString</a> () const override</td></tr>
 <tr class="memdesc:a6801a34aa13e4925d25b67aa723a06d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints a string describing all the componenets and the equivalent MRG.  <a href="#a6801a34aa13e4925d25b67aa723a06d1">More...</a><br /></td></tr>
 <tr class="separator:a6801a34aa13e4925d25b67aa723a06d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -361,7 +364,7 @@ template&lt;typename Int , typename Dbl &gt; </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aaec88d819c7d0112066eeeefe0462f78"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaec88d819c7d0112066eeeefe0462f78">&#9670;&nbsp;</a></span>ComboLattice()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aaec88d819c7d0112066eeeefe0462f78">&#9670;&nbsp;</a></span>ComboLattice() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -389,7 +392,29 @@ template&lt;typename Int , typename Dbl &gt; </div>
 </div><div class="memdoc">
 
 <p>Creates a <a class="el" href="class_lat_m_r_g_1_1_combo_lattice.html" title="This class represents a combined MRG.">ComboLattice</a> for the set of MRG described in <code>comp</code> with a MRG lattice as described in <code>lat</code>. </p>
-<p>Ideally, <code>lat</code> has been initialized as a MRG </p>
+<p>Ideally, <code>lat</code> has been initialized with <code>getLatCombo</code>. </p>
+
+</div>
+</div>
+<a id="a7eb901b85c72f49c10a247beb213bff3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7eb901b85c72f49c10a247beb213bff3">&#9670;&nbsp;</a></span>ComboLattice() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Int , typename Dbl &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_lat_m_r_g_1_1_combo_lattice.html">LatMRG::ComboLattice</a>&lt; Int, Dbl &gt;::<a class="el" href="class_lat_m_r_g_1_1_combo_lattice.html">ComboLattice</a> </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_lat_m_r_g_1_1_combo_lattice.html">ComboLattice</a>&lt; Int, Dbl &gt; &amp;&#160;</td>
+          <td class="paramname"><em>lat</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Copy constructor. </p>
 
 </div>
 </div>

@@ -236,11 +236,17 @@ Functions</h2></td></tr>
 <tr class="separator:a209e47ed820ffc3645417f3541e1bbfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac7631f0e814bcb3f0fa36c4955f34744"><td class="memItemLeft" align="right" valign="top">template <a class="el" href="class_lat_m_r_g_1_1_m_r_g_lattice.html">MRGLattice</a>&lt; NTL::ZZ, double &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_lat_m_r_g.html#ac7631f0e814bcb3f0fa36c4955f34744">getLatCombo</a> (std::vector&lt; <a class="el" href="class_lat_m_r_g_1_1_m_r_g_component.html">MRGComponent</a>&lt; NTL::ZZ &gt;&gt; &amp;comp, int maxDim)</td></tr>
 <tr class="separator:ac7631f0e814bcb3f0fa36c4955f34744"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9e420f43435bf66503673afbe11ed29"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_lat_m_r_g.html#ac9e420f43435bf66503673afbe11ed29">toCriterionString</a> (LatticeTester::CriterionType &amp;criter, const std::string &amp;crit_str)</td></tr>
+<tr class="memdesc:ac9e420f43435bf66503673afbe11ed29"><td class="mdescLeft">&#160;</td><td class="mdescRight"><code>criter = crit_str</code>.  <a href="#ac9e420f43435bf66503673afbe11ed29">More...</a><br /></td></tr>
+<tr class="separator:ac9e420f43435bf66503673afbe11ed29"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af2035ae6cf9ca06c7958b94a29313c7a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_lat_m_r_g.html#af2035ae6cf9ca06c7958b94a29313c7a">toGenString</a> (<a class="el" href="namespace_lat_m_r_g.html#ab4948e899f8c3a6fb82cff009283061e">GenType</a> &amp;<a class="el" href="usage_8dox.html#afa0450d4eb77d82a632616bf0ece59a9">type</a>, const string &amp;type_str)</td></tr>
 <tr class="separator:af2035ae6cf9ca06c7958b94a29313c7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a353ee26848721ee28c6b1a5d42fd6527"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_lat_m_r_g.html#a353ee26848721ee28c6b1a5d42fd6527">toGenString</a> (<a class="el" href="namespace_lat_m_r_g.html#ab4948e899f8c3a6fb82cff009283061e">GenType</a> &amp;<a class="el" href="usage_8dox.html#afa0450d4eb77d82a632616bf0ece59a9">type</a>, const std::string &amp;type_str)</td></tr>
 <tr class="memdesc:a353ee26848721ee28c6b1a5d42fd6527"><td class="mdescLeft">&#160;</td><td class="mdescRight"><code>type = type_str</code>.  <a href="#a353ee26848721ee28c6b1a5d42fd6527">More...</a><br /></td></tr>
 <tr class="separator:a353ee26848721ee28c6b1a5d42fd6527"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5fc2e0ff2efabb468b0194fc09c5fd3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_lat_m_r_g.html#af5fc2e0ff2efabb468b0194fc09c5fd3">toRedString</a> (LatticeTester::PreReductionType &amp;red, const std::string &amp;red_str)</td></tr>
+<tr class="memdesc:af5fc2e0ff2efabb468b0194fc09c5fd3"><td class="mdescLeft">&#160;</td><td class="mdescRight"><code>red = red_str</code>.  <a href="#af5fc2e0ff2efabb468b0194fc09c5fd3">More...</a><br /></td></tr>
+<tr class="separator:af5fc2e0ff2efabb468b0194fc09c5fd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a917092d920554daac078d0f53c28eabc"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_lat_m_r_g.html#a917092d920554daac078d0f53c28eabc">toString</a> (<a class="el" href="class_lat_m_r_g_1_1_chrono.html">Chrono</a> &amp;timer)</td></tr>
 <tr class="memdesc:a917092d920554daac078d0f53c28eabc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the value of the duration from <code>timer</code>.  <a href="#a917092d920554daac078d0f53c28eabc">More...</a><br /></td></tr>
 <tr class="separator:a917092d920554daac078d0f53c28eabc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -513,6 +519,37 @@ template&lt;typename Int , typename Dbl &gt; </div>
 
 </div>
 </div>
+<a id="ac9e420f43435bf66503673afbe11ed29"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9e420f43435bf66503673afbe11ed29">&#9670;&nbsp;</a></span>toCriterionString()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int LatMRG::toCriterionString </td>
+          <td>(</td>
+          <td class="paramtype">LatticeTester::CriterionType &amp;&#160;</td>
+          <td class="paramname"><em>criter</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>crit_str</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><code>criter = crit_str</code>. </p>
+<p>Does not change the value of <code>criter</code> if <code>crit_str</code> does not specify a valid value. Returns 0 if a change took place. </p>
+
+</div>
+</div>
 <a id="af2035ae6cf9ca06c7958b94a29313c7a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af2035ae6cf9ca06c7958b94a29313c7a">&#9670;&nbsp;</a></span>toGenString() <span class="overload">[1/2]</span></h2>
 
@@ -569,6 +606,37 @@ template&lt;typename Int , typename Dbl &gt; </div>
 
 <p><code>type = type_str</code>. </p>
 <p>Does not change the value of <code>type</code> if <code>type_str</code> does not specify a valid value. Returns 0 if a change took place. </p>
+
+</div>
+</div>
+<a id="af5fc2e0ff2efabb468b0194fc09c5fd3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af5fc2e0ff2efabb468b0194fc09c5fd3">&#9670;&nbsp;</a></span>toRedString()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int LatMRG::toRedString </td>
+          <td>(</td>
+          <td class="paramtype">LatticeTester::PreReductionType &amp;&#160;</td>
+          <td class="paramname"><em>red</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>red_str</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><code>red = red_str</code>. </p>
+<p>Does not change the value of <code>red</code> if <code>red_str</code> does not specify a valid value. Returns 0 if a change took place. </p>
 
 </div>
 </div>
