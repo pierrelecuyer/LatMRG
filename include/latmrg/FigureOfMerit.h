@@ -172,6 +172,7 @@ namespace LatMRG {
         int j = 0;
         for (int i = 0; i < m_projSet.numProj(); i++){
           m_projSet.resetDim(i+1);
+          if (!(m_projSet.projDim()[i] >= i+1)) continue;
           LatticeTester::Coordinates worst;
           int index = j;
           Dbl merit = Dbl(1);

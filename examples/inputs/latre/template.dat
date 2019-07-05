@@ -4,7 +4,6 @@ Criterion (if SPECTRAL [bool]use_dual ReducType NormaType)
 tuples
 dimensions sequential
 dimensions tuples
-Normalizer
 num_gen
 time_limit
 detail_level (0 = only merit 1 = all proj)
