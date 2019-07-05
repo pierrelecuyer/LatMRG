@@ -6,15 +6,17 @@
  * - Read from generator file
  * - input file format correction
  * */
+#include "latmrg/Chrono.h"
+using namespace LatMRG;
+Chrono timer;
+#define LATMRG_LAT
 #include "ExecCommon.h"
 
-using namespace LatMRG;
 using namespace LatticeTester::Random;
 
 namespace {
   Config conf;
   // Program global objects
-  Chrono timer;
   int numProj, minDim, maxDim;
   int detail;
   int num_comp;

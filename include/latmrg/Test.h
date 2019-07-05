@@ -68,6 +68,7 @@ namespace LatMRG {
       void reduceFull(LatticeTester::IntLattice<Int, Int, Dbl, Dbl>& lat) {
         LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lat);
         red.redBKZ(0.999999, 10, LatticeTester::EXPONENT, lat.getDim());
+        //red.redLLLNTL(0.999999, LatticeTester::EXPONENT, lat.getDim());
         red.shortestVector(lat.getNorm());
       }
 
@@ -90,7 +91,7 @@ namespace LatMRG {
     template<typename Int, typename Dbl>
       void reduceBKZ(LatticeTester::IntLattice<Int, Int, Dbl, Dbl>& lat) {
         LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lat);
-        red.redBKZ(0.999999, 10, LatticeTester::QUADRUPLE, lat.getDim());
+        red.redBKZ(0.999999, 10, LatticeTester::EXPONENT, lat.getDim());
       }
 
     /**
@@ -112,7 +113,7 @@ namespace LatMRG {
     template<typename Int, typename Dbl>
       void reduceLLL(LatticeTester::IntLattice<Int, Int, Dbl, Dbl>& lat) {
         LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lat);
-        red.redLLLNTL(0.999999, LatticeTester::QUADRUPLE, lat.getDim());
+        red.redLLLNTL(0.999999, LatticeTester::EXPONENT, lat.getDim());
       }
 
     /**
@@ -135,7 +136,7 @@ namespace LatMRG {
     template<typename Int, typename Dbl>
       void reduceMink(LatticeTester::IntLattice<Int, Int, Dbl, Dbl>& lat) {
         LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lat);
-        red.redBKZ(0.999999, 10, LatticeTester::QUADRUPLE, lat.getDim());
+        red.redBKZ(0.999999, 10, LatticeTester::EXPONENT, lat.getDim());
         red.reductMinkowski(lat.getDim());
       }
 
@@ -235,6 +236,16 @@ namespace LatMRG {
       lattice.buildBasis(proj->minDim());
       for (int i = proj->minDim(); i <= proj->maxDim(); i++){
 #ifdef LATMRG_LAT
+        if (timer.timeOver(conf.timeLimit)) {
+          std::cout << "On projection " << i << std::endl;
+          FigureOfMerit<Lat> figure(lattice, *proj);
+          figure.addMerit(results, vectors);
+          figure.setFinished();
+          figure.computeMerit("min");
+
+          delete norma;
+          return figure;
+        }
 #endif
         // Changing to the dual
         if (conf.use_dual) lattice.dualize();
@@ -268,14 +279,24 @@ namespace LatMRG {
       // Testing projections if there are anyo
       // This is done separately because sequential testing is much more efficient
       for (int i = 2; i <= proj->numProj(); i++) {
-#ifdef LATMRG_LAT
-#endif
         proj->resetDim(i);
         lattice.buildBasis(proj->projDim()[i-1]+1);
         while(!proj->end(1)) {
           // Building the projection
           LatticeTester::IntLattice<Int, Int, Dbl, Dbl> proj_lat(lattice.getModulo(), lattice.getOrder(), i, true);
           LatticeTester::Coordinates iter(proj->next());
+#ifdef LATMRG_LAT
+          if (timer.timeOver(conf.timeLimit)) {
+            std::cout << "On projection " << iter << std::endl;
+            FigureOfMerit<Lat> figure(lattice, *proj);
+            figure.addMerit(results, vectors);
+            figure.setFinished();
+            figure.computeMerit("min");
+
+            delete norma;
+            return figure;
+          }
+#endif
           lattice.buildProjection(&proj_lat, iter);
           norma->setLogDensity(Dbl(-i*log(lattice.getModulo())
                 +log(abs(NTL::determinant(proj_lat.getBasis())))));
