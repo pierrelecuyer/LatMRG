@@ -43,17 +43,7 @@ namespace LatMRG {
          * set equal to <tt>Lat</tt>’s current dimension.
          */
         LCGCarryLattice<Int, Dbl> & operator= (const LCGCarryLattice<Int, Dbl> & Lat);
-
-        /**
-         * Destructor.
-         */
-        ~LCGCarryLattice();
-
-        /**
-         * Cleans and releases memory used by this object.
-         */
-        void kill();
-
+                
         /**
          * Gets the parameters of the lattice `(a, c, m)` in a formated string.
          */
@@ -67,7 +57,7 @@ namespace LatMRG {
         /**
          * Increases the dimension of the lattice by one.
          * */
-        void incDim() override;
+        void incDimBasis() override;
 
         /**
          *
@@ -99,6 +89,79 @@ namespace LatMRG {
     }; // End class declaration
 
   //===========================================================================
+
+  template<typename Int, typename Dbl>
+    LCGCarryLattice<Int, Dbl>::LCGCarryLattice (const Int & a, const Int & c, const Int & m, int maxDim):
+      MRGLattice(m, a, maxDim, FULL) {
+        m_carry = c;
+      }
+
+  //===========================================================================
+
+  template<typename Int, typename Dbl>
+    LCGCarryLattice<Int, Dbl>::LCGCarryLattice (const LCGCarryLattice<Int, Dbl> & Lat):
+      MRGLattice(Lat) {
+        m_carry = Lat.m_carry;
+      }
+
+  //===========================================================================
+
+  template<typename Int, typename Dbl>
+    LCGCarryLattice<Int, Dbl> & LCGCarryLattice<Int, Dbl>::operator= (
+        const LCGCarryLattice<Int, Dbl> & Lat) {
+      MRGLattice<Int, Dbl>::operator=(Lat);
+      m_carry = Lat.m_carry;
+    }
+
+  //===========================================================================
+
+  template<typename Int, typename Dbl>
+    std::string LCGCarryLattice<Int, Dbl>::toString() const {
+      std::ostringstream out;
+      out << "a = " << m_aCoef[0] << "\n";
+      out << "c = " << m_carry << "\n";
+      return out.str ();
+    }
+
+  //===========================================================================
+
+  template<typename Int, typename Dbl>
+    void LCGCarryLattice<Int, Dbl>::buildBasis(int d) {
+      this->m_basis.SetDims(1,1);
+      this->m_dualbasis.SetDims(1,1);
+      this->setDim(1);
+
+      this->m_basis[0][0] = Int(1);
+      this->m_dualbasis[0][0] = this->m_modulo;
+
+      for (int i = 0; i<d-1; i++)
+        incDimBasis();
+
+  //===========================================================================
+
+  template<typename Int, typename Dbl>
+    void LCGCarryLattice<Int, Dbl>::incDimBasis() {
+
+      LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::incDim();
+      const int dim = this->getDim();
+
+      IntMat temp1(this->m_basis);
+      IntMat temp2(this->m_dualbasis);
+
+      for (int i = 0; i < dim; i++) {
+        this->m_basis[i][dim-1] = 0;
+        this->m_basis[dim-1][i] = 0;
+        this->m_dualbasis[i][dim-1] = 0;
+        this->m_dualbasis[dim-1][i] = 0;
+      }
+      this->m_basis[0][dim-1] = (m_aCoef[0]*this->m_basis[0][dim-2] + m_carry) % this->m_modulo;
+      this->m_dualbasis[dim-1][0] = -this->m_basis[0][dim-1];
+      this->m_basis[dim-1][dim-1] = this->m_modulo;
+      this->m_dualbasis[dim-1][dim-1] = 1;
+
+      this->setNegativeNorm();
+      this->setDualNegativeNorm();
+    }
 
   //============================================================================
   //The types combinations supported in the library

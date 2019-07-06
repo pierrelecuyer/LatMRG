@@ -465,8 +465,8 @@ namespace {
         comb_coeff[k] = new int[2 * conf.comb_order[k]];
         for (unsigned int i = 1; i < 2*conf.comb_order[k]-1; i++)
           reader.readInt(comb_coeff[k][i-1], ln, i-1);
-        comb_coeff[k][2*conf.comb_order[k]-1] = conf.comb_exponent[k]-1;
-        comb_coeff[k][2*conf.comb_order[k]-2] = conf.comb_exponent[k]-1;
+        comb_coeff[k][2*conf.comb_order[k]-1] = conf.comb_exponent[k]-int(LatticeTester::Lg(conf.comb_rest[k]))-1;
+        comb_coeff[k][2*conf.comb_order[k]-2] = conf.comb_exponent[k]-int(LatticeTester::Lg(conf.comb_rest[k]))-1;
         ln++;
         bool period;
         reader.readBool(period, ln, 0);
