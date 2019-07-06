@@ -244,7 +244,7 @@ namespace {
             A[i+1] = 0;
             continue;
           }
-          coefficients[2*i] = randInt(int(LatticeTester::Lg(conf.comb_rest[k]))+1, comb_coeff[k][2*i]);
+          coefficients[2*i] = randInt(int(LatticeTester::Lg(abs(conf.comb_rest[k])))+1, comb_coeff[k][2*i]);
           sign = randInt(0,1);
           {
             Int tmp;
@@ -253,7 +253,7 @@ namespace {
           }
           coefficients[2*i] ^= sign<<30;
           if (!(comb_coeff[k][2*i+1] < 0)) {
-            coefficients[2*i+1] = randInt(int(LatticeTester::Lg(conf.comb_rest[k]))+1, comb_coeff[k][2*i+1]);
+            coefficients[2*i+1] = randInt(int(LatticeTester::Lg(abs(conf.comb_rest[k])))+1, comb_coeff[k][2*i+1]);
             sign = randInt(0,1);
             Int tmp;
             NTL::power2(tmp, coefficients[2*i+1]);
