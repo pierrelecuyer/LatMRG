@@ -143,7 +143,7 @@ namespace {
           A[i+1] = 0;
           continue;
         }
-        coefficients[2*i] = randInt(0, coeff[2*i]);
+        coefficients[2*i] = randInt(int(LatticeTester::Lg(conf.rest))+1, coeff[2*i]);
         sign = randInt(0,1);
         {
           Int tmp;
@@ -152,7 +152,7 @@ namespace {
         }
         coefficients[2*i] ^= sign<<30;
         if (!(coeff[2*i+1] < 0)) {
-          coefficients[2*i+1] = randInt(0, coeff[2*i+1]);
+          coefficients[2*i+1] = randInt(int(LatticeTester::Lg(conf.rest))+1, coeff[2*i+1]);
           sign = randInt(0,1);
           Int tmp;
           NTL::power2(tmp, coefficients[2*i+1]);
@@ -244,7 +244,7 @@ namespace {
             A[i+1] = 0;
             continue;
           }
-          coefficients[2*i] = randInt(0, comb_coeff[k][2*i]);
+          coefficients[2*i] = randInt(int(LatticeTester::Lg(conf.comb_rest[k]))+1, comb_coeff[k][2*i]);
           sign = randInt(0,1);
           {
             Int tmp;
@@ -253,7 +253,7 @@ namespace {
           }
           coefficients[2*i] ^= sign<<30;
           if (!(comb_coeff[k][2*i+1] < 0)) {
-            coefficients[2*i+1] = randInt(0, comb_coeff[k][2*i+1]);
+            coefficients[2*i+1] = randInt(int(LatticeTester::Lg(conf.comb_rest[k]))+1, comb_coeff[k][2*i+1]);
             sign = randInt(0,1);
             Int tmp;
             NTL::power2(tmp, coefficients[2*i+1]);
@@ -396,8 +396,8 @@ namespace {
         coeff = new int[2 * conf.order];
         for (unsigned int i = 1; i < 2*conf.order-1; i++)
           reader.readInt(coeff[i-1], ln, i);
-        coeff[2*conf.order-1] = conf.exponent-1;
-        coeff[2*conf.order-2] = conf.exponent-1;
+        coeff[2*conf.order-1] = conf.exponent-int(LatticeTester::Lg(conf.rest))-1;
+        coeff[2*conf.order-2] = conf.exponent-int(LatticeTester::Lg(conf.rest))-1;
         ln++;
       }
       reader.readBool(conf.period, ln, 0);
