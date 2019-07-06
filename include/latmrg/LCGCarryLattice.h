@@ -1,7 +1,7 @@
 #ifndef LATMRG_LCGCARRYLATTICE_H
 #define LATMRG_LCGCARRYLATTICE_H
 
-#include "latrmg/MRGLattice.h"
+#include "latmrg/MRGLattice.h"
 #include "latmrg/IntFactorization.h"
 
 namespace LatMRG {
@@ -36,7 +36,7 @@ namespace LatMRG {
         /**
          * Copy constructor.
          * */
-        LCGCarryLattice (const MWCLattice<Int, Dbl> & Lat);
+        LCGCarryLattice (const LCGCarryLattice<Int, Dbl> & Lat);
 
         /**
          * Assigns `Lat` to this object. The maximal dimension of this basis is
@@ -83,10 +83,10 @@ namespace LatMRG {
           if (NTL::GCD(c, m) > 1) return false;
           IntFactorization<Int> m_factor(m);
           auto fact_list = m_factor.getFactorList();
-          for (auto iter = fact_list.begin(); i != fact_list.end(); i++) {
-            if ((a - Int(1)) % (*iter).getFactor()) return false;
+          for (auto iter = fact_list.begin(); iter != fact_list.end(); iter++) {
+            if (((a - Int(1)) % (*iter).getFactor()) != Int(0)) return false;
           }
-          if (m % Int(4)) return !((a-Int(1))%Int(4)));
+          if ((m % Int(4)) != Int(0)) return (((a-Int(1))%Int(4)) == 0);
           return true;
         }
 
