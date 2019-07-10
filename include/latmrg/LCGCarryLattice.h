@@ -31,7 +31,7 @@ namespace LatMRG {
          *   x_n = a x_{n-1} +c \pmod m.
          * \f]
          * */
-        LCGCarryLattice (const Int & a, const Int & c, const Int & m);
+        LCGCarryLattice (const Int & a, const Int & c, const Int & m, int maxDim);
 
         /**
          * Copy constructor.
@@ -92,7 +92,7 @@ namespace LatMRG {
 
   template<typename Int, typename Dbl>
     LCGCarryLattice<Int, Dbl>::LCGCarryLattice (const Int & a, const Int & c, const Int & m, int maxDim):
-      MRGLattice(m, a, maxDim, FULL) {
+      MRGLattice<Int, Dbl>(m, a, maxDim, FULL) {
         m_carry = c;
       }
 
@@ -100,7 +100,7 @@ namespace LatMRG {
 
   template<typename Int, typename Dbl>
     LCGCarryLattice<Int, Dbl>::LCGCarryLattice (const LCGCarryLattice<Int, Dbl> & Lat):
-      MRGLattice(Lat) {
+      MRGLattice<Int, Dbl>(Lat) {
         m_carry = Lat.m_carry;
       }
 
@@ -111,6 +111,7 @@ namespace LatMRG {
         const LCGCarryLattice<Int, Dbl> & Lat) {
       MRGLattice<Int, Dbl>::operator=(Lat);
       m_carry = Lat.m_carry;
+      return *this;
     }
 
   //===========================================================================
@@ -118,7 +119,7 @@ namespace LatMRG {
   template<typename Int, typename Dbl>
     std::string LCGCarryLattice<Int, Dbl>::toString() const {
       std::ostringstream out;
-      out << "a = " << m_aCoef[0] << "\n";
+      out << "a = " << this->m_aCoef[0] << "\n";
       out << "c = " << m_carry << "\n";
       return out.str ();
     }
@@ -136,6 +137,7 @@ namespace LatMRG {
 
       for (int i = 0; i<d-1; i++)
         incDimBasis();
+    }
 
   //===========================================================================
 
@@ -154,7 +156,7 @@ namespace LatMRG {
         this->m_dualbasis[i][dim-1] = 0;
         this->m_dualbasis[dim-1][i] = 0;
       }
-      this->m_basis[0][dim-1] = (m_aCoef[0]*this->m_basis[0][dim-2] + m_carry) % this->m_modulo;
+      this->m_basis[0][dim-1] = (this->m_aCoef[0]*this->m_basis[0][dim-2] + m_carry) % this->m_modulo;
       this->m_dualbasis[dim-1][0] = -this->m_basis[0][dim-1];
       this->m_basis[dim-1][dim-1] = this->m_modulo;
       this->m_dualbasis[dim-1][dim-1] = 1;
