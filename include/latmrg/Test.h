@@ -50,7 +50,7 @@ namespace LatMRG {
      * */
     template<typename Lat>
       typename Lat::Float meritB(Lat& lat) {
-        return 0;
+        return typename Lat::Float(0.0);
       }
   }
 
@@ -67,8 +67,10 @@ namespace LatMRG {
     template<typename Int, typename Dbl>
       void reduceFull(LatticeTester::IntLattice<Int, Int, Dbl, Dbl>& lat) {
         LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lat);
-        red.redBKZ(0.999999, 10, LatticeTester::EXPONENT, lat.getDim());
-        //red.redLLLNTL(0.999999, LatticeTester::EXPONENT, lat.getDim());
+        LatticeTester::Reducer<Int, Int, Dbl, Dbl>::maxNodesBB = 100000000000;
+        //red.redDieter(0);
+        //red.redBKZ(0.999999, 10, LatticeTester::EXPONENT, lat.getDim());
+        red.redLLLNTL(0.999999, LatticeTester::EXPONENT, lat.getDim());
         red.shortestVector(lat.getNorm());
       }
 
@@ -236,6 +238,7 @@ namespace LatMRG {
       lattice.buildBasis(proj->minDim());
       for (int i = proj->minDim(); i <= proj->maxDim(); i++){
 #ifdef LATMRG_LAT
+        if (!((i-1)%5)) std::cout << "i " << i-1 << " time " << timer.val(LatMRG::Chrono::SEC) << "\n";
         if (timer.timeOver(conf.timeLimit)) {
           std::cout << "On projection " << i << std::endl;
           FigureOfMerit<Lat> figure(lattice, *proj);
@@ -275,6 +278,9 @@ namespace LatMRG {
         if (conf.use_dual) lattice.dualize();
         if (proj->minDim() < proj->maxDim()) lattice.incDim();
       }
+#ifdef LATMRG_LAT
+        std::cout << "Seq time " << timer.val(LatMRG::Chrono::SEC) << "\n";
+#endif
 
       // Testing projections if there are anyo
       // This is done separately because sequential testing is much more efficient
@@ -325,6 +331,9 @@ namespace LatMRG {
           }
 #endif
         }
+#ifdef LATMRG_LAT
+        std::cout << "dim " << i << " time " << timer.val(LatMRG::Chrono::SEC) << "\n";
+#endif
       }
 
       FigureOfMerit<Lat> figure(lattice, *proj);

@@ -45,6 +45,8 @@ namespace LatMRG
         return "RANK1";
       case COMBO:
         return "COMBO";
+      case CARRYLCG:
+        return "CARRYLCG";
       default:
         return "***** GenType: IMPOSSIBLE CASE ";
     }
@@ -67,6 +69,8 @@ namespace LatMRG
       type = MMRG;
     } else if (type_str == "COMBO") {
       type = COMBO;
+    } else if (type_str == "CARRYLCG") {
+      type = CARRYLCG;
     } else {
       std::cerr << type_str << " is not a GenType.\n";
       return 1;

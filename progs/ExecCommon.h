@@ -24,6 +24,7 @@
 #include "latmrg/FigureOfMerit.h"
 #include "latmrg/Const.h"
 #include "latmrg/Projections.h"
+#include "latmrg/LCGCarryLattice.h"
 
 typedef NTL::ZZ Int;
 typedef double Dbl;
