@@ -62,8 +62,6 @@ namespace {
         else if (conf.type == MMRG) {}
         else if (conf.type == COMBO) {
           std::cout << (*it).getLattice();
-        } else if (conf.type == CARRYLCG) {
-          std::cout << (*it).getLattice();
         }
         if (detail == 0) {
           std::cout << (*it).toStringMerit();
@@ -183,31 +181,6 @@ namespace {
         ln++;
         combo.push_back(MRGComponent<Int>(modulo, mult, order));
       }
-    } else if (conf.type == CARRYLCG) {
-      reader.readNumber3(conf.modulo, conf.basis, conf.exponent, conf.rest, ln++, 0);
-      conf.mult.SetLength(1);
-      reader.readMVect(conf.mult, ln, 0, 1, 0);
-      ln++;
-      reader.readMScal(carry, ln++, 0);
-      reader.readBool(conf.period, ln, 0);
-      // Making sure that minDim is big enough to provide usefull tests (if
-      // full period is required) this changes other dimensions accordingly
-      minDim = (!conf.period||minDim>conf.order) ? minDim : (conf.order+1);
-      maxDim = maxDim>minDim ? maxDim : minDim;
-      for (unsigned int i = 0; i < projDim.size(); i++) {
-        if (projDim[i]>0) projDim[i] = (projDim[i]<(minDim-1))?(minDim-1):projDim[i];
-      }
-      if (conf.period) {
-        // Using default parameters
-        bool def;
-        reader.readBool(def, ln, 1);
-        if (!def) {
-          reader.readDecompType(conf.decompm1, ln, 2);
-          reader.readString(conf.filem1, ln, 3);
-          reader.readDecompType(conf.decompr, ln, 4);
-          reader.readString(conf.filer, ln, 5);
-        }
-      }
     }
     return true;
   }
@@ -255,11 +228,6 @@ int main (int argc, char **argv) {
     MRGLattice<Int, Dbl>* mrg = getLatCombo<Int, Dbl>(combo, maxDim);
     ComboLattice<Int, Dbl> combolat(combo, *mrg);
     bestLattice.add(test(combolat, conf));
-    printResults(bestLattice);
-  } else if (conf.type == CARRYLCG) {
-    MeritList<LCGCarryLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
-    LCGCarryLattice<Int, Dbl> lcglat(conf.mult[0], carry, conf.modulo, maxDim);
-    bestLattice.add(test(lcglat, conf));
     printResults(bestLattice);
   }
   delete conf.proj;
