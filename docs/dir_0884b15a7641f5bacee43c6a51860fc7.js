@@ -8,6 +8,7 @@ var dir_0884b15a7641f5bacee43c6a51860fc7 =
     [ "IntFactorization.cc", "_int_factorization_8cc.html", null ],
     [ "IntPrimitivity.cc", "_int_primitivity_8cc.html", null ],
     [ "KorobovLattice.cc", "_korobov_lattice_8cc.html", null ],
+    [ "LCGCarryLattice.cc", "_l_c_g_carry_lattice_8cc.html", null ],
     [ "MixmaxMMRG.cc", "_mixmax_m_m_r_g_8cc.html", null ],
     [ "MMRGLattice.cc", "_m_m_r_g_lattice_8cc.html", null ],
     [ "Modulus.cc", "_modulus_8cc.html", null ],

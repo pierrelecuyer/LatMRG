@@ -8,6 +8,7 @@ var searchData=
   ['m_5fbest',['m_best',['../class_lat_m_r_g_1_1_merit_list.html#a69e1be67eb1afeafe2c3519e4b72bd21',1,'LatMRG::MeritList']]],
   ['m_5fbest_5fworst',['m_best_worst',['../class_lat_m_r_g_1_1_figure_of_merit.html#a8eec1b955c0eca825c26ec9dbb2f57b3',1,'LatMRG::FigureOfMerit']]],
   ['m_5fbmodulo',['m_bModulo',['../class_lat_m_r_g_1_1_a_w_c_s_w_b_lattice.html#a3fd7dd6198ba38853c3dd8c73f16a476',1,'LatMRG::AWCSWBLattice']]],
+  ['m_5fcarry',['m_carry',['../class_lat_m_r_g_1_1_l_c_g_carry_lattice.html#a640d9e71bccd719bf9eb2a33dedeceb2',1,'LatMRG::LCGCarryLattice']]],
   ['m_5fcomp',['m_comp',['../class_lat_m_r_g_1_1_combo_lattice.html#a2b29753d1bfd5977784d129fa3124de3',1,'LatMRG::ComboLattice']]],
   ['m_5fcurproj',['m_curProj',['../class_lat_m_r_g_1_1_projections.html#a4da9d0ba1210a0ca7ecb961870d7f814',1,'LatMRG::Projections']]],
   ['m_5fcurrentdim',['m_currentDim',['../class_lat_m_r_g_1_1_projections.html#a0d85fea69c46993285ea49544cbc6566',1,'LatMRG::Projections']]],

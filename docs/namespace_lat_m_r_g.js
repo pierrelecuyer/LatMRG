@@ -7,6 +7,7 @@ var namespace_lat_m_r_g =
     [ "IntFactorization", "class_lat_m_r_g_1_1_int_factorization.html", "class_lat_m_r_g_1_1_int_factorization" ],
     [ "IntPrimitivity", "class_lat_m_r_g_1_1_int_primitivity.html", "class_lat_m_r_g_1_1_int_primitivity" ],
     [ "KorobovLattice", "class_lat_m_r_g_1_1_korobov_lattice.html", "class_lat_m_r_g_1_1_korobov_lattice" ],
+    [ "LCGCarryLattice", "class_lat_m_r_g_1_1_l_c_g_carry_lattice.html", "class_lat_m_r_g_1_1_l_c_g_carry_lattice" ],
     [ "MeritList", "class_lat_m_r_g_1_1_merit_list.html", "class_lat_m_r_g_1_1_merit_list" ],
     [ "MixmaxMMRG", "class_lat_m_r_g_1_1_mixmax_m_m_r_g.html", "class_lat_m_r_g_1_1_mixmax_m_m_r_g" ],
     [ "MMRGLattice", "class_lat_m_r_g_1_1_m_m_r_g_lattice.html", "class_lat_m_r_g_1_1_m_m_r_g_lattice" ],

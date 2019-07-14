@@ -20,6 +20,9 @@ var dir_8be9fa745236e63deff07f5f1b560ea6 =
     [ "KorobovLattice.h", "_korobov_lattice_8h.html", [
       [ "KorobovLattice", "class_lat_m_r_g_1_1_korobov_lattice.html", "class_lat_m_r_g_1_1_korobov_lattice" ]
     ] ],
+    [ "LCGCarryLattice.h", "_l_c_g_carry_lattice_8h.html", [
+      [ "LCGCarryLattice", "class_lat_m_r_g_1_1_l_c_g_carry_lattice.html", "class_lat_m_r_g_1_1_l_c_g_carry_lattice" ]
+    ] ],
     [ "MixmaxMMRG.h", "_mixmax_m_m_r_g_8h.html", [
       [ "MixmaxMMRG", "class_lat_m_r_g_1_1_mixmax_m_m_r_g.html", "class_lat_m_r_g_1_1_mixmax_m_m_r_g" ]
     ] ],
