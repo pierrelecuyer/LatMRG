@@ -1,0 +1,22 @@
+<generator>
+  <type>MRG</type>
+  <modulo>
+    <base>2</base>
+    <exponent>61</exponent>
+    <rest>-1</rest>
+  </modulo>
+  <order>3</order>
+  <coefficients>8796093054976 282574488338432 4503599593816064</coefficients>
+</generator>
+<test>
+SPECTRAL true FULL BESTLAT
+  <dimensions>
+5
+1 40
+100 50 20 10
+  </dimensions>
+</test>
+<num_gen x="1"/>
+<max_nodes x="1000000000"/>
+<verbosity x="1"/>
+true true

@@ -40,6 +40,8 @@
 #include <iostream>
 #include <fstream>
 
+#include "tinyxml2.h"
+
 #include "TestLattice.h"
 
 #define MRGLATTICE_MAIN_EXEC

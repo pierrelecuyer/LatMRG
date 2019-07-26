@@ -1,0 +1,61 @@
+<mk>
+  <bounds>
+    <power x=""/>
+    <exponent x=""/>
+    <lower x=""/>
+    <upper x="0"/>
+  </bounds>
+  <k x=""/>
+  <safe x=""/>
+  <factor x=""/>
+</mk>
+
+<period>
+  <gen></gen>
+  <factorization>
+    <m-1 method="" file=""/>
+    <r method="" file=""/>
+  </factorization>
+</period>
+
+<seek>
+  <gen></gen>
+  <test></test>
+  <detail x=""/>
+  <time x=""/>
+  <num_gen x=""/>
+  <!--The following is not yet implemented-->
+  <function_params max_nodes_BB="" LLL_prec=""/>
+</seek>
+
+<lattest>
+  <gen></gen>
+  <test></test>
+  <detail x=""/>
+  <time x=""/>
+  <!--The following is not yet implemented-->
+  <function_params max_nodes_BB="" LLL_prec=""/>
+</lattest>
+
+<!--The following describes longer tags gen and test-->
+<mrg>
+  <type/>
+  <modulo/>
+  <order/>
+  <a/>
+</mrg>
+
+<mwc>
+</mwc>
+
+<mmrg>
+</mmrg>
+
+<spectral>
+</spectral>
+
+<beyer>
+</beyer>
+
+<shortest>
+</shortest>

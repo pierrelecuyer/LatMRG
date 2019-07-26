@@ -43,20 +43,40 @@ using LatticeTester::Normalizer;
 const std::string delim = "\n========================================"
 "========================================\n\n";
 #ifdef MRGLATTICE_MAIN_EXEC
+// These are all the variables the main program might read from configuration files.
+// We initialize them all to a default value except a few
 LatMRG::GenType gen_type = LatMRG::MRG;
 LatticeTester::CriterionType crit_type = LatticeTester::SPECTRAL;
 bool dual = true;
 LatticeTester::PreReductionType red_type = LatticeTester::FULL;
 LatticeTester::NormaType norma_type = LatticeTester::NONE;
 double time_limit = 3600.0;
-int max_gen = 50;
+int max_gen = 10;
 int detail = 1;
 bool period = false;
 
 // Values without default
 LatMRG::Projections* proj;
-std::string gen_string;
+bool proj_set = false;
+// insert all possible generator variables.
+bool gen_set = false;
 
+// This function resets all the above variables to their default value.
+void reset_defaults() {
+  gen_type = LatMRG::MRG;
+  crit_type = LatticeTester::SPECTRAL;
+  dual = true;
+  red_type = LatticeTester::FULL;
+  norma_type = LatticeTester::NONE;
+  time_limit = 3600.0;
+  max_gen = 50;
+  detail = 1;
+  period = false;
+
+  // Values without default
+  proj_set = false;
+  gen_set = false;
+}
 #endif
 
 
