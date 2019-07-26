@@ -271,6 +271,7 @@ namespace LatMRG {
 #ifdef LATMRG_SEEK
         // Rejecting lattices that won't make it
         if (tmp < conf.currentMerit) {
+          delete norma;
           return FigureOfMerit<Lat>(lattice, *conf.proj);
         }
 #endif
@@ -327,6 +328,7 @@ namespace LatMRG {
 #ifdef LATMRG_SEEK
           // Rejecting lattices that won't make it
           if (tmp < conf.currentMerit) {
+            delete norma;
             return FigureOfMerit<Lat>(lattice, *proj);
           }
 #endif
