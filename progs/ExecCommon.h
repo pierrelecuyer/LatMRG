@@ -59,6 +59,13 @@ bool period = false;
 LatMRG::Projections* proj;
 bool proj_set = false;
 // insert all possible generator variables.
+// m is the modulus. m = p^e+r
+Int m, r, p;
+int e;
+// order of the recurrence
+int k;
+// Stores the a_j or the info to build them
+IntVec coeff;
 bool gen_set = false;
 
 // This function resets all the above variables to their default value.

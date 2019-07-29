@@ -1,0 +1,17 @@
+<seek>
+  <mrg>
+    <modulo p="2" e="31" r="-1"/>
+    <order k="7"/>
+    <method random="1 1 1 1 1 1 1"/>
+  </mrg>
+  <spectral>
+    <reduction method="FULL"/>
+    <norma lizer="BESTLAT"/>
+    <dual bool="true"/>
+  </spectral>
+  <detail x=""/>
+  <time x=""/>
+  <num_gen x=""/>
+  <!--The following is not yet implemented-->
+  <function_params max_nodes_BB="" LLL_prec=""/>
+</seek>

@@ -1,4 +1,4 @@
-<mk>
+<mk x="">
   <bounds>
     <power x=""/>
     <exponent x=""/>
@@ -39,10 +39,10 @@
 
 <!--The following describes longer tags gen and test-->
 <mrg>
-  <type/>
   <modulo/>
   <order/>
   <a/>
+  <power2/>
 </mrg>
 
 <mwc>
@@ -50,6 +50,9 @@
 
 <mmrg>
 </mmrg>
+
+<combo>
+</combo>
 
 <spectral>
 </spectral>

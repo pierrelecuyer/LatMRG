@@ -14,17 +14,17 @@ DEF_ZZDD = -DNTL_TYPES_CODE=2
 DEF_ZZRR = -DNTL_TYPES_CODE=3
 
 #Definition to compile with yafu on if it is included
-ifeq ($(wildcard data/yafu),) 
+ifeq ($(wildcard data/yafu),)
     YAFU =
-else 
+else
     YAFU = -DUSE_YAFU
-endif 
+endif
 
 # Library path. This assumes NTL is in /usr/local/lib (its default path).
 STAT_LIBS_PATH = -Wl,-Bstatic -L$(LIB_DIR)
-STAT_LIBS = -llatmrg -llatticetester 
-DYN_LIBS_PATH = -Wl,-Bdynamic -L/usr/local/lib 
-DYN_LIBS = -lntl -lgmp #-ltestu01 -lmylib
+STAT_LIBS = -llatmrg -llatticetester
+DYN_LIBS_PATH = -Wl,-Bdynamic -L/usr/local/lib
+DYN_LIBS = -lntl -lgmp -ltinyxml2#-ltestu01 -lmylib
 
 # A few directories we need to be aware of
 SRC_DIR = ./src
@@ -118,7 +118,7 @@ $(PRO_DIR)/%.o: $(LIB_DIR)/liblatticetester.a $(LIB_DIR)/liblatmrg.a\
   $(PRO_DIR)/%.cc $(PRO_DIR)/ExecCommon.h | message_progs $(BIN_DIR)
 	$(CC) $(CFLAGS) $(INCLUDES) $(YAFU) -c $(PRO_DIR)/$(@:progs/%.o=%).cc -o $@
 	$(CC) $@ $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
-	  -o $(BIN_DIR)/$(@:progs/%.o=%) 
+	  -o $(BIN_DIR)/$(@:progs/%.o=%)
 
 message_progs:
 	$(SEP)
@@ -134,7 +134,7 @@ $(BIN_DIR):
 #./progs/SeekMain.o: lib ./progs/SeekMain.cc
 #	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_LLDD) $(YAFU) -c ./progs/SeekMain.cc -o ./progs/SeekMain.o
 #	$(CC) ./progs/SeekMain.o $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
-#	  -o $(BIN_DIR)/SeekLLDD 
+#	  -o $(BIN_DIR)/SeekLLDD
 #	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_ZZDD) $(YAFU) -c ./progs/SeekMain.cc -o ./progs/SeekMain.o
 #	$(CC) ./progs/SeekMain.o $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
 #	  -o $(BIN_DIR)/SeekZZDD
@@ -171,10 +171,10 @@ build_ex:$(EX_O)
 
 $(EX_DIR)/%.o:$(EX_DIR)/%.cc
 	$(CC) $< $(INCLUDES) -I. $(YAFU) $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) \
-	  $(DYN_LIBS) -o $(EX_BUILD)/$(<:examples/%.cc=%) 
+	  $(DYN_LIBS) -o $(EX_BUILD)/$(<:examples/%.cc=%)
 
 #===============================================================================
-# Installation/removal of LatMRG 
+# Installation/removal of LatMRG
 
 #===============================================================================
 # Execution of the examples

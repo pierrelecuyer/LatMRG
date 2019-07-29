@@ -160,5 +160,12 @@ namespace LatMRG {
    * not specify a valid value. Returns 0 if a change took place.
    * */
   int toRedString(LatticeTester::PreReductionType& red, const std::string& red_str);
+
+  /**
+   * `norma = norma_str`. Does not change the value of `norma` if `norma_str` does
+   * not specify a valid value. Returns 0 if a change took place.
+   * */
+  int toNormaString(LatticeTester::NormaType& norma, const std::string& norma_str);
+
 }
 #endif

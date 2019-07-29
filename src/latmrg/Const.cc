@@ -180,4 +180,33 @@ namespace LatMRG
     return 0;
   }
 
+  //===========================================================================
+
+  int toNormaString(LatticeTester::NormaType& norma, const std::string& norma_str) {
+    if (norma_str == "BESTLAT") {
+      norma = LatticeTester::BESTLAT;
+    } else if (norma_str == "BESTBOUND") {
+      norma = LatticeTester::BESTBOUND;
+    } else if (norma_str == "LAMINATED") {
+      norma = LatticeTester::LAMINATED;
+    } else if (norma_str == "ROGERS") {
+      norma = LatticeTester::ROGERS;
+    } else if (norma_str == "MINK") {
+      norma = LatticeTester::MINK;
+    } else if (norma_str == "MINKL1") {
+      norma = LatticeTester::MINKL1;
+    } else if (norma_str == "L1") {
+      norma = LatticeTester::L1;
+    } else if (norma_str == "L2") {
+      norma = LatticeTester::L2;
+    } else if (norma_str == "NONE") {
+      norma = LatticeTester::NONE;
+    } else {
+      std::cerr << norma_str << " is not a NormaType\n";
+      return 1;
+    }
+
+    return 0;
+  }
+
 }
