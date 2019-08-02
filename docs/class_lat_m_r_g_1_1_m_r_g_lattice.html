@@ -116,8 +116,7 @@ Inheritance diagram for LatMRG::MRGLattice&lt; Int, Dbl &gt;:</div>
   <map id="LatMRG::MRGLattice_3C_20Int_2C_20Dbl_20_3E_map" name="LatMRG::MRGLattice_3C_20Int_2C_20Dbl_20_3E_map">
 <area href="class_lat_m_r_g_1_1_a_w_c_s_w_b_lattice.html" title="This class represents the lattice associated with either an AWC or a SWB random number generator." alt="LatMRG::AWCSWBLattice&lt; Int, Dbl &gt;" shape="rect" coords="0,112,255,136"/>
 <area href="class_lat_m_r_g_1_1_combo_lattice.html" title="This class represents a combined MRG." alt="LatMRG::ComboLattice&lt; Int, Dbl &gt;" shape="rect" coords="265,112,520,136"/>
-<area href="class_lat_m_r_g_1_1_l_c_g_carry_lattice.html" title="This class represents the lattice a of LCG with a carry defined by the recurrence  The building strat..." alt="LatMRG::LCGCarryLattice&lt; Int, Dbl &gt;" shape="rect" coords="530,112,785,136"/>
-<area href="class_lat_m_r_g_1_1_m_w_c_lattice.html" title="This class represents the lattice associated to a Multiply-with-carry (MWC) random number generator." alt="LatMRG::MWCLattice&lt; Int, Dbl &gt;" shape="rect" coords="795,112,1050,136"/>
+<area href="class_lat_m_r_g_1_1_m_w_c_lattice.html" title="This class represents the lattice associated to a Multiply-with-carry (MWC) random number generator." alt="LatMRG::MWCLattice&lt; Int, Dbl &gt;" shape="rect" coords="530,112,785,136"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -215,9 +214,9 @@ Protected Attributes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:af29ed6ee5861c5b3464076740d4da3a0"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_m_r_g_lattice.html#af29ed6ee5861c5b3464076740d4da3a0">m_pow2_exp</a></td></tr>
-<tr class="memdesc:af29ed6ee5861c5b3464076740d4da3a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">The powers of 2 used if this generator has power of 2 coefficients.  <a href="#af29ed6ee5861c5b3464076740d4da3a0">More...</a><br /></td></tr>
-<tr class="separator:af29ed6ee5861c5b3464076740d4da3a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50bc8677b168f7d8ec78f9128039343c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_lat_m_r_g_1_1_m_r_g_lattice.html#a810de7b954bba39df2d6d4f05249f249">IntVec</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_m_r_g_lattice.html#a50bc8677b168f7d8ec78f9128039343c">m_pow2_exp</a></td></tr>
+<tr class="memdesc:a50bc8677b168f7d8ec78f9128039343c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The powers of 2 used if this generator has power of 2 coefficients.  <a href="#a50bc8677b168f7d8ec78f9128039343c">More...</a><br /></td></tr>
+<tr class="separator:a50bc8677b168f7d8ec78f9128039343c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a13ec7ed55d4ba00cf1254c45e35f3768"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_m_r_g_lattice.html#a13ec7ed55d4ba00cf1254c45e35f3768">m_power2</a></td></tr>
 <tr class="memdesc:a13ec7ed55d4ba00cf1254c45e35f3768"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates this generator is built using coefficients that are power of 2 combinations.  <a href="#a13ec7ed55d4ba00cf1254c45e35f3768">More...</a><br /></td></tr>
 <tr class="separator:a13ec7ed55d4ba00cf1254c45e35f3768"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -244,9 +243,9 @@ Sets and gets the values of &lt;tt&gt;m_rho&lt;/tt&gt; and &lt;tt&gt;m_lossRho&l
 <tr class="memitem:a0dec6052eb30bdadfbcdaa600f7b40ca"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_m_r_g_lattice.html#a0dec6052eb30bdadfbcdaa600f7b40ca">toString</a> () const override</td></tr>
 <tr class="memdesc:a0dec6052eb30bdadfbcdaa600f7b40ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the vector of multipliers \(A\) as a string.  <a href="#a0dec6052eb30bdadfbcdaa600f7b40ca">More...</a><br /></td></tr>
 <tr class="separator:a0dec6052eb30bdadfbcdaa600f7b40ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a08728d328f1de684f015fbfb21dbfd42"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_m_r_g_lattice.html#a08728d328f1de684f015fbfb21dbfd42">setPower2</a> (int *coeffs)</td></tr>
-<tr class="memdesc:a08728d328f1de684f015fbfb21dbfd42"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets <code>m_power2</code> to true and sets <code>m_pow2_exp to</code>coeffs`.  <a href="#a08728d328f1de684f015fbfb21dbfd42">More...</a><br /></td></tr>
-<tr class="separator:a08728d328f1de684f015fbfb21dbfd42"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7813cf5ccc66d379666ab7abc3a1f18b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_m_r_g_lattice.html#a7813cf5ccc66d379666ab7abc3a1f18b">setPower2</a> (<a class="el" href="class_lat_m_r_g_1_1_m_r_g_lattice.html#a810de7b954bba39df2d6d4f05249f249">IntVec</a> &amp;coeffs)</td></tr>
+<tr class="memdesc:a7813cf5ccc66d379666ab7abc3a1f18b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets <code>m_power2</code> to true and sets <code>m_pow2_exp to</code>coeffs`.  <a href="#a7813cf5ccc66d379666ab7abc3a1f18b">More...</a><br /></td></tr>
+<tr class="separator:a7813cf5ccc66d379666ab7abc3a1f18b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3e500b19d356a2d6fc4a9da6a0181f56"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_m_r_g_lattice.html#a3e500b19d356a2d6fc4a9da6a0181f56">buildProjection</a> (LatticeTester::IntLattice&lt; Int, Int, Dbl, Dbl &gt; *lattice, const LatticeTester::Coordinates &amp;proj) override</td></tr>
 <tr class="memdesc:a3e500b19d356a2d6fc4a9da6a0181f56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Builds a projection for this lattice on the set in indices in <code>proj</code>.  <a href="#a3e500b19d356a2d6fc4a9da6a0181f56">More...</a><br /></td></tr>
 <tr class="separator:a3e500b19d356a2d6fc4a9da6a0181f56"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -597,8 +596,6 @@ template&lt;typename Int , typename Dbl &gt; </div>
 
 <p>Builds the basis in dimension \(d\). </p>
 
-<p>Reimplemented in <a class="el" href="class_lat_m_r_g_1_1_l_c_g_carry_lattice.html#a0635dfe753d9f6232b61ca0662da6155">LatMRG::LCGCarryLattice&lt; Int, Dbl &gt;</a>.</p>
-
 </div>
 </div>
 <a id="a6669b4813623d9a8cfd91e2f7e2a2b4b"></a>
@@ -862,8 +859,6 @@ template&lt;typename Int , typename Dbl &gt; </div>
 </div><div class="memdoc">
 
 <p>Increments the basis by 1 in case of non-lacunary indices. </p>
-
-<p>Reimplemented in <a class="el" href="class_lat_m_r_g_1_1_l_c_g_carry_lattice.html#a33a1a15ee60dae9fb58a1f59b2e342ae">LatMRG::LCGCarryLattice&lt; Int, Dbl &gt;</a>.</p>
 
 </div>
 </div>
@@ -1174,8 +1169,8 @@ template&lt;typename Int , typename Dbl &gt; </div>
 
 </div>
 </div>
-<a id="a08728d328f1de684f015fbfb21dbfd42"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a08728d328f1de684f015fbfb21dbfd42">&#9670;&nbsp;</a></span>setPower2()</h2>
+<a id="a7813cf5ccc66d379666ab7abc3a1f18b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7813cf5ccc66d379666ab7abc3a1f18b">&#9670;&nbsp;</a></span>setPower2()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1185,7 +1180,7 @@ template&lt;typename Int , typename Dbl &gt; </div>
         <tr>
           <td class="memname">void <a class="el" href="class_lat_m_r_g_1_1_m_r_g_lattice.html">LatMRG::MRGLattice</a>&lt; Int, Dbl &gt;::setPower2 </td>
           <td>(</td>
-          <td class="paramtype">int *&#160;</td>
+          <td class="paramtype"><a class="el" href="class_lat_m_r_g_1_1_m_r_g_lattice.html#a810de7b954bba39df2d6d4f05249f249">IntVec</a> &amp;&#160;</td>
           <td class="paramname"><em>coeffs</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1523,8 +1518,8 @@ template&lt;typename Int , typename Dbl &gt; </div>
 
 </div>
 </div>
-<a id="af29ed6ee5861c5b3464076740d4da3a0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af29ed6ee5861c5b3464076740d4da3a0">&#9670;&nbsp;</a></span>m_pow2_exp</h2>
+<a id="a50bc8677b168f7d8ec78f9128039343c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a50bc8677b168f7d8ec78f9128039343c">&#9670;&nbsp;</a></span>m_pow2_exp</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1535,7 +1530,7 @@ template&lt;typename Int , typename Dbl &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int* <a class="el" href="class_lat_m_r_g_1_1_m_r_g_lattice.html">LatMRG::MRGLattice</a>&lt; Int, Dbl &gt;::m_pow2_exp</td>
+          <td class="memname"><a class="el" href="class_lat_m_r_g_1_1_m_r_g_lattice.html#a810de7b954bba39df2d6d4f05249f249">IntVec</a> <a class="el" href="class_lat_m_r_g_1_1_m_r_g_lattice.html">LatMRG::MRGLattice</a>&lt; Int, Dbl &gt;::m_pow2_exp</td>
         </tr>
       </table>
   </td>

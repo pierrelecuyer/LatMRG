@@ -123,7 +123,7 @@ var NAVTREEINDEX =
 [
 "_a_w_c_s_w_b_lattice_8cc.html",
 "class_lat_m_r_g_1_1_int_factorization.html#ace0be7662c4e5501c5f1e5e6e7918e93",
-"class_lat_m_r_g_1_1_modulus.html#aa5af56cadf25b2841add857f48f99118"
+"class_lat_m_r_g_1_1_param_reader_ext.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

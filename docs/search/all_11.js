@@ -14,7 +14,7 @@ var searchData=
   ['setm',['setM',['../class_lat_m_r_g_1_1_poly_p_e.html#a51904d5aa16d54db5444df0e1f9ce283',1,'LatMRG::PolyPE']]],
   ['setnumber',['setNumber',['../class_lat_m_r_g_1_1_int_factorization.html#af4818dbb2124b9b949ec11179e434314',1,'LatMRG::IntFactorization']]],
   ['setpe',['setpe',['../class_lat_m_r_g_1_1_int_primitivity.html#a81a4b174eddf88604fb2da7fb19c6e55',1,'LatMRG::IntPrimitivity']]],
-  ['setpower2',['setPower2',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a08728d328f1de684f015fbfb21dbfd42',1,'LatMRG::MRGLattice']]],
+  ['setpower2',['setPower2',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a7813cf5ccc66d379666ab7abc3a1f18b',1,'LatMRG::MRGLattice']]],
   ['setrho',['setRho',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#aa6d1e518fd4b368396a0f8348567886a',1,'LatMRG::MRGLattice']]],
   ['setstatus',['setStatus',['../class_lat_m_r_g_1_1_int_factorization.html#a7383630d35fbadd8e202136e933717a0',1,'LatMRG::IntFactorization']]],
   ['setval',['setVal',['../class_lat_m_r_g_1_1_poly_p_e.html#af9309c2d3641af45521725f6c3de2f75',1,'LatMRG::PolyPE::setVal(long j)'],['../class_lat_m_r_g_1_1_poly_p_e.html#a12072fe378ef32556b893ecefd640012',1,'LatMRG::PolyPE::setVal(const IntVec &amp;C)'],['../class_lat_m_r_g_1_1_poly_p_e.html#a880ba435ef8ea4540737321a6af84f33',1,'LatMRG::PolyPE::setVal(std::string &amp;str)']]],

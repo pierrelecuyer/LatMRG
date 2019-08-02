@@ -1,7 +1,7 @@
 var searchData=
 [
   ['incdim',['incDim',['../class_lat_m_r_g_1_1_korobov_lattice.html#a845bb53c971b7e652c3ef663d3b81859',1,'LatMRG::KorobovLattice::incDim()'],['../class_lat_m_r_g_1_1_m_m_r_g_lattice.html#a529d079e94fb256ce52c5c5f7253eeeb',1,'LatMRG::MMRGLattice::incDim()'],['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a89f9eeca120a0cc68c3273898a35109e',1,'LatMRG::MRGLattice::incDim()']]],
-  ['incdimbasis',['incDimBasis',['../class_lat_m_r_g_1_1_l_c_g_carry_lattice.html#a33a1a15ee60dae9fb58a1f59b2e342ae',1,'LatMRG::LCGCarryLattice::incDimBasis()'],['../class_lat_m_r_g_1_1_m_r_g_lattice.html#ae96d0a23f87ee499c2f049c1ca619071',1,'LatMRG::MRGLattice::incDimBasis()']]],
+  ['incdimbasis',['incDimBasis',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#ae96d0a23f87ee499c2f049c1ca619071',1,'LatMRG::MRGLattice']]],
   ['incdimlabasis',['incDimLaBasis',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#ae793eabd3d9e26c7577814058a83d592',1,'LatMRG::MRGLattice']]],
   ['incdimslow',['incDimSlow',['../class_lat_m_r_g_1_1_korobov_lattice.html#a0d5a2a479a46f3f3b0f8643795c3a525',1,'LatMRG::KorobovLattice']]],
   ['incrementdimlacunarybasis',['incrementDimLacunaryBasis',['../class_lat_m_r_g_1_1_m_m_r_g_lattice.html#a72b9d2ff98217b849b519d890381e84a',1,'LatMRG::MMRGLattice']]],

@@ -135,12 +135,6 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_korobov_lattice.html">KorobovLattice</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class implements lattice bases built from a Korobov lattice rule.  <a href="class_lat_m_r_g_1_1_korobov_lattice.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_l_c_g_carry_lattice.html">LCGCarryLattice</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class represents the lattice a of LCG with a carry defined by the recurrence </p><p class="formulaDsp">
-\[ x_n = a x_{n-1} +c \pmod m. \]
-</p>
-<p> The building strategy for the lattice is technically the same, but <a class="el" href="class_lat_m_r_g_1_1_m_r_g_lattice.html" title="This class implements lattice basis built from multiple recursive linear congruential generators (MRG...">MRGLattice</a> does not feature the possibility to add one becausae it is seldom used for a MRG.  <a href="class_lat_m_r_g_1_1_l_c_g_carry_lattice.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_merit_list.html">MeritList</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">This class stores a certain number of <code><a class="el" href="class_lat_m_r_g_1_1_figure_of_merit.html" title="This class is intended to store everything you might need after performing computations on a lattice.">FigureOfMerit</a></code> objects.  <a href="class_lat_m_r_g_1_1_merit_list.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -250,6 +244,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a353ee26848721ee28c6b1a5d42fd6527"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_lat_m_r_g.html#a353ee26848721ee28c6b1a5d42fd6527">toGenString</a> (<a class="el" href="namespace_lat_m_r_g.html#ab4948e899f8c3a6fb82cff009283061e">GenType</a> &amp;<a class="el" href="usage_8dox.html#afa0450d4eb77d82a632616bf0ece59a9">type</a>, const std::string &amp;type_str)</td></tr>
 <tr class="memdesc:a353ee26848721ee28c6b1a5d42fd6527"><td class="mdescLeft">&#160;</td><td class="mdescRight"><code>type = type_str</code>.  <a href="#a353ee26848721ee28c6b1a5d42fd6527">More...</a><br /></td></tr>
 <tr class="separator:a353ee26848721ee28c6b1a5d42fd6527"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a318a44b6a90237a33622e7a4c22e5d75"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_lat_m_r_g.html#a318a44b6a90237a33622e7a4c22e5d75">toNormaString</a> (LatticeTester::NormaType &amp;norma, const std::string &amp;norma_str)</td></tr>
+<tr class="memdesc:a318a44b6a90237a33622e7a4c22e5d75"><td class="mdescLeft">&#160;</td><td class="mdescRight"><code>norma = norma_str</code>.  <a href="#a318a44b6a90237a33622e7a4c22e5d75">More...</a><br /></td></tr>
+<tr class="separator:a318a44b6a90237a33622e7a4c22e5d75"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af5fc2e0ff2efabb468b0194fc09c5fd3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_lat_m_r_g.html#af5fc2e0ff2efabb468b0194fc09c5fd3">toRedString</a> (LatticeTester::PreReductionType &amp;red, const std::string &amp;red_str)</td></tr>
 <tr class="memdesc:af5fc2e0ff2efabb468b0194fc09c5fd3"><td class="mdescLeft">&#160;</td><td class="mdescRight"><code>red = red_str</code>.  <a href="#af5fc2e0ff2efabb468b0194fc09c5fd3">More...</a><br /></td></tr>
 <tr class="separator:af5fc2e0ff2efabb468b0194fc09c5fd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -612,6 +609,37 @@ template&lt;typename Int , typename Dbl &gt; </div>
 
 <p><code>type = type_str</code>. </p>
 <p>Does not change the value of <code>type</code> if <code>type_str</code> does not specify a valid value. Returns 0 if a change took place. </p>
+
+</div>
+</div>
+<a id="a318a44b6a90237a33622e7a4c22e5d75"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a318a44b6a90237a33622e7a4c22e5d75">&#9670;&nbsp;</a></span>toNormaString()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int LatMRG::toNormaString </td>
+          <td>(</td>
+          <td class="paramtype">LatticeTester::NormaType &amp;&#160;</td>
+          <td class="paramname"><em>norma</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>norma_str</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p><code>norma = norma_str</code>. </p>
+<p>Does not change the value of <code>norma</code> if <code>norma_str</code> does not specify a valid value. Returns 0 if a change took place. </p>
 
 </div>
 </div>

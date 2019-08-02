@@ -11,7 +11,6 @@ var hierarchy =
       [ "LatMRG::MRGLattice< Int, Dbl >", "class_lat_m_r_g_1_1_m_r_g_lattice.html", [
         [ "LatMRG::AWCSWBLattice< Int, Dbl >", "class_lat_m_r_g_1_1_a_w_c_s_w_b_lattice.html", null ],
         [ "LatMRG::ComboLattice< Int, Dbl >", "class_lat_m_r_g_1_1_combo_lattice.html", null ],
-        [ "LatMRG::LCGCarryLattice< Int, Dbl >", "class_lat_m_r_g_1_1_l_c_g_carry_lattice.html", null ],
         [ "LatMRG::MWCLattice< Int, Dbl >", "class_lat_m_r_g_1_1_m_w_c_lattice.html", null ]
       ] ]
     ] ],
