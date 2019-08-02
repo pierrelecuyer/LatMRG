@@ -1,20 +1,32 @@
-#define LATMRG_SEEK
+#ifndef LATMRG_SEEK_H
+#define LATMRG_SEEK_H
+
 #include "ExecCommon.h"
+
+#define LATMRG_TEST
+#define LATMRG_SEEK
+#include "latmrg/Test.h"
 
 // Number of generators to generate before testing time in nextGenerator
 #define DELAY 1000
 
+namespace SeekName {
+  ConfigSeek conf;
+}
+
+using SeekName::conf;
+
 namespace {
-  Config conf;
   // Program global objects
   Chrono timer; // program timer
-  int numProj, minDim, maxDim;
-  std::vector<int> projDim;
+  int maxDim = 40;
 
   // MRG specific parameters
   MRGComponent<Int>* mrg;
-  int* coeff = NULL;
+  //int* coeff = NULL;
   int** comb_coeff;
+
+  std::string construction;
 
   /**
    * A small class to search for modulus for MWC generators.
@@ -116,7 +128,7 @@ namespace {
     IntVec A;
     A.SetLength(conf.order+1);
     NTL::clear(A);
-    int coefficients[2*conf.order];
+    IntVec coefficients(2*conf.order);
     int sign;
     int delay = 0;
     // The program will not run the maxPeriod function if it is not wanted with
@@ -133,7 +145,7 @@ namespace {
           A[i+1] = 0;
           continue;
         }
-        coefficients[2*i] = randInt(int(LatticeTester::Lg(conf.rest))+1, coeff[2*i]);
+        coefficients[2*i] = randInt(Int(LatticeTester::Lg(conf.rest))+1, coeff[2*i]);
         sign = randInt(0,1);
         {
           Int tmp;
@@ -142,7 +154,7 @@ namespace {
         }
         coefficients[2*i] ^= sign<<30;
         if (!(coeff[2*i+1] < 0)) {
-          coefficients[2*i+1] = randInt(int(LatticeTester::Lg(conf.rest))+1, coeff[2*i+1]);
+          coefficients[2*i+1] = randInt(Int(LatticeTester::Lg(conf.rest))+1, coeff[2*i+1]);
           sign = randInt(0,1);
           Int tmp;
           NTL::power2(tmp, coefficients[2*i+1]);
@@ -217,7 +229,7 @@ namespace {
       IntVec A;
       A.SetLength(conf.comb_order[k]+1);
       NTL::clear(A);
-      int coefficients[2*conf.comb_order[k]];
+      IntVec coefficients(2*conf.comb_order[k]);
       int sign;
       int delay = 0;
       // The program will not run the maxPeriod function if it is not wanted with
@@ -332,170 +344,20 @@ namespace {
     return per_80;
   }
 
-  // Reads parameters from config file.
-  bool readConfigFile(int argc, char **argv) {
-    ParamReaderExt<Int, Dbl> reader(argv[1]);
-    reader.getLines();
-    int power;
-    int ln = 0;
-    // Reading global problem parameters
-    reader.readGenType(conf.type, ln++, 0);
-    reader.readCriterionType(conf.criterion, ln, 0);
-    if (conf.criterion == LatticeTester::SPECTRAL) {
-      reader.readBool(conf.use_dual, ln, 1);
-      reader.readPreRed(conf.reduction, ln, 2);
-      reader.readNormaType(conf.normaType, ln++, 3);
-    } else if (conf.criterion == LatticeTester::LENGTH) {
-      reader.readBool(conf.use_dual, ln, 1);
-      reader.readPreRed(conf.reduction, ln++, 2);
-    } else if (conf.criterion == LatticeTester::BEYER) {
-      conf.reduction = LatticeTester::NOPRERED;
-      ln++;
-    }
-    reader.readBool(conf.best, ln++, 0);
-    // This code corrects the projections so that it always builds a valid
-    // projection specification
-    reader.readInt(numProj, ln++, 0);
-    reader.readInt(minDim, ln, 0);
-    reader.readInt(maxDim, ln++, 1);
-    projDim.push_back((maxDim-1));
-    for (int i = 0; i<numProj-1; i++) {
-      int tmp;
-      reader.readInt(tmp, ln, i);
-      // If the projection is requested only on indices smaller or equal to the
-      // dimension, we learn nothing, this is corrected
-      if (tmp > 0 && tmp < i+3) {
-        tmp = i+3;
-      }
-      projDim.push_back(tmp-1);
-    }
-    if (numProj > 1) ln++;
-    reader.readInt(conf.max_gen, ln++, 0);
-    reader.readDouble(conf.timeLimit, ln++, 0);
-    if (conf.type == MRG) {
-      reader.readNumber3(conf.modulo, conf.basis, conf.exponent, conf.rest, ln++, 0);
-      reader.readLong(conf.order, ln++, 0);
-      // Reading the construction method
-      reader.readString(construction, ln, 0);
-      if (construction == "RANDOM") {
-        coeff = new int[conf.order];
-        for (unsigned int i = 1; i < conf.order; i++) reader.readInt(coeff[i-1], ln, i);
-        coeff[conf.order-1] = 1;
-        ln++;
-      } else if (construction == "POW2") {
-        coeff = new int[2 * conf.order];
-        for (unsigned int i = 1; i < 2*conf.order-1; i++)
-          reader.readInt(coeff[i-1], ln, i);
-        coeff[2*conf.order-1] = conf.exponent-int(LatticeTester::Lg(conf.rest))-1;
-        coeff[2*conf.order-2] = conf.exponent-int(LatticeTester::Lg(conf.rest))-1;
-        ln++;
-      }
-      reader.readBool(conf.period, ln, 0);
-      // Making sure that minDim is big enough to provide usefull tests (if
-      // full period is required) this changes other dimensions accordingly
-      minDim = (!conf.period||minDim>conf.order) ? minDim : (conf.order+1);
-      maxDim = maxDim>minDim ? maxDim : minDim;
-      for (unsigned int i = 0; i < projDim.size(); i++) {
-        if (projDim[i] >= 0) projDim[i] = (projDim[i]<(minDim-1))?(minDim-1):projDim[i];
-      }
-      if (conf.period) {
-        // Using default parameters for period or not
-        bool def;
-        reader.readBool(def, ln, 1);
-        if (!def) {
-          reader.readDecompType(conf.decompm1, ln, 2);
-          reader.readString(conf.filem1, ln, 3);
-          reader.readDecompType(conf.decompr, ln, 4);
-          reader.readString(conf.filer, ln, 5);
-        }
-      }
-      ln++;
-    } else if (conf.type == MWC) {
-      reader.readInt(power, ln++, 0);
-      conf.b = NTL::power2_ZZ(power);
-      reader.readLong(conf.exponent, ln++, 0);
-    } else if (conf.type == MMRG) {
-      reader.readNumber3(conf.modulo, conf.basis, conf.exponent, conf.rest, ln++, 0);
-      reader.readLong(conf.order, ln++, 0);
-      reader.readBool(conf.period, ln, 0);
-      // Making sure that minDim is big enough to provide usefull tests (if
-      // full period is required) this changes other dimensions accordingly
-      minDim = (!conf.period||minDim>conf.order) ? minDim : (conf.order+1);
-      maxDim = maxDim>minDim ? maxDim : minDim;
-      for (unsigned int i = 0; i < projDim.size(); i++) {
-        if (projDim[i] > 0) projDim[i] = (projDim[i]<(minDim-1))?(minDim-1):projDim[i];
-      }
-      if (conf.period) {
-        // Using default parameters for period or not
-        bool def;
-        reader.readBool(def, ln, 1);
-        if (!def) {
-          reader.readDecompType(conf.decompm1, ln, 2);
-          reader.readString(conf.filem1, ln, 3);
-          reader.readDecompType(conf.decompr, ln, 4);
-          reader.readString(conf.filer, ln, 5);
-        }
-      }
-      ln++;
-    } else if (conf.type == COMBO) {
-      reader.readInt(conf.num_comp, ln++, 0);
-      conf.comb_order.resize(conf.num_comp);
-      conf.comb_modulo.resize(conf.num_comp);
-      conf.comb_basis.resize(conf.num_comp);
-      conf.comb_exponent.resize(conf.num_comp);
-      conf.comb_rest.resize(conf.num_comp);
-      conf.comb_period.resize(conf.num_comp);
-      conf.comb_fact.resize(conf.num_comp);
-      comb_coeff = new int*[conf.num_comp];
-      for (int k = 0; k < conf.num_comp; k++) {
-        reader.readNumber3(conf.comb_modulo[k], conf.comb_basis[k], conf.comb_exponent[k], conf.comb_rest[k], ln++, 0);
-        reader.readLong(conf.comb_order[k], ln++, 0);
-        // Reading the construction method
-        // Using power of 2 by default
-        comb_coeff[k] = new int[2 * conf.comb_order[k]];
-        for (unsigned int i = 1; i < 2*conf.comb_order[k]-1; i++)
-          reader.readInt(comb_coeff[k][i-1], ln, i-1);
-        comb_coeff[k][2*conf.comb_order[k]-1] = conf.comb_exponent[k]-int(LatticeTester::Lg(conf.comb_rest[k]))-1;
-        comb_coeff[k][2*conf.comb_order[k]-2] = conf.comb_exponent[k]-int(LatticeTester::Lg(conf.comb_rest[k]))-1;
-        ln++;
-        bool period;
-        reader.readBool(period, ln, 0);
-        conf.comb_period[k] = period;
-        // Not making sure that the projections are adhequate in this case
-        if (conf.comb_period[k]) {
-          // No default parameters
-          reader.readDecompType(conf.decompm1, ln, 1);
-          reader.readString(conf.filem1, ln, 2);
-          reader.readDecompType(conf.decompr, ln, 3);
-          reader.readString(conf.filer, ln, 4);
-          conf.comb_fact[k] = new MRGComponent<Int>(conf.comb_modulo[k],
-              conf.comb_order[k], conf.decompm1, conf.filem1.c_str(),
-              conf.decompr, conf.filer.c_str());
-        }
-        ln++;
-      }
-    }
-    return true;
-  }
-
 }
 
-int Seek (int argc, char **argv)
+int Seek ()
 {
-  if (argc != 2) {
-    std::cout << "Usage: " << argv[0] << " filename" << std::endl;
-    return -1;
-  }
   // Initializing values
   srand(time(NULL));
   conf.filem1 = "./tempm1" + std::to_string(rand());
   conf.filer = "./tempr" + std::to_string(rand());
-  readConfigFile(argc, argv);
+  // Dynamically allocated objects
   if (conf.type != COMBO) {
-    // Dynamically allocated objects
     mrg = new MRGComponent<Int>(conf.modulo, conf.order, conf.decompm1, conf.filem1.c_str(), conf.decompr, conf.filer.c_str());
   }
-  conf.proj = new Projections(numProj, minDim, projDim);
+  std::vector<int> projDim = {5,32};
+  conf.proj = new Projections(1, 5, projDim);
   timer.init();
 
   // Launching the tests
@@ -508,7 +370,7 @@ int Seek (int argc, char **argv)
       if (construction == "POW2") mrglat = nextGeneratorPow2(mrglat);
       else if (construction == "RANDOM") mrglat = nextGenerator(mrglat);
       if (mrglat == NULL) continue;
-      bestLattice.add(test(*mrglat, conf));
+      bestLattice.add(test_seek(*mrglat, conf));
       conf.num_gen++;
       conf.currentMerit = bestLattice.getMerit();
       old = print_progress(old);
@@ -521,7 +383,7 @@ int Seek (int argc, char **argv)
     while (!timer.timeOver(conf.timeLimit)) {
       mwclat = nextGenerator(mwclat);
       if (mwclat == NULL) continue;
-      bestLattice.add(test(*mwclat, conf));
+      bestLattice.add(test_seek(*mwclat, conf));
       conf.num_gen++;
       conf.currentMerit = bestLattice.getMerit();
       old = print_progress(old);
@@ -534,7 +396,7 @@ int Seek (int argc, char **argv)
     while (!timer.timeOver(conf.timeLimit)) {
       mmrglat = nextGenerator(mmrglat);
       if (mmrglat == NULL) continue;
-      bestLattice.add(test(*mmrglat, conf));
+      bestLattice.add(test_seek(*mmrglat, conf));
       conf.num_gen++;
       conf.currentMerit = bestLattice.getMerit();
       old = print_progress(old);
@@ -547,7 +409,7 @@ int Seek (int argc, char **argv)
     while (!timer.timeOver(conf.timeLimit)) {
       combolat = nextGenerator(combolat);
       if (combolat == NULL) continue;
-      bestLattice.add(test(*combolat, conf));
+      bestLattice.add(test_seek(*combolat, conf));
       conf.num_gen++;
       conf.currentMerit = bestLattice.getMerit();
       old = print_progress(old);
@@ -562,6 +424,6 @@ int Seek (int argc, char **argv)
   }
   delete conf.proj;
   delete mrg;
-  if (coeff) delete[] coeff;
   return 0;
 }
+#endif

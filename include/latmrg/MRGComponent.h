@@ -109,6 +109,19 @@ namespace LatMRG {
         bool maxPeriod (const IntVec & A);
 
         /**
+         * Returns `true` if \f$a\f$ makes for a full period LCG with non-zero
+         * carry; returns `false` otherwise.
+         *
+         * This checks the 2 following conditions :
+         * - If \f$q\f$ is prime and divides \f$m\f$, it must divide \f$a\f$.
+         * - If 4 divides \f$m\f$, it must divide \f$a\f$.
+         *
+         * The user must choose the carry himself. Any carry relatively prime to
+         * \f$m\f$ will give full period.
+         */
+        bool maxPeriod (const Int & a);
+
+        /**
          * Returns `true` if coefficients in \f$A\f$ give a MMRG with maximal
          * period; returns `false` otherwise.
          */
@@ -127,6 +140,8 @@ namespace LatMRG {
          * The prime factor decomposition of \f$m-1\f$.
          */
         IntFactorization<Int> ifm1;
+
+        IntFactorization<Int> factor;
 
         /**
          * The prime factor decomposition of \f$m-1\f$.
@@ -326,6 +341,11 @@ namespace LatMRG {
       ifm1.setNumber (m1);
       ifm2.setNumber (NTL::ZZ(m1));
 
+      if (k == 1) {
+        factor.setNumber(getM());
+        factor.factorize();
+      }
+
       if (decom1 == DECOMP_READ) {
         ifm1.read (filem1);
       } else if (decom1 == DECOMP) {
@@ -438,6 +458,19 @@ namespace LatMRG {
       return pol.isPrimitive(privfm, ifr);
     }
 
+  //===========================================================================
+
+  template<typename Int>
+    bool MRGComponent<Int>::maxPeriod (const Int& a0)
+    {
+      auto list = factor.getFactorList();
+      for (auto iter = list.begin(); iter != list.end(); iter++) {
+        if (a0%(*iter).getFactor() != 0) return false;
+      }
+      if (getM() % 4 == 0 && a0%4 != 0) return false;
+
+      return true;
+    }
 
   //===========================================================================
 

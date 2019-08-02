@@ -2,9 +2,11 @@
  * This program rewrites parts of SeekMain to be easier to understand and use
  * better design. For now this is the file in which I implement MWC gen searches.
  * */
-#define LATMRG_SEEK
 #include "ExecCommon.h"
 
+#define LATMRG_SEEK
+#define LATMRG_TEST
+#include "latmrg/Test.h"
 
 // Number of generators to generate before testing time in nextGenerator
 #define DELAY 1000
@@ -13,7 +15,7 @@ using namespace LatMRG;
 using namespace LatticeTester::Random;
 
 namespace {
-  Config conf;
+  ConfigSeek conf;
   // Program global objects
   Chrono timer; // program timer
   int numProj, minDim, maxDim;
@@ -115,8 +117,10 @@ namespace {
       }
       for (long i = 0; i<conf.order; i++) A[i+1] = coeff[i] * randInt(Int(0), conf.modulo);
       delay++;
-    } while ((A[conf.order] == 0) || (conf.period && !mrg->maxPeriod(A)));
-    if (lattice) delete lattice;
+    } while ((A[conf.order] == 0)
+        || (conf.period && conf.order>1 && !mrg->maxPeriod(A))
+        || (conf.period && !mrg->maxPeriod(A[1])));
+    if (lattice != 0) delete lattice;
     return new MRGLattice<Int, Dbl>(conf.modulo, A, maxDim, conf.order, FULL);
   }
 
@@ -126,7 +130,7 @@ namespace {
     IntVec A;
     A.SetLength(conf.order+1);
     NTL::clear(A);
-    int coefficients[2*conf.order];
+    IntVec coefficients(2*conf.order);
     int sign;
     int delay = 0;
     // The program will not run the maxPeriod function if it is not wanted with
@@ -163,7 +167,7 @@ namespace {
       }
       delay++;
     } while ((A[conf.order] == 0) || (conf.period && !mrg->maxPeriod(A)));
-    if (lattice) delete lattice;
+    if (lattice!=0) delete lattice;
     MRGLattice<Int, Dbl>* lat = new MRGLattice<Int, Dbl>(conf.modulo, A, maxDim, conf.order, FULL);
     lat->setPower2(coefficients);
     return lat;
@@ -185,7 +189,7 @@ namespace {
     }
     if ((m&1) == 1) m+=1;
     Modulus mod(conf.exponent, m, true);
-    if (lattice) delete lattice;
+    if (lattice != 0) delete lattice;
     return new MWCLattice<Int, Dbl>(conf.b, mod.next());
   }
 
@@ -215,7 +219,7 @@ namespace {
     for (int i = 0; i<conf.order; i++)
       for (int j = 0; j<conf.order; j++)
         A[i][j] = A[i][j]%conf.modulo;
-    if (lattice) delete lattice;
+    if (lattice!=0) delete lattice;
     return new MMRGLattice<Int, Dbl>(conf.modulo, A, maxDim, conf.order);
   }
 
@@ -227,7 +231,7 @@ namespace {
       IntVec A;
       A.SetLength(conf.comb_order[k]+1);
       NTL::clear(A);
-      int coefficients[2*conf.comb_order[k]];
+      IntVec coefficients(2*conf.comb_order[k]);
       int sign;
       int delay = 0;
       // The program will not run the maxPeriod function if it is not wanted with
@@ -518,7 +522,7 @@ int main (int argc, char **argv)
       if (construction == "POW2") mrglat = nextGeneratorPow2(mrglat);
       else if (construction == "RANDOM") mrglat = nextGenerator(mrglat);
       if (mrglat == NULL) continue;
-      bestLattice.add(test(*mrglat, conf));
+      bestLattice.add(test_seek(*mrglat, conf));
       conf.num_gen++;
       conf.currentMerit = bestLattice.getMerit();
       old = print_progress(old);
@@ -531,7 +535,7 @@ int main (int argc, char **argv)
     while (!timer.timeOver(conf.timeLimit)) {
       mwclat = nextGenerator(mwclat);
       if (mwclat == NULL) continue;
-      bestLattice.add(test(*mwclat, conf));
+      bestLattice.add(test_seek(*mwclat, conf));
       conf.num_gen++;
       conf.currentMerit = bestLattice.getMerit();
       old = print_progress(old);
@@ -544,7 +548,7 @@ int main (int argc, char **argv)
     while (!timer.timeOver(conf.timeLimit)) {
       mmrglat = nextGenerator(mmrglat);
       if (mmrglat == NULL) continue;
-      bestLattice.add(test(*mmrglat, conf));
+      bestLattice.add(test_seek(*mmrglat, conf));
       conf.num_gen++;
       conf.currentMerit = bestLattice.getMerit();
       old = print_progress(old);
@@ -557,7 +561,7 @@ int main (int argc, char **argv)
     while (!timer.timeOver(conf.timeLimit)) {
       combolat = nextGenerator(combolat);
       if (combolat == NULL) continue;
-      bestLattice.add(test(*combolat, conf));
+      bestLattice.add(test_seek(*combolat, conf));
       conf.num_gen++;
       conf.currentMerit = bestLattice.getMerit();
       old = print_progress(old);

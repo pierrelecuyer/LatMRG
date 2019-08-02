@@ -151,7 +151,7 @@ namespace LatMRG {
         /**
          * Sets `m_power2` to true and sets `m_pow2_exp to `coeffs`.
          * */
-        void setPower2(int* coeffs);
+        void setPower2(IntVec& coeffs);
 
         /**
          * Builds a projection for this lattice on the set in indices in `proj`.
@@ -285,7 +285,7 @@ namespace LatMRG {
         /**
          * The powers of 2 used if this generator has power of 2 coefficients.
          * */
-        int* m_pow2_exp;
+        IntVec m_pow2_exp;
 
     }; // End class declaration
 
@@ -434,7 +434,6 @@ namespace LatMRG {
       this->m_wSI.SetDims(rmax, this->getDim());
 
       m_power2 = false;
-      m_pow2_exp = NULL;
       if (m_latType == ORBIT)
         initOrbit();
     }
@@ -461,7 +460,6 @@ namespace LatMRG {
       m_aCoef.kill();
       m_sta.kill();
       this->m_wSI.kill();
-      if (this->m_power2) delete[] this->m_pow2_exp;
     }
 
   //===========================================================================
@@ -507,10 +505,10 @@ namespace LatMRG {
         if(m_power2) {
           out << " = ";
           if (m_pow2_exp[2*i] == 2004012) out << 0;
-          else out << (m_pow2_exp[2*i]>>30?" ":"-") << 2 << "^"
+          else out << (((m_pow2_exp[2*i]>>30)!=0)?" ":"-") << 2 << "^"
             << (m_pow2_exp[2*i] & ((1<<30)-1));
           if (m_pow2_exp[2*i+1] == 2004012) out << " + " << 0;
-          else out << (m_pow2_exp[2*i+1]>>30?" + ":" - ") << 2 << "^"
+          else out << (((m_pow2_exp[2*i+1]>>30)!=0)?" + ":" - ") << 2 << "^"
             << (m_pow2_exp[2*i+1] & ((1<<30)-1));
         }
         out << "\n";
@@ -559,7 +557,6 @@ namespace LatMRG {
           }
         }
       }
-
 
       if (d > this->m_order) {
         for (i = this->m_order; i < d; i++)
@@ -1073,9 +1070,9 @@ namespace LatMRG {
          */
     }
   template<typename Int, typename Dbl>
-    void MRGLattice<Int, Dbl>::setPower2(int* coeffs) {
+    void MRGLattice<Int, Dbl>::setPower2(IntVec& coeffs) {
       this->m_power2 = true;
-      this->m_pow2_exp = new int[2*this->m_order];
+      this->m_pow2_exp.SetLength(2*this->m_order);
       for (int i = 0; i < this->m_order*2; i++) {
         this->m_pow2_exp[i] = coeffs[i];
       }

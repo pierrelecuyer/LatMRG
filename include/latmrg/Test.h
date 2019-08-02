@@ -1,5 +1,7 @@
 /*
- * This file contains
+ * This file contains implementations and configurations for tests.
+ * The main functions of this file are only defined when certain preprocessing
+ * macros exist.
  * */
 #ifndef LATMRG_TEST_H
 #define LATMRG_TEST_H
@@ -155,17 +157,28 @@ namespace LatMRG {
      * */
     extern template void reduceMink(LatticeTester::IntLattice<NTL::ZZ, NTL::ZZ, NTL::RR, NTL::RR>& lat);
   }
+#endif
+#ifndef LATMRG_TEST
+} // end namespace LatMRG
+#else
+// The definitions in this section are not properly garded to avoid behing defined twice
+// TAKE CARE!!!
 
-#ifdef LATMRG_USE_CONFIG
-  /**
-   * This stores the configuration of a problem. This contains many parameters
-   * used in the executables and when using the `test()` function.
-   *
-   * This structure is intended to be included in executables only and needs to
-   * be compiled on demand. To do so, simply `#define LATMRG_USE_CONFIG` before
-   * including this header.
-   * */
+/**
+ * This stores the configuration of a problem. This contains many parameters
+ * used in the executables and when using the `test()` function.
+ *
+ * This structure is intended to be included in executables only and needs to
+ * be compiled on demand. To do so, simply `#define LATMRG_TEST` before
+ * including this header.
+ * */
+#ifdef LATMRG_LAT
+  struct ConfigLat {
+#elif defined LATMRG_SEEK
+  struct ConfigSeek {
+#else
   struct Config {
+#endif
     // For period tests
     DecompType decompm1 = DECOMP, decompr = DECOMP;
     std::string filem1, filer;
@@ -173,7 +186,7 @@ namespace LatMRG {
     // Data file read parameters
     GenType type;
     // Type of figure of merit
-    LatticeTester::NormaType normaType = LatticeTester::NONE;
+    LatticeTester::NormaType normaType;
     LatticeTester::CriterionType criterion;
     LatticeTester::PreReductionType reduction;
     bool use_dual;
@@ -220,13 +233,20 @@ namespace LatMRG {
     bool period;
   };
 
-#ifdef LATMRG_USE_TEST
   /**
    * This performs a test on a lattice. That is, given a lattice and a `Config`
    * it populates a `FigureOfMerit` objects and returns it.
    * */
+#ifdef LATMRG_LAT
+  template<typename Lat>
+    FigureOfMerit<Lat> test_lat(Lat & lattice, ConfigLat& conf) {
+#elif defined LATMRG_SEEK
+  template<typename Lat>
+    FigureOfMerit<Lat> test_seek(Lat & lattice, ConfigSeek& conf) {
+#else
   template<typename Lat>
     FigureOfMerit<Lat> test(Lat & lattice, Config& conf) {
+#endif
       typedef typename Lat::Integ Int;
       typedef typename Lat::IntVec IntVec;
       typedef typename Lat::Float Dbl;
@@ -346,8 +366,5 @@ namespace LatMRG {
       delete norma;
       return figure;
     }
-#endif
-#endif
-
 } // end namespace LatMRG
 #endif

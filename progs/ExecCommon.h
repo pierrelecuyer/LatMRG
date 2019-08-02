@@ -2,9 +2,9 @@
 #define LATMRG_EXECCOMMON_H
 
 /**
- * This file contains functions, classes and code used in SeekRe. This file is
- * used to remove some of the clutter in SeekRe.cc. This is because some of the
- * functions needed already exist but need to be rewritten.
+ * This file contains the header inclusions needed by the executables and defines
+ * global variables with the default values for the program.
+ *
  * */
 #include <ctime>
 #include <cstdlib>
@@ -24,7 +24,6 @@
 #include "latmrg/FigureOfMerit.h"
 #include "latmrg/Const.h"
 #include "latmrg/Projections.h"
-#include "latmrg/LCGCarryLattice.h"
 
 typedef NTL::ZZ Int;
 typedef double Dbl;
@@ -32,16 +31,15 @@ typedef NTL::vector<Int> IntVec;
 typedef NTL::matrix<Int> IntMat;
 typedef NTL::vector<Dbl> DblVec;
 
-#define LATMRG_USE_CONFIG
-#define LATMRG_USE_TEST
-#include "latmrg/Test.h"
-
 using LatticeTester::IntLattice;
 using LatticeTester::Normalizer;
+using namespace LatMRG;
+using namespace LatticeTester::Random;
 
 // Variable definitions for executables only
 const std::string delim = "\n========================================"
 "========================================\n\n";
+
 #ifdef MRGLATTICE_MAIN_EXEC
 // These are all the variables the main program might read from configuration files.
 // We initialize them all to a default value except a few
@@ -50,18 +48,19 @@ LatticeTester::CriterionType crit_type = LatticeTester::SPECTRAL;
 bool dual = true;
 LatticeTester::PreReductionType red_type = LatticeTester::FULL;
 LatticeTester::NormaType norma_type = LatticeTester::NONE;
-double time_limit = 3600.0;
+double time_limit = 600.0;
 int max_gen = 10;
 int detail = 1;
 bool period = false;
+bool best = true;
 
 // Values without default
 LatMRG::Projections* proj;
 bool proj_set = false;
 // insert all possible generator variables.
 // m is the modulus. m = p^e+r
-Int m, r, p;
-int e;
+Int m;
+int e, r, p;
 // order of the recurrence
 int k;
 // Stores the a_j or the info to build them

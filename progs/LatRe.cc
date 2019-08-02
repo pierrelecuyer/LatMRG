@@ -6,16 +6,18 @@
  * - Read from generator file
  * - input file format correction
  * */
-#include "latmrg/Chrono.h"
+#include "ExecCommon.h"
 using namespace LatMRG;
 Chrono timer;
+
 #define LATMRG_LAT
-#include "ExecCommon.h"
+#define LATMRG_TEST
+#include "latmrg/Test.h"
 
 using namespace LatticeTester::Random;
 
 namespace {
-  Config conf;
+  ConfigLat conf;
   // Program global objects
   int numProj, minDim, maxDim;
   int detail;
@@ -209,7 +211,7 @@ int main (int argc, char **argv) {
     temp[0] = Int(0);
     for (int i = 1; i < conf.order+1; i++) temp[i] = conf.mult[i-1];
     MRGLattice<Int, Dbl> mrglat(conf.modulo, temp, maxDim, conf.order, FULL);
-    bestLattice.add(test(mrglat, conf));
+    bestLattice.add(test_lat(mrglat, conf));
     printResults(bestLattice);
   } else if (conf.type == MWC) {
     //MWCLattice<Int, Dbl>* mwclat = 0;
@@ -221,13 +223,13 @@ int main (int argc, char **argv) {
   } else if (conf.type == MMRG) {
     MeritList<MMRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
     MMRGLattice<Int, Dbl> mmrglat(conf.modulo, conf.matrix, maxDim, conf.order);
-    bestLattice.add(test(mmrglat, conf));
+    bestLattice.add(test_lat(mmrglat, conf));
     printResults(bestLattice);
   } else if (conf.type == COMBO) {
     MeritList<ComboLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
     MRGLattice<Int, Dbl>* mrg = getLatCombo<Int, Dbl>(combo, maxDim);
     ComboLattice<Int, Dbl> combolat(combo, *mrg);
-    bestLattice.add(test(combolat, conf));
+    bestLattice.add(test_lat(combolat, conf));
     printResults(bestLattice);
   }
   delete conf.proj;
