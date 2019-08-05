@@ -226,8 +226,8 @@ void readSeek(tinyxml2::XMLNode* current) {
   //if (current->NoChild()) return;
   tinyxml2::XMLNode* node = current->FirstChild();
   while (node) {
-    if (tryGen(node)) {std::cout << "gen\n";}
-    else if (tryTest(node)) {std::cout << "test\n";}
+    if (tryGen(node)) {}
+    else if (tryTest(node)) {}
     else if (!strcmp(node->Value(), "bounds")) {
       std::cout << node->Value() << "\n";
     } else if (!strcmp(node->Value(), "k")) {

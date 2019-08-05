@@ -194,6 +194,7 @@ namespace LatMRG {
     bool best;
     int num_gen = 0;
     Dbl currentMerit;
+    std::string construction = "RANDOM";
 #endif
     // Projection
     Projections* proj;

@@ -383,6 +383,7 @@ namespace LatMRG {
       {
         std::ofstream fout("dummy");
         fout << ifr.toString();
+        std::cout << ifr.toString();
       }
       ifr2.read("dummy");
       remove("dummy");

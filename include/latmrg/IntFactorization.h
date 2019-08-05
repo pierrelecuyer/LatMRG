@@ -437,6 +437,7 @@ namespace LatMRG {
       remove (filename);
       remove("session.log");
       remove("factor.log");
+      remove("siqs.dat");
 #else
       std::cout << "IntFactorization: Yafu is not installed in ./data.\n"
         "For more information on how to fix this problem, look at the\n"
