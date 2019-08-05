@@ -21,10 +21,10 @@ else
 endif
 
 # Library path. This assumes NTL is in /usr/local/lib (its default path).
-STAT_LIBS_PATH = -Wl,-Bstatic
-STAT_LIBS = #-llatmrg -llatticetester
-DYN_LIBS_PATH = -Wl,-Bdynamic -L/usr/local/lib -L$(LIB_DIR)
-DYN_LIBS = -llatmrg -llatticetester -lntl -lgmp -ltinyxml2 #-ltestu01 -lmylib
+STAT_LIBS_PATH = -Wl,-Bstatic -L$(LIB_DIR)
+STAT_LIBS = -llatmrg -llatticetester
+DYN_LIBS_PATH = -Wl,-Bdynamic -L/usr/local/lib
+DYN_LIBS = -lntl -lgmp -ltinyxml2 #-ltestu01 -lmylib
 
 # A few directories we need to be aware of
 SRC_DIR = ./src
@@ -56,8 +56,7 @@ EX_CC = $(wildcard $(EX_DIR)/*.cc)
 # Below we are replacing the suffix .c of all words in the macro SRCS
 # with the .o suffix
 #
-OBJS = $(SRCS:$(SRC_DIR)/%.cc=$(OBJ_DIR)/%)
-SHA_OBJS = $(SRCS:$(SRC_DIR)/%.cc=$(OBJ_DIR)/%.o)
+STA_OBJS = $(SRCS:$(SRC_DIR)/%.cc=$(OBJ_DIR)/%.o)
 DYN_OBJS = $(SRCS:$(SRC_DIR)/%.cc=$(OBJ_DIR)/%.so)
 PROGS_O = $(PROGS_CC:$(PRO_DIR)/%.cc=$(PRO_DIR)/%.o)
 EX_O = $(EX_CC:%.cc=%.o)
@@ -80,9 +79,9 @@ all: clean_all default examples doc
 #===============================================================================
 # Building the library
 
-$(LIB_DIR)/liblatmrg.a: $(OBJS) | message_lib $(LIB_DIR)
+$(LIB_DIR)/liblatmrg.a: $(STA_OBJS) | message_lib $(LIB_DIR)
 	rm -f $(LIB_DIR)/liblatmrg.a
-	ar rcs $(LIB_DIR)/liblatmrg.a $(SHA_OBJS)
+	ar rcs $(LIB_DIR)/liblatmrg.a $(STA_OBJS)
 	$(CC) -shared $(DYN_OBJS) -o $(LIB_DIR)/liblatmrg.so
 	@echo
 	@echo 'LatMRG library archive created: ./lib/liblatmrg.a'
@@ -104,9 +103,9 @@ $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)/latmrg
 	@echo
 
-$(OBJ_DIR)/%:$(SRC_DIR)/%.cc $(INC_DIR)/%.h | message_obj $(OBJ_DIR)
-	$(CC) $(CFLAGS) $(INCLUDES) $(YAFU) -c $< -o $@.o
-	$(CC) -fPIC $(CFLAGS) $(INCLUDES) $(YAFU) -c $< -o $@.so
+$(OBJ_DIR)/%.o:$(SRC_DIR)/%.cc $(INC_DIR)/%.h | message_obj $(OBJ_DIR)
+	$(CC) $(CFLAGS) $(INCLUDES) $(YAFU) -c $< -o $@
+	$(CC) -fPIC $(CFLAGS) $(INCLUDES) $(YAFU) -c $< -o $(@:%.o=%).so
 
 message_obj:
 	$(SEP)
