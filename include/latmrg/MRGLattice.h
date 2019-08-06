@@ -420,7 +420,6 @@ namespace LatMRG {
   template<typename Int, typename Dbl>
     void MRGLattice<Int, Dbl>::init()
     {
-      LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::init();
       m_xi.SetLength(this->m_order);
       m_aCoef.SetLength(this->m_order);
       if (this->m_order > ORDERMAX) {

@@ -346,7 +346,6 @@ namespace LatMRG {
     void MMRGLattice<Int, Dbl>::init()
     {
       //kill(); //PW_TODO : wzf ? M-A : Indeed wzf...?
-      LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::init();
       // This should not be needed
       m_xi.SetLength(this->m_order);
       m_A.SetDims(this->m_order, this->m_order);
