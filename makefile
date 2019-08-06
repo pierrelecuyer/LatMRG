@@ -82,7 +82,7 @@ all: clean_all default examples doc
 $(LIB_DIR)/liblatmrg.a: $(STA_OBJS) | message_lib $(LIB_DIR)
 	rm -f $(LIB_DIR)/liblatmrg.a
 	ar rcs $(LIB_DIR)/liblatmrg.a $(STA_OBJS)
-	$(CC) -shared $(DYN_OBJS) -o $(LIB_DIR)/liblatmrg.so
+	$(CC) -o $(LIB_DIR)/liblatmrg.so -shared $(DYN_OBJS)
 	@echo
 	@echo 'LatMRG library archive created: ./lib/liblatmrg.a'
 	@echo

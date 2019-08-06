@@ -355,8 +355,8 @@ int Seek ()
     mrg = new MRGComponent<Int>(conf.modulo, conf.order, conf.decompm1,
         conf.filem1.c_str(), conf.decompr, conf.filer.c_str());
   }
-  std::vector<int> projDim = {5,32};
-  conf.proj = new Projections(1, 5, projDim);
+  std::vector<int> projDim = {7,32};
+  conf.proj = new Projections(7, 10, projDim);
   timer.init();
 
   // Launching the tests
@@ -369,15 +369,10 @@ int Seek ()
       if (conf.construction == "POW2") mrglat = nextGeneratorPow2(mrglat);
       else if (conf.construction == "RANDOM") mrglat = nextGenerator(mrglat);
       if (mrglat == NULL) continue;
-      std::cout << 5 << "\n";
       bestLattice.add(test_seek(*mrglat, conf));
-      std::cout << 6 << "\n";
       conf.num_gen++;
-      std::cout << 7 << "\n";
       conf.currentMerit = bestLattice.getMerit();
-      std::cout << 8 << "\n";
       old = print_progress(old);
-      std::cout << 9 << "\n";
     }
     if (mrglat) delete mrglat;
     printResults(bestLattice);

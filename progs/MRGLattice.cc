@@ -47,7 +47,7 @@ void print_help() {
 //==============================================================================
 
 int toVectString(const char* str, IntVec& vect, int length) {
-  int j = 0, old = 0;;
+  int j = 0, old = 0;
   for (int i = 0; i < length; i++) {
     while (str[j] != ' ' && str[j] != '\0') j++;
     if (str[j] == '\0' && j <= old) {
@@ -274,7 +274,6 @@ void readFile(const char* filename) {
     Seek();
     // fill seek
   } else if (!strcmp(current->Value(), "lattest")) {
-    std::cout << 1 << "\n";
     // fill lattest
   }
 }

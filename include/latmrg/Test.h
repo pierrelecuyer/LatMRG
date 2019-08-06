@@ -298,7 +298,9 @@ namespace LatMRG {
 #endif
         // Changing back to the primal and increasing the dimension
         if (conf.use_dual) lattice.dualize();
-        if (proj->minDim() < proj->maxDim()) lattice.incDim();
+        if (proj->minDim() < proj->maxDim()) {
+          lattice.incDim();
+        }
       }
 #ifdef LATMRG_LAT
         std::cout << "Seq time " << timer.val(LatMRG::Chrono::SEC) << "\n";

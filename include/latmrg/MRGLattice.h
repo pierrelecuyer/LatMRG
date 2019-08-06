@@ -580,18 +580,13 @@ namespace LatMRG {
 
   template<typename Int, typename Dbl>
     void MRGLattice<Int, Dbl>::incDimBasis()
-    // x_n = (a_1 x_{n-1} + a_2 x_{n-2} +...+ a_k x_{n-k}) mod m. On a Dim >= Order.
     {
-      // trace( "=================================AVANT incDimBasis", -10);
 
       LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::incDim();
 
       const int dim = this->getDim();
       this->m_vSI.resize(dim, dim);
       this->m_wSI.resize(dim, dim);
-      //m_basis.setDim(dim);
-      //m_w.setDim(dim);
-      //write();
 
       for (int i = 0; i < dim; i++) {
         NTL::clear (this->m_vSI[0][i]);
