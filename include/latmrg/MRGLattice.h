@@ -446,20 +446,17 @@ namespace LatMRG {
       kill();
     }
 
-
   //===========================================================================
 
   template<typename Int, typename Dbl>
     void MRGLattice<Int, Dbl>::kill()
     {
-      LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::kill();
       if (0 != m_ip)
         delete[] m_ip;
       m_ip = 0;
       m_xi.kill();
       m_aCoef.kill();
       m_sta.kill();
-      this->m_wSI.kill();
     }
 
   //===========================================================================
