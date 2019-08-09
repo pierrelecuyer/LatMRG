@@ -12,7 +12,7 @@ var searchData=
   ['findmk_2edox',['FindMK.dox',['../_find_m_k_8dox.html',1,'']]],
   ['finished',['finished',['../class_lat_m_r_g_1_1_figure_of_merit.html#aeaedeb63c35b0bd078cb5a29ff05e844',1,'LatMRG::FigureOfMerit']]],
   ['fish31_3c_2fcode_20_3e',['fish31&lt;/code &gt;',['../usage_8dox.html#a97888aeb57b65a560a329f6889f2f53a',1,'usage.dox']]],
-  ['float',['Float',['../class_lat_m_r_g_1_1_combo_lattice.html#a72a31e9f984452c0ced8660e15eba7cb',1,'LatMRG::ComboLattice::Float()'],['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a0d13fe0b1e27856cdb1dfb8b522b7938',1,'LatMRG::MRGLattice::Float()']]],
+  ['float',['Float',['../class_lat_m_r_g_1_1_combo_lattice.html#a72a31e9f984452c0ced8660e15eba7cb',1,'LatMRG::ComboLattice']]],
   ['four',['Four',['../class_lat_m_r_g_1_1_modulus.html#abeb5a1387ef0acfd428b6be6bfbc7f9c',1,'LatMRG::Modulus']]],
   ['full',['FULL',['../namespace_lat_m_r_g.html#a86edf8445f847038592d741fd49b2b09aadd01ce47ad19c016e7dcaf75dc70810',1,'LatMRG']]],
   ['fullperiod',['fullPeriod',['../class_lat_m_r_g_1_1_m_w_c_lattice.html#a47353f4be2df2e2943121967cb21661e',1,'LatMRG::MWCLattice']]]

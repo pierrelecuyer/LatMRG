@@ -1,5 +1,7 @@
 var NAVTREEINDEX2 =
 {
+"class_lat_m_r_g_1_1_modulus.html#ae877f0255be3f2666a4b560989b53729":[8,0,0,13,0],
+"class_lat_m_r_g_1_1_modulus.html#aee077c9114a516e030c2cffd0a60cc6e":[8,0,0,13,21],
 "class_lat_m_r_g_1_1_param_reader_ext.html":[8,0,0,17],
 "class_lat_m_r_g_1_1_param_reader_ext.html#a011b4bd4662fd9a9f8d0411d7d0cf815":[8,0,0,17,19],
 "class_lat_m_r_g_1_1_param_reader_ext.html#a032e66d3b4ec9c17e288829820ab5f31":[8,0,0,17,2],
@@ -98,8 +100,8 @@ var NAVTREEINDEX2 =
 "functions_enum.html":[8,3,4],
 "functions_eval.html":[8,3,5],
 "functions_f.html":[8,3,0,5],
-"functions_func.html":[8,3,1,0],
 "functions_func.html":[8,3,1],
+"functions_func.html":[8,3,1,0],
 "functions_func_b.html":[8,3,1,1],
 "functions_func_c.html":[8,3,1,2],
 "functions_func_e.html":[8,3,1,3],

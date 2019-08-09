@@ -7,7 +7,8 @@ var hierarchy =
     [ "LatMRG::IntFactorization< NTL::ZZ >", "class_lat_m_r_g_1_1_int_factorization.html", null ],
     [ "IntLattice", null, [
       [ "LatMRG::KorobovLattice< Int, Dbl >", "class_lat_m_r_g_1_1_korobov_lattice.html", null ],
-      [ "LatMRG::MMRGLattice< Int, Dbl >", "class_lat_m_r_g_1_1_m_m_r_g_lattice.html", null ],
+      [ "LatMRG::MMRGLattice< Integ, Float >", "class_lat_m_r_g_1_1_m_m_r_g_lattice.html", null ],
+      [ "LatMRG::MRGLattice< Integ, Float >", "class_lat_m_r_g_1_1_m_r_g_lattice.html", null ],
       [ "LatMRG::MRGLattice< Int, Dbl >", "class_lat_m_r_g_1_1_m_r_g_lattice.html", [
         [ "LatMRG::AWCSWBLattice< Int, Dbl >", "class_lat_m_r_g_1_1_a_w_c_s_w_b_lattice.html", null ],
         [ "LatMRG::ComboLattice< Int, Dbl >", "class_lat_m_r_g_1_1_combo_lattice.html", null ],

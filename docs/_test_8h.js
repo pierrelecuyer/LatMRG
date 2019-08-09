@@ -1,8 +1,8 @@
 var _test_8h =
 [
-    [ "meritB", "_test_8h.html#aa2d7b74009f2b7cfaf92c04cf3a2025f", null ],
-    [ "meritL", "_test_8h.html#a0164d2673e002d904b06c0e1722f368e", null ],
-    [ "meritS", "_test_8h.html#a23e7d065929d362d19962da3623c6145", null ],
+    [ "meritB", "_test_8h.html#a9cb72d70a4306d2c6d6af80738b814e7", null ],
+    [ "meritL", "_test_8h.html#af08e2c470b2df1542029d3ff048d4b54", null ],
+    [ "meritS", "_test_8h.html#ab8dc9fa98f226c9024c7c12d10f46c6b", null ],
     [ "reduceBKZ", "_test_8h.html#ad384098426bb27c2fe1845cc5be8a0f6", null ],
     [ "reduceBKZ", "_test_8h.html#a81bae152349a7581ce050892c1d5e61a", null ],
     [ "reduceBKZ", "_test_8h.html#a832495504987c747cb2db64297e4c019", null ],

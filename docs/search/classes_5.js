@@ -9,5 +9,6 @@ var searchData=
   ['modulus',['Modulus',['../class_lat_m_r_g_1_1_modulus.html',1,'LatMRG']]],
   ['mrgcomponent',['MRGComponent',['../class_lat_m_r_g_1_1_m_r_g_component.html',1,'LatMRG']]],
   ['mrglattice',['MRGLattice',['../class_lat_m_r_g_1_1_m_r_g_lattice.html',1,'LatMRG']]],
+  ['mrglattice_3c_20int_2c_20dbl_20_3e',['MRGLattice&lt; Int, Dbl &gt;',['../class_lat_m_r_g_1_1_m_r_g_lattice.html',1,'LatMRG']]],
   ['mwclattice',['MWCLattice',['../class_lat_m_r_g_1_1_m_w_c_lattice.html',1,'LatMRG']]]
 ];
