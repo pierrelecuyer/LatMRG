@@ -1,29 +1,21 @@
 #ifndef LATMRG_SEEK_H
 #define LATMRG_SEEK_H
 
-#include "ExecCommon.h"
-
-#define LATMRG_TEST
-#define LATMRG_SEEK
-#include "latmrg/Test.h"
-
 // Number of generators to generate before testing time in nextGenerator
 #define DELAY 1000
 
-namespace SeekName {
-  ConfigSeek conf;
-}
+template<typename Int, typename Dbl> struct SeekMain {
+  typedef NTL::vector<Int> IntVec;
+  typedef NTL::matrix<Int> IntMat;
 
-using SeekName::conf;
+  ConfigSeek<Int, Dbl> conf;
 
-namespace {
   // Program global objects
   Chrono timer; // program timer
   int maxDim = 40;
 
   // MRG specific parameters
   MRGComponent<Int>* mrg;
-  //int* coeff = NULL;
   int** comb_coeff;
 
   /**
@@ -57,7 +49,7 @@ namespace {
             status = LatticeTester::IntFactor<Int>::isPrime (m1, KTRIALS);
             if (status != LatticeTester::PRIME && status != LatticeTester::PROB_PRIME) continue;
             // For MWC we check 2^{(m-1)/2} \neq 1 mod m.
-            NTL::ZZ_p::init(m);
+            NTL::ZZ_p::init(NTL::ZZ(m));
             NTL::ZZ_p a = NTL::power(NTL::ZZ_p(2), m1);
             if (NTL::IsOne(a)) {
               continue;
@@ -113,7 +105,7 @@ namespace {
         if (timer.timeOver(conf.timeLimit)) return NULL;
         else delay = 0;
       }
-      for (long i = 0; i<conf.order; i++) A[i+1] = coeff[i] * randInt(Int(0), conf.modulo);
+      for (long i = 0; i<conf.order; i++) A[i+1] = conf.coeff[i] * randInt(Int(0), conf.modulo);
       delay++;
     } while ((A[conf.order] == 0) || (conf.period && !mrg->maxPeriod(A)));
     if (lattice) delete lattice;
@@ -137,13 +129,13 @@ namespace {
         else delay = 0;
       }
       for (long i = 0; i<conf.order; i++) {
-        if (coeff[2*i] < 0) {
+        if (conf.coeff[2*i] < 0) {
           // This is a placeholder value for a zero coefficient
           coefficients[2*i] = coefficients[2*i+1] = 2004012;
           A[i+1] = 0;
           continue;
         }
-        coefficients[2*i] = randInt(Int(LatticeTester::Lg(conf.rest))+1, coeff[2*i]);
+        coefficients[2*i] = randInt(Int(LatticeTester::Lg(conf.rest))+1, conf.coeff[2*i]);
         sign = randInt(0,1);
         {
           Int tmp;
@@ -151,8 +143,8 @@ namespace {
           A[i+1] = Int(sign?1:-1) * tmp;
         }
         coefficients[2*i] ^= sign<<30;
-        if (!(coeff[2*i+1] < 0)) {
-          coefficients[2*i+1] = randInt(Int(LatticeTester::Lg(conf.rest))+1, coeff[2*i+1]);
+        if (!(conf.coeff[2*i+1] < 0)) {
+          coefficients[2*i+1] = randInt(Int(LatticeTester::Lg(conf.rest))+1, conf.coeff[2*i+1]);
           sign = randInt(0,1);
           Int tmp;
           NTL::power2(tmp, coefficients[2*i+1]);
@@ -175,12 +167,10 @@ namespace {
     // 63 bits at a time because NTL converts from SIGNED long
     while(exp > 0) {
       if (exp < 63) {
-        m << exp;
-        m += LatticeTester::RandBits(exp);
+        m = (m << exp) + LatticeTester::RandBits(exp);
         exp -= exp;
       }
-      m << 63;
-      m += LatticeTester::RandBits(63);
+      m = (m << 63) + LatticeTester::RandBits(63);
       exp -= 63;
     }
     if ((m&1) == 1) m+=1;
@@ -211,7 +201,7 @@ namespace {
       delay++;
     } while ((NTL::determinant(A) == 0) || (conf.period && !mrg->maxPeriod(A)));
     // Correcting the matrix to a full matrix
-    for (int i = 0; i<conf.order; i++) A *= A;
+    //for (int i = 0; i<conf.order; i++) A *= A;
     for (int i = 0; i<conf.order; i++)
       for (int j = 0; j<conf.order; j++)
         A[i][j] = A[i][j]%conf.modulo;
@@ -281,52 +271,52 @@ namespace {
    * This only add the lattices that are good enough.
    * */
   template<typename Lat>
-  void printResults(MeritList<Lat>& bestLattice) {
-    std::cout << "\nSeekRe: A search program for Random Number Generators\n";
-    std::cout << delim;
-    std::cout << "Bellow are the results of a search for random number generators:\n";
-    std::cout << "Generator type: " << toStringGen(conf.type) << "\n";
-    if (conf.type == MRG) {
-      std::cout << "With modulus:   m = " << conf.modulo << " = " << conf.basis << "^"
-        << conf.exponent << (conf.rest>0?"+":"") << (conf.rest!=0?std::to_string(conf.rest):"") << "\n";
-      std::cout << "Of order:       k = " << conf.order << "\n";
-    } else if (conf.type == MWC) {
-    } else if (conf.type == MMRG) {
-    }
-    std::cout << "And " << (conf.period?"full":"any") << " period length\n";
-    std::cout << "The test was:\n" << (conf.best?"Best":"Worst") << " generators "
-      "ranked by ";
-    if(conf.criterion == LatticeTester::SPECTRAL) std::cout << "minimal "
-      << (conf.normaType==LatticeTester::NONE?"inverse":"normalized")
-        << " shortest non-zero vector length (Spectral test)\n";
-    else if (conf.criterion == LatticeTester::LENGTH) std::cout << "minimal"
-      << " shortest non-zero vector length\n";
-    else if (conf.criterion == LatticeTester::BEYER) std::cout << "their Beyer quotient\n";
-    if (conf.normaType != LatticeTester::NONE) {
-      std::cout << "Normalizer used: "
-        << LatticeTester::toStringNorma(conf.normaType) << "\n";
-    }
-    std::cout << "On dimensions and projections:\n";
-    std::cout << conf.proj->toString();
-    std::cout << delim;
-    std::cout << "Allowed running time: " << conf.timeLimit << "s.\n";
-    std::cout << "Actual CPU time: " << timer.toString() << "\n";
-    std::cout << "Number of generators kept: " << conf.max_gen << "\n";
-    std::cout << "Number of generators tested: " << conf.num_gen << "\n\n";
-    std::cout << "Retained generators (from best to worst):\n";
-    for (auto it = bestLattice.getList().begin(); it!= bestLattice.getList().end(); it++) {
+    void printResults(MeritList<Lat>& bestLattice) {
+      std::cout << "\nSeekRe: A search program for Random Number Generators\n";
       std::cout << delim;
+      std::cout << "Bellow are the results of a search for random number generators:\n";
+      std::cout << "Generator type: " << toStringGen(conf.type) << "\n";
       if (conf.type == MRG) {
-        std::cout << "Coefficients:\n" << (*it).getLattice() << "\n";
-      } else if (conf.type == MWC) {}
-      else if (conf.type == MMRG) {
-        std::cout << "Matrix:\n" << (*it).getLattice() << "\n";
-      } else if (conf.type == COMBO) {
-        std::cout << (*it).getLattice() << "\n";
+        std::cout << "With modulus:   m = " << conf.modulo << " = " << conf.basis << "^"
+          << conf.exponent << (conf.rest>0?"+":"") << (conf.rest!=0?std::to_string(conf.rest):"") << "\n";
+        std::cout << "Of order:       k = " << conf.order << "\n";
+      } else if (conf.type == MWC) {
+      } else if (conf.type == MMRG) {
       }
-      std::cout << (*it).toStringMerit();
+      std::cout << "And " << (conf.period?"full":"any") << " period length\n";
+      std::cout << "The test was:\n" << (conf.best?"Best":"Worst") << " generators "
+        "ranked by ";
+      if(conf.criterion == LatticeTester::SPECTRAL) std::cout << "minimal "
+        << (conf.normaType==LatticeTester::NONE?"inverse":"normalized")
+          << " shortest non-zero vector length (Spectral test)\n";
+      else if (conf.criterion == LatticeTester::LENGTH) std::cout << "minimal"
+        << " shortest non-zero vector length\n";
+      else if (conf.criterion == LatticeTester::BEYER) std::cout << "their Beyer quotient\n";
+      if (conf.normaType != LatticeTester::NONE) {
+        std::cout << "Normalizer used: "
+          << LatticeTester::toStringNorma(conf.normaType) << "\n";
+      }
+      std::cout << "On dimensions and projections:\n";
+      std::cout << conf.proj->toString();
+      std::cout << delim;
+      std::cout << "Allowed running time: " << conf.timeLimit << "s.\n";
+      std::cout << "Actual CPU time: " << timer.toString() << "\n";
+      std::cout << "Number of generators kept: " << conf.max_gen << "\n";
+      std::cout << "Number of generators tested: " << conf.num_gen << "\n\n";
+      std::cout << "Retained generators (from best to worst):\n";
+      for (auto it = bestLattice.getList().begin(); it!= bestLattice.getList().end(); it++) {
+        std::cout << delim;
+        if (conf.type == MRG) {
+          std::cout << "Coefficients:\n" << (*it).getLattice() << "\n";
+        } else if (conf.type == MWC) {}
+        else if (conf.type == MMRG) {
+          std::cout << "Matrix:\n" << (*it).getLattice() << "\n";
+        } else if (conf.type == COMBO) {
+          std::cout << (*it).getLattice() << "\n";
+        }
+        std::cout << (*it).toStringMerit();
+      }
     }
-  }
 
   int print_progress(int old) {
     int per_80 = timer.val(Chrono::SEC)/conf.timeLimit * 80;
@@ -342,87 +332,86 @@ namespace {
     return per_80;
   }
 
-}
+  int Seek ()
+  {
+    // Initializing values
+    srand(time(NULL));
+    conf.filem1 = "./tempm1" + std::to_string(rand());
+    conf.filer = "./tempr" + std::to_string(rand());
+    // Dynamically allocated objects
+    if (conf.type != COMBO) {
+      mrg = new MRGComponent<Int>(conf.modulo, conf.order, conf.decompm1,
+          conf.filem1.c_str(), conf.decompr, conf.filer.c_str());
+    }
+    std::vector<int> projDim = {7,32};
+    conf.proj = new Projections(7, 10, projDim);
+    timer.init();
 
-int Seek ()
-{
-  // Initializing values
-  srand(time(NULL));
-  conf.filem1 = "./tempm1" + std::to_string(rand());
-  conf.filer = "./tempr" + std::to_string(rand());
-  // Dynamically allocated objects
-  if (conf.type != COMBO) {
-    mrg = new MRGComponent<Int>(conf.modulo, conf.order, conf.decompm1,
-        conf.filem1.c_str(), conf.decompr, conf.filer.c_str());
+    // Launching the tests
+    std::cout << "Program progress:\n";
+    int old = print_progress(-1);
+    if (conf.type == MRG) {
+      MRGLattice<Int, Dbl>* mrglat = 0;
+      MeritList<MRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
+      while (!timer.timeOver(conf.timeLimit)) {
+        if (conf.construction == "POW2") mrglat = nextGeneratorPow2(mrglat);
+        else if (conf.construction == "RANDOM") mrglat = nextGenerator(mrglat);
+        if (mrglat == NULL) continue;
+        bestLattice.add(test_seek(*mrglat, conf));
+        conf.num_gen++;
+        conf.currentMerit = bestLattice.getMerit();
+        old = print_progress(old);
+      }
+      if (mrglat) delete mrglat;
+      printResults(bestLattice);
+    } else if (conf.type == MWC) {
+      MWCLattice<Int, Dbl>* mwclat = 0;
+      MeritList<MWCLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
+      while (!timer.timeOver(conf.timeLimit)) {
+        mwclat = nextGenerator(mwclat);
+        if (mwclat == NULL) continue;
+        bestLattice.add(test_seek(*mwclat, conf));
+        conf.num_gen++;
+        conf.currentMerit = bestLattice.getMerit();
+        old = print_progress(old);
+      }
+      if (mwclat) delete mwclat;
+      printResults(bestLattice);
+    } else if (conf.type == MMRG) {
+      MMRGLattice<Int, Dbl>* mmrglat = 0;
+      MeritList<MMRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
+      while (!timer.timeOver(conf.timeLimit)) {
+        mmrglat = nextGenerator(mmrglat);
+        if (mmrglat == NULL) continue;
+        bestLattice.add(test_seek(*mmrglat, conf));
+        conf.num_gen++;
+        conf.currentMerit = bestLattice.getMerit();
+        old = print_progress(old);
+      }
+      if (mmrglat) delete mmrglat;
+      printResults(bestLattice);
+    } else if (conf.type == COMBO) {
+      ComboLattice<Int, Dbl>* combolat=0;
+      MeritList<ComboLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
+      while (!timer.timeOver(conf.timeLimit)) {
+        combolat = nextGenerator(combolat);
+        if (combolat == NULL) continue;
+        bestLattice.add(test_seek(*combolat, conf));
+        conf.num_gen++;
+        conf.currentMerit = bestLattice.getMerit();
+        old = print_progress(old);
+      }
+      if (combolat) delete combolat;
+      printResults(bestLattice);
+      for (int i = 0; i < conf.num_comp; i++) {
+        if (conf.comb_fact[i]) delete conf.comb_fact[i];
+        delete[] comb_coeff[i];
+      }
+      delete[] comb_coeff;
+    }
+    delete conf.proj;
+    delete mrg;
+    return 0;
   }
-  std::vector<int> projDim = {7,32};
-  conf.proj = new Projections(7, 10, projDim);
-  timer.init();
-
-  // Launching the tests
-  std::cout << "Program progress:\n";
-  int old = print_progress(-1);
-  if (conf.type == MRG) {
-    MRGLattice<Int, Dbl>* mrglat = 0;
-    MeritList<MRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
-    while (!timer.timeOver(conf.timeLimit)) {
-      if (conf.construction == "POW2") mrglat = nextGeneratorPow2(mrglat);
-      else if (conf.construction == "RANDOM") mrglat = nextGenerator(mrglat);
-      if (mrglat == NULL) continue;
-      bestLattice.add(test_seek(*mrglat, conf));
-      conf.num_gen++;
-      conf.currentMerit = bestLattice.getMerit();
-      old = print_progress(old);
-    }
-    if (mrglat) delete mrglat;
-    printResults(bestLattice);
-  } else if (conf.type == MWC) {
-    MWCLattice<Int, Dbl>* mwclat = 0;
-    MeritList<MWCLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
-    while (!timer.timeOver(conf.timeLimit)) {
-      mwclat = nextGenerator(mwclat);
-      if (mwclat == NULL) continue;
-      bestLattice.add(test_seek(*mwclat, conf));
-      conf.num_gen++;
-      conf.currentMerit = bestLattice.getMerit();
-      old = print_progress(old);
-    }
-    if (mwclat) delete mwclat;
-    printResults(bestLattice);
-  } else if (conf.type == MMRG) {
-    MMRGLattice<Int, Dbl>* mmrglat = 0;
-    MeritList<MMRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
-    while (!timer.timeOver(conf.timeLimit)) {
-      mmrglat = nextGenerator(mmrglat);
-      if (mmrglat == NULL) continue;
-      bestLattice.add(test_seek(*mmrglat, conf));
-      conf.num_gen++;
-      conf.currentMerit = bestLattice.getMerit();
-      old = print_progress(old);
-    }
-    if (mmrglat) delete mmrglat;
-    printResults(bestLattice);
-  } else if (conf.type == COMBO) {
-    ComboLattice<Int, Dbl>* combolat=0;
-    MeritList<ComboLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
-    while (!timer.timeOver(conf.timeLimit)) {
-      combolat = nextGenerator(combolat);
-      if (combolat == NULL) continue;
-      bestLattice.add(test_seek(*combolat, conf));
-      conf.num_gen++;
-      conf.currentMerit = bestLattice.getMerit();
-      old = print_progress(old);
-    }
-    if (combolat) delete combolat;
-    printResults(bestLattice);
-    for (int i = 0; i < conf.num_comp; i++) {
-      if (conf.comb_fact[i]) delete conf.comb_fact[i];
-      delete[] comb_coeff[i];
-    }
-    delete[] comb_coeff;
-  }
-  delete conf.proj;
-  delete mrg;
-  return 0;
-}
+}; // end struct SeekMain
 #endif

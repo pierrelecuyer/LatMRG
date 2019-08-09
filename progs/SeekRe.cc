@@ -4,10 +4,6 @@
  * */
 #include "ExecCommon.h"
 
-#define LATMRG_SEEK
-#define LATMRG_TEST
-#include "latmrg/Test.h"
-
 // Number of generators to generate before testing time in nextGenerator
 #define DELAY 1000
 
@@ -15,7 +11,7 @@ using namespace LatMRG;
 using namespace LatticeTester::Random;
 
 namespace {
-  ConfigSeek conf;
+  ConfigSeek<NTL::ZZ, double> conf;
   // Program global objects
   Chrono timer; // program timer
   int numProj, minDim, maxDim;

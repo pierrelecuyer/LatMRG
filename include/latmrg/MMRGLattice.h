@@ -22,9 +22,11 @@ namespace LatMRG {
    *   X_n = A X_{n-1} \mod m.
    * \f]
    */
-  template<typename Int, typename Dbl>
-    class MMRGLattice: public LatticeTester::IntLattice<Int, Int, Dbl, Dbl> {
+  template<typename Integ, typename Float>
+    class MMRGLattice: public LatticeTester::IntLattice<Integ, Integ, Float, Float> {
       public:
+        typedef Integ Int;
+        typedef Float Dbl;
         typedef NTL::vector<Int> IntVec;
         typedef NTL::matrix<Int> IntMat;
 

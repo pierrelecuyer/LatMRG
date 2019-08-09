@@ -11,6 +11,7 @@
 
 #include "latmrg/FigureOfMerit.h"
 #include "latmrg/Const.h"
+#include "latmrg/MRGComponent.h"
 
 namespace LatMRG {
 
@@ -25,10 +26,10 @@ namespace LatMRG {
      * Computes the length of the shortest vector in the lattice.
      * */
     template<typename Lat>
-      typename Lat::Float meritL(Lat& lat) {
+      typename Lat::Dbl meritL(Lat& lat) {
         typename Lat::IntVec shortest(lat.getBasis()[0]);
-        typename Lat::Float tmp;
-        LatticeTester::ProdScal<typename Lat::Integ>(shortest, shortest, shortest.length(), tmp);
+        typename Lat::Dbl tmp;
+        LatticeTester::ProdScal<typename Lat::Int>(shortest, shortest, shortest.length(), tmp);
         return NTL::sqrt(tmp);
       }
 
@@ -36,13 +37,13 @@ namespace LatMRG {
      * Computes the value of the spectral test normalized with `norma`.
      * */
     template<typename Lat>
-      typename Lat::Float meritS(Lat& lat,
-          LatticeTester::Normalizer<typename Lat::Float>* norma) {
+      typename Lat::Dbl meritS(Lat& lat,
+          LatticeTester::Normalizer<typename Lat::Dbl>* norma) {
         typename Lat::IntVec shortest(lat.getBasis()[0]);
-        typename Lat::Float tmp;
-        LatticeTester::ProdScal<typename Lat::Integ>(shortest, shortest, shortest.length(), tmp);
+        typename Lat::Dbl tmp;
+        LatticeTester::ProdScal<typename Lat::Int>(shortest, shortest, shortest.length(), tmp);
         tmp = NTL::sqrt(tmp)/norma->getBound(shortest.length());
-        if (tmp > 1) tmp = typename Lat::Float(1)/tmp;
+        if (tmp > 1) tmp = typename Lat::Dbl(1)/tmp;
         return tmp;
       }
 
@@ -51,8 +52,8 @@ namespace LatMRG {
      * \todo implement this
      * */
     template<typename Lat>
-      typename Lat::Float meritB(Lat& lat) {
-        return typename Lat::Float(0.0);
+      typename Lat::Dbl meritB(Lat& lat) {
+        return typename Lat::Dbl(0.0);
       }
   }
 
@@ -157,217 +158,6 @@ namespace LatMRG {
      * */
     extern template void reduceMink(LatticeTester::IntLattice<NTL::ZZ, NTL::ZZ, NTL::RR, NTL::RR>& lat);
   }
-#endif
-#ifndef LATMRG_TEST
-} // end namespace LatMRG
-#else
-// The definitions in this section are not properly garded to avoid behing defined twice
-// TAKE CARE!!!
 
-/**
- * This stores the configuration of a problem. This contains many parameters
- * used in the executables and when using the `test()` function.
- *
- * This structure is intended to be included in executables only and needs to
- * be compiled on demand. To do so, simply `#define LATMRG_TEST` before
- * including this header.
- * */
-#ifdef LATMRG_LAT
-  struct ConfigLat {
-#elif defined LATMRG_SEEK
-  struct ConfigSeek {
-#else
-  struct Config {
-#endif
-    // For period tests
-    DecompType decompm1 = DECOMP, decompr = DECOMP;
-    std::string filem1, filer;
-
-    // Data file read parameters
-    GenType type;
-    // Type of figure of merit
-    LatticeTester::NormaType normaType;
-    LatticeTester::CriterionType criterion;
-    LatticeTester::PreReductionType reduction;
-    bool use_dual;
-#ifdef LATMRG_SEEK
-    bool best;
-    int num_gen = 0;
-    Dbl currentMerit;
-    std::string construction = "RANDOM";
-#endif
-    // Projection
-    Projections* proj;
-
-    double timeLimit;
-    int max_gen;
-
-    // MRG Specific parameters
-    IntVec mult; // MRG multipliers
-
-    // MWC Specific parameters
-    Int b; // modulo of MWC recurence
-
-    // MMRG Specific parameters
-    IntMat matrix;
-
-    // Combo specific parameters
-#ifdef LATMRG_SEEK
-    int num_comp;
-    std::vector<std::int64_t> comb_order; // k for MRG and MMRG
-    IntVec comb_modulo; // m for MRG and MMRG
-    // modulo is basis^exponent+rest
-    std::vector<std::int64_t> comb_basis;
-    std::vector<std::int64_t> comb_exponent;
-    std::vector<std::int64_t> comb_rest;
-    std::vector<bool> comb_period;
-    std::vector<MRGComponent<Int>*> comb_fact;
-#endif
-
-    // Shared components names
-    std::int64_t order; // k for MRG and MMRG
-    Int modulo; // m for MRG and MMRG
-    // modulo is basis^exponent+rest
-    std::int64_t basis;
-    std::int64_t exponent;
-    std::int64_t rest;
-    bool period;
-  };
-
-  /**
-   * This performs a test on a lattice. That is, given a lattice and a `Config`
-   * it populates a `FigureOfMerit` objects and returns it.
-   * */
-#ifdef LATMRG_LAT
-  template<typename Lat>
-    FigureOfMerit<Lat> test_lat(Lat & lattice, ConfigLat& conf) {
-#elif defined LATMRG_SEEK
-  template<typename Lat>
-    FigureOfMerit<Lat> test_seek(Lat & lattice, ConfigSeek& conf) {
-#else
-  template<typename Lat>
-    FigureOfMerit<Lat> test(Lat & lattice, Config& conf) {
-#endif
-      typedef typename Lat::Integ Int;
-      typedef typename Lat::IntVec IntVec;
-      typedef typename Lat::Float Dbl;
-      Projections* proj(conf.proj);
-
-      LatticeTester::Normalizer<Dbl>* norma = lattice.getNormalizer(conf.normaType, 0, true);
-      std::vector<Dbl> results;
-      std::vector<IntVec> vectors;
-      lattice.buildBasis(proj->minDim());
-      for (int i = proj->minDim(); i <= proj->maxDim(); i++){
-#ifdef LATMRG_LAT
-        if (!((i-1)%5)) std::cout << "i " << i-1 << " time " << timer.val(LatMRG::Chrono::SEC) << "\n";
-        if (timer.timeOver(conf.timeLimit)) {
-          std::cout << "On projection " << i << std::endl;
-          FigureOfMerit<Lat> figure(lattice, *proj);
-          figure.addMerit(results, vectors);
-          figure.setFinished();
-          figure.computeMerit("min");
-
-          delete norma;
-          return figure;
-        }
-#endif
-        // Changing to the dual
-        if (conf.use_dual) lattice.dualize();
-        // Reducing the lattice
-        if (conf.reduction == LatticeTester::FULL)
-          Reductions::reduceFull(lattice);
-        else if (conf.reduction == LatticeTester::LLL)
-          Reductions::reduceLLL(lattice);
-        else if (conf.reduction == LatticeTester::BKZ)
-          Reductions::reduceBKZ(lattice);
-        else if (conf.reduction == LatticeTester::NOPRERED)
-          Reductions::reduceMink(lattice);
-        // Computing the merit of the lattice
-        Dbl tmp;
-        if (conf.criterion == LatticeTester::LENGTH) tmp = Merit::meritL(lattice);
-        if (conf.criterion == LatticeTester::SPECTRAL) tmp = Merit::meritS(lattice, norma);
-        if (conf.criterion == LatticeTester::BEYER) tmp = Merit::meritB(lattice);
-        results.push_back(tmp);
-        vectors.push_back(lattice.getBasis()[0]);
-#ifdef LATMRG_SEEK
-        // Rejecting lattices that won't make it
-        if (tmp < conf.currentMerit) {
-          delete norma;
-          return FigureOfMerit<Lat>(lattice, *conf.proj);
-        }
-#endif
-        // Changing back to the primal and increasing the dimension
-        if (conf.use_dual) lattice.dualize();
-        if (proj->minDim() < proj->maxDim()) {
-          lattice.incDim();
-        }
-      }
-#ifdef LATMRG_LAT
-        std::cout << "Seq time " << timer.val(LatMRG::Chrono::SEC) << "\n";
-#endif
-
-      // Testing projections if there are anyo
-      // This is done separately because sequential testing is much more efficient
-      for (int i = 2; i <= proj->numProj(); i++) {
-        proj->resetDim(i);
-        lattice.buildBasis(proj->projDim()[i-1]+1);
-        while(!proj->end(1)) {
-          // Building the projection
-          LatticeTester::IntLattice<Int, Int, Dbl, Dbl> proj_lat(lattice.getModulo(), lattice.getOrder(), i, true);
-          LatticeTester::Coordinates iter(proj->next());
-#ifdef LATMRG_LAT
-          if (timer.timeOver(conf.timeLimit)) {
-            std::cout << "On projection " << iter << std::endl;
-            FigureOfMerit<Lat> figure(lattice, *proj);
-            figure.addMerit(results, vectors);
-            figure.setFinished();
-            figure.computeMerit("min");
-
-            delete norma;
-            return figure;
-          }
-#endif
-          lattice.buildProjection(&proj_lat, iter);
-          norma->setLogDensity(Dbl(-i*log(lattice.getModulo())
-                +log(abs(NTL::determinant(proj_lat.getBasis())))));
-          if (conf.use_dual) proj_lat.dualize();
-          // Reduction
-          if (conf.reduction == LatticeTester::FULL)
-            Reductions::reduceFull(proj_lat);
-          else if (conf.reduction == LatticeTester::LLL)
-            Reductions::reduceLLL(proj_lat);
-          else if (conf.reduction == LatticeTester::BKZ)
-            Reductions::reduceBKZ(proj_lat);
-          else if (conf.reduction == LatticeTester::NOPRERED)
-            Reductions::reduceMink(proj_lat);
-
-          // Figure of merit
-          Dbl tmp;
-          if (conf.criterion == LatticeTester::LENGTH) tmp = Merit::meritL(proj_lat);
-          else if (conf.criterion == LatticeTester::SPECTRAL) tmp = Merit::meritS(proj_lat, norma);
-          else if (conf.criterion == LatticeTester::BEYER) tmp = Merit::meritB(proj_lat);
-          results.push_back(tmp);
-          vectors.push_back(proj_lat.getBasis()[0]);
-#ifdef LATMRG_SEEK
-          // Rejecting lattices that won't make it
-          if (tmp < conf.currentMerit) {
-            delete norma;
-            return FigureOfMerit<Lat>(lattice, *proj);
-          }
-#endif
-        }
-#ifdef LATMRG_LAT
-        std::cout << "dim " << i << " time " << timer.val(LatMRG::Chrono::SEC) << "\n";
-#endif
-      }
-
-      FigureOfMerit<Lat> figure(lattice, *proj);
-      figure.addMerit(results, vectors);
-      figure.setFinished();
-      figure.computeMerit("min");
-
-      delete norma;
-      return figure;
-    }
 } // end namespace LatMRG
 #endif

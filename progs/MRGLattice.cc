@@ -46,7 +46,14 @@ void print_help() {
 //===== Miscellanous functions to move somewhere else
 //==============================================================================
 
-int toVectString(const char* str, IntVec& vect, int length) {
+/**
+ * Fills the first `length` values of `vect` with elements in `str`.
+ * This functions assumes `vect` is at least `length` elements long, that its
+ * elements can be accessed with `operator[]` and that there exists an overload
+ * `NTL::conv(vect_type, char*)` between their type and a `C` string.
+ * */
+template<typename Vec>
+int toVectString(const char* str, Vec& vect, int length) {
   int j = 0, old = 0;
   for (int i = 0; i < length; i++) {
     while (str[j] != ' ' && str[j] != '\0') j++;
@@ -71,14 +78,15 @@ int toVectString(const char* str, IntVec& vect, int length) {
 //==============================================================================
 
 // Read all info of a MRG prints error message if essential info is missing
-int readMRG(tinyxml2::XMLNode* current) {
+template<typename Conf>
+int readMRG(tinyxml2::XMLNode* current, Conf& conf) {
   tinyxml2::XMLElement* node;
   node = current->FirstChildElement("modulo");
   if (node) {
-    NTL::conv(p, node->Attribute("p"));
-    NTL::conv(r, node->Attribute("r"));
-    NTL::conv(e, node->Attribute("e"));
-    m = NTL::power(p, e) + r;
+    NTL::conv(conf.basis, node->Attribute("basis"));
+    NTL::conv(conf.rest, node->Attribute("rest"));
+    NTL::conv(conf.exponent, node->Attribute("exponent"));
+    conf.modulo = NTL::power(conf.basis, conf.exponent) + conf.rest;
   } else {
     std::cerr << "No 'modulo' tag in 'mrg' tag.\n";
     return 1;
@@ -86,7 +94,7 @@ int readMRG(tinyxml2::XMLNode* current) {
 
   node = current->FirstChildElement("order");
   if (node) {
-    NTL::conv(k, node->Attribute("k"));
+    NTL::conv(conf.order, node->Attribute("k"));
   } else {
     std::cerr << "No 'order' tag in 'mrg' tag.\n";
     return 1;
@@ -97,10 +105,10 @@ int readMRG(tinyxml2::XMLNode* current) {
     auto value = node->FirstAttribute();
     if (value) {
       if (!strcmp(value->Name(), "random")) {
-        coeff.SetLength(k);
-        if (toVectString(value->Value(), coeff, k)) return 1;
+        conf.coeff.SetLength(conf.order);
+        if (toVectString(value->Value(), conf.coeff, conf.order)) return 1;
       } else if (!strcmp(value->Name(), "pow2")) {
-        coeff.SetLength(2*k);
+        conf.coeff.SetLength(2*conf.order);
       } else {
         std::cerr << "Invalid attribute in tag 'method'.\n";
         return 1;
@@ -126,17 +134,18 @@ int readMRG(tinyxml2::XMLNode* current) {
 
 // Reads parameters for a spectral test. Will print errors but not halt the
 // program since all values have a default
-int readSpectral(tinyxml2::XMLNode* current) {
+template<typename Conf>
+int readSpectral(tinyxml2::XMLNode* current, Conf& conf) {
   tinyxml2::XMLElement* node;
   node = current->FirstChildElement("reduction");
   if (node) {
-    if (toRedString(red_type, node->Attribute("method"))) std::cerr << "Invalid"
+    if (toRedString(conf.reduction, node->Attribute("method"))) std::cerr << "Invalid"
       "/inexistant 'method' attribute in 'reduction' tag.\n";
   }
 
   node = current->FirstChildElement("norma");
   if (node) {
-    if (toNormaString(norma_type, node->Attribute("lizer"))) std::cerr << "Invalid"
+    if (toNormaString(conf.normaType, node->Attribute("lizer"))) std::cerr << "Invalid"
       "/inexistant 'lizer' attribute in 'norma' tag.\n";
   }
   return 0;
@@ -146,15 +155,16 @@ int readSpectral(tinyxml2::XMLNode* current) {
 //===== Dispatching reused tags to the right functions
 //==============================================================================
 
-int tryGen(tinyxml2::XMLNode* current) {
+template<typename Conf>
+int tryGen(tinyxml2::XMLNode* current, Conf& conf) {
   //tinyxml2::XMLNode* node;
   if (!strcmp(current->Value(), "mrg")) {
-    gen_type = MRG;
-    if (readMRG(current)) {
+    conf.type = MRG;
+    if (readMRG(current, conf)) {
       std::cerr << "'mrg' tag is not properly parametrized.\n";
       return 1;
     }
-    gen_set = true;
+    conf.gen_set = true;
   } else if (!strcmp(current->Value(), "mmrg")) {
     std::cout << current->Value() << "\n";
   } else if (!strcmp(current->Value(), "mwc")) {
@@ -167,11 +177,12 @@ int tryGen(tinyxml2::XMLNode* current) {
 
 //==============================================================================
 
-int tryTest(tinyxml2::XMLNode* current) {
+template<typename Conf>
+int tryTest(tinyxml2::XMLNode* current, Conf& conf) {
   //tinyxml2::XMLNode* node;
   if (!strcmp(current->Value(), "spectral")) {
-    crit_type = LatticeTester::SPECTRAL;
-    readSpectral(current);
+    conf.criterion = LatticeTester::SPECTRAL;
+    readSpectral(current, conf);
   } else if (!strcmp(current->Value(), "beyer")) {
     std::cout << current->Value() << "\n";
   } else if (!strcmp(current->Value(), "shortest")) {
@@ -222,12 +233,13 @@ void readPeriod(tinyxml2::XMLNode* current) {
 
 //==============================================================================
 
-void readSeek(tinyxml2::XMLNode* current) {
+template<typename Conf>
+void readSeek(tinyxml2::XMLNode* current, Conf& conf) {
   //if (current->NoChild()) return;
   tinyxml2::XMLNode* node = current->FirstChild();
   while (node) {
-    if (tryGen(node)) {}
-    else if (tryTest(node)) {}
+    if (tryGen(node, conf)) {}
+    else if (tryTest(node, conf)) {}
     else if (!strcmp(node->Value(), "bounds")) {
       std::cout << node->Value() << "\n";
     } else if (!strcmp(node->Value(), "k")) {
@@ -239,19 +251,19 @@ void readSeek(tinyxml2::XMLNode* current) {
     }
     node = node->NextSibling();
   }
-  conf.type = gen_type;
-  conf.normaType = norma_type;
-  conf.criterion = crit_type;
-  conf.reduction = red_type;
-  conf.best = best;
-  conf.timeLimit = time_limit;
-  conf.max_gen = max_gen;
-  conf.order = k;
-  conf.basis = p;
-  conf.modulo = m;
-  conf.exponent = e;
-  conf.rest = r;
-  conf.period = period;
+  // conf.type = gen_type;
+  // conf.normaType = norma_type;
+  // conf.criterion = crit_type;
+  // conf.reduction = red_type;
+  // conf.best = best;
+  // conf.timeLimit = time_limit;
+  // conf.max_gen = max_gen;
+  // conf.order = k;
+  // conf.basis = p;
+  // conf.modulo = m;
+  // conf.exponent = e;
+  // conf.rest = r;
+  // conf.period = period;
 }
 
 //==============================================================================
@@ -270,9 +282,19 @@ void readFile(const char* filename) {
     readPeriod(current);
     // fill period
   } else if (!strcmp(current->Value(), "seek")) {
-    readSeek(current);
-    Seek();
-    // fill seek
+    if (types == "LD") {
+      SeekMain<std::int64_t, double> prog;
+      readSeek(current, prog.conf);
+      prog.Seek();
+    } else if (types == "ZD") {
+      SeekMain<NTL::ZZ, double> prog;
+      readSeek(current, prog.conf);
+      prog.Seek();
+    } else if (types == "ZR") {
+      SeekMain<NTL::ZZ, NTL::RR> prog;
+      readSeek(current, prog.conf);
+      prog.Seek();
+    }
   } else if (!strcmp(current->Value(), "lattest")) {
     // fill lattest
   }
