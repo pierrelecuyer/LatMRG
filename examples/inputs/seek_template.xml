@@ -1,6 +1,6 @@
 <seek>
   <mrg>
-    <modulo p="2" e="31" r="-1"/>
+    <modulo basis="2" exponent="31" rest="-1"/>
     <order k="7"/>
     <method random="1 1 1 1 1 1 1"/>
   </mrg>
