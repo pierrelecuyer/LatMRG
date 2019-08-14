@@ -9,8 +9,13 @@
     <norma lizer="BESTLAT"/>
     <dual bool="true"/>
   </spectral>
+  <proj>
+    <min x="7"/>
+    <num x="3"/>
+    <dim x="31 10 10"/>
+  </proj>
   <detail x=""/>
-  <time x=""/>
+  <time x="60"/>
   <num_gen x=""/>
   <!--The following is not yet implemented-->
   <function_params max_nodes_BB="" LLL_prec=""/>

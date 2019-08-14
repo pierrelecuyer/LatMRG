@@ -25,8 +25,8 @@ std::ostream* out(&std::cout);
 void print_help() {
   *out << "Usage: MRGLattice [OPTIONS] MODE PARAMETERS\n\n";
   *out << "Available options:\n\t" << "-h, --help\n\t\tPrint this"
-   " message.\n\t-o, --output=FILE\n\t\tOutput to FILE\n\t"
-   "-t, --types=[LD,ZD,ZR]\n\t\tUse corresponding types. (default: ZD)\n\n";
+    " message.\n\t-o, --output=FILE\n\t\tOutput to FILE\n\t"
+    "-t, --types=[LD,ZD,ZR]\n\t\tUse corresponding types. (default: ZD)\n\n";
   *out << "Available modes:\n\t" << "lat\n\t\t" << "Study the"
     " lattice of a MRG generator.\n\t" << "seek\n\t\t" << "Search for"
     " new MRG generators.\n\t" << "mk\n\t\t" << "Find compatible "
@@ -139,16 +139,48 @@ int readSpectral(tinyxml2::XMLNode* current, Conf& conf) {
   tinyxml2::XMLElement* node;
   node = current->FirstChildElement("reduction");
   if (node) {
-    if (toRedString(conf.reduction, node->Attribute("method"))) std::cerr << "Invalid"
+    if (toRedString(conf.reduction, node->FirstAttribute()->Value())) std::cerr << "Invalid"
       "/inexistant 'method' attribute in 'reduction' tag.\n";
   }
 
   node = current->FirstChildElement("norma");
   if (node) {
-    if (toNormaString(conf.normaType, node->Attribute("lizer"))) std::cerr << "Invalid"
+    if (toNormaString(conf.normaType, node->FirstAttribute()->Value())) std::cerr << "Invalid"
       "/inexistant 'lizer' attribute in 'norma' tag.\n";
   }
   return 0;
+}
+
+//==============================================================================
+
+template<typename Conf>
+int readProj(tinyxml2::XMLNode* current, Conf& conf) {
+  int minDim, numProj;
+  std::vector<int> projDim;
+  auto node = current->FirstChildElement("min");
+  if (!node || !(node->FirstAttribute())) {
+    std::cerr << "Missing/incorrect child node 'min' in 'proj' tag.\n";
+    return 1;
+  }
+  minDim = node->FirstAttribute()->IntValue();
+  node = current->FirstChildElement("num");
+  if (!node || !(node->FirstAttribute())) {
+    std::cerr << "Missing/incorrect child node 'num' in 'proj' tag.\n";
+    return 1;
+  }
+  numProj = node->FirstAttribute()->IntValue();
+  projDim.resize(numProj);
+  node = current->FirstChildElement("dim");
+  if (!node || !(node->FirstAttribute())) {
+    std::cerr << "Missing/incorrect child node 'dim' in 'proj' tag.\n";
+    return 1;
+  }
+  if(!toVectString(node->FirstAttribute()->Value(), projDim, numProj)) {
+    conf.proj = new Projections(numProj, minDim, projDim);
+    conf.proj_set = true;
+    return 0;
+  }
+  return 1;
 }
 
 //==============================================================================
@@ -183,6 +215,7 @@ int tryTest(tinyxml2::XMLNode* current, Conf& conf) {
   if (!strcmp(current->Value(), "spectral")) {
     conf.criterion = LatticeTester::SPECTRAL;
     readSpectral(current, conf);
+    conf.test_set = true;
   } else if (!strcmp(current->Value(), "beyer")) {
     std::cout << current->Value() << "\n";
   } else if (!strcmp(current->Value(), "shortest")) {
@@ -238,39 +271,22 @@ void readSeek(tinyxml2::XMLNode* current, Conf& conf) {
   //if (current->NoChild()) return;
   tinyxml2::XMLNode* node = current->FirstChild();
   while (node) {
-    if (tryGen(node, conf)) {}
-    else if (tryTest(node, conf)) {}
-    else if (!strcmp(node->Value(), "bounds")) {
-      std::cout << node->Value() << "\n";
-    } else if (!strcmp(node->Value(), "k")) {
-      std::cout << node->Value() << "\n";
-    } else if (!strcmp(node->Value(), "safe")) {
-      std::cout << node->Value() << "\n";
-    } else if (!strcmp(node->Value(), "factor")) {
-      std::cout << node->Value() << "\n";
+    if (tryGen(node, conf)) {
+    } else if (tryTest(node, conf)) {
+    } else if (!strcmp(node->Value(), "proj")) {
+      readProj(node, conf);
+    } else if (!strcmp(node->Value(), "time")) {
+      conf.timeLimit = node->ToElement()->FirstAttribute()->DoubleValue();
     }
     node = node->NextSibling();
   }
-  // conf.type = gen_type;
-  // conf.normaType = norma_type;
-  // conf.criterion = crit_type;
-  // conf.reduction = red_type;
-  // conf.best = best;
-  // conf.timeLimit = time_limit;
-  // conf.max_gen = max_gen;
-  // conf.order = k;
-  // conf.basis = p;
-  // conf.modulo = m;
-  // conf.exponent = e;
-  // conf.rest = r;
-  // conf.period = period;
 }
 
 //==============================================================================
 //===== Main reading function
 //==============================================================================
 
-void readFile(const char* filename) {
+int readFile(const char* filename) {
   tinyxml2::XMLDocument doc;
   doc.LoadFile(filename);
   tinyxml2::XMLNode* current;
@@ -285,19 +301,20 @@ void readFile(const char* filename) {
     if (types == "LD") {
       SeekMain<std::int64_t, double> prog;
       readSeek(current, prog.conf);
-      prog.Seek();
+      return prog.Seek();
     } else if (types == "ZD") {
       SeekMain<NTL::ZZ, double> prog;
       readSeek(current, prog.conf);
-      prog.Seek();
+      return prog.Seek();
     } else if (types == "ZR") {
       SeekMain<NTL::ZZ, NTL::RR> prog;
       readSeek(current, prog.conf);
-      prog.Seek();
+      return prog.Seek();
     }
   } else if (!strcmp(current->Value(), "lattest")) {
     // fill lattest
   }
+  return 0;
 }
 
 //==============================================================================
@@ -308,14 +325,9 @@ int main(int argc, char** argv) {
     return 1;
   }
   for (int i = 1; i < argc; i++) {
-    readFile(argv[i]);
+    if (readFile(argv[i])) {
+      std::cerr << "File " << argv[i] << " exited with errors.\n";
+    }
   }
-  //if (exec_mode == "lat") {
-  //  return TestLattice(gen_type, crit_type, dual, red_type, norma_type,
-  //      time_limit, detail, period, *proj, gen_string);
-  //} else if (exec_mode == "seek") {
-  //} else if (exec_mode == "mk") {
-  //} else if (exec_mode == "period") {
-  //}
   return 0;
 }

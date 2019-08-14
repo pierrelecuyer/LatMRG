@@ -334,6 +334,18 @@ template<typename Int, typename Dbl> struct SeekMain {
 
   int Seek ()
   {
+    if (!conf.gen_set) {
+      std::cerr << "No generator set for in seek tag. Aborting.\n";
+      return 1;
+    }
+    if (!(conf.test_set)) {
+      std::cerr << "No test set for in seek tag. Aborting.\n";
+      return 1;
+    }
+    if (!conf.proj_set) {
+      std::cerr << "No projections set for in seek tag. Aborting.\n";
+      return 1;
+    }
     // Initializing values
     srand(time(NULL));
     conf.filem1 = "./tempm1" + std::to_string(rand());
@@ -343,8 +355,8 @@ template<typename Int, typename Dbl> struct SeekMain {
       mrg = new MRGComponent<Int>(conf.modulo, conf.order, conf.decompm1,
           conf.filem1.c_str(), conf.decompr, conf.filer.c_str());
     }
-    std::vector<int> projDim = {31};
-    conf.proj = new Projections(1, 7, projDim);
+    // std::vector<int> projDim = {31};
+    // conf.proj = new Projections(1, 7, projDim);
     timer.init();
 
     // Launching the tests
