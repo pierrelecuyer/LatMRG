@@ -343,8 +343,8 @@ template<typename Int, typename Dbl> struct SeekMain {
       mrg = new MRGComponent<Int>(conf.modulo, conf.order, conf.decompm1,
           conf.filem1.c_str(), conf.decompr, conf.filer.c_str());
     }
-    std::vector<int> projDim = {7,32};
-    conf.proj = new Projections(7, 10, projDim);
+    std::vector<int> projDim = {31};
+    conf.proj = new Projections(1, 7, projDim);
     timer.init();
 
     // Launching the tests
