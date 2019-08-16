@@ -104,6 +104,11 @@ std::string types = "ZD";
  * */
 template<typename Int, typename Dbl> struct ConfigSeek {
 #include "Config.h"
+  ConfigSeek(){
+    srand(time(NULL));
+    filem1 =  "./tempm1"+std::to_string(rand());
+    filer = "./tempr"+std::to_string(rand());
+  }
 };
 /**
  * This performs a test on a lattice. That is, given a lattice and a `Config`
@@ -125,6 +130,11 @@ FigureOfMerit<Lat> test_seek(Lat & lattice, ConfigSeek<typename Lat::Int, typena
  * */
 template<typename Int, typename Dbl> struct ConfigLat {
 #include "Config.h"
+  ConfigLat(){
+    srand(time(NULL));
+    filem1 =  "./tempm1"+std::to_string(rand());
+    filer = "./tempr"+std::to_string(rand());
+  }
 };
 /**
  * This performs a test on a lattice. That is, given a lattice and a `Config`

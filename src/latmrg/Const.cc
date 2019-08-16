@@ -209,4 +209,23 @@ namespace LatMRG
     return 0;
   }
 
+  //===========================================================================
+
+  int toDecomString(DecompType& decom, const std::string& decom_str) {
+    if (decom_str == "DECOMP") {
+      decom = DECOMP;
+    } else if (decom_str == "DECOMP_WRITE") {
+      decom = DECOMP_WRITE;
+    } else if (decom_str == "DECOMP_READ") {
+      decom = DECOMP_READ;
+    } else if (decom_str == "DECOMP_PRIME") {
+      decom = DECOMP_PRIME;
+    } else {
+      std::cerr << decom_str << " is not a NormaType\n";
+      return 1;
+    }
+
+    return 0;
+  }
+
 }

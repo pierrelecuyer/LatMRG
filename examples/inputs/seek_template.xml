@@ -3,11 +3,15 @@
     <modulo basis="2" exponent="31" rest="-1"/>
     <order k="7"/>
     <method random="1 1 1 1 1 1 1"/>
+    <period check="true">
+      <m1 method="DECOMP"/>
+      <r method="DECOMP"/>
+    </period>
   </mrg>
   <spectral>
     <reduction method="FULL"/>
     <norma lizer="BESTLAT"/>
-    <dual bool="true"/>
+    <dual bool="false"/>
   </spectral>
   <proj>
     <min x="7"/>
@@ -15,8 +19,8 @@
     <dim x="31 10 10"/>
   </proj>
   <detail x=""/>
-  <time x="60"/>
-  <num_gen x=""/>
+  <time x="10"/>
+  <num_gen x="2"/>
   <!--The following is not yet implemented-->
   <function_params max_nodes_BB="" LLL_prec=""/>
 </seek>

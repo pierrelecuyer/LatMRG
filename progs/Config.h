@@ -57,4 +57,4 @@ Int modulo; // m for MRG and MMRG
 std::int64_t basis;
 std::int64_t exponent;
 std::int64_t rest;
-bool period;
+bool period = true;

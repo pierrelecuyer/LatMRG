@@ -127,6 +127,42 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf) {
     }
   }
 
+  node = current->FirstChildElement("period");
+  if (node && readGenPer(node, conf))
+    std::cerr << "Non critical error in 'period' tag of 'mrg' tag.\n";
+
+  return 0;
+}
+
+//==============================================================================
+
+// Read all info of a MMRG prints error message if essential info is missing
+template<typename Conf>
+int readMMRG(tinyxml2::XMLNode* current, Conf& conf) {
+  tinyxml2::XMLElement* node;
+  node = current->FirstChildElement("modulo");
+  if (node) {
+    NTL::conv(conf.basis, node->Attribute("basis"));
+    NTL::conv(conf.rest, node->Attribute("rest"));
+    NTL::conv(conf.exponent, node->Attribute("exponent"));
+    conf.modulo = NTL::power(conf.basis, conf.exponent) + conf.rest;
+  } else {
+    std::cerr << "No 'modulo' tag in 'mrg' tag.\n";
+    return 1;
+  }
+
+  node = current->FirstChildElement("order");
+  if (node) {
+    NTL::conv(conf.order, node->Attribute("k"));
+  } else {
+    std::cerr << "No 'order' tag in 'mrg' tag.\n";
+    return 1;
+  }
+
+  node = current->FirstChildElement("period");
+  if (node && readGenPer(node, conf))
+    std::cerr << "Non critical error in 'period' tag of 'mmrg' tag.\n";
+
   return 0;
 }
 
@@ -140,13 +176,18 @@ int readSpectral(tinyxml2::XMLNode* current, Conf& conf) {
   node = current->FirstChildElement("reduction");
   if (node) {
     if (toRedString(conf.reduction, node->FirstAttribute()->Value())) std::cerr << "Invalid"
-      "/inexistant 'method' attribute in 'reduction' tag.\n";
+      "/inexistant attribute in 'reduction' tag.\n";
   }
 
   node = current->FirstChildElement("norma");
   if (node) {
     if (toNormaString(conf.normaType, node->FirstAttribute()->Value())) std::cerr << "Invalid"
-      "/inexistant 'lizer' attribute in 'norma' tag.\n";
+      "/inexistant attribute in 'norma' tag.\n";
+  }
+
+  node = current->FirstChildElement("dual");
+  if (node) {
+    conf.use_dual = node->FirstAttribute()->BoolValue();
   }
   return 0;
 }
@@ -184,12 +225,43 @@ int readProj(tinyxml2::XMLNode* current, Conf& conf) {
 }
 
 //==============================================================================
+
+// Reads info on how to check for generator maximal period.
+template<typename Conf>
+int readGenPer(tinyxml2::XMLNode* current, Conf& conf) {
+  conf.period = current->ToElement()->BoolAttribute("check");
+  int err = 0;
+  if (conf.period) {
+    auto node = current->FirstChildElement("m1");
+    if (node) {
+      auto method = node->Attribute("method");
+      if (method && toDecomString(conf.decompm1, method)) {
+        std::cerr << "Invalid 'method' attribute value in 'm1' tag.\n";
+        err = 1;
+      }
+      auto name = node->Attribute("file");
+      if (name) conf.filem1 = name;
+    }
+    node = current->FirstChildElement("r");
+    if (node) {
+      auto method = node->Attribute("method");
+      if (method && toDecomString(conf.decompr, method)) {
+        std::cerr << "Invalid 'method' attribute value in 'r' tag.\n";
+        err = 1;
+      }
+      auto name = node->Attribute("file");
+      if (name) conf.filer = name;
+    }
+  }
+  return err;
+}
+
+//==============================================================================
 //===== Dispatching reused tags to the right functions
 //==============================================================================
 
 template<typename Conf>
 int tryGen(tinyxml2::XMLNode* current, Conf& conf) {
-  //tinyxml2::XMLNode* node;
   if (!strcmp(current->Value(), "mrg")) {
     conf.type = MRG;
     if (readMRG(current, conf)) {
@@ -198,7 +270,12 @@ int tryGen(tinyxml2::XMLNode* current, Conf& conf) {
     }
     conf.gen_set = true;
   } else if (!strcmp(current->Value(), "mmrg")) {
-    std::cout << current->Value() << "\n";
+    conf.type = MMRG;
+    if (readMMRG(current, conf)) {
+      std::cerr << "'mmrg' tag is not properly parametrized.\n";
+      return 1;
+    }
+    conf.gen_set = true;
   } else if (!strcmp(current->Value(), "mwc")) {
     std::cout << current->Value() << "\n";
   } else if (!strcmp(current->Value(), "combo")) {
@@ -271,12 +348,19 @@ void readSeek(tinyxml2::XMLNode* current, Conf& conf) {
   //if (current->NoChild()) return;
   tinyxml2::XMLNode* node = current->FirstChild();
   while (node) {
-    if (tryGen(node, conf)) {
-    } else if (tryTest(node, conf)) {
-    } else if (!strcmp(node->Value(), "proj")) {
+    if (!conf.gen_set && tryGen(node, conf)) {
+      std::cout << 1 << "\n";
+    } else if (!conf.test_set && tryTest(node, conf)) {
+      std::cout << 2 << "\n";
+    } else if (!conf.proj_set && !strcmp(node->Value(), "proj")) {
+      std::cout << 3 << "\n";
       readProj(node, conf);
     } else if (!strcmp(node->Value(), "time")) {
+      std::cout << 4 << "\n";
       conf.timeLimit = node->ToElement()->FirstAttribute()->DoubleValue();
+    } else if (!strcmp(node->Value(), "num_gen")) {
+      std::cout << 5 << "\n";
+      conf.max_gen = node->ToElement()->FirstAttribute()->IntValue();
     }
     node = node->NextSibling();
   }

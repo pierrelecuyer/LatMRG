@@ -347,16 +347,11 @@ template<typename Int, typename Dbl> struct SeekMain {
       return 1;
     }
     // Initializing values
-    srand(time(NULL));
-    conf.filem1 = "./tempm1" + std::to_string(rand());
-    conf.filer = "./tempr" + std::to_string(rand());
     // Dynamically allocated objects
     if (conf.type != COMBO) {
       mrg = new MRGComponent<Int>(conf.modulo, conf.order, conf.decompm1,
           conf.filem1.c_str(), conf.decompr, conf.filer.c_str());
     }
-    // std::vector<int> projDim = {31};
-    // conf.proj = new Projections(1, 7, projDim);
     timer.init();
 
     // Launching the tests

@@ -167,5 +167,11 @@ namespace LatMRG {
    * */
   int toNormaString(LatticeTester::NormaType& norma, const std::string& norma_str);
 
+  /**
+   * `decom = decom_str`. Does not change the value of `decom` if `decom_str` does
+   * not specify a valid value. Returns 0 if a change took place.
+   * */
+  int toDecomString(DecompType& decom, const std::string& decom_str);
+
 }
 #endif

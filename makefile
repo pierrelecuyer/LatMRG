@@ -43,9 +43,9 @@ MRG_LOW = $(SRC_DIR)/latmrg
 #MRG_TYPES = $(SRC_DIR)/latmrg/mrgtypes
 
 # The source files are in SRC_DIR. This grabs subdirectories
-SRCS = $(wildcard $(MRG_LOW)/*.cc)# $(wildcard $(MRG_HIGH)/*.cc) \
-#       $(wildcard $(MRG_TYPES)/*.cc)
+SRCS = $(wildcard $(MRG_LOW)/*.cc)
 PROGS_CC = $(filter-out ./progs/SeekMain.cc, $(wildcard $(PRO_DIR)/*.cc))
+PROGS_H = $(wildcard $(PRO_DIR)/*.h)
 EX_CC = $(wildcard $(EX_DIR)/*.cc)
 
 # define the C object files
@@ -116,7 +116,7 @@ message_obj:
 # Building the programs of ./progs
 
 $(PRO_DIR)/%.o: $(LIB_DIR)/liblatticetester.a $(LIB_DIR)/liblatmrg.a\
-  $(PRO_DIR)/%.cc $(PRO_DIR)/ExecCommon.h $(PRO_DIR)/Seek.h | message_progs $(BIN_DIR)
+  $(PRO_DIR)/%.cc $(PROG_H) | message_progs $(BIN_DIR)
 	$(CC) $(CFLAGS) $(INCLUDES) $(YAFU) -c $(PRO_DIR)/$(@:progs/%.o=%).cc -o $@
 	$(CC) $@ $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
 	  -o $(BIN_DIR)/$(@:progs/%.o=%)
