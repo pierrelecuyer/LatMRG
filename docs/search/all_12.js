@@ -15,6 +15,7 @@ var searchData=
   ['timeover',['timeOver',['../class_lat_m_r_g_1_1_chrono.html#a1f10d7e8705dfa18488c73000dc164a0',1,'LatMRG::Chrono']]],
   ['timer',['timer',['../class_lat_m_r_g_1_1_primes.html#a91f2e8aeb71f189482f43b285557a8b5',1,'LatMRG::Primes']]],
   ['tocriterionstring',['toCriterionString',['../namespace_lat_m_r_g.html#ac9e420f43435bf66503673afbe11ed29',1,'LatMRG']]],
+  ['todecomstring',['toDecomString',['../namespace_lat_m_r_g.html#ae32569ce5d86b6a4efc7b5d3d4db24ae',1,'LatMRG']]],
   ['todo_20list',['Todo List',['../todo.html',1,'']]],
   ['togenstring',['toGenString',['../namespace_lat_m_r_g.html#a353ee26848721ee28c6b1a5d42fd6527',1,'LatMRG::toGenString(GenType &amp;type, const std::string &amp;type_str)'],['../namespace_lat_m_r_g.html#af2035ae6cf9ca06c7958b94a29313c7a',1,'LatMRG::toGenString(GenType &amp;type, const string &amp;type_str)']]],
   ['tonormastring',['toNormaString',['../namespace_lat_m_r_g.html#a318a44b6a90237a33622e7a4c22e5d75',1,'LatMRG']]],
