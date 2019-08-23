@@ -11,6 +11,7 @@
 #include "ExecCommon.h"
 
 #include "Seek.h"
+#include "LatTest.h"
 
 using namespace LatMRG;
 
@@ -221,7 +222,6 @@ int readProj(tinyxml2::XMLNode* current, Conf& conf) {
       if (conf.max_dim < projDim[i]) conf.max_dim = projDim[i];
     }
     conf.proj = new Projections(numProj, minDim, projDim);
-    conf.proj_set = true;
     return 0;
   }
   return 1;
@@ -271,20 +271,18 @@ int tryGen(tinyxml2::XMLNode* current, Conf& conf) {
       std::cerr << "'mrg' tag is not properly parametrized.\n";
       return 1;
     }
-    conf.gen_set = true;
   } else if (!strcmp(current->Value(), "mmrg")) {
     conf.type = MMRG;
     if (readMMRG(current, conf)) {
       std::cerr << "'mmrg' tag is not properly parametrized.\n";
       return 1;
     }
-    conf.gen_set = true;
   } else if (!strcmp(current->Value(), "mwc")) {
     std::cout << current->Value() << "\n";
   } else if (!strcmp(current->Value(), "combo")) {
     std::cout << current->Value() << "\n";
-  } else return 0;
-  return 1;
+  } else return 1;
+  return 0;
 }
 
 //==============================================================================
@@ -295,13 +293,12 @@ int tryTest(tinyxml2::XMLNode* current, Conf& conf) {
   if (!strcmp(current->Value(), "spectral")) {
     conf.criterion = LatticeTester::SPECTRAL;
     readSpectral(current, conf);
-    conf.test_set = true;
   } else if (!strcmp(current->Value(), "beyer")) {
     std::cout << current->Value() << "\n";
   } else if (!strcmp(current->Value(), "shortest")) {
     std::cout << current->Value() << "\n";
-  } else return 0;
-  return 1;
+  } else return 1;
+  return 0;
 }
 
 //==============================================================================
@@ -348,13 +345,14 @@ void readPeriod(tinyxml2::XMLNode* current) {
 
 template<typename Conf>
 void readSeek(tinyxml2::XMLNode* current, Conf& conf) {
-  //if (current->NoChild()) return;
   tinyxml2::XMLNode* node = current->FirstChild();
   while (node) {
-    if (!conf.gen_set && tryGen(node, conf)) {
-    } else if (!conf.test_set && tryTest(node, conf)) {
+    if (!conf.gen_set && !tryGen(node, conf)) {
+      conf.gen_set = true;
+    } else if (!conf.test_set && !tryTest(node, conf)) {
+      conf.test_set = true;
     } else if (!conf.proj_set && !strcmp(node->Value(), "proj")) {
-      readProj(node, conf);
+      if (!readProj(node, conf)) conf.proj_set = true;
     } else if (!strcmp(node->Value(), "time")) {
       conf.timeLimit = node->ToElement()->FirstAttribute()->DoubleValue();
     } else if (!strcmp(node->Value(), "num_gen")) {
@@ -374,11 +372,14 @@ void readTest(tinyxml2::XMLNode* current, Conf& conf) {
   //if (current->NoChild()) return;
   tinyxml2::XMLNode* node = current->FirstChild();
   while (node) {
-    if (!conf.gen_set && tryGen(node, conf)) {
-      std::cout << 1 << "\n";
-    } else if (!conf.test_set && tryTest(node, conf)) {
+    if (!conf.gen_set && !tryGen(node, conf)) {
+      auto coef = node->FirstChildElement("coef");
+      // if (coef) {
+
+      // }
+    } else if (!tryTest(node, conf)) {
       std::cout << 2 << "\n";
-    } else if (!conf.proj_set && !strcmp(node->Value(), "proj")) {
+    } else if (!strcmp(node->Value(), "proj")) {
       std::cout << 3 << "\n";
       readProj(node, conf);
     } else if (!strcmp(node->Value(), "time")) {
@@ -423,9 +424,9 @@ int readFile(const char* filename) {
       return prog.Seek();
     }
   } else if (!strcmp(current->Value(), "lattest")) {
-    //LatTest<NTL::ZZ, NTL::RR> prog;
-    //readTest(current, prog.conf);
-    //return prog.TestLat();
+    LatTest<NTL::ZZ, double> prog;
+    readTest(current, prog.conf);
+    return prog.TestLat();
   }
   return 0;
 }

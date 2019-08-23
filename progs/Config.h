@@ -17,9 +17,6 @@ bool best = true;
 int num_gen = 0;
 Dbl currentMerit = Dbl(0);
 std::string construction = "RANDOM";
-bool gen_set = false;
-bool test_set = false;
-bool proj_set = false;
 #endif
 // Projection
 Projections* proj;
@@ -59,3 +56,7 @@ std::int64_t basis;
 std::int64_t exponent;
 std::int64_t rest;
 bool period = true;
+
+bool gen_set = false;
+bool test_set = false;
+bool proj_set = false;

@@ -2,14 +2,18 @@
 #define LATMRG_LATTEST_H
 
 template<typename Int, typename Dbl> struct LatTest {
-  ConfigLat<NTL::ZZ, double> conf;
+  typedef NTL::vector<Int> IntVec;
+
+  ConfigLat<Int, Dbl> conf;
+
+  Chrono timer;
+  int detail = 0;
+
   // Program global objects
-  int numProj, minDim, maxDim;
-  int detail;
-  int num_comp;
-  std::vector<int> projDim;
+  //int num_comp;
+  //std::vector<int> projDim;
   std::vector<MRGComponent<Int>> combo;
-  Int carry;
+  //Int carry;
 
   /**
    * Prints the results of the program execution.
@@ -60,164 +64,43 @@ template<typename Int, typename Dbl> struct LatTest {
       }
     }
 
-  // Reads parameters from config file.
-  bool readConfigFile(int argc, char **argv) {
-    ParamReaderExt<Int, Dbl> reader(argv[1]);
-    reader.getLines();
-    //int power;
-    unsigned int ln = 0;
-    reader.readGenType(conf.type, ln++, 0);
-    reader.readCriterionType(conf.criterion, ln, 0);
-    if (conf.criterion == LatticeTester::SPECTRAL) {
-      reader.readBool(conf.use_dual, ln, 1);
-      reader.readPreRed(conf.reduction, ln, 2);
-      reader.readNormaType(conf.normaType, ln++, 3);
-    } else if (conf.criterion == LatticeTester::LENGTH) {
-      reader.readBool(conf.use_dual, ln, 1);
-      reader.readPreRed(conf.reduction, ln++, 2);
-    } else if (conf.criterion == LatticeTester::BEYER) {
-      conf.reduction = LatticeTester::NOPRERED;
-      ln++;
-    }
-    reader.readInt(numProj, ln++, 0);
-    reader.readInt(minDim, ln, 0);
-    reader.readInt(maxDim, ln++, 1);
-    projDim.push_back((maxDim-1));
-    for (int i = 0; i<numProj-1; i++) {
-      int tmp;
-      reader.readInt(tmp, ln, i);
-      // If the projection is requested only on indices smaller or equal to the
-      // dimension, we learn nothing, this is corrected
-      if (tmp > 0 && tmp < i+3) {
-        tmp = i+3;
-      }
-      projDim.push_back(tmp-1);
-    }
-    ln++;
-    reader.readInt(conf.max_gen, ln++, 0);
-    reader.readDouble(conf.timeLimit, ln++, 0);
-    reader.readInt(detail, ln++, 0);
+  //==========================================================================
+
+  int TestLat () {
+    // Initializing values
+    timer.init();
+
+    // Testing the generator(s)
     if (conf.type == MRG) {
-      reader.readNumber3(conf.modulo, conf.basis, conf.exponent, conf.rest, ln++, 0);
-      reader.readLong(conf.order, ln++, 0);
-      // Making sure that minDim is big enough to provide usefull tests (if
-      // full period is required) this changes other dimensions accordingly
-      conf.mult.SetLength(conf.order);
-      reader.readMVect(conf.mult, ln, 0, conf.order, 0);
-      ln++;
-      reader.readBool(conf.period, ln, 0);
-      minDim = (!conf.period||minDim>conf.order) ? minDim : (conf.order+1);
-      maxDim = maxDim>minDim ? maxDim : minDim;
-      for (unsigned int i = 0; i < projDim.size(); i++) {
-        if (projDim[i]>0) projDim[i] = (projDim[i]<(minDim-1))?(minDim-1):projDim[i];
-      }
-      if (conf.period) {
-        // Using default parameters
-        bool def;
-        reader.readBool(def, ln, 1);
-        if (!def) {
-          reader.readDecompType(conf.decompm1, ln, 2);
-          reader.readString(conf.filem1, ln, 3);
-          reader.readDecompType(conf.decompr, ln, 4);
-          reader.readString(conf.filer, ln, 5);
-        }
-      }
+      MeritList<MRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
+      IntVec temp(conf.order+1);
+      temp[0] = Int(0);
+      for (int i = 1; i < conf.order+1; i++) temp[i] = conf.mult[i-1];
+      MRGLattice<Int, Dbl> mrglat(conf.modulo, temp, conf.max_dim, conf.order, FULL);
+      bestLattice.add(test_lat(mrglat, conf));
+      printResults(bestLattice);
     } else if (conf.type == MWC) {
-      //reader.readInt(power, ln++, 0);
-      //b = NTL::power2_ZZ(power);
-      //reader.readLong(conf.exponent, ln++, 0);
+      //MWCLattice<Int, Dbl>* mwclat = 0;
+      //mwclat = nextGenerator(mwclat);
+      //Dbl merit(test(*mwclat));
+      //if (merit > bestMerit) {
+      //  addLattice(mwclat, merit);
+      //}
     } else if (conf.type == MMRG) {
-      reader.readNumber3(conf.modulo, conf.basis, conf.exponent, conf.rest, ln++, 0);
-      reader.readLong(conf.order, ln++, 0);
-      // Making sure that minDim is big enough to provide usefull tests (if
-      // full period is required) this changes other dimensions accordingly
-      conf.matrix.resize(conf.order, conf.order);
-      reader.readBMat(conf.matrix, ln, 0, conf.order);
-      reader.readBool(conf.period, ln, 0);
-      minDim = (!conf.period||minDim>conf.order) ? minDim : (conf.order+1);
-      maxDim = maxDim>minDim ? maxDim : minDim;
-      for (unsigned int i = 0; i < projDim.size(); i++) {
-        if (projDim[i] > 0) projDim[i] = (projDim[i]<(minDim-1))?(minDim-1):projDim[i];
-      }
-      if (conf.period) {
-        // Using default parameters
-        bool def;
-        reader.readBool(def, ln, 1);
-        if (!def) {
-          reader.readDecompType(conf.decompm1, ln, 2);
-          reader.readString(conf.filem1, ln, 3);
-          reader.readDecompType(conf.decompr, ln, 4);
-          reader.readString(conf.filer, ln, 5);
-        }
-      }
+      MeritList<MMRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
+      MMRGLattice<Int, Dbl> mmrglat(conf.modulo, conf.matrix, conf.max_dim, conf.order);
+      bestLattice.add(test_lat(mmrglat, conf));
+      printResults(bestLattice);
     } else if (conf.type == COMBO) {
-      reader.readInt(num_comp, ln++, 0);
-      // We assume we have an MRG from now on
-      for (int i = 0; i < num_comp; i++) {
-        // Variables
-        Int modulo;
-        IntVec mult;
-        std::int64_t order, basis, exponent, rest;
-
-        reader.readNumber3(modulo, basis, exponent, rest, ln++, 0);
-        reader.readLong(order, ln++, 0);
-        // Making sure that minDim is big enough to provide usefull tests (if
-        // full period is required) this changes other dimensions accordingly
-        mult.SetLength(order);
-        reader.readMVect(mult, ln, 0, order, 0);
-        ln++;
-        combo.push_back(MRGComponent<Int>(modulo, mult, order));
-      }
+      MeritList<ComboLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
+      MRGLattice<Int, Dbl>* mrg = getLatCombo<Int, Dbl>(combo, conf.max_dim);
+      ComboLattice<Int, Dbl> combolat(combo, *mrg);
+      bestLattice.add(test_lat(combolat, conf));
+      printResults(bestLattice);
     }
-    return true;
+    delete conf.proj;
+    return 0;
   }
 
-}
-
-//==========================================================================
-
-int main (int argc, char **argv) {
-  if (argc != 2) {
-    std::cout << "Usage: " << argv[0] << " filename" << std::endl;
-    return -1;
-  }
-  // Initializing values
-  srand(time(NULL));
-  conf.filem1 = "./tempm1" + std::to_string(rand());
-  conf.filer = "./tempr" + std::to_string(rand());
-  readConfigFile(argc, argv);
-  conf.proj = new Projections(numProj, minDim, projDim);
-  timer.init();
-
-  // Testing the generator(s)
-  if (conf.type == MRG) {
-    MeritList<MRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
-    IntVec temp(conf.order+1);
-    temp[0] = Int(0);
-    for (int i = 1; i < conf.order+1; i++) temp[i] = conf.mult[i-1];
-    MRGLattice<Int, Dbl> mrglat(conf.modulo, temp, maxDim, conf.order, FULL);
-    bestLattice.add(test_lat(mrglat, conf));
-    printResults(bestLattice);
-  } else if (conf.type == MWC) {
-    //MWCLattice<Int, Dbl>* mwclat = 0;
-    //mwclat = nextGenerator(mwclat);
-    //Dbl merit(test(*mwclat));
-    //if (merit > bestMerit) {
-    //  addLattice(mwclat, merit);
-    //}
-  } else if (conf.type == MMRG) {
-    MeritList<MMRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
-    MMRGLattice<Int, Dbl> mmrglat(conf.modulo, conf.matrix, maxDim, conf.order);
-    bestLattice.add(test_lat(mmrglat, conf));
-    printResults(bestLattice);
-  } else if (conf.type == COMBO) {
-    MeritList<ComboLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
-    MRGLattice<Int, Dbl>* mrg = getLatCombo<Int, Dbl>(combo, maxDim);
-    ComboLattice<Int, Dbl> combolat(combo, *mrg);
-    bestLattice.add(test_lat(combolat, conf));
-    printResults(bestLattice);
-  }
-  delete conf.proj;
-  return 0;
-}
+}; // end struct LatTest
 #endif
