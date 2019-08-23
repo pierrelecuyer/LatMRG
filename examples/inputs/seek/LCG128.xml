@@ -1,0 +1,19 @@
+<seek>
+  <mrg>
+    <modulo basis="2" exponent="128"/>
+    <order x="1"/>
+    <method random="1"/>
+  </mrg>
+  <spectral>
+    <reduction method="FULL"/>
+    <norma x="BESTLAT"/>
+    <dual x="true"/>
+  </spectral>
+  <proj>
+    <min x="1"/>
+    <num x="1"/>
+    <dim x="31"/>
+  </proj>
+  <time x="60"/>
+  <num_gen x="5"/>
+</seek>

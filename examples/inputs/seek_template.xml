@@ -14,13 +14,14 @@
     <dual bool="false"/>
   </spectral>
   <proj>
-    <min x="7"/>
-    <num x="3"/>
+    <min x="8"/>
+    <num x="1"/>
     <dim x="31 10 10"/>
   </proj>
   <detail x=""/>
   <time x="10"/>
   <num_gen x="2"/>
+  <best x="true"/>
   <!--The following is not yet implemented-->
   <function_params max_nodes_BB="" LLL_prec=""/>
 </seek>
