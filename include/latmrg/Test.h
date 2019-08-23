@@ -42,7 +42,7 @@ namespace LatMRG {
         typename Lat::IntVec shortest(lat.getBasis()[0]);
         typename Lat::Dbl tmp;
         LatticeTester::ProdScal<typename Lat::Int>(shortest, shortest, shortest.length(), tmp);
-        tmp = NTL::sqrt(tmp)*norma->getBound(shortest.length());
+        tmp = NTL::sqrt(tmp)/norma->getBound(shortest.length());
         if (tmp > 1) tmp = typename Lat::Dbl(1)/tmp;
         return tmp;
       }

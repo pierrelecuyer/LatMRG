@@ -3,7 +3,7 @@ typedef typename Lat::IntVec IntVec;
 typedef typename Lat::Dbl Dbl;
 Projections* proj(conf.proj);
 
-LatticeTester::Normalizer<Dbl>* norma = lattice.getNormalizer(conf.normaType, 0, true);
+LatticeTester::Normalizer<Dbl>* norma = lattice.getNormalizer(conf.normaType, 0, conf.use_dual);
 std::vector<Dbl> results;
 std::vector<IntVec> vectors;
 lattice.buildBasis(proj->minDim());

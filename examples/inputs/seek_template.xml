@@ -11,17 +11,17 @@
   <spectral>
     <reduction method="FULL"/>
     <norma lizer="BESTLAT"/>
-    <dual bool="false"/>
+    <dual bool="true"/>
   </spectral>
   <proj>
     <min x="8"/>
     <num x="1"/>
     <dim x="31 10 10"/>
   </proj>
-  <detail x=""/>
   <time x="10"/>
   <num_gen x="2"/>
   <best x="true"/>
   <!--The following is not yet implemented-->
+  <detail x=""/>
   <function_params max_nodes_BB="" LLL_prec=""/>
 </seek>
