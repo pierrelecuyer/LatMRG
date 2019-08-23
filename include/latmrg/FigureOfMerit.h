@@ -267,13 +267,13 @@ namespace LatMRG {
        * */
       MeritList(unsigned long maxLength, bool best){
         m_max = maxLength;
-        m_merit = Dbl(0);
+        m_merit = best?Dbl(0):Dbl(1);
         m_best = best;
       }
 
       /**
        * Adds `test` in `m_tests` if there is space left or if `test` as a
-       * higher merit.
+       * higher (lower) merit.
        * */
       void add(FigureOfMerit<Lat> test) {
         if (!test.finished()) return;

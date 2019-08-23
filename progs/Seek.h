@@ -12,7 +12,6 @@ template<typename Int, typename Dbl> struct SeekMain {
 
   // Program global objects
   Chrono timer; // program timer
-  int maxDim = 40;
 
   // MRG specific parameters
   MRGComponent<Int>* mrg;
@@ -109,7 +108,7 @@ template<typename Int, typename Dbl> struct SeekMain {
       delay++;
     } while ((A[conf.order] == 0) || (conf.period && !mrg->maxPeriod(A)));
     if (lattice) delete lattice;
-    return new MRGLattice<Int, Dbl>(conf.modulo, A, maxDim, conf.order, FULL);
+    return new MRGLattice<Int, Dbl>(conf.modulo, A, conf.max_dim, conf.order, FULL);
   }
 
   MRGLattice<Int, Dbl>* nextGeneratorPow2(MRGLattice<Int, Dbl>* lattice) {
@@ -156,7 +155,7 @@ template<typename Int, typename Dbl> struct SeekMain {
       delay++;
     } while ((A[conf.order] == 0) || (conf.period && !mrg->maxPeriod(A)));
     if (lattice) delete lattice;
-    MRGLattice<Int, Dbl>* lat = new MRGLattice<Int, Dbl>(conf.modulo, A, maxDim, conf.order, FULL);
+    MRGLattice<Int, Dbl>* lat = new MRGLattice<Int, Dbl>(conf.modulo, A, conf.max_dim, conf.order, FULL);
     lat->setPower2(coefficients);
     return lat;
   }
@@ -206,7 +205,7 @@ template<typename Int, typename Dbl> struct SeekMain {
       for (int j = 0; j<conf.order; j++)
         A[i][j] = A[i][j]%conf.modulo;
     if (lattice) delete lattice;
-    return new MMRGLattice<Int, Dbl>(conf.modulo, A, maxDim, conf.order);
+    return new MMRGLattice<Int, Dbl>(conf.modulo, A, conf.max_dim, conf.order);
   }
 
   ComboLattice<Int, Dbl>* nextGenerator(ComboLattice<Int, Dbl>* lattice) {
@@ -260,7 +259,7 @@ template<typename Int, typename Dbl> struct SeekMain {
       components.push_back(MRGComponent<Int>(conf.comb_modulo[k], B, conf.comb_order[k]));
     }
     if (lattice) delete lattice;
-    MRGLattice<Int, Dbl>* mrg_lat = getLatCombo<Int, Dbl>(components, maxDim);
+    MRGLattice<Int, Dbl>* mrg_lat = getLatCombo<Int, Dbl>(components, conf.max_dim);
     ComboLattice<Int, Dbl>* new_lat = new ComboLattice<Int, Dbl>(components, *mrg_lat);
     delete mrg_lat;
     return new_lat;
@@ -359,7 +358,7 @@ template<typename Int, typename Dbl> struct SeekMain {
     int old = print_progress(-1);
     if (conf.type == MRG) {
       MRGLattice<Int, Dbl>* mrglat = 0;
-      MeritList<MRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
+      MeritList<MRGLattice<Int, Dbl>> bestLattice(conf.max_gen, conf.best);
       while (!timer.timeOver(conf.timeLimit)) {
         if (conf.construction == "POW2") mrglat = nextGeneratorPow2(mrglat);
         else if (conf.construction == "RANDOM") mrglat = nextGenerator(mrglat);
@@ -373,7 +372,7 @@ template<typename Int, typename Dbl> struct SeekMain {
       printResults(bestLattice);
     } else if (conf.type == MWC) {
       MWCLattice<Int, Dbl>* mwclat = 0;
-      MeritList<MWCLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
+      MeritList<MWCLattice<Int, Dbl>> bestLattice(conf.max_gen, conf.best);
       while (!timer.timeOver(conf.timeLimit)) {
         mwclat = nextGenerator(mwclat);
         if (mwclat == NULL) continue;
@@ -386,7 +385,7 @@ template<typename Int, typename Dbl> struct SeekMain {
       printResults(bestLattice);
     } else if (conf.type == MMRG) {
       MMRGLattice<Int, Dbl>* mmrglat = 0;
-      MeritList<MMRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
+      MeritList<MMRGLattice<Int, Dbl>> bestLattice(conf.max_gen, conf.best);
       while (!timer.timeOver(conf.timeLimit)) {
         mmrglat = nextGenerator(mmrglat);
         if (mmrglat == NULL) continue;
@@ -399,7 +398,7 @@ template<typename Int, typename Dbl> struct SeekMain {
       printResults(bestLattice);
     } else if (conf.type == COMBO) {
       ComboLattice<Int, Dbl>* combolat=0;
-      MeritList<ComboLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
+      MeritList<ComboLattice<Int, Dbl>> bestLattice(conf.max_gen, conf.best);
       while (!timer.timeOver(conf.timeLimit)) {
         combolat = nextGenerator(combolat);
         if (combolat == NULL) continue;

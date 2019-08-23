@@ -217,6 +217,9 @@ int readProj(tinyxml2::XMLNode* current, Conf& conf) {
     return 1;
   }
   if(!toVectString(node->FirstAttribute()->Value(), projDim, numProj)) {
+    for (int i = 0; i < numProj; i++){
+      if (conf.max_dim < projDim[i]) conf.max_dim = projDim[i];
+    }
     conf.proj = new Projections(numProj, minDim, projDim);
     conf.proj_set = true;
     return 0;
@@ -349,6 +352,29 @@ void readSeek(tinyxml2::XMLNode* current, Conf& conf) {
   tinyxml2::XMLNode* node = current->FirstChild();
   while (node) {
     if (!conf.gen_set && tryGen(node, conf)) {
+    } else if (!conf.test_set && tryTest(node, conf)) {
+    } else if (!conf.proj_set && !strcmp(node->Value(), "proj")) {
+      readProj(node, conf);
+    } else if (!strcmp(node->Value(), "time")) {
+      conf.timeLimit = node->ToElement()->FirstAttribute()->DoubleValue();
+    } else if (!strcmp(node->Value(), "num_gen")) {
+      conf.max_gen = node->ToElement()->FirstAttribute()->IntValue();
+    } else if (!strcmp(node->Value(), "best")) {
+      conf.best = node->ToElement()->FirstAttribute()->BoolValue();
+      conf.currentMerit = conf.best?0.0:1.0;
+    }
+    node = node->NextSibling();
+  }
+}
+
+//==============================================================================
+
+template<typename Conf>
+void readTest(tinyxml2::XMLNode* current, Conf& conf) {
+  //if (current->NoChild()) return;
+  tinyxml2::XMLNode* node = current->FirstChild();
+  while (node) {
+    if (!conf.gen_set && tryGen(node, conf)) {
       std::cout << 1 << "\n";
     } else if (!conf.test_set && tryTest(node, conf)) {
       std::cout << 2 << "\n";
@@ -365,6 +391,7 @@ void readSeek(tinyxml2::XMLNode* current, Conf& conf) {
     node = node->NextSibling();
   }
 }
+
 
 //==============================================================================
 //===== Main reading function
@@ -396,7 +423,9 @@ int readFile(const char* filename) {
       return prog.Seek();
     }
   } else if (!strcmp(current->Value(), "lattest")) {
-    // fill lattest
+    //LatTest<NTL::ZZ, NTL::RR> prog;
+    //readTest(current, prog.conf);
+    //return prog.TestLat();
   }
   return 0;
 }

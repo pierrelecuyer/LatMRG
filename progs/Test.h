@@ -41,7 +41,7 @@ for (int i = proj->minDim(); i <= proj->maxDim(); i++){
   vectors.push_back(lattice.getBasis()[0]);
 #ifdef LATMRG_SEEK
   // Rejecting lattices that won't make it
-  if (tmp < conf.currentMerit) {
+  if ((tmp < conf.currentMerit) && conf.best) {
     delete norma;
     return FigureOfMerit<Lat>(lattice, *conf.proj);
   }
@@ -100,7 +100,7 @@ for (int i = 2; i <= proj->numProj(); i++) {
     vectors.push_back(proj_lat.getBasis()[0]);
 #ifdef LATMRG_SEEK
     // Rejecting lattices that won't make it
-    if (tmp < conf.currentMerit) {
+    if ((tmp < conf.currentMerit) && conf.best) {
       delete norma;
       return FigureOfMerit<Lat>(lattice, *proj);
     }

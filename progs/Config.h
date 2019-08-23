@@ -23,6 +23,7 @@ bool proj_set = false;
 #endif
 // Projection
 Projections* proj;
+int max_dim = 48;
 
 double timeLimit = 600;
 int max_gen = 10;
