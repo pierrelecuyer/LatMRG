@@ -26,7 +26,7 @@ double timeLimit = 600;
 int max_gen = 10;
 
 // MRG Specific parameters
-IntVec mult; // MRG multipliers
+//IntVec mult; // MRG multipliers
 IntVec coeff;
 
 // MWC Specific parameters
@@ -36,8 +36,6 @@ Int b; // modulo of MWC recurence
 IntMat matrix;
 
 // Combo specific parameters
-#ifdef LATMRG_SEEK
-int num_comp;
 std::vector<std::int64_t> comb_order; // k for MRG and MMRG
 IntVec comb_modulo; // m for MRG and MMRG
 // modulo is basis^exponent+rest
@@ -46,8 +44,8 @@ std::vector<std::int64_t> comb_exponent;
 std::vector<std::int64_t> comb_rest;
 std::vector<bool> comb_period;
 std::vector<MRGComponent<Int>*> comb_fact;
-#endif
 
+int num_comp = 1;
 // Shared components names
 std::int64_t order; // k for MRG and MMRG
 Int modulo; // m for MRG and MMRG

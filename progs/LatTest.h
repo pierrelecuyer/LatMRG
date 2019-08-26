@@ -13,6 +13,7 @@ template<typename Int, typename Dbl> struct LatTest {
   //int num_comp;
   //std::vector<int> projDim;
   std::vector<MRGComponent<Int>> combo;
+  MRGComponent<Int>* mrg;
   //Int carry;
 
   /**
@@ -67,6 +68,24 @@ template<typename Int, typename Dbl> struct LatTest {
   //==========================================================================
 
   int TestLat () {
+    if (!conf.gen_set) {
+      std::cerr << "No generator set for in seek tag. Aborting.\n";
+      return 1;
+    }
+    if (!(conf.test_set)) {
+      std::cerr << "No test set for in seek tag. Aborting.\n";
+      return 1;
+    }
+    if (!conf.proj_set) {
+      std::cerr << "No projections set for in seek tag. Aborting.\n";
+      return 1;
+    }
+    // Initializing values
+    // Dynamically allocated objects
+    if (conf.type != COMBO) {
+      mrg = new MRGComponent<Int>(conf.modulo, conf.order, conf.decompm1,
+          conf.filem1.c_str(), conf.decompr, conf.filer.c_str());
+    }
     // Initializing values
     timer.init();
 
@@ -75,7 +94,7 @@ template<typename Int, typename Dbl> struct LatTest {
       MeritList<MRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
       IntVec temp(conf.order+1);
       temp[0] = Int(0);
-      for (int i = 1; i < conf.order+1; i++) temp[i] = conf.mult[i-1];
+      for (int i = 1; i < conf.order+1; i++) temp[i] = conf.coeff[i-1];
       MRGLattice<Int, Dbl> mrglat(conf.modulo, temp, conf.max_dim, conf.order, FULL);
       bestLattice.add(test_lat(mrglat, conf));
       printResults(bestLattice);

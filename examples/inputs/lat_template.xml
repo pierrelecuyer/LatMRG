@@ -1,4 +1,4 @@
-<seek>
+<lattest>
   <mrg>
     <modulo basis="2" exponent="31" rest="-1"/>
     <order k="7"/>
@@ -6,6 +6,7 @@
       <m1 method="DECOMP"/>
       <r method="DECOMP"/>
     </period>
+    <coefficients x="1768240252 571467020 84842475 994962652 282520742 770112289 1650610398"/>
   </mrg>
   <spectral>
     <reduction method="FULL"/>
@@ -18,9 +19,7 @@
     <dim x="31 10 10"/>
   </proj>
   <time x="10"/>
-  <num_gen x="2"/>
-  <best x="true"/>
   <!--The following is not yet implemented-->
   <detail x=""/>
   <function_params max_nodes_BB="" LLL_prec=""/>
-</seek>
+</lattest>

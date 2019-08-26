@@ -114,8 +114,8 @@ namespace {
       reader.readLong(conf.order, ln++, 0);
       // Making sure that minDim is big enough to provide usefull tests (if
       // full period is required) this changes other dimensions accordingly
-      conf.mult.SetLength(conf.order);
-      reader.readMVect(conf.mult, ln, 0, conf.order, 0);
+      conf.coeff.SetLength(conf.order);
+      reader.readMVect(conf.coeff, ln, 0, conf.order, 0);
       ln++;
       reader.readBool(conf.period, ln, 0);
       minDim = (!conf.period||minDim>conf.order) ? minDim : (conf.order+1);
@@ -168,17 +168,17 @@ namespace {
       for (int i = 0; i < num_comp; i++) {
         // Variables
         Int modulo;
-        IntVec mult;
+        IntVec coeff;
         std::int64_t order, basis, exponent, rest;
 
         reader.readNumber3(modulo, basis, exponent, rest, ln++, 0);
         reader.readLong(order, ln++, 0);
         // Making sure that minDim is big enough to provide usefull tests (if
         // full period is required) this changes other dimensions accordingly
-        mult.SetLength(order);
-        reader.readMVect(mult, ln, 0, order, 0);
+        coeff.SetLength(order);
+        reader.readMVect(coeff, ln, 0, order, 0);
         ln++;
-        combo.push_back(MRGComponent<Int>(modulo, mult, order));
+        combo.push_back(MRGComponent<Int>(modulo, coeff, order));
       }
     }
     return true;
@@ -206,7 +206,7 @@ int main (int argc, char **argv) {
     MeritList<MRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
     IntVec temp(conf.order+1);
     temp[0] = Int(0);
-    for (int i = 1; i < conf.order+1; i++) temp[i] = conf.mult[i-1];
+    for (int i = 1; i < conf.order+1; i++) temp[i] = conf.coeff[i-1];
     MRGLattice<Int, Dbl> mrglat(conf.modulo, temp, maxDim, conf.order, FULL);
     bestLattice.add(test_lat(mrglat, conf));
     printResults(bestLattice);

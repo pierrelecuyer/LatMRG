@@ -66,8 +66,9 @@ int toVectString(const char* str, Vec& vect, int length) {
       i--;
       continue;
     }
-    char to[j-old];
+    char to[j-old+1];
     strncpy(to, str+old, j-old);
+    to[j-old] = '\0';
     old = j = j+1;
     NTL::conv(vect[i], to);
   }
@@ -80,14 +81,14 @@ int toVectString(const char* str, Vec& vect, int length) {
 
 // Read all info of a MRG prints error message if essential info is missing
 template<typename Conf>
-int readMRG(tinyxml2::XMLNode* current, Conf& conf) {
+int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
   tinyxml2::XMLElement* node;
   node = current->FirstChildElement("modulo");
   if (node) {
-    NTL::conv(conf.basis, node->Attribute("basis"));
+    NTL::conv(conf.comb_basis[i], node->Attribute("basis"));
     NTL::conv(conf.rest, node->Attribute("rest"));
     NTL::conv(conf.exponent, node->Attribute("exponent"));
-    conf.modulo = NTL::power(conf.basis, conf.exponent) + conf.rest;
+    conf.modulo = NTL::power(conf.comb_basis[i], conf.exponent) + conf.rest;
   } else {
     std::cerr << "No 'modulo' tag in 'mrg' tag.\n";
     return 1;
@@ -121,7 +122,8 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf) {
   } else {
     node = current->FirstChildElement("coefficients");
     if (node) {
-      // do stuff
+      conf.coeff.SetLength(conf.order);
+      toVectString(node->FirstAttribute()->Value(), conf.coeff, conf.order);
     } else {
       std::cerr << "No way to set coefficients in 'mrg' tag. Add 'method' or 'coefficients' tag.\n";
       return 1;
@@ -139,14 +141,14 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf) {
 
 // Read all info of a MMRG prints error message if essential info is missing
 template<typename Conf>
-int readMMRG(tinyxml2::XMLNode* current, Conf& conf) {
+int readMMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
   tinyxml2::XMLElement* node;
   node = current->FirstChildElement("modulo");
   if (node) {
-    NTL::conv(conf.basis, node->Attribute("basis"));
+    NTL::conv(conf.comb_basis[i], node->Attribute("basis"));
     NTL::conv(conf.rest, node->Attribute("rest"));
     NTL::conv(conf.exponent, node->Attribute("exponent"));
-    conf.modulo = NTL::power(conf.basis, conf.exponent) + conf.rest;
+    conf.modulo = NTL::power(conf.comb_basis[i], conf.exponent) + conf.rest;
   } else {
     std::cerr << "No 'modulo' tag in 'mrg' tag.\n";
     return 1;
@@ -163,6 +165,86 @@ int readMMRG(tinyxml2::XMLNode* current, Conf& conf) {
   node = current->FirstChildElement("period");
   if (node && readGenPer(node, conf))
     std::cerr << "Non critical error in 'period' tag of 'mmrg' tag.\n";
+
+  return 0;
+}
+
+//==============================================================================
+
+template<typename Conf>
+int readMWC(tinyxml2::XMLNode* current, Conf& conf) {
+  return 1;
+}
+
+
+//==============================================================================
+
+template<typename Conf>
+int readGenerator(tinyxml2::XMLNode* current, Conf& conf) {
+  auto node = current->FirstChildElement("numcomp");
+  if (node) {
+    conf.num_comp = node->FirstAttribute()->IntValue();
+    conf.comb_order.resize(conf.num_comp);
+    conf.comb_modulo.resize(conf.num_comp);
+    conf.comb_basis.resize(conf.num_comp);
+    conf.comb_exponent.resize(conf.num_comp);
+    conf.comb_rest.resize(conf.num_comp);
+    conf.comb_period.resize(conf.num_comp);
+    conf.comb_fact.resize(conf.num_comp);
+  }
+
+
+  node = current->FirstChildElement("modulo");
+  if (node) {
+    toVectString(node->Attribute("basis")->Value(), conf.comb_basis, conf.num_comp);
+    toVectString(node->Attribute("rest")->Value(), conf.comb_rest, conf.num_comp);
+    toVectString(node->Attribute("exponent")->Value(), conf.comb_exponent, conf.num_comp);
+    for (int i = 0; i < conf.num_comp; i++)
+      conf.comb_modulo[i] = NTL::power(conf.comb_basis[i], conf.exponent) + conf.rest;
+  } else {
+    std::cerr << "No 'modulo' tag in 'combo' tag.\n";
+    return 1;
+  }
+
+  node = current->FirstChildElement("order");
+  if (node) {
+    NTL::conv(conf.order, node->Attribute("k"));
+  } else {
+    std::cerr << "No 'order' tag in 'combo' tag.\n";
+    return 1;
+  }
+
+  node = current->FirstChildElement("method");
+  if (node) {
+    auto value = node->FirstAttribute();
+    if (value) {
+      if (!strcmp(value->Name(), "random")) {
+        conf.coeff.SetLength(conf.order);
+        if (toVectString(value->Value(), conf.coeff, conf.order)) return 1;
+      } else if (!strcmp(value->Name(), "pow2")) {
+        conf.coeff.SetLength(2*conf.order);
+      } else {
+        std::cerr << "Invalid attribute in tag 'method'.\n";
+        return 1;
+      }
+    } else {
+      std::cerr << "Tag 'method' has no attribute.\n";
+      return 1;
+    }
+  } else {
+    node = current->FirstChildElement("coefficients");
+    if (node) {
+      conf.coeff.SetLength(conf.order);
+      toVectString(node->FirstAttribute()->Value(), conf.coeff, conf.order);
+    } else {
+      std::cerr << "No way to set coefficients in 'combo' tag. Add 'method' or 'coefficients' tag.\n";
+      return 1;
+    }
+  }
+
+  node = current->FirstChildElement("period");
+  if (node && readGenPer(node, conf))
+    std::cerr << "Non critical error in 'period' tag of 'combo' tag.\n";
 
   return 0;
 }
@@ -373,21 +455,13 @@ void readTest(tinyxml2::XMLNode* current, Conf& conf) {
   tinyxml2::XMLNode* node = current->FirstChild();
   while (node) {
     if (!conf.gen_set && !tryGen(node, conf)) {
-      auto coef = node->FirstChildElement("coef");
-      // if (coef) {
-
-      // }
-    } else if (!tryTest(node, conf)) {
-      std::cout << 2 << "\n";
-    } else if (!strcmp(node->Value(), "proj")) {
-      std::cout << 3 << "\n";
-      readProj(node, conf);
+      conf.gen_set = true;
+    } else if (!conf.test_set && !tryTest(node, conf)) {
+      conf.test_set = true;
+    } else if (!conf.proj_set && !strcmp(node->Value(), "proj")) {
+      if (!readProj(node, conf)) conf.proj_set = true;
     } else if (!strcmp(node->Value(), "time")) {
-      std::cout << 4 << "\n";
       conf.timeLimit = node->ToElement()->FirstAttribute()->DoubleValue();
-    } else if (!strcmp(node->Value(), "num_gen")) {
-      std::cout << 5 << "\n";
-      conf.max_gen = node->ToElement()->FirstAttribute()->IntValue();
     }
     node = node->NextSibling();
   }
