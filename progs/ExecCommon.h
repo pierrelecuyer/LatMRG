@@ -102,13 +102,8 @@ std::string types = "ZD";
  * be compiled on demand. To do so, simply `#define LATMRG_TEST` before
  * including this header.
  * */
-template<typename Int, typename Dbl> struct ConfigSeek {
+template<typename Integ, typename Dbl> struct ConfigSeek {
 #include "Config.h"
-  ConfigSeek(){
-    srand(time(NULL));
-    filem1 =  "./tempm1"+std::to_string(rand());
-    filer = "./tempr"+std::to_string(rand());
-  }
 };
 /**
  * This performs a test on a lattice. That is, given a lattice and a `Config`
@@ -128,13 +123,8 @@ FigureOfMerit<Lat> test_seek(Lat & lattice, ConfigSeek<typename Lat::Int, typena
  * be compiled on demand. To do so, simply `#define LATMRG_TEST` before
  * including this header.
  * */
-template<typename Int, typename Dbl> struct ConfigLat {
+template<typename Integ, typename Dbl> struct ConfigLat {
 #include "Config.h"
-  ConfigLat(){
-    srand(time(NULL));
-    filem1 =  "./tempm1"+std::to_string(rand());
-    filer = "./tempr"+std::to_string(rand());
-  }
 };
 /**
  * This performs a test on a lattice. That is, given a lattice and a `Config`

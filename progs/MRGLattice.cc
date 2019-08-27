@@ -85,10 +85,10 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
   tinyxml2::XMLElement* node;
   node = current->FirstChildElement("modulo");
   if (node) {
-    NTL::conv(conf.comb_basis[i], node->Attribute("basis"));
-    NTL::conv(conf.rest, node->Attribute("rest"));
-    NTL::conv(conf.exponent, node->Attribute("exponent"));
-    conf.modulo = NTL::power(conf.comb_basis[i], conf.exponent) + conf.rest;
+    NTL::conv(conf.basis[i], node->Attribute("basis"));
+    NTL::conv(conf.rest[i], node->Attribute("rest"));
+    NTL::conv(conf.exponent[i], node->Attribute("exponent"));
+    conf.modulo[i] = NTL::power(conf.basis[i], conf.exponent[i]) + conf.rest[i];
   } else {
     std::cerr << "No 'modulo' tag in 'mrg' tag.\n";
     return 1;
@@ -96,7 +96,7 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
 
   node = current->FirstChildElement("order");
   if (node) {
-    NTL::conv(conf.order, node->Attribute("k"));
+    NTL::conv(conf.order[i], node->Attribute("k"));
   } else {
     std::cerr << "No 'order' tag in 'mrg' tag.\n";
     return 1;
@@ -107,10 +107,10 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
     auto value = node->FirstAttribute();
     if (value) {
       if (!strcmp(value->Name(), "random")) {
-        conf.coeff.SetLength(conf.order);
-        if (toVectString(value->Value(), conf.coeff, conf.order)) return 1;
+        conf.coeff[i].SetLength(conf.order[i]);
+        if (toVectString(value->Value(), conf.coeff[i], conf.order[i])) return 1;
       } else if (!strcmp(value->Name(), "pow2")) {
-        conf.coeff.SetLength(2*conf.order);
+        conf.coeff[i].SetLength(2*conf.order[i]);
       } else {
         std::cerr << "Invalid attribute in tag 'method'.\n";
         return 1;
@@ -122,8 +122,8 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
   } else {
     node = current->FirstChildElement("coefficients");
     if (node) {
-      conf.coeff.SetLength(conf.order);
-      toVectString(node->FirstAttribute()->Value(), conf.coeff, conf.order);
+      conf.coeff[i].SetLength(conf.order[i]);
+      toVectString(node->FirstAttribute()->Value(), conf.coeff[i], conf.order[i]);
     } else {
       std::cerr << "No way to set coefficients in 'mrg' tag. Add 'method' or 'coefficients' tag.\n";
       return 1;
@@ -131,7 +131,7 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
   }
 
   node = current->FirstChildElement("period");
-  if (node && readGenPer(node, conf))
+  if (node && readGenPer(node, conf, i))
     std::cerr << "Non critical error in 'period' tag of 'mrg' tag.\n";
 
   return 0;
@@ -145,10 +145,10 @@ int readMMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
   tinyxml2::XMLElement* node;
   node = current->FirstChildElement("modulo");
   if (node) {
-    NTL::conv(conf.comb_basis[i], node->Attribute("basis"));
-    NTL::conv(conf.rest, node->Attribute("rest"));
-    NTL::conv(conf.exponent, node->Attribute("exponent"));
-    conf.modulo = NTL::power(conf.comb_basis[i], conf.exponent) + conf.rest;
+    NTL::conv(conf.basis[i], node->Attribute("basis"));
+    NTL::conv(conf.rest[i], node->Attribute("rest"));
+    NTL::conv(conf.exponent[i], node->Attribute("exponent"));
+    conf.modulo[i] = NTL::power(conf.basis[i], conf.exponent[i]) + conf.rest[i];
   } else {
     std::cerr << "No 'modulo' tag in 'mrg' tag.\n";
     return 1;
@@ -156,14 +156,14 @@ int readMMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
 
   node = current->FirstChildElement("order");
   if (node) {
-    NTL::conv(conf.order, node->Attribute("k"));
+    NTL::conv(conf.order[i], node->Attribute("k"));
   } else {
     std::cerr << "No 'order' tag in 'mrg' tag.\n";
     return 1;
   }
 
   node = current->FirstChildElement("period");
-  if (node && readGenPer(node, conf))
+  if (node && readGenPer(node, conf, i))
     std::cerr << "Non critical error in 'period' tag of 'mmrg' tag.\n";
 
   return 0;
@@ -176,78 +176,6 @@ int readMWC(tinyxml2::XMLNode* current, Conf& conf) {
   return 1;
 }
 
-
-//==============================================================================
-
-template<typename Conf>
-int readGenerator(tinyxml2::XMLNode* current, Conf& conf) {
-  auto node = current->FirstChildElement("numcomp");
-  if (node) {
-    conf.num_comp = node->FirstAttribute()->IntValue();
-    conf.comb_order.resize(conf.num_comp);
-    conf.comb_modulo.resize(conf.num_comp);
-    conf.comb_basis.resize(conf.num_comp);
-    conf.comb_exponent.resize(conf.num_comp);
-    conf.comb_rest.resize(conf.num_comp);
-    conf.comb_period.resize(conf.num_comp);
-    conf.comb_fact.resize(conf.num_comp);
-  }
-
-
-  node = current->FirstChildElement("modulo");
-  if (node) {
-    toVectString(node->Attribute("basis")->Value(), conf.comb_basis, conf.num_comp);
-    toVectString(node->Attribute("rest")->Value(), conf.comb_rest, conf.num_comp);
-    toVectString(node->Attribute("exponent")->Value(), conf.comb_exponent, conf.num_comp);
-    for (int i = 0; i < conf.num_comp; i++)
-      conf.comb_modulo[i] = NTL::power(conf.comb_basis[i], conf.exponent) + conf.rest;
-  } else {
-    std::cerr << "No 'modulo' tag in 'combo' tag.\n";
-    return 1;
-  }
-
-  node = current->FirstChildElement("order");
-  if (node) {
-    NTL::conv(conf.order, node->Attribute("k"));
-  } else {
-    std::cerr << "No 'order' tag in 'combo' tag.\n";
-    return 1;
-  }
-
-  node = current->FirstChildElement("method");
-  if (node) {
-    auto value = node->FirstAttribute();
-    if (value) {
-      if (!strcmp(value->Name(), "random")) {
-        conf.coeff.SetLength(conf.order);
-        if (toVectString(value->Value(), conf.coeff, conf.order)) return 1;
-      } else if (!strcmp(value->Name(), "pow2")) {
-        conf.coeff.SetLength(2*conf.order);
-      } else {
-        std::cerr << "Invalid attribute in tag 'method'.\n";
-        return 1;
-      }
-    } else {
-      std::cerr << "Tag 'method' has no attribute.\n";
-      return 1;
-    }
-  } else {
-    node = current->FirstChildElement("coefficients");
-    if (node) {
-      conf.coeff.SetLength(conf.order);
-      toVectString(node->FirstAttribute()->Value(), conf.coeff, conf.order);
-    } else {
-      std::cerr << "No way to set coefficients in 'combo' tag. Add 'method' or 'coefficients' tag.\n";
-      return 1;
-    }
-  }
-
-  node = current->FirstChildElement("period");
-  if (node && readGenPer(node, conf))
-    std::cerr << "Non critical error in 'period' tag of 'combo' tag.\n";
-
-  return 0;
-}
 
 //==============================================================================
 
@@ -313,61 +241,98 @@ int readProj(tinyxml2::XMLNode* current, Conf& conf) {
 
 // Reads info on how to check for generator maximal period.
 template<typename Conf>
-int readGenPer(tinyxml2::XMLNode* current, Conf& conf) {
-  conf.period = current->ToElement()->BoolAttribute("check");
+int readGenPer(tinyxml2::XMLNode* current, Conf& conf, int i) {
+  conf.period[i] = current->ToElement()->BoolAttribute("check");
+  std::string filem1 = "./tempm1" + i + std::to_string(rand());
+  std::string filer = "./tempr" + i + std::to_string(rand());
+  DecompType decompm1 = DECOMP, decompr = DECOMP;
   int err = 0;
-  if (conf.period) {
+  if (conf.period[i]) {
     auto node = current->FirstChildElement("m1");
     if (node) {
       auto method = node->Attribute("method");
-      if (method && toDecomString(conf.decompm1, method)) {
+      if (method && toDecomString(decompm1, method)) {
         std::cerr << "Invalid 'method' attribute value in 'm1' tag.\n";
         err = 1;
       }
       auto name = node->Attribute("file");
-      if (name) conf.filem1 = name;
+      if (name) filem1 = name;
     }
     node = current->FirstChildElement("r");
     if (node) {
       auto method = node->Attribute("method");
-      if (method && toDecomString(conf.decompr, method)) {
+      if (method && toDecomString(decompr, method)) {
         std::cerr << "Invalid 'method' attribute value in 'r' tag.\n";
         err = 1;
       }
       auto name = node->Attribute("file");
-      if (name) conf.filer = name;
+      if (name) filer = name;
     }
   }
-  return err;
+  if (err) return 1;
+  conf.fact[i] = new MRGComponent<typename Conf::Int>(conf.modulo[i], conf.order[i],
+      decompm1, filem1.c_str(), decompr, filer.c_str());
+  return 0;
+}
+
+//==============================================================================
+
+template<typename Conf>
+int readGenerator(tinyxml2::XMLNode* current, Conf& conf) {
+  auto tmp_node = current->FirstChildElement("numcomp");
+  if (tmp_node) {
+    conf.num_comp = tmp_node->FirstAttribute()->IntValue();
+  }
+
+  conf.order.resize(conf.num_comp);
+  conf.modulo.resize(conf.num_comp);
+  conf.basis.resize(conf.num_comp);
+  conf.exponent.resize(conf.num_comp);
+  conf.rest.resize(conf.num_comp);
+  conf.period.resize(conf.num_comp);
+  conf.fact.resize(conf.num_comp);
+  conf.type.resize(conf.num_comp);
+  conf.coeff.resize(conf.num_comp);
+
+  srand(time(NULL));
+  
+  auto node = current->FirstChild();
+  int count = 0;
+  while (node && (count < conf.num_comp)) {
+    if (!strcmp(node->Value(), "mrg")) {
+      conf.type[count] = MRG;
+      if (readMRG(node, conf, count)) {
+        std::cerr << "'mrg' tag is not properly parametrized.\n";
+        return 1;
+      }
+      count++;
+    } else if (!strcmp(node->Value(), "mmrg")) {
+      conf.type[count] = MMRG;
+      if (readMMRG(node, conf, count)) {
+        std::cerr << "'mmrg' tag is not properly parametrized.\n";
+        return 1;
+      }
+      count++;
+    } else if (!strcmp(node->Value(), "mwc")) {
+      conf.type[count] = MWC;
+      std::cout << node->Value() << "\n";
+      count++;
+    }
+    node->NextSibling();
+  }
+
+  if (count != conf.num_comp) {
+    std::cerr << "Invalid number of generator components in 'gen' tag.\n";
+    return 1;
+  }
+
+  return 0;
 }
 
 //==============================================================================
 //===== Dispatching reused tags to the right functions
 //==============================================================================
 
-template<typename Conf>
-int tryGen(tinyxml2::XMLNode* current, Conf& conf) {
-  if (!strcmp(current->Value(), "mrg")) {
-    conf.type = MRG;
-    if (readMRG(current, conf)) {
-      std::cerr << "'mrg' tag is not properly parametrized.\n";
-      return 1;
-    }
-  } else if (!strcmp(current->Value(), "mmrg")) {
-    conf.type = MMRG;
-    if (readMMRG(current, conf)) {
-      std::cerr << "'mmrg' tag is not properly parametrized.\n";
-      return 1;
-    }
-  } else if (!strcmp(current->Value(), "mwc")) {
-    std::cout << current->Value() << "\n";
-  } else if (!strcmp(current->Value(), "combo")) {
-    std::cout << current->Value() << "\n";
-  } else return 1;
-  return 0;
-}
-
-//==============================================================================
 
 template<typename Conf>
 int tryTest(tinyxml2::XMLNode* current, Conf& conf) {
@@ -429,8 +394,8 @@ template<typename Conf>
 void readSeek(tinyxml2::XMLNode* current, Conf& conf) {
   tinyxml2::XMLNode* node = current->FirstChild();
   while (node) {
-    if (!conf.gen_set && !tryGen(node, conf)) {
-      conf.gen_set = true;
+    if (!conf.gen_set && !strcmp(node->Value(), "gen")) {
+      if (!readGenerator(node, conf)) conf.gen_set = true;
     } else if (!conf.test_set && !tryTest(node, conf)) {
       conf.test_set = true;
     } else if (!conf.proj_set && !strcmp(node->Value(), "proj")) {
@@ -454,8 +419,8 @@ void readTest(tinyxml2::XMLNode* current, Conf& conf) {
   //if (current->NoChild()) return;
   tinyxml2::XMLNode* node = current->FirstChild();
   while (node) {
-    if (!conf.gen_set && !tryGen(node, conf)) {
-      conf.gen_set = true;
+    if (!conf.gen_set && !strcmp(node->Value(), "gen")) {
+      if (!readGenerator(node, conf)) conf.gen_set = true;
     } else if (!conf.test_set && !tryTest(node, conf)) {
       conf.test_set = true;
     } else if (!conf.proj_set && !strcmp(node->Value(), "proj")) {

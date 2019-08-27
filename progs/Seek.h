@@ -13,10 +13,6 @@ template<typename Int, typename Dbl> struct SeekMain {
   // Program global objects
   Chrono timer; // program timer
 
-  // MRG specific parameters
-  MRGComponent<Int>* mrg;
-  int** comb_coeff;
-
   /**
    * A small class to search for modulus for MWC generators.
    * */
@@ -94,7 +90,7 @@ template<typename Int, typename Dbl> struct SeekMain {
     // Setting up two vectors. MRGComponent and MRGLattice do not use the same
     // vector format
     IntVec A;
-    A.SetLength(conf.order+1);
+    A.SetLength(conf.order[0]+1);
     NTL::clear(A);
     int delay = 0;
     // The program will not run the maxPeriod function if it is not wanted with
@@ -104,20 +100,20 @@ template<typename Int, typename Dbl> struct SeekMain {
         if (timer.timeOver(conf.timeLimit)) return NULL;
         else delay = 0;
       }
-      for (long i = 0; i<conf.order; i++) A[i+1] = conf.coeff[i] * randInt(Int(0), conf.modulo);
+      for (long i = 0; i<conf.order[0]; i++) A[i+1] = conf.coeff[0][i] * randInt(Int(0), conf.modulo[0]);
       delay++;
-    } while ((A[conf.order] == 0) || (conf.period && !mrg->maxPeriod(A)));
+    } while ((A[conf.order[0]] == 0) || (conf.period[0] && !conf.fact[0]->maxPeriod(A)));
     if (lattice) delete lattice;
-    return new MRGLattice<Int, Dbl>(conf.modulo, A, conf.max_dim, conf.order, FULL);
+    return new MRGLattice<Int, Dbl>(conf.modulo[0], A, conf.max_dim, conf.order[0], FULL);
   }
 
   MRGLattice<Int, Dbl>* nextGeneratorPow2(MRGLattice<Int, Dbl>* lattice) {
     // Setting up two vectors. MRGComponent and MRGLattice do not use the same
     // vector format
     IntVec A;
-    A.SetLength(conf.order+1);
+    A.SetLength(conf.order[0]+1);
     NTL::clear(A);
-    IntVec coefficients(2*conf.order);
+    IntVec coefficients(2*conf.order[0]);
     int sign;
     int delay = 0;
     // The program will not run the maxPeriod function if it is not wanted with
@@ -127,14 +123,14 @@ template<typename Int, typename Dbl> struct SeekMain {
         if (timer.timeOver(conf.timeLimit)) return NULL;
         else delay = 0;
       }
-      for (long i = 0; i<conf.order; i++) {
-        if (conf.coeff[2*i] < 0) {
+      for (long i = 0; i<conf.order[0]; i++) {
+        if (conf.coeff[0][2*i] < 0) {
           // This is a placeholder value for a zero coefficient
           coefficients[2*i] = coefficients[2*i+1] = 2004012;
           A[i+1] = 0;
           continue;
         }
-        coefficients[2*i] = randInt(Int(LatticeTester::Lg(conf.rest))+1, conf.coeff[2*i]);
+        coefficients[2*i] = randInt(Int(LatticeTester::Lg(conf.rest[0]))+1, conf.coeff[0][2*i]);
         sign = randInt(0,1);
         {
           Int tmp;
@@ -142,8 +138,8 @@ template<typename Int, typename Dbl> struct SeekMain {
           A[i+1] = Int(sign?1:-1) * tmp;
         }
         coefficients[2*i] ^= sign<<30;
-        if (!(conf.coeff[2*i+1] < 0)) {
-          coefficients[2*i+1] = randInt(Int(LatticeTester::Lg(conf.rest))+1, conf.coeff[2*i+1]);
+        if (!(conf.coeff[0][2*i+1] < 0)) {
+          coefficients[2*i+1] = randInt(Int(LatticeTester::Lg(conf.rest[0]))+1, conf.coeff[0][2*i+1]);
           sign = randInt(0,1);
           Int tmp;
           NTL::power2(tmp, coefficients[2*i+1]);
@@ -153,16 +149,16 @@ template<typename Int, typename Dbl> struct SeekMain {
         else coefficients[2*i+1] = 2004012;
       }
       delay++;
-    } while ((A[conf.order] == 0) || (conf.period && !mrg->maxPeriod(A)));
+    } while ((A[conf.order[0]] == 0) || (conf.period[0] && !conf.fact[0]->maxPeriod(A)));
     if (lattice) delete lattice;
-    MRGLattice<Int, Dbl>* lat = new MRGLattice<Int, Dbl>(conf.modulo, A, conf.max_dim, conf.order, FULL);
+    MRGLattice<Int, Dbl>* lat = new MRGLattice<Int, Dbl>(conf.modulo[0], A, conf.max_dim, conf.order[0], FULL);
     lat->setPower2(coefficients);
     return lat;
   }
 
   MWCLattice<Int, Dbl>* nextGenerator(MWCLattice<Int, Dbl>* lattice) {
     Int m(0);
-    long exp = conf.exponent-1;
+    long exp = conf.exponent[0]-1;
     // 63 bits at a time because NTL converts from SIGNED long
     while(exp > 0) {
       if (exp < 63) {
@@ -173,7 +169,7 @@ template<typename Int, typename Dbl> struct SeekMain {
       exp -= 63;
     }
     if ((m&1) == 1) m+=1;
-    Modulus mod(conf.exponent, m, true);
+    Modulus mod(conf.exponent[0], m, true);
     if (lattice) delete lattice;
     return new MWCLattice<Int, Dbl>(conf.b, mod.next());
   }
@@ -183,7 +179,7 @@ template<typename Int, typename Dbl> struct SeekMain {
    * */
   MMRGLattice<Int, Dbl>* nextGenerator(MMRGLattice<Int, Dbl>* lattice) {
     IntMat A;
-    A.SetDims(conf.order, conf.order);
+    A.SetDims(conf.order[0], conf.order[0]);
     NTL::clear(A);
     int delay = 0;
     do {
@@ -191,21 +187,21 @@ template<typename Int, typename Dbl> struct SeekMain {
         if (timer.timeOver(conf.timeLimit)) return NULL;
         else delay = 0;
       }
-      for (long i = 0; i<conf.order-1; i++) {
+      for (long i = 0; i<conf.order[0]-1; i++) {
         A[i][i+1] = Int(1);
       }
-      for (long i = 0; i<conf.order; i++) {
-        A[conf.order-1][i] = randInt(Int(0), conf.modulo);
+      for (long i = 0; i<conf.order[0]; i++) {
+        A[conf.order[0]-1][i] = randInt(Int(0), conf.modulo[0]);
       }
       delay++;
-    } while ((NTL::determinant(A) == 0) || (conf.period && !mrg->maxPeriod(A)));
+    } while ((NTL::determinant(A) == 0) || (conf.period[0] && !conf.fact[0]->maxPeriod(A)));
     // Correcting the matrix to a full matrix
-    //for (int i = 0; i<conf.order; i++) A *= A;
-    for (int i = 0; i<conf.order; i++)
-      for (int j = 0; j<conf.order; j++)
-        A[i][j] = A[i][j]%conf.modulo;
+    //for (int i = 0; i<conf.order[0]; i++) A *= A;
+    for (int i = 0; i<conf.order[0]; i++)
+      for (int j = 0; j<conf.order[0]; j++)
+        A[i][j] = A[i][j]%conf.modulo[0];
     if (lattice) delete lattice;
-    return new MMRGLattice<Int, Dbl>(conf.modulo, A, conf.max_dim, conf.order);
+    return new MMRGLattice<Int, Dbl>(conf.modulo[0], A, conf.max_dim, conf.order[0]);
   }
 
   ComboLattice<Int, Dbl>* nextGenerator(ComboLattice<Int, Dbl>* lattice) {
@@ -214,9 +210,9 @@ template<typename Int, typename Dbl> struct SeekMain {
     std::vector<MRGComponent<Int>> components;
     for (int k = 0; k < conf.num_comp; k++) {
       IntVec A;
-      A.SetLength(conf.comb_order[k]+1);
+      A.SetLength(conf.order[k]+1);
       NTL::clear(A);
-      IntVec coefficients(2*conf.comb_order[k]);
+      IntVec coefficients(2*conf.order[k]);
       int sign;
       int delay = 0;
       // The program will not run the maxPeriod function if it is not wanted with
@@ -226,14 +222,14 @@ template<typename Int, typename Dbl> struct SeekMain {
           if (timer.timeOver(conf.timeLimit)) return NULL;
           else delay = 0;
         }
-        for (long i = 0; i<conf.comb_order[k]; i++) {
-          if (comb_coeff[k][2*i] < 0) {
+        for (long i = 0; i<conf.order[k]; i++) {
+          if (conf.coeff[k][2*i] < 0) {
             // This is a placeholder value for a zero coefficient
             coefficients[2*i] = coefficients[2*i+1] = 2004012;
             A[i+1] = 0;
             continue;
           }
-          coefficients[2*i] = randInt(int(LatticeTester::Lg(abs(conf.comb_rest[k])))+1, comb_coeff[k][2*i]);
+          coefficients[2*i] = randInt(Int(LatticeTester::Lg(abs(conf.rest[k])))+1, conf.coeff[k][2*i]);
           sign = randInt(0,1);
           {
             Int tmp;
@@ -241,8 +237,8 @@ template<typename Int, typename Dbl> struct SeekMain {
             A[i+1] = Int(sign?1:-1) * tmp;
           }
           coefficients[2*i] ^= sign<<30;
-          if (!(comb_coeff[k][2*i+1] < 0)) {
-            coefficients[2*i+1] = randInt(int(LatticeTester::Lg(abs(conf.comb_rest[k])))+1, comb_coeff[k][2*i+1]);
+          if (!(conf.coeff[k][2*i+1] < 0)) {
+            coefficients[2*i+1] = randInt(Int(LatticeTester::Lg(abs(conf.rest[k])))+1, conf.coeff[k][2*i+1]);
             sign = randInt(0,1);
             Int tmp;
             NTL::power2(tmp, coefficients[2*i+1]);
@@ -252,11 +248,11 @@ template<typename Int, typename Dbl> struct SeekMain {
           else coefficients[2*i+1] = 2004012;
         }
         delay++;
-      } while ((A[conf.comb_order[k]] == 0) || (conf.comb_period[k] && !conf.comb_fact[k]->maxPeriod(A)));
+      } while ((A[conf.order[k]] == 0) || (conf.period[k] && !conf.fact[k]->maxPeriod(A)));
       IntVec B;
-      B.SetLength(conf.comb_order[k]);
-      for (int i = 0; i < conf.comb_order[k]; i++) B[i] = A[i+1];
-      components.push_back(MRGComponent<Int>(conf.comb_modulo[k], B, conf.comb_order[k]));
+      B.SetLength(conf.order[k]);
+      for (int i = 0; i < conf.order[k]; i++) B[i] = A[i+1];
+      components.push_back(MRGComponent<Int>(conf.modulo[k], B, conf.order[k]));
     }
     if (lattice) delete lattice;
     MRGLattice<Int, Dbl>* mrg_lat = getLatCombo<Int, Dbl>(components, conf.max_dim);
@@ -274,15 +270,15 @@ template<typename Int, typename Dbl> struct SeekMain {
       std::cout << "\nSeekRe: A search program for Random Number Generators\n";
       std::cout << delim;
       std::cout << "Bellow are the results of a search for random number generators:\n";
-      std::cout << "Generator type: " << toStringGen(conf.type) << "\n";
-      if (conf.type == MRG) {
-        std::cout << "With modulus:   m = " << conf.modulo << " = " << conf.basis << "^"
-          << conf.exponent << (conf.rest>0?"+":"") << (conf.rest!=0?std::to_string(conf.rest):"") << "\n";
-        std::cout << "Of order:       k = " << conf.order << "\n";
-      } else if (conf.type == MWC) {
-      } else if (conf.type == MMRG) {
+      std::cout << "Generator type: " << toStringGen(conf.type[0]) << "\n";
+      if (conf.type[0] == MRG) {
+        std::cout << "With modulus:   m = " << conf.modulo[0] << " = " << conf.basis[0] << "^"
+          << conf.exponent[0] << (conf.rest[0]>0?"+":"") << (conf.rest[0]!=0?std::to_string(conf.rest[0]):"") << "\n";
+        std::cout << "Of order:       k = " << conf.order[0] << "\n";
+      } else if (conf.type[0] == MWC) {
+      } else if (conf.type[0] == MMRG) {
       }
-      std::cout << "And " << (conf.period?"full":"any") << " period length\n";
+      std::cout << "And " << (conf.period[0]?"full":"any") << " period length\n";
       std::cout << "The test was:\n" << (conf.best?"Best":"Worst") << " generators "
         "ranked by ";
       if(conf.criterion == LatticeTester::SPECTRAL) std::cout << "minimal "
@@ -305,12 +301,12 @@ template<typename Int, typename Dbl> struct SeekMain {
       std::cout << "Retained generators (from best to worst):\n";
       for (auto it = bestLattice.getList().begin(); it!= bestLattice.getList().end(); it++) {
         std::cout << delim;
-        if (conf.type == MRG) {
+        if (conf.type[0] == MRG) {
           std::cout << "Coefficients:\n" << (*it).getLattice() << "\n";
-        } else if (conf.type == MWC) {}
-        else if (conf.type == MMRG) {
+        } else if (conf.type[0] == MWC) {}
+        else if (conf.type[0] == MMRG) {
           std::cout << "Matrix:\n" << (*it).getLattice() << "\n";
-        } else if (conf.type == COMBO) {
+        } else if (conf.type[0] == COMBO) {
           std::cout << (*it).getLattice() << "\n";
         }
         std::cout << (*it).toStringMerit();
@@ -347,16 +343,12 @@ template<typename Int, typename Dbl> struct SeekMain {
     }
     // Initializing values
     // Dynamically allocated objects
-    if (conf.type != COMBO) {
-      mrg = new MRGComponent<Int>(conf.modulo, conf.order, conf.decompm1,
-          conf.filem1.c_str(), conf.decompr, conf.filer.c_str());
-    }
     timer.init();
 
     // Launching the tests
     std::cout << "Program progress:\n";
     int old = print_progress(-1);
-    if (conf.type == MRG) {
+    if (conf.type[0] == MRG) {
       MRGLattice<Int, Dbl>* mrglat = 0;
       MeritList<MRGLattice<Int, Dbl>> bestLattice(conf.max_gen, conf.best);
       while (!timer.timeOver(conf.timeLimit)) {
@@ -370,7 +362,7 @@ template<typename Int, typename Dbl> struct SeekMain {
       }
       if (mrglat) delete mrglat;
       printResults(bestLattice);
-    } else if (conf.type == MWC) {
+    } else if (conf.type[0] == MWC) {
       MWCLattice<Int, Dbl>* mwclat = 0;
       MeritList<MWCLattice<Int, Dbl>> bestLattice(conf.max_gen, conf.best);
       while (!timer.timeOver(conf.timeLimit)) {
@@ -383,7 +375,7 @@ template<typename Int, typename Dbl> struct SeekMain {
       }
       if (mwclat) delete mwclat;
       printResults(bestLattice);
-    } else if (conf.type == MMRG) {
+    } else if (conf.type[0] == MMRG) {
       MMRGLattice<Int, Dbl>* mmrglat = 0;
       MeritList<MMRGLattice<Int, Dbl>> bestLattice(conf.max_gen, conf.best);
       while (!timer.timeOver(conf.timeLimit)) {
@@ -396,7 +388,7 @@ template<typename Int, typename Dbl> struct SeekMain {
       }
       if (mmrglat) delete mmrglat;
       printResults(bestLattice);
-    } else if (conf.type == COMBO) {
+    } else if (conf.type[0] == COMBO) {
       ComboLattice<Int, Dbl>* combolat=0;
       MeritList<ComboLattice<Int, Dbl>> bestLattice(conf.max_gen, conf.best);
       while (!timer.timeOver(conf.timeLimit)) {
@@ -409,14 +401,11 @@ template<typename Int, typename Dbl> struct SeekMain {
       }
       if (combolat) delete combolat;
       printResults(bestLattice);
-      for (int i = 0; i < conf.num_comp; i++) {
-        if (conf.comb_fact[i]) delete conf.comb_fact[i];
-        delete[] comb_coeff[i];
-      }
-      delete[] comb_coeff;
+    }
+    for (int i = 0; i < conf.num_comp; i++) {
+      if (conf.fact[i]) delete conf.fact[i];
     }
     delete conf.proj;
-    delete mrg;
     return 0;
   }
 }; // end struct SeekMain

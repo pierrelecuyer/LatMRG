@@ -1,12 +1,13 @@
+typedef Integ Int;
 typedef NTL::vector<Int> IntVec;
 typedef NTL::matrix<Int> IntMat;
 
 // For period tests
-DecompType decompm1 = DECOMP, decompr = DECOMP;
-std::string filem1, filer;
+// DecompType decompm1 = DECOMP, decompr = DECOMP;
+// std::string filem1, filer;
 
 // Data file read parameters
-GenType type = MRG;
+std::vector<GenType> type;
 // Type of figure of merit
 LatticeTester::NormaType normaType = LatticeTester::NONE;
 LatticeTester::CriterionType criterion = LatticeTester::SPECTRAL;
@@ -26,8 +27,9 @@ double timeLimit = 600;
 int max_gen = 10;
 
 // MRG Specific parameters
+int num_comp = 1;
 //IntVec mult; // MRG multipliers
-IntVec coeff;
+// IntVec coeff;
 
 // MWC Specific parameters
 Int b; // modulo of MWC recurence
@@ -36,24 +38,24 @@ Int b; // modulo of MWC recurence
 IntMat matrix;
 
 // Combo specific parameters
-std::vector<std::int64_t> comb_order; // k for MRG and MMRG
-IntVec comb_modulo; // m for MRG and MMRG
+std::vector<std::int64_t> order; // k for MRG and MMRG
+IntVec modulo; // m for MRG and MMRG
 // modulo is basis^exponent+rest
-std::vector<std::int64_t> comb_basis;
-std::vector<std::int64_t> comb_exponent;
-std::vector<std::int64_t> comb_rest;
-std::vector<bool> comb_period;
-std::vector<MRGComponent<Int>*> comb_fact;
+std::vector<std::int64_t> basis;
+std::vector<std::int64_t> exponent;
+std::vector<std::int64_t> rest;
+std::vector<bool> period;
+std::vector<MRGComponent<Int>*> fact;
+std::vector<IntVec> coeff;
 
-int num_comp = 1;
 // Shared components names
-std::int64_t order; // k for MRG and MMRG
-Int modulo; // m for MRG and MMRG
-// modulo is basis^exponent+rest
-std::int64_t basis;
-std::int64_t exponent;
-std::int64_t rest;
-bool period = true;
+// std::int64_t order; // k for MRG and MMRG
+// Int modulo; // m for MRG and MMRG
+// // modulo is basis^exponent+rest
+// std::int64_t basis;
+// std::int64_t exponent;
+// std::int64_t rest;
+// bool period = true;
 
 bool gen_set = false;
 bool test_set = false;
