@@ -97,62 +97,57 @@ $(document).ready(function(){initNavTree('usage.html','');});
 <div class="title">Compilation and Executables Usage </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h1><a class="anchor" id="compilation"></a>
+<div class="textblock"><h1><a class="anchor" id="usage_exec"></a>
+LatMRG executable</h1>
+<p>As of the latest update, <a class="el" href="namespace_lat_m_r_g.html">LatMRG</a> possesses a single executable taking all it's options from configuration files. This executable has 4 different execution modes that simply the usage of the core functionnalities of <a class="el" href="namespace_lat_m_r_g.html">LatMRG</a>.</p><ul>
+<li>A mode to search of \(m\) and \(k\) parameters for MRG generators.</li>
+<li>A mode to test if a specific MRG has full period.</li>
+<li>A mode to test MRG generators with figures of merit tests built upon the computations <a class="el" href="namespace_lat_m_r_g.html">LatMRG</a> can perform on lattice.</li>
+<li>A mode to search for new MRG generators, using the same kind of tests as the test mode.</li>
+</ul>
+<p>We briefly introduce what each mode can do, before presenting the program usage.</p>
+<h2><a class="anchor" id="usage_exec_mk"></a>
+Searching m and k parameters</h2>
+<p>This mode will search for good modulus in a certain range given a number \(k\). This is used when searching for new generators with full period.</p>
+<p>This will search for prime \(m\) in \(m &lt; 2^e\) or \( 2^e+c_1 \le m \le 2^e+c_2\). When doing these search, it is possible to ask that \(r = (m^k-1)/(m-1)\) is prime and that \((m-1)/2\). It is also possible to ask the program to factor \(m-1\) to a file.</p>
+<p>All these factorisations and restrictions on primality are useful because they simplify the initialization process of the search program, as the factorization of \(r\) and \((m-1)/2\) is needed to check the full period of a generator.</p>
+<h2><a class="anchor" id="usage_exec_period"></a>
+Checking for full period</h2>
+<p>This mode takes a generator and tests if it's period length is maximal. There is not much to say here except that this will need a factorization for \(r\) and \(m-1\) which can be very long to compute. This is in fact the main use case of this mode. Since this factorization can take quite some time, this can be used seperatly of the generator testing to have more flexibility with the executable time.</p>
+<h2><a class="anchor" id="usage_exec_lattest"></a>
+Testing lattice structure for MRG</h2>
+<p>This mode takes a generator, a test, a description of how to apply this test and performs the test on the generator. The generator can be of any of the types of MRG described in <a class="el" href="background.html">Theory of Random Numbers</a>.</p>
+<p>The program can perform multiple computations:</p><ul>
+<li>The length of theshortest vector in the lattice of the generator in L1 and euclidian norm.</li>
+<li>The length of the shortest vector in the dual lattice of the generator</li>
+<li>The preceding norms normalized between 0 and 1</li>
+</ul>
+<p>But it's real strength lies in the fact that it can build the generator lattice and dual lattice for any projection of the generator, and compute figures of merit based on the normalized mesures on these multiple projections. Computing these figures of merit is really the main reason to use this mode.</p>
+<p>To execute the program, it is necessary to feed it with the set of of the generator that you want to test. This program takes a values for \(T\), \(d\) and \(T_2, \ldots, T_d\) such that the program will test all projections of the form \(\{0, \ldots, t\}\) with \(k \le t &lt; T\), and projections on indices \(\{i_1, \ldots, i_j: 0 \leq i_k \le T_j\}\) for \(2 \le j \le d\).</p>
+<h2><a class="anchor" id="usage_exec_search"></a>
+Searching for new MRG</h2>
+<p>This mode takes configuration of MRG generators (such and the modulo, the order and ranges for the parameters) and randomly searches for parameters that fit this configuration. Once a generator is found, it is tested with the same methodology as in the preceding <a class="el" href="usage.html#usage_exec_lattest">Testing lattice structure for MRG</a> mode and generators are ranked by the value they get in these tests.</p>
+<p>Even though a lot for flexibility is available when using this mode, it is usual to compare generators with figures of merit between 0 and</p>
+<h2><a class="anchor" id="usage_exec_usage"></a>
+Usage of the executable</h2>
+<p>We do not provide a precompiled binairy for the main executable. To use it you must first compile it following the instructions following this section. Once this is done, you will find the main <code>MRGLattice</code> executable in the <code>bin</code> directory of the software repository.</p>
+<p>As any executable, the executable can be called from the command line as </p><div class="fragment"><div class="line">./MRGLattice file1 file2 ...</div></div><!-- fragment --><p> It is necessary to specify configuration files for the program to actually do stuff.</p>
+<p><b>NEW</b> As of the last upgrade to <a class="el" href="namespace_lat_m_r_g.html">LatMRG</a>, the executable now reads it's configuration from <code>xml</code> files. Since configuration files have a quite extensive set of tags allowing users to specify the options, the list of these tags and their usage for the different modes is specified in <a class="el" href="conf_file.html">Configuration Files Synthax and Tags</a>.</p>
+<h1><a class="anchor" id="compilation"></a>
 Building LatMRG</h1>
-<p><a class="el" href="namespace_lat_m_r_g.html">LatMRG</a> is available on <a href="https://github.com/savamarc/latmrg"><b>Github</b></a> and can be downloaded either via <code>git</code> or as a <code>.zip</code> archive. Once the you have the repository on a local machine, it is necessary to make sure that you have the correct dependencies installed:</p><ul>
+<p><a class="el" href="namespace_lat_m_r_g.html">LatMRG</a> is available on <a href="https://github.com/savamarc/latmrg"><b>Github</b></a> and can be downloaded either via <code>git</code> or as a <code>.zip</code> archive. We do not provide precompiled binairies, so you have to follow these instruction to use the software. Once you have the repository on a local machine, it is necessary to make sure that you have the correct dependencies installed:</p><ul>
 <li><a href="https://www.shoup.net/ntl/"><b>NTL</b></a> is needed. Follow Shoup's instructions to install the library compiled with the option <code>NTL_THREADS=off</code> in a standard path.<ul>
-<li><a href="https://gmplib.org/"><b>gmp</b></a> is a NTL dependency. It is packaged by most major Linux distributions. You will need to also download the header files of the library (usually in a <code>-dev</code> <code>devel</code> named package).</li>
+<li><a href="https://gmplib.org/"><b>gmp</b></a> is a NTL dependency. It is packaged by most major Linux distributions. You will need to also download the header files of the library (usually in a <code>-dev</code> or <code>-devel</code> named package).</li>
 </ul>
 </li>
 <li><a href="https://github.com/umontreal-simul/latticetester"><b>Lattice Tester</b></a> is a submodule in the git repository. The instructions bellow present how to download and compile Lattice Tester along <a class="el" href="namespace_lat_m_r_g.html">LatMRG</a>.</li>
+<li><a href="https://github.com/leethomason/tinyxml2"><b>tinyxml2</b></a> A small library to parse xml documents. This should be available through the package manager of most linux distributions. The header file of the library is shipped as part of the <a class="el" href="namespace_lat_m_r_g.html">LatMRG</a> code.</li>
 <li><a href="https://git-scm.com"><b>git</b></a> will greatly simplify the download process for both <a class="el" href="namespace_lat_m_r_g.html">LatMRG</a> and Lattice Tester.</li>
-<li><a href="https://sourceforge.net/projects/yafu/"><b>yafu</b></a> is an external executable that is used for factorization. It is used when testing period length. If you want this functionnality, download and unpack the executable in the <code>data</code> directory.</li>
+<li><a href="https://sourceforge.net/projects/yafu/"><b>yafu</b></a> is an external executable that is used for factorization when checking that generators have full period. It is not necessary to have it when building, but the program will halt when asked for a factorization. If you want to avoid this behavior, download and unpack this executable in the <code>data</code> directory.</li>
 </ul>
 <p>To build the program, it will also be necessary to have a recent C++ compiler and Python interpreter installed. Note that we do not provide instructions to build the library under Windows or macOS, and that the software is only tested for the <code>x86_64</code> architecture. Also note that we currently do not use automatic <code>makefile</code> generation and that you will need to manually modify the makefile for any non standard path choices.</p>
-<p>First, download the source code via github as a <code>.zip</code> unpack it and open a terminal in that directory, or use git: </p><div class="fragment"><div class="line">git clone --recursive https:<span class="comment">//github.com/savamarc/LatMRG.git</span></div><div class="line">cd <a class="code" href="namespace_lat_m_r_g.html">LatMRG</a></div></div><!-- fragment --><p> If you downloaded the zip, you will also need to download and extract Lattice Tester. In the <code>latticetester</code> directory. Once this is done, the program can be compiled in only a few commands. Note that the first one is interractive. </p><div class="fragment"><div class="line">make config_latticetester</div><div class="line">make</div></div><!-- fragment --><p> Once this is done, the executables can be invoked from the local directory as <code>./bin/Program data</code>.</p>
-<p>Note that there is no way to install the program somewhere else. If <code>yafu</code> is used by the program, it might be problematic to move the binaries. This is because the program uses a relative path to invoke <code>yafu</code>. We are aware of these issues and they will be fixed some time in the future.</p>
-<h1><a class="anchor" id="usage_exec"></a>
-LatMRG executables</h1>
-<p>At the high-level, <em><a class="el" href="namespace_lat_m_r_g.html">LatMRG</a></em> provides 4 executable programs that can perform various tasks:</p><ul>
-<li><a class="el" href="_find_m_k.html">FindMK</a>, a program to search for prime numbers that can be used as moduli.</li>
-<li><a class="el" href="_seek_main.html">SeekMain</a>, a program to search for MRG or certain specific MRG-like generators.</li>
-<li><a class="el" href="_max_period.html">MaxPeriod</a>, a program to test if a specific generator has a maximal period.</li>
-<li><a class="el" href="_lat_main.html">LatMain</a>, a program to compute figures of merit on a MRG.</li>
-</ul>
-<p>All these programs are designed to take their input from a file, but can output onto the command line, in files and even, sometimes, in files formatted to be the input of the other <em><a class="el" href="namespace_lat_m_r_g.html">LatMRG</a></em> executables. For more information on either one of those programs, have a look at the page specific to it. This page contains a detailed description of what can be computed with that program, the file format that has to be given as input and a description of the standard output. </p>
-<h2><a class="anchor" id="file_format"></a>
-About the file format</h2>
-<p>A standard notation is used throughout the pages describing the programs to describe the file format used by them. The description takes place in two parts :</p><ul>
-<li>We always present the layout of the file first in a "code" environment. This makes it so that you can see what the file will actually look like.</li>
-<li>We present a detailled description of every parameter and it's type.</li>
-</ul>
-<p>The file layout looks like this : <a class="anchor" id="input_format_ex"></a></p><pre class="fragment"> param1 // A comment
- param2 [optionnal parameter]
- .
- .
- .
- param_n
-</pre> <center> <b>Example of a datafile layout</b> </center><p>If you see a double slash (<code>//</code>) in the layout, this is a comment to explain what is going on for this/those lines. It is not necessary to put it in the files to feed to the program. As written above, the parameters in brackets are optionnal parameters that do not always need to be there. Most often than not, their presence will be determined by the parameter on the same line as them. Also note that comments may be inserted after data, on the same line, separated from the data by at least one blank. Moreover, any line starting with <code>#</code> is considered as a comment and is discarded by the reading program.</p>
-<p>Each of the configuration must be in a file that has a <code>.dat</code> extension.</p>
-<p>After presenting the file template, we explain the meaning of all the fields of the data file. For every line, of the data file, the options for the mandatory fields are listed between inequality signs as <code>&lt;option1, option2, ...&gt;</code>. If this field takes a data and no particular value, this type is writen instead. The options for the optionnal/situationnal fields are listed in square brackets as <code>[option1, option2, ...]</code>. It looks like this: </p><dl>
-<dt>parameter name: </dt>
-<dd><code>&lt;case1, case2, case3&gt; [option1, option2]</code> <br />
-Description of the parameter  <dl>
-<dt><code>case1</code>: </dt>
-<dd>Description of the case  </dd>
-<dt><code>case2</code>: </dt>
-<dd>Description of the case  </dd>
-<dt><code>case3</code>: </dt>
-<dd>Description of the case  </dd>
-</dl>
-<dl>
-<dt><code>option1</code>: </dt>
-<dd>Description of the option  </dd>
-<dt><code>option2</code>: </dt>
-<dd>Description of the option  </dd>
-</dl>
-</dd>
-</dl>
+<p>First, download the source code via github as a <code>.zip</code> unpack it and open a terminal in that directory, or use git: </p><div class="fragment"><div class="line">git clone --recursive https:<span class="comment">//github.com/savamarc/LatMRG.git</span></div><div class="line">cd <a class="code" href="namespace_lat_m_r_g.html">LatMRG</a></div></div><!-- fragment --><p> If you downloaded the zip, you will also need to download and extract Lattice Tester. In the <code>latticetester</code> directory. Once this is done, the program can be compiled in only a few commands. Note that the first one is interractive. </p><div class="fragment"><div class="line">make config_latticetester</div><div class="line">make</div></div><!-- fragment --><p> Once this is done, the executables can be invoked from the local directory as <code>./bin/Program_name data_file</code>.</p>
+<p>Note that there is no way to install the program somewhere else. If <code>yafu</code> is used by the program, it might be problematic to move the binaries. This is because the program uses a relative path to invoke <code>yafu</code>. We are aware of these issues and they will be fixed some time in the future. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->

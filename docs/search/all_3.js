@@ -20,6 +20,8 @@ var searchData=
   ['compfactor',['CompFactor',['../class_lat_m_r_g_1_1_int_factorization_1_1_comp_factor.html',1,'LatMRG::IntFactorization']]],
   ['component',['component',['../results_8dox.html#ac329ce2abeb540df962348024d8264fe',1,'results.dox']]],
   ['computemerit',['computeMerit',['../class_lat_m_r_g_1_1_figure_of_merit.html#adc0c78ea0ad04f69f537254ce9d2743a',1,'LatMRG::FigureOfMerit']]],
+  ['conf_2edox',['Conf.dox',['../_conf_8dox.html',1,'']]],
+  ['configuration_20files_20synthax_20and_20tags',['Configuration Files Synthax and Tags',['../conf_file.html',1,'']]],
   ['const_2ecc',['Const.cc',['../_const_8cc.html',1,'']]],
   ['const_2eh',['Const.h',['../_const_8h.html',1,'']]],
   ['compilation_20and_20executables_20usage',['Compilation and Executables Usage',['../usage.html',1,'']]]

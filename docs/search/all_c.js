@@ -66,7 +66,7 @@ var searchData=
   ['main_2edox',['main.dox',['../main_8dox.html',1,'']]],
   ['max_5fword_5fsize',['MAX_WORD_SIZE',['../class_lat_m_r_g_1_1_param_reader_ext.html#a60ae285423a0b12575644ba7de61152f',1,'LatMRG::ParamReaderExt']]],
   ['maxdim',['maxDim',['../class_lat_m_r_g_1_1_projections.html#a485528cbfadaaaa1f7ac41a1e8adb51e',1,'LatMRG::Projections']]],
-  ['maxperiod',['maxPeriod',['../class_lat_m_r_g_1_1_m_r_g_component.html#a4263f4cddc7d798c0b346f82cc02cedb',1,'LatMRG::MRGComponent::maxPeriod(const IntVec &amp;A)'],['../class_lat_m_r_g_1_1_m_r_g_component.html#ac27d417d2ea126d20d97f044a28dc891',1,'LatMRG::MRGComponent::maxPeriod(const Int &amp;a)'],['../class_lat_m_r_g_1_1_m_r_g_component.html#ab14e4f61853a5c4fce2e87454ee9cb61',1,'LatMRG::MRGComponent::maxPeriod(const IntMat &amp;A)'],['../_max_period.html',1,'usage']]],
+  ['maxperiod',['maxPeriod',['../class_lat_m_r_g_1_1_m_r_g_component.html#a4263f4cddc7d798c0b346f82cc02cedb',1,'LatMRG::MRGComponent::maxPeriod(const IntVec &amp;A)'],['../class_lat_m_r_g_1_1_m_r_g_component.html#ac27d417d2ea126d20d97f044a28dc891',1,'LatMRG::MRGComponent::maxPeriod(const Int &amp;a)'],['../class_lat_m_r_g_1_1_m_r_g_component.html#ab14e4f61853a5c4fce2e87454ee9cb61',1,'LatMRG::MRGComponent::maxPeriod(const IntMat &amp;A)'],['../_max_period.html',1,'(Global Namespace)']]],
   ['maxperiod_2edox',['MaxPeriod.dox',['../_max_period_8dox.html',1,'']]],
   ['maxperiod23',['maxPeriod23',['../class_lat_m_r_g_1_1_m_r_g_component.html#abbf4c02d11f8c21c1a59dd6c0b32c2a5',1,'LatMRG::MRGComponent']]],
   ['meritb',['meritB',['../namespace_lat_m_r_g_1_1_merit.html#a9cb72d70a4306d2c6d6af80738b814e7',1,'LatMRG::Merit']]],

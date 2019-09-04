@@ -4,7 +4,7 @@ var searchData=
   ['sec',['SEC',['../class_lat_m_r_g_1_1_chrono.html#aeb39423e55e377aac6b2aa7a2006108aadefcae3075f8ae6b2a5ba3546444fbae',1,'LatMRG::Chrono']]],
   ['second',['second',['../class_lat_m_r_g_1_1_chrono.html#a968fa7e40a5ad71a121381585ba3f2da',1,'LatMRG::Chrono']]],
   ['section',['section',['../usage_8dox.html#ac470d3152d9a00aeffa8bb56f9d9eb7c',1,'usage.dox']]],
-  ['seekmain',['SeekMain',['../_seek_main.html',1,'usage']]],
+  ['seekmain',['SeekMain',['../_seek_main.html',1,'']]],
   ['seekmain_2edox',['SeekMain.dox',['../_seek_main_8dox.html',1,'']]],
   ['seta',['setA',['../class_lat_m_r_g_1_1_m_r_g_component.html#a0689f092b93c27cda47fb64ef070132d',1,'LatMRG::MRGComponent']]],
   ['setf',['setF',['../class_lat_m_r_g_1_1_int_primitivity.html#a3ec66d9832ed9b3d42782c1998de8f06',1,'LatMRG::IntPrimitivity::setF()'],['../class_lat_m_r_g_1_1_poly_p_e.html#a8b8655a4a007accd203ea28481ec2037',1,'LatMRG::PolyPE::setF(const typename ModInt&lt; Int &gt;::IntVecP &amp;C)'],['../class_lat_m_r_g_1_1_poly_p_e.html#a10ab3b1ac479a321f45c24ac81b4dcea',1,'LatMRG::PolyPE::setF(const IntVec &amp;C)']]],

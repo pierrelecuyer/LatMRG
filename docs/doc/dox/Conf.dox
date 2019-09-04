@@ -1,0 +1,40 @@
+/**
+ * \page conf_file Configuration Files Synthax and Tags
+ *
+ * This page lists the tags available for the xml configuration files. These
+ * tags are sorted via the program modes they can be used.
+ *
+ * \subsection xml_note A short note on XML
+ *
+ * If you are not really familliar with XML, there is no neeed to panic.
+ * In fact we are not experts either, but the usage we make of this language is
+ * very basic. XML is a markup languages where different blocks of text are
+ * stored between tags quite similar to HTML tags. Tags can also have attributes
+ * which are somewhat like variables associated with them.
+ *
+ * Here is a simple XML example:
+ * ```
+ * <tag>
+ *   This is text in the tag.
+ *   <nested-tag>
+ *     You can nest tags. Tag names are user defined.
+ *     <onelinetag attribute="The value of this attribute"/>
+ *   </nested-tag>
+ * </tag>
+ * ```
+ * This highlight all the features needed for LatMRG.
+ * - It is possible to nest tags
+ * - The tag names are user defined (as opposed to implementation defined). This
+ *   means that tags can have name relevant to the information they contain.
+ * - It is possible to write tags in one line.
+ * - Attributes can also have custom names and their value can be any string.
+ *
+ * \subsection conf_mk Search for m and k
+ *
+ * \subsection conf_period Full period test
+ *
+ * \subsection conf_lattest_seek Generator test and search
+ *
+ * We now talk about both the generator testing and generator search specific
+ * tags. These are grouped because most of their tags are shared.
+ * */

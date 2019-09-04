@@ -802,6 +802,7 @@ WARN_LOGFILE           = ./docs/doc/warn.log
 
 INPUT                  = ./include ./src ./latticetester/doc/dox/intro.dox \
                          ./docs/doc/dox/background.dox ./docs/doc/dox/usage.dox \
+                         ./docs/doc/dox/Conf.dox \
                          ./docs/doc/dox/examples.dox \
                          ./docs/doc/dox
 

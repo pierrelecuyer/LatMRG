@@ -8,7 +8,7 @@ var searchData=
   ['figureofmerit_2eh',['FigureOfMerit.h',['../_figure_of_merit_8h.html',1,'']]],
   ['file',['file',['../usage_8dox.html#a014eea9fbc856edce76beb6c778a6f40',1,'usage.dox']]],
   ['find',['find',['../class_lat_m_r_g_1_1_primes.html#a6e79280806db204fb84bc9643ed608de',1,'LatMRG::Primes::find(int e, int s, bool facto, std::ofstream &amp;fout)'],['../class_lat_m_r_g_1_1_primes.html#ab07604e4b0959d0a9ddda88a03803a2b',1,'LatMRG::Primes::find(int k, int e, int s, bool safe, bool facto, std::ofstream &amp;fout)'],['../class_lat_m_r_g_1_1_primes.html#ab0c718491d41c127ca88fb497ed41782',1,'LatMRG::Primes::find(int k, int e, long c1, long c2, bool safe, bool facto, std::ofstream &amp;fout)'],['../class_lat_m_r_g_1_1_primes.html#ac02e65aa3c922e777fa35a1e380705ea',1,'LatMRG::Primes::find(int k, int e, int s, const Int &amp;S1, const Int &amp;S2, bool safe, bool facto, std::ofstream &amp;fout)']]],
-  ['findmk',['FindMK',['../_find_m_k.html',1,'usage']]],
+  ['findmk',['FindMK',['../_find_m_k.html',1,'']]],
   ['findmk_2edox',['FindMK.dox',['../_find_m_k_8dox.html',1,'']]],
   ['finished',['finished',['../class_lat_m_r_g_1_1_figure_of_merit.html#aeaedeb63c35b0bd078cb5a29ff05e844',1,'LatMRG::FigureOfMerit']]],
   ['fish31_3c_2fcode_20_3e',['fish31&lt;/code &gt;',['../usage_8dox.html#a97888aeb57b65a560a329f6889f2f53a',1,'usage.dox']]],
