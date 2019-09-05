@@ -14,7 +14,8 @@
 namespace LatMRG {
 
   /**
-   * This class is used to implement a MRG component in a combined MRG. It
+   * This class is used to implement a MRG component in a combined MRG, and also
+   * to test for full period length of generators. It
    * exists in order to avoid creating numerous relatively heavy `MRGLattice`
    * objects to represent MRG components. Each MRG component is defined by a
    * modulus \f$m\f$, an order \f$k\f$ and
@@ -24,6 +25,10 @@ namespace LatMRG {
    *   x_n = (a_1 x_{n-1} + \cdots+ a_k x_{n-k}) \mbox{ mod } m
    * \f]
    * - or a matrix A in case of MMRG
+   *
+   * Once an object of this type has been populated, it suffices to add `ifm1`
+   * and `ifr` attributes to use it to test the full period of a generator
+   * with modulus `m` and order `k`.
    */
   template<typename Int>
     class MRGComponent {
@@ -216,6 +221,11 @@ namespace LatMRG {
          * Returns this object as a string.
          */
         std::string toString ();
+
+        /**
+         * Sets `m_type` to type.
+         * */
+        void setGenType(GenType type) {m_type = type;}
       private:
 
         /**
@@ -224,6 +234,14 @@ namespace LatMRG {
         void init (const Int & m, int k, DecompType decom1,
             const char *filem1, DecompType decor,
             const char *filer);
+
+        /**
+         * The type of generator this stores. Should be MRG, MMRG or MWC. The
+         * default value is LCG. When the value is LCG, this means the object is
+         * not used to represent a generator, but to compute period length.
+         * */
+        GenType m_type = LCG;
+
     }; // End class declaration
 
   //===========================================================================
@@ -237,6 +255,7 @@ namespace LatMRG {
       a.resize(k);
       LatticeTester::CopyVect(a, a0, k);
       orbitSeed.resize(k);
+      m_type = MRG;
     }
 
 
@@ -251,6 +270,7 @@ namespace LatMRG {
       A.resize(k, k);
       LatticeTester::CopyMatr(A, A0, k);
       orbitSeed.resize(k);
+      m_type = MMRG;
     }
 
   //===========================================================================
@@ -265,6 +285,7 @@ namespace LatMRG {
       A.resize(k, k);
       LatticeTester::CopyMatr(A, A0, k);
       orbitSeed.resize(k);
+      m_type = MMRG;
     }
 
   //===========================================================================
@@ -279,6 +300,7 @@ namespace LatMRG {
       a.resize(k);
       LatticeTester::CopyVect(a, a0, k);
       orbitSeed.resize(k);
+      m_type = MRG;
     }
 
 
@@ -297,6 +319,7 @@ namespace LatMRG {
     //   orbitSeed.kill();
     orbitSeed.resize(k);
     LatticeTester::CopyVect(orbitSeed, lat.orbitSeed, k);
+    m_type = lat.m_type;
   }
 
 
@@ -320,6 +343,7 @@ namespace LatMRG {
         //      ifm1 = lat.ifm1;
         //      ifr = lat.ifr;
       }
+      m_type = lat.m_type;
       return *this;
     }
 

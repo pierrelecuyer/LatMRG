@@ -20,7 +20,6 @@
     <num x="1"/>
     <dim x="31 10 10"/>
   </proj>
-  <time x="10"/>
     <!--The following is not yet implemented-->
   <detail x=""/>
   <function_params max_nodes_BB="" LLL_prec=""/>
