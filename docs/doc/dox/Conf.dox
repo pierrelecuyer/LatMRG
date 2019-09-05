@@ -2,9 +2,15 @@
  * \page conf_file Configuration Files Synthax and Tags
  *
  * This page lists the tags available for the xml configuration files. These
- * tags are sorted via the program modes they can be used.
+ * tags are sorted by the program modes where they can be used.
+ * The page also presents the default values the tags have, and every tag with a
+ * default value can be ommited. Additionaly, the ordering of tags in
+ * configuration files should not matter if you get an error regarding that,
+ * please report it.
+ * Example configuration files are bundled with the software in the examples
+ * directory.
  *
- * \subsection xml_note A short note on XML
+ * \section xml_note A short note on XML
  *
  * If you are not really familliar with XML, there is no neeed to panic.
  * In fact we are not experts either, but the usage we make of this language is
@@ -22,6 +28,7 @@
  *   </nested-tag>
  * </tag>
  * ```
+ *
  * This highlight all the features needed for LatMRG.
  * - It is possible to nest tags
  * - The tag names are user defined (as opposed to implementation defined). This
@@ -29,12 +36,127 @@
  * - It is possible to write tags in one line.
  * - Attributes can also have custom names and their value can be any string.
  *
- * \subsection conf_mk Search for m and k
+ * Each program mode is identified by a tag:
+ * - `<mk>` to search for \f$m\f$ and \f$k\f$ combinations
+ * - `<period>` to test full period length
+ * - `<lattest>` to test the lattice structure of a generator
+ * - `<seek>` to search for new generators
  *
- * \subsection conf_period Full period test
+ * All the information for the program must be contained inside the tag, and
+ * only the first program mode tag of each file will be read.
+ * Below, we present the tags the same way that they need to be nested in the
+ * configuration files.
  *
- * \subsection conf_lattest_seek Generator test and search
+ * \section conf_mk Search for m and k
+ *
+ * \section conf_period Full period test
+ *
+ * \section conf_lattest_seek Generator test and search
  *
  * We now talk about both the generator testing and generator search specific
  * tags. These are grouped because most of their tags are shared.
+ *
+ * - <b>`<gen>`</b>: A tag to specify generator parameters. By default, generators are
+ *   considered to be combined. You can nest any combination of the following
+ *   tags to specify the generator components
+ *   - <b>`<mrg>`</b>: A MRG/LCG component
+ *     - <b>`<modulo basis="b" exponent="e" rest="r"/>`</b> (no default): The modulo of the
+ *        recurrence. Needs to have attributes
+ *       `basis`, `exponent` and `rest`. Will compute the modulo as
+ *        `m = b^e+r`
+ *     - <b><tt><order k="k"/></tt></b> (no default): The order of the recurrence. Needs to have an attribute
+ *       whose value is the order.
+ *     - <b>`<period check="bool"/>`</b> (default: `true`): Indicates wheter or not to verify the full
+ *       period via its attribute. Nested tags are unecessary if `check` is `false`.
+ *       - <b>`<m1 m="method" name="filename"/>`</b> (default: m="DECOMP", name: a random filename): Indicates how to obtain
+ *         the factorization of \f$m-1\f$ for full period verification. The
+ *         options for method are `DECOMP` will factorize and discard the
+ *         results afterwards, `DECOMP_WRITE` will factorize and write to the
+ *         file filename, `DECOMP_READ` will try to read the results from the
+ *         the file filename and `DECOMP_PRIME` assumes \f$(m-1)/2\f$ is prime.
+ *       - <b>`<r m="method" name="filename"/>`</b> (default: m="DECOMP", name: a random filename):
+ *         Same as `<m1>` but for \f$r = (m^k-1)/(m-1)\f$.
+ *     - <b>`<method/>`</b> (<seek> only) (no default): This tag indicates which
+ *       method to use to select the coefficients of the generators. It also
+ *       needs to have an attribute, specifying the method by its name, with a
+ *       value describing how to use it. The options are:
+ *       `random="a[1] a[2] ... a[k-1]"` the coefficients are search randomly, if `a[i]` is
+ *       0, the coefficient is 0 and `pow2="a[1,1] a[2,1] ... a[1,k-1] a[2,k-1]",
+ *       the coefficients are search randombly, taken as a sum of powers of 2 with
+ *       exponents between `a[1,i]` and `a[2,i]`.
+ *     - <b>`<coefficients a="a1 a2 ... ak"/>`</b> (`<lattest>` only) (no default):
+ *       The coefficients of the generator. `"a1 a2 ... ak"` are the numerical
+ *       values for the coefficients.
+ *   - <b>`<mmrg>`</b>: A MMRG component
+ *     - <b>`<modulo basis="b" exponent="e" rest="r"/>`</b>: See modulo in <b>`<mrg>`</b>
+ *     - <b>`<order k="k">`</b>: See order in <b>`<mrg>`</b>
+ *     - <b>`<period check="bool"/>`</b>: See period in <b>`<mrg>`</b>
+ *   - <b>`<mwc>`</b>: A MWC component
+ *     - <b>`<modulo basis="b" exponent="e" rest="r"/>`</b>: See modulo in <b>`<mrg>`</b>
+ *     - <b>`<order k="k">`</b>: See order in <b>`<mrg>`</b>
+ *     - <b>`<period check="bool"/>`</b>: See period in <b>`<mrg>`</b>
+ * - <b>`<spectral>`</b>: Contains the parameters to perform a spectral test.
+ *   Here, we consider every test based on the inverse of the length of the
+ *   shortest non-zero lattice vector.
+ *   - <b>`<reduction m="method"/>`</b> (default: `FULL`): The reduction to use on the lattice
+ *     vectors before computing the merit. The options are `FULL`, the
+ *     program searches for the shortest non-zero lattice vector, `BKZ`, the
+ *     program uses the shortest lattice vector found after BKZ reduction to
+ *     compute the merit, and `LLL`, the program uses the shortest lattice vector
+ *     found after LLL reduction to compute the merit.
+ *   - <b>`<norma n="normalizer"/>`</b> (default: `NONE`): The normalizer used by
+ *     the spectral test. The spectral test will compute \f$\ell_t/\ell_t^*\f$
+ *     if this has a value, it will otherwise compute \f$1/\ell_t\f$.
+ *     The options are: `ROGERS`, to use Rogers's bounds \cite mROG51a, `BESTLAT`,
+ *     to use the length of the shortest vector in the densest known lattice and
+ *     `LAMINATED`, to use the length of the shortest vector in the densest
+ *     laminated lattice.
+ *   - <b>`<dual d="bool"/>`</b> (default: `true`): A boolean switch to use the dual. If `d` is
+ *     true, the program will use the dual. Otherwise, it will use the primal.
+ * - <b>`<length>`</b>: Contains the parameters to perform tests with the
+ *   length of the shortest non-zero vector as the merit. This performs the same
+ *   - <b>`<reduction m="method"/>`</b> (default: `FULL`): see reduction in
+ *     <b>`<spectral>`</b>.
+ *   - <b>`<dual d="bool"/>`</b> (default: `false`): see dual in
+ *     <b>`<spectral>`</b>.
+ *   - <b>`<norm n="norm"/>`</b> (default: `L2`):
+ * - <b>`<proj>`</b>: Contains the parameters of the projections to use.
+ *   - <b>`<min min="x">`</b>: The minimal dimension. The program will test
+ *     sequential projection starting with \f$\{0, \ldots, x-1\}\f$, and every
+ *     non-sequential projection will contain at least one coordinate greater or
+ *     equal to `x`. A common value for this is `x=k+1`.
+ *   - <b>`<num d="d">`</b>: The dimension up to which we test non sequential
+ *     projections. `x=1` will only test sequential projections, `x=d>1` will
+ *     test non-sequential projections in dimensions 2 to d.
+ *   - <b>`<dim max="x1 x2 ... xd">`</b>: the value of `xi` is the maximal
+ *     coordinate that will be used when test non-sequential projections of
+ *     dimension `i`. `x1+1` is the maximal dimension of sequential coordinates
+ *     that will be tested. This needs to contain `d` values to be valid.
+ * - <b>`<time limit="t">`</b> (seek only) (default: 600): The time that the
+ *   program will use before timing out.
+ * - <b>`<num_gen n="n">`</b> (seek only) (default: 10): The number of
+ *   generators the program will keep.
+ * - <b>`<best x="bool">`</b> (seek only) (default: true): If `x` is true, the
+ *   program will search for good generators, otherwise, it will search for
+ *   bad generators. Bad generators search is mainly implemented to search for
+ *   examples. It is recommended to have <time> be small if <best> is set to
+ *   false.
+ * - <b>`<detail level="x">`</b> (Not implemented yet): Intended as a way to
+ *   specify the verbosity of the output, particularly regarding the results of
+ *   the tests in different dimensions.
+ * - <b>`<function_params>`</b> (To come): Re-add options to fine grain
+ *   functions parameters in the reduction to avoid recompiling if the program
+ *   fails.
+ *
+ * Both modes necessitate the following tags to be correctly specified for the
+ * program to work:
+ * - `<gen>` along with at least one valid nested `<mrg>`, `<mmrg>` or `<mwc>`.
+ * - One valid `<length>` or `<spectral>` tag
+ * - `<proj>` correctly specified. As of now, the program does not do error
+ *   checking for the values specified in this tag.
+ *
+ * If the program comes a accross those tags and they contain error, it should
+ * exit with a clear enough error message. Any other error in a tag will result
+ * in the usage of the default value, but the program will notify you that it
+ * contains an error in its configuration file.
  * */

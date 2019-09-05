@@ -98,15 +98,88 @@ $(document).ready(function(){initNavTree('conf_file.html','');});
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>This page lists the tags available for the xml configuration files.</p>
-<p>These tags are sorted via the program modes they can be used.</p>
+<p>These tags are sorted by the program modes where they can be used. The page also presents the default values the tags have, and every tag with a default value can be ommited. Additionaly, the ordering of tags in configuration files should not matter if you get an error regarding that, please report it. Example configuration files are bundled with the software in the examples directory.</p>
+<h1><a class="anchor" id="xml_note"></a>
+A short note on XML</h1>
 <p>If you are not really familliar with XML, there is no neeed to panic. In fact we are not experts either, but the usage we make of this language is very basic. XML is a markup languages where different blocks of text are stored between tags quite similar to HTML tags. Tags can also have attributes which are somewhat like variables associated with them.</p>
-<p>Here is a simple XML example: </p><div class="fragment"><div class="line">&lt;tag&gt;</div><div class="line">  This <a class="code" href="usage_8dox.html#a76b2ed3eaf4696705d5ca7beb805a2b3">is</a> text in <a class="code" href="usage_8dox.html#a0aab771c40a286ab6ba544de29bd6d43">the</a> tag.</div><div class="line">  &lt;nested-tag&gt;</div><div class="line">    You can nest tags. Tag names are user defined.</div><div class="line">    &lt;onelinetag attribute=<span class="stringliteral">&quot;The value of this attribute&quot;</span>/&gt;</div><div class="line">  &lt;/nested-tag&gt;</div><div class="line">&lt;/tag&gt;</div></div><!-- fragment --><p> This highlight all the features needed for <a class="el" href="namespace_lat_m_r_g.html">LatMRG</a>.</p><ul>
+<p>Here is a simple XML example: </p><div class="fragment"><div class="line">&lt;tag&gt;</div><div class="line">  This <a class="code" href="usage_8dox.html#a76b2ed3eaf4696705d5ca7beb805a2b3">is</a> text in <a class="code" href="usage_8dox.html#a0aab771c40a286ab6ba544de29bd6d43">the</a> tag.</div><div class="line">  &lt;nested-tag&gt;</div><div class="line">    You can nest tags. Tag names are user defined.</div><div class="line">    &lt;onelinetag attribute=<span class="stringliteral">&quot;The value of this attribute&quot;</span>/&gt;</div><div class="line">  &lt;/nested-tag&gt;</div><div class="line">&lt;/tag&gt;</div></div><!-- fragment --><p>This highlight all the features needed for <a class="el" href="namespace_lat_m_r_g.html">LatMRG</a>.</p><ul>
 <li>It is possible to nest tags</li>
 <li>The tag names are user defined (as opposed to implementation defined). This means that tags can have name relevant to the information they contain.</li>
 <li>It is possible to write tags in one line.</li>
 <li>Attributes can also have custom names and their value can be any string.</li>
 </ul>
-<p>We now talk about both the generator testing and generator search specific tags. These are grouped because most of their tags are shared. </p>
+<p>Each program mode is identified by a tag:</p><ul>
+<li><code>&lt;mk&gt;</code> to search for \(m\) and \(k\) combinations</li>
+<li><code>&lt;period&gt;</code> to test full period length</li>
+<li><code>&lt;lattest&gt;</code> to test the lattice structure of a generator</li>
+<li><code>&lt;seek&gt;</code> to search for new generators</li>
+</ul>
+<p>All the information for the program must be contained inside the tag, and only the first program mode tag of each file will be read. Below, we present the tags the same way that they need to be nested in the configuration files.</p>
+<h1><a class="anchor" id="conf_mk"></a>
+Search for m and k</h1>
+<h1><a class="anchor" id="conf_period"></a>
+Full period test</h1>
+<h1><a class="anchor" id="conf_lattest_seek"></a>
+Generator test and search</h1>
+<p>We now talk about both the generator testing and generator search specific tags. These are grouped because most of their tags are shared.</p>
+<ul>
+<li><b><code>&lt;gen&gt;</code></b>: A tag to specify generator parameters. By default, generators are considered to be combined. You can nest any combination of the following tags to specify the generator components<ul>
+<li><b><code>&lt;mrg&gt;</code></b>: A MRG/LCG component<ul>
+<li><b><code>&lt;modulo basis="b" exponent="e" rest="r"/&gt;</code></b> (no default): The modulo of the recurrence. Needs to have attributes <code>basis</code>, <code>exponent</code> and <code>rest</code>. Will compute the modulo as <code>m = b^e+r</code></li>
+<li><b><code>&lt;order k="k"&gt;</code></b> (no default): The order of the recurrence. Needs to have an attribute whose value is the order.</li>
+<li><b><code>&lt;period check="bool"/&gt;</code></b> (default: <code>true</code>): Indicates wheter or not to verify the full period via its attribute. Nested tags are unecessary if <code>check</code> is <code>false</code>.<ul>
+<li><b><code>&lt;m1 m="method" name="filename"/&gt;</code></b> (default: m="DECOMP", name: a random filename): Indicates how to obtain the factorization of \(m-1\) for full period verification. The options for method are <code>DECOMP</code> will factorize and discard the results afterwards, <code>DECOMP_WRITE</code> will factorize and write to the file filename, <code>DECOMP_READ</code> will try to read the results from the the file filename and <code>DECOMP_PRIME</code> assumes \((m-1)/2\) is prime.</li>
+<li><b><code>&lt;r m="method" name="filename"/&gt;</code></b> (default: m="DECOMP", name: a random filename): Same as <code>&lt;m1&gt;</code> but for \(r = (m^k-1)/(m-1)\).</li>
+</ul>
+</li>
+<li><b><code>&lt;method/&gt;</code></b> (&lt;seek&gt; only) (no default): This tag indicates which method to use to select the coefficients of the generators. It also needs to have an attribute, specifying the method by its name, with a value describing how to use it. The options are: <code>random="a[1] a[2] ... a[k-1]"</code> the coefficients are search randomly, if <code>a[i]</code> is 0, the coefficient is 0 and `pow2="a[1,1] a[2,1] ... a[1,k-1] a[2,k-1]", the coefficients are search randombly, taken as a sum of powers of 2 with exponents between <code>a[1,i]</code> and <code>a[2,i]</code>.</li>
+<li><b><code>&lt;coefficients a="a1 a2 ... ak"/&gt;</code></b> (<code>&lt;lattest&gt;</code> only) (no default): The coefficients of the generator. <code>"a1 a2 ... ak"</code> are the numerical values for the coefficients.</li>
+</ul>
+</li>
+<li><b><code>&lt;mmrg&gt;</code></b>: A MMRG component<ul>
+<li><b><code>&lt;modulo basis="b" exponent="e" rest="r"/&gt;</code></b>: See modulo in <b><code>&lt;mrg&gt;</code></b></li>
+<li><b><code>&lt;order k="k"&gt;</code></b>: See order in <b><code>&lt;mrg&gt;</code></b></li>
+<li><b><code>&lt;period check="bool"/&gt;</code></b>: See period in <b><code>&lt;mrg&gt;</code></b></li>
+</ul>
+</li>
+<li><b><code>&lt;mwc&gt;</code></b>: A MWC component<ul>
+<li><b><code>&lt;modulo basis="b" exponent="e" rest="r"/&gt;</code></b>: See modulo in <b><code>&lt;mrg&gt;</code></b></li>
+<li><b><code>&lt;order k="k"&gt;</code></b>: See order in <b><code>&lt;mrg&gt;</code></b></li>
+<li><b><code>&lt;period check="bool"/&gt;</code></b>: See period in <b><code>&lt;mrg&gt;</code></b></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><b><code>&lt;spectral&gt;</code></b>: Contains the parameters to perform a spectral test. Here, we consider every test based on the inverse of the length of the shortest non-zero lattice vector.<ul>
+<li><b><code>&lt;reduction m="method"/&gt;</code></b> (default: <code>FULL</code>): The reduction to use on the lattice vectors before computing the merit. The options are <code>FULL</code>, the program searches for the shortest non-zero lattice vector, <code>BKZ</code>, the program uses the shortest lattice vector found after BKZ reduction to compute the merit, and <code>LLL</code>, the program uses the shortest lattice vector found after LLL reduction to compute the merit.</li>
+<li><b><code>&lt;norma n="normalizer"/&gt;</code></b> (default: <code>NONE</code>): The normalizer used by the spectral test. The spectral test will compute \(\ell_t/\ell_t^*\) if this has a value, it will otherwise compute \(1/\ell_t\). The options are: <code>ROGERS</code>, to use Rogers's bounds <b>[mROG51a]</b>, <code>BESTLAT</code>, to use the length of the shortest vector in the densest known lattice and <code>LAMINATED</code>, to use the length of the shortest vector in the densest laminated lattice.</li>
+<li><b><code>&lt;dual d="bool"/&gt;</code></b> (default: <code>true</code>): A boolean switch to use the dual. If <code>d</code> is true, the program will use the dual. Otherwise, it will use the primal.</li>
+</ul>
+</li>
+<li><b><code>&lt;length&gt;</code></b>: Contains the parameters to perform tests with the length of the shortest non-zero vector as the merit. This performs the same<ul>
+<li><b><code>&lt;reduction m="method"/&gt;</code></b> (default: <code>FULL</code>): see reduction in <b><code>&lt;spectral&gt;</code></b>.</li>
+<li><b><code>&lt;dual d="bool"/&gt;</code></b> (default: <code>false</code>): see dual in <b><code>&lt;spectral&gt;</code></b>.</li>
+<li><b><code>&lt;norm n="norm"/&gt;</code></b> (default: <code>L2</code>):</li>
+</ul>
+</li>
+<li><b><code>&lt;proj&gt;</code></b>: Contains the parameters of the projections to use.<ul>
+<li><b><code>&lt;min min="x"&gt;</code></b>: The minimal dimension. The program will test sequential projection starting with \(\{0, \ldots, x-1\}\), and every non-sequential projection will contain at least one coordinate greater or equal to <code>x</code>. A common value for this is <code>x=k+1</code>.</li>
+<li><b><code>&lt;num d="d"&gt;</code></b>: The dimension up to which we test non sequential projections. <code>x=1</code> will only test sequential projections, <code>x=d&gt;1</code> will test non-sequential projections in dimensions 2 to d.</li>
+<li><b><code>&lt;dim max="x1 x2 ... xd"&gt;</code></b>: the value of <code>xi</code> is the maximal coordinate that will be used when test non-sequential projections of dimension <code>i</code>. <code>x1+1</code> is the maximal dimension of sequential coordinates that will be tested. This needs to contain <code>d</code> values to be valid.</li>
+</ul>
+</li>
+<li><b><code>&lt;time limit="t"&gt;</code></b> (seek only) (default: 600): The time that the program will use before timing out.</li>
+<li><b><code>&lt;num_gen n="n"&gt;</code></b> (seek only) (default: 10): The number of generators the program will keep.</li>
+<li><b><code>&lt;best x="bool"&gt;</code></b> (seek only) (default: true): If <code>x</code> is true, the program will search for good generators, otherwise, it will search for bad generators. Bad generators search is mainly implemented to search for examples. It is recommended to have &lt;time&gt; be small if &lt;best&gt; is set to false.</li>
+<li><b><code>&lt;detail level="x"&gt;</code></b> (Not implemented yet): Intended as a way to specify the verbosity of the output, particularly regarding the results of the tests in different dimensions.</li>
+<li><b><code>&lt;function_params&gt;</code></b> (To come): Re-add options to fine grain functions parameters in the reduction to avoid recompiling if the program fails.</li>
+</ul>
+<p>Both modes necessitate the following tags to be correctly specified for the program to work:</p><ul>
+<li><code>&lt;gen&gt;</code> along with at least one valid nested <code>&lt;mrg&gt;</code>, <code>&lt;mmrg&gt;</code> or <code>&lt;mwc&gt;</code>.</li>
+<li>One valid <code>&lt;length&gt;</code> or <code>&lt;spectral&gt;</code> tag</li>
+<li><code>&lt;proj&gt;</code> correctly specified. As of now, the program does not do error checking for the values specified in this tag.</li>
+</ul>
+<p>If the program comes a accross those tags and they contain error, it should exit with a clear enough error message. Any other error in a tag will result in the usage of the default value, but the program will notify you that it contains an error in its configuration file. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->

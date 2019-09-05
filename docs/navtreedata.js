@@ -84,13 +84,14 @@ var NAVTREE =
       ] ],
       [ "Building LatMRG", "usage.html#compilation", null ]
     ] ],
-    [ "Configuration Files Synthax and Tags", "conf_file.html", null ],
+    [ "Configuration Files Synthax and Tags", "conf_file.html", [
+      [ "A short note on XML", "conf_file.html#xml_note", null ],
+      [ "Search for m and k", "conf_file.html#conf_mk", null ],
+      [ "Full period test", "conf_file.html#conf_period", null ],
+      [ "Generator test and search", "conf_file.html#conf_lattest_seek", null ]
+    ] ],
     [ "Tutorial and Library Usage", "tutorial.html", [
       [ "Classes of LatMRG", "tutorial.html#classes_list", [
-        [ "A short note on XML", "conf_file.html#xml_note", null ],
-        [ "Search for m and k", "conf_file.html#conf_mk", null ],
-        [ "Full period test", "conf_file.html#conf_period", null ],
-        [ "Generator test and search", "conf_file.html#conf_lattest_seek", null ],
         [ "Types in LatMRG", "tutorial.html#classes_list_types", null ],
         [ "MRG Representation", "tutorial.html#classes_list_mrg", null ],
         [ "Testing and Reducing Lattices", "tutorial.html#classes_list_tests", null ]
