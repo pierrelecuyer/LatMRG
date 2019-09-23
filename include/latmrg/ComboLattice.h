@@ -17,14 +17,14 @@ namespace LatMRG {
    * afterwards.
    * */
   template<typename Int, typename Dbl>
-    MRGLattice<Int, Dbl>* getLatCombo(std::vector<MRGComponent<Int>>& comp, int maxDim) {
+    MRGLattice<Int, Dbl>* getLatCombo(std::vector<MRGComponent<Int>*>& comp, int maxDim) {
       typedef NTL::vector<Int> IntVec;
       int num_comp = comp.size();
       int k = 0;
       Int modulo = Int(1);
       for (int i = 0; i < num_comp; i++) {
-        modulo *= comp[i].getM();
-        k = std::max(k, comp[i].k);
+        modulo *= comp[i]->getM();
+        k = std::max(k, comp[i]->getK());
       }
       // Filling up vector A
       IntVec A(k+1);
@@ -33,12 +33,13 @@ namespace LatMRG {
         Int n;
         {
           Int b, c, d, e;
-          LatticeTester::Euclide(modulo/comp[j].getM(), comp[j].getM(), n, b, c, d, e);
+          LatticeTester::Euclide(modulo/comp[j]->getM(), comp[j]->getM(), n, b, c, d, e);
         }
-        n %= comp[j].getM();
+        n %= comp[j]->getM();
 
+        IntVec a(comp[j]->getA());
         for (int i = 1; i <= k; i++) {
-          A[i] += comp[j].a[i-1]*n*modulo/comp[j].getM();
+          A[i] += a[i-1]*n*modulo/comp[j]->getM();
         }
       }
       // Modulo only once
@@ -49,9 +50,9 @@ namespace LatMRG {
       return new MRGLattice<Int, Dbl>(modulo, A, maxDim, k, FULL);
     }
 
-  extern template MRGLattice<std::int64_t, double>* getLatCombo(std::vector<MRGComponent<std::int64_t>>& comp, int maxDim);
-  extern template MRGLattice<NTL::ZZ, double>* getLatCombo(std::vector<MRGComponent<NTL::ZZ>>& comp, int maxDim);
-  extern template MRGLattice<NTL::ZZ, NTL::RR>* getLatCombo(std::vector<MRGComponent<NTL::ZZ>>& comp, int maxDim);
+  extern template MRGLattice<std::int64_t, double>* getLatCombo(std::vector<MRGComponent<std::int64_t>*>& comp, int maxDim);
+  extern template MRGLattice<NTL::ZZ, double>* getLatCombo(std::vector<MRGComponent<NTL::ZZ>*>& comp, int maxDim);
+  extern template MRGLattice<NTL::ZZ, NTL::RR>* getLatCombo(std::vector<MRGComponent<NTL::ZZ>*>& comp, int maxDim);
 
   /**
    * This class represents a combined MRG.
@@ -75,7 +76,7 @@ namespace LatMRG {
          *
          * Ideally, `lat` has been initialized with `getLatCombo`.
          * */
-        ComboLattice(std::vector<MRGComponent<Int>>& comp,
+        ComboLattice(std::vector<MRGComponent<Int>*>& comp,
             MRGLattice<Int, Dbl>& lat);
 
         /**
@@ -84,12 +85,18 @@ namespace LatMRG {
         ComboLattice(const ComboLattice<Int, Dbl>& lat);
 
         /**
+         * Destructor.
+         * Deallocate memory to `m_comp`.
+         * */
+        ~ComboLattice();
+
+        /**
          * Prints a string describing all the componenets and the equivalent MRG.
          * */
         std::string toString() const override;
 
       private:
-        std::vector<MRGComponent<Int>> m_comp;
+        std::vector<MRGComponent<Int>*> m_comp;
 
         /**
          * The number of components stored in this object.
@@ -97,28 +104,49 @@ namespace LatMRG {
         int m_number;
     }; // end class ComboLattice
 
+  //============================================================================
+
   template<typename Int, typename Dbl>
-    ComboLattice<Int, Dbl>::ComboLattice(std::vector<MRGComponent<Int>>& comp,
+    ComboLattice<Int, Dbl>::ComboLattice(std::vector<MRGComponent<Int>*>& comp,
         MRGLattice<Int, Dbl>& lat) : MRGLattice<Int, Dbl>(lat){
-      m_comp = comp;
+      m_comp.resize(comp.size());
+      for (unsigned int i = 0; i < comp.size(); i++) {
+        m_comp[i] = new MRGComponent<Int>(*comp[i]);
+      }
       m_number = comp.size();
     }
+
+  //============================================================================
 
   template<typename Int, typename Dbl>
     ComboLattice<Int, Dbl>::ComboLattice(const ComboLattice<Int, Dbl>& lat) :
       MRGLattice<Int, Dbl>(lat){
-      m_comp = lat.m_comp;
+      m_comp.resize(lat.comp.size());
+      for (unsigned int i = 0; i < m_comp.size(); i++) {
+        m_comp[i] = new MRGComponent<Int>(*lat.comp[i]);
+      }
       m_number = lat.m_number;
     }
+
+  //============================================================================
+
+  template<typename Int, typename Dbl>
+    ComboLattice<Int, Dbl>::~ComboLattice() {
+      for (unsigned int i = 0; i < m_comp.size(); i++) {
+        delete m_comp[i];
+      }
+    }
+
+  //============================================================================
 
   template<typename Int, typename Dbl>
     std::string ComboLattice<Int, Dbl>::toString() const {
       std::ostringstream out;
       out << "Number of components: " << m_number << "\n\n";
       for (int i = 0; i < m_number; i++) {
-        Int m = m_comp[i].getM();
+        Int m = m_comp[i]->getM();
         out << "Component " << i+1 << "\nm = " << m << "\nk = "
-          << m_comp[i].k << "\na = " << m_comp[i].a << "\n\n";
+          << m_comp[i]->getK() << "\na = " << m_comp[i]->getA() << "\n\n";
       }
       out << "Equivalent to\n";
       out << "m = " << this->m_modulo << "\nk = " << this->m_order << "\n";
@@ -129,6 +157,8 @@ namespace LatMRG {
       out << "\n";
       return out.str();
     }
+
+  //============================================================================
 
   extern template class ComboLattice<std::int64_t, double>;
   extern template class ComboLattice<NTL::ZZ, double>;

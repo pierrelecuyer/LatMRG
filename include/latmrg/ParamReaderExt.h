@@ -381,8 +381,8 @@ namespace LatMRG {
     void ParamReaderExt<Int, Dbl>::readOrbit (int J, MRGComponent<Int> **comp, unsigned int & ln)
     {
       for (int j = 0; j < J; j++) {
-        unsigned int k = comp[j]->k;
-        this->readMVect (comp[j]->orbitSeed, ln, 1U, k, 1);
+        unsigned int k = comp[j]->getK();
+        this->readMVect (comp[j]->getOrbitSeed(), ln, 1U, k, 1);
         ln++;
       }
     }

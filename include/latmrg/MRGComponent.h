@@ -14,21 +14,22 @@
 namespace LatMRG {
 
   /**
-   * This class is used to implement a MRG component in a combined MRG, and also
-   * to test for full period length of generators. It
-   * exists in order to avoid creating numerous relatively heavy `MRGLattice`
-   * objects to represent MRG components. Each MRG component is defined by a
-   * modulus \f$m\f$, an order \f$k\f$ and
-   * - either a vector of multipliers \f$a\f$,
+   * This class is used to to test for full period length of generators and also
+   * to store a bit of information about generators without creating a lattice.
+   * Each MRG component is defined by a
+   * modulus \f$m\f$, an order \f$k\f$ and a list of files and factorizations
+   * needed check the full period.
+   *
+   * This class can also store
+   * - a vector of multipliers \f$a\f$,
    * where \f$a[i-1]\f$ represents \f$a_i\f$. This MRG satisfies the recurrence
    * \f[
    *   x_n = (a_1 x_{n-1} + \cdots+ a_k x_{n-k}) \mbox{ mod } m
    * \f]
    * - or a matrix A in case of MMRG
    *
-   * Once an object of this type has been populated, it suffices to add `ifm1`
-   * and `ifr` attributes to use it to test the full period of a generator
-   * with modulus `m` and order `k`.
+   * If it is used to check the period of another generator, the multipliers
+   * stored might change.
    */
   template<typename Int>
     class MRGComponent {
@@ -36,31 +37,6 @@ namespace LatMRG {
         typedef NTL::vector<Int> IntVec;
         typedef NTL::matrix<Int> IntMat;
       public:
-
-        /**
-         * Constructor with modulus \f$m\f$, vector \f$a\f$ and order \f$k\f$.
-         */
-        MRGComponent (const Int & m, const IntVec & a, int k);
-
-
-        /**
-         * Constructor for MMRG with modulus \f$m\f$, Matrix \f$A\f$ and
-         * order \f$k\f$.
-         */
-        MRGComponent (const Int & m, const IntMat & A, int k);
-
-        /**
-         * Constructor for MMRG with modulus \f$m\f$, Matrix \f$A\f$ and
-         * order \f$k\f$.
-         */
-        MRGComponent (long b, long e, long c, const IntMat & A, int k);
-
-
-        /**
-         * Constructor with modulus \f$m=b^e + c\f$, vector \f$a\f$ and order
-         * \f$k\f$.
-         */
-        MRGComponent (long b, long e, long c, const IntVec & a, int k);
 
         /**
          * Constructor with modulus \f$m\f$ and order \f$k\f$. Arguments
@@ -75,6 +51,13 @@ namespace LatMRG {
          * `decom1` and `filem1` with respect to \f$m-1\f$.
          */
         MRGComponent (const Int & m, int k, DecompType decom1,
+            const char *filem1, DecompType decor,
+            const char *filer);
+
+        /**
+         * Same as the other constructors with `m=b^e+r`.
+         * */
+        MRGComponent (int b, int e, Int r, int k, DecompType decom1,
             const char *filem1, DecompType decor,
             const char *filer);
 
@@ -105,6 +88,16 @@ namespace LatMRG {
          * Sets the multipliers of the recurrence to \f$A\f$.
          */
         void setA (const IntVec & A);
+
+        /**
+         * Gets the multipliers of the recurrence to \f$A\f$.
+         */
+        IntVec getA() const {return m_a;}
+
+        /**
+         * Sets the matrix of the recurrence to \f$A\f$.
+         * */
+        void setA(const IntMat& A);
 
         /**
          * Returns `true` if coefficients \f$A\f$ give a MRG with maximal
@@ -142,6 +135,52 @@ namespace LatMRG {
         bool maxPeriod23 (const IntVec & A);
 
         /**
+         * Returns the value of the modulus \f$m\f$ of the recurrence.
+         */
+        const Int getM() const { return module.m; }
+
+        /**
+         * Returns the value of the modulus \f$m\f$ of the recurrence.
+         */
+        int getK() const { return m_k; }
+
+        /**
+         * Returns const reference of orbitSeed
+         * */
+        IntVec& getOrbitSeed() { return orbitSeed;}
+
+        /**
+         * Returns this object as a string.
+         */
+        std::string toString ();
+
+        /**
+         * Sets the type of this component.
+         * */
+        void set_type(GenType type) {m_type = type;}
+
+        /**
+         * Gets the type of this component.
+         * */
+        GenType get_type() {return m_type;}
+
+      private:
+
+        /**
+         * Does the same as the constructor above with similar arguments.
+         */
+        void init (const Int & m, int k, DecompType decom1,
+            const char *filem1, DecompType decor,
+            const char *filer);
+
+        /**
+         * The type of generator this stores. Should be MRG, MMRG or MWC. The
+         * default value is LCG. When the value is LCG, this means the object is
+         * not used to represent a generator, but to compute period length.
+         * */
+        GenType m_type = LCG;
+
+        /**
          * The prime factor decomposition of \f$m-1\f$.
          */
         IntFactorization<Int> ifm1;
@@ -166,24 +205,34 @@ namespace LatMRG {
         Modulus<Int> module;
 
         /**
-         * Returns the value of the modulus \f$m\f$ of the recurrence.
-         */
-        const Int getM() const { return module.m; }
-
-        /**
          * The order \f$k\f$ of the recurrence.
          */
-        int k;
+        int m_k;
 
         /**
          * The multipliers \f$a_i\f$ of the recurrence, \f$i = 1, …, k\f$.
          */
-        IntVec a;
+        IntVec m_a;
 
         /**
          * The generator matrix \f$A\f$ of the recurrence for MMRG.
          */
-        IntMat A;
+        IntMat m_A;
+
+        /**
+         * Basis `b` with `b^e+r = m`.
+         * */
+        int m_b;
+
+        /**
+         * Exponent `e` with `b^e+r = m`.
+         * */
+        int m_e;
+
+        /**
+         * Rest `r` with `b^e+r = m`.
+         * */
+        Int m_r;
 
         /**
          * The length of the period \f$\rho\f$ for this MRG. For now, the
@@ -217,109 +266,28 @@ namespace LatMRG {
          */
         IntVec orbitSeed;
 
-        /**
-         * Returns this object as a string.
-         */
-        std::string toString ();
-
-        /**
-         * Sets `m_type` to type.
-         * */
-        void setGenType(GenType type) {m_type = type;}
-      private:
-
-        /**
-         * Does the same as the constructor above with similar arguments.
-         */
-        void init (const Int & m, int k, DecompType decom1,
-            const char *filem1, DecompType decor,
-            const char *filer);
-
-        /**
-         * The type of generator this stores. Should be MRG, MMRG or MWC. The
-         * default value is LCG. When the value is LCG, this means the object is
-         * not used to represent a generator, but to compute period length.
-         * */
-        GenType m_type = LCG;
-
     }; // End class declaration
 
   //===========================================================================
 
   template<typename Int>
-    MRGComponent<Int>::MRGComponent (const Int & m, const IntVec & a0, int k0)
-    {
-      PolyPE<Int>::setM(m);
-      module.init(m);
-      k = k0;
-      a.resize(k);
-      LatticeTester::CopyVect(a, a0, k);
-      orbitSeed.resize(k);
-      m_type = MRG;
-    }
-
-
-  //===========================================================================
-
-  template<typename Int>
-    MRGComponent<Int>::MRGComponent (const Int & m, const IntMat & A0, int k0)
-    {
-      PolyPE<Int>::setM(m);
-      module.init(m);
-      k = k0;
-      A.resize(k, k);
-      LatticeTester::CopyMatr(A, A0, k);
-      orbitSeed.resize(k);
-      m_type = MMRG;
-    }
-
-  //===========================================================================
-
-  template<typename Int>
-    MRGComponent<Int>::MRGComponent (long p, long e, long c, const IntMat & A0,
-        int k0)
-    {
-      module.init(p, e, c);
-      PolyPE<Int>::setM(getM());
-      k = k0;
-      A.resize(k, k);
-      LatticeTester::CopyMatr(A, A0, k);
-      orbitSeed.resize(k);
-      m_type = MMRG;
-    }
-
-  //===========================================================================
-
-  template<typename Int>
-    MRGComponent<Int>::MRGComponent (long p, long e, long c, const IntVec & a0,
-        int k0)
-    {
-      module.init(p, e, c);
-      PolyPE<Int>::setM(getM());
-      k = k0;
-      a.resize(k);
-      LatticeTester::CopyVect(a, a0, k);
-      orbitSeed.resize(k);
-      m_type = MRG;
-    }
-
-
-  //===========================================================================
-
-  template<typename Int>
     MRGComponent<Int>::MRGComponent (const MRGComponent<Int> & lat) :
-      k(lat.k)//, ifm1(lat.ifm1), ifr(lat.ifr)
+      ifm1(lat.ifm1), ifr(lat.ifr), m_k(lat.m_k)
   {
     module = lat.module;
     nj = lat.nj;
     rho = lat.rho;
     //   a.kill();
-    a.resize(k);
-    LatticeTester::CopyVect(a, lat.a, k);
+    m_a.resize(m_k);
+    LatticeTester::CopyVect(m_a, lat.m_a, m_k);
     //   orbitSeed.kill();
-    orbitSeed.resize(k);
-    LatticeTester::CopyVect(orbitSeed, lat.orbitSeed, k);
+    orbitSeed.resize(m_k);
+    LatticeTester::CopyVect(orbitSeed, lat.orbitSeed, m_k);
+
     m_type = lat.m_type;
+    m_b = lat.m_b;
+    m_e = lat.m_e;
+    m_r = lat.m_r;
   }
 
 
@@ -330,16 +298,16 @@ namespace LatMRG {
     (const MRGComponent<Int> & lat)
     {
       if (this != &lat) {
-        k = lat.k;
+        m_k = lat.m_k;
         module = lat.module;
         nj = lat.nj;
         rho = lat.rho;
         //    a.kill();
-        a.resize(k);
-        LatticeTester::CopyVect(a, lat.a, k);
+        m_a.resize(m_k);
+        LatticeTester::CopyVect(m_a, lat.m_a, m_k);
         //     orbitSeed.kill();
-        orbitSeed.resize(k);
-        LatticeTester::CopyVect(orbitSeed, lat.orbitSeed, k);
+        orbitSeed.resize(m_k);
+        LatticeTester::CopyVect(orbitSeed, lat.orbitSeed, m_k);
         //      ifm1 = lat.ifm1;
         //      ifr = lat.ifr;
       }
@@ -347,8 +315,7 @@ namespace LatMRG {
       return *this;
     }
 
-
-  //===========================================================================
+  //============================================================================
 
   template<typename Int>
     void MRGComponent<Int>::init (const Int & m0, int k0, DecompType decom1,
@@ -356,16 +323,16 @@ namespace LatMRG {
     {
       PolyPE<Int>::setM(m0);
       module.init(m0);
-      k = k0;
-      a.resize(k);
-      orbitSeed.resize(k);
+      m_k = k0;
+      m_a.resize(m_k);
+      orbitSeed.resize(m_k);
 
       Int m1;
       m1 = getM() - 1;
       ifm1.setNumber (m1);
       ifm2.setNumber (NTL::ZZ(m1));
 
-      if (k == 1) {
+      if (m_k == 1) {
         factor.setNumber(getM());
         factor.factorize();
       }
@@ -389,7 +356,7 @@ namespace LatMRG {
       ifm2.calcInvFactors();
 
       Int r;
-      r = (NTL::power(m0, k) - 1) / (m0 - 1);
+      r = (NTL::power(m0, m_k) - 1) / (m0 - 1);
       ifr.setNumber(r);
       ifr2.setNumber(NTL::ZZ(r));
 
@@ -415,7 +382,6 @@ namespace LatMRG {
       ifr2.calcInvFactors();
     }
 
-
   //===========================================================================
 
   template<typename Int>
@@ -425,6 +391,18 @@ namespace LatMRG {
       init (m, k, decom1, filem1, decor, filer);
     }
 
+  //===========================================================================
+
+  template<typename Int>
+    MRGComponent<Int>::MRGComponent (int b, int e, Int r, int k, DecompType decom1,
+        const char *filem1, DecompType decor, const char *filer)
+    {
+      Int m = NTL::power(b,e) + r;
+      m_b = b;
+      m_e = e;
+      m_r = r;
+      init (m, k, decom1, filem1, decor, filer);
+    }
 
   //===========================================================================
 
@@ -463,10 +441,20 @@ namespace LatMRG {
   template<typename Int>
     void MRGComponent<Int>::setA (const IntVec & b)
     {
-      a = b;
+      m_a.SetLength(b.length());
+      m_a = b;
       //  LatticeTester::CopyVect(b, a, k);
     }
 
+  //===========================================================================
+
+  template<typename Int>
+    void MRGComponent<Int>::setA (const IntMat & b)
+    {
+      m_A.SetDims(b.NumRows(), b.NumCols());
+      m_A = b;
+      //  LatticeTester::CopyVect(b, a, k);
+    }
 
   //===========================================================================
 
@@ -474,9 +462,9 @@ namespace LatMRG {
     bool MRGComponent<Int>::maxPeriod (const IntVec & a0)
     {
       PolyPE<Int>::setM(getM());
-      a = a0;
-      PolyPE<Int>::reverse (a, k, 2);
-      PolyPE<Int>::setF(a);
+      m_a = a0;
+      PolyPE<Int>::reverse (m_a, m_k, 2);
+      PolyPE<Int>::setF(m_a);
       PolyPE<Int> pol;
       IntPrimitivity<Int> privfm(ifm1, getM(), 1);
       return pol.isPrimitive(privfm, ifr);
@@ -503,14 +491,14 @@ namespace LatMRG {
     {
       PolyPE<NTL::ZZ>::setM(NTL::ZZ(getM()));
       NTL::ZZX poly;
-      NTL::matrix<NTL::ZZ> mat(k, k);
-      for (int i = 0; i<k; i++) {
-        for (int j = 0; j<k; j++) {
+      NTL::matrix<NTL::ZZ> mat(m_k, m_k);
+      for (int i = 0; i<m_k; i++) {
+        for (int j = 0; j<m_k; j++) {
           mat[i][j] = NTL::ZZ(a0[i][j]);
         }
       }
       NTL::CharPoly(poly, mat);
-      NTL::vector<NTL::ZZ> vec(NTL::VectorCopy(poly, k+1));
+      NTL::vector<NTL::ZZ> vec(NTL::VectorCopy(poly, m_k+1));
       PolyPE<NTL::ZZ>::setF(vec);
       PolyPE<NTL::ZZ> pol;
       IntPrimitivity<NTL::ZZ> privfm(ifm2, NTL::ZZ(getM()), 1);
@@ -524,9 +512,9 @@ namespace LatMRG {
     bool MRGComponent<Int>::maxPeriod23 (const IntVec & a0)
     {
       PolyPE<Int>::setM(getM());
-      a = a0;
-      PolyPE<Int>::reverse (a, k, 2);
-      PolyPE<Int>::setF(a);
+      m_a = a0;
+      PolyPE<Int>::reverse (m_a, m_k, 2);
+      PolyPE<Int>::setF(m_a);
       PolyPE<Int> pol;
       // La condition 1 a déjà été vérifiée dans SeekMain
       return pol.isPrimitive(ifr);
@@ -542,10 +530,10 @@ namespace LatMRG {
       os << "MRGComponent:";
       Int mm = getM();
       os << "\n   m = " << mm;
-      os << "\n   k = " << k;
+      os << "\n   k = " << m_k;
       os << "\n   a = ";
       std::string str (os.str ());
-      std::string s2 = LatticeTester::toString(a, k);
+      std::string s2 = LatticeTester::toString(m_a, m_k);
       str += s2;
       str += "\n";
       return str;
