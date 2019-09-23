@@ -1,9 +1,9 @@
 var searchData=
 [
-  ['b',['b',['../class_lat_m_r_g_1_1_modulus.html#adafc6998c59f307c80101b3ac581d517',1,'LatMRG::Modulus']]],
-  ['b2',['b2',['../class_lat_m_r_g_1_1_modulus.html#ae59f79e82048c6d62c3357eea32fb53c',1,'LatMRG::Modulus']]],
-  ['b_5f1',['b_1',['../usage_8dox.html#a26306771f5ae54189d39c3c771498af3',1,'usage.dox']]],
-  ['b_5f2',['b_2',['../usage_8dox.html#a1692fb07718877d328234f908962f7d0',1,'usage.dox']]],
-  ['b_5f4',['b_4',['../usage_8dox.html#a0bbbb83f540085d9a195522ca3f988bb',1,'usage.dox']]],
-  ['bm1',['bm1',['../class_lat_m_r_g_1_1_modulus.html#a2992d9fdb3886f51a6783d388f81f0b6',1,'LatMRG::Modulus']]]
+  ['c',['c',['../class_lat_m_r_g_1_1_modulus.html#a9ffc09c5cbfbd96ffa4444e4fbd417e2',1,'LatMRG::Modulus']]],
+  ['c_5f1',['c_1',['../usage_8dox.html#a654ba24b207aace5c8a24a5378fb7f89',1,'usage.dox']]],
+  ['c_5f2',['c_2',['../usage_8dox.html#abd6cb9ca0f5481ed10e6d34149fe6e20',1,'usage.dox']]],
+  ['c_5f4',['c_4',['../usage_8dox.html#a8c8336caeac00fc6dcef7da69221c435',1,'usage.dox']]],
+  ['comp',['comp',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a29b1f706f530ab58d7f586cbacb74b04',1,'LatMRG::MRGLattice']]],
+  ['component',['component',['../results_8dox.html#ac329ce2abeb540df962348024d8264fe',1,'results.dox']]]
 ];

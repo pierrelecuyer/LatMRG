@@ -13,7 +13,7 @@ var searchData=
   ['chrono_2eh',['Chrono.h',['../_chrono_8h.html',1,'']]],
   ['clear',['clear',['../class_lat_m_r_g_1_1_int_factorization.html#a22a9feccf36806716a629fdda93b6d85',1,'LatMRG::IntFactorization']]],
   ['combo',['COMBO',['../namespace_lat_m_r_g.html#ab4948e899f8c3a6fb82cff009283061ead6c0d4e17150b4a449106a8a9c55c9b7',1,'LatMRG']]],
-  ['combolattice',['ComboLattice',['../class_lat_m_r_g_1_1_combo_lattice.html',1,'LatMRG::ComboLattice&lt; Int, Dbl &gt;'],['../class_lat_m_r_g_1_1_combo_lattice.html#aaec88d819c7d0112066eeeefe0462f78',1,'LatMRG::ComboLattice::ComboLattice(std::vector&lt; MRGComponent&lt; Int &gt;&gt; &amp;comp, MRGLattice&lt; Int, Dbl &gt; &amp;lat)'],['../class_lat_m_r_g_1_1_combo_lattice.html#a7eb901b85c72f49c10a247beb213bff3',1,'LatMRG::ComboLattice::ComboLattice(const ComboLattice&lt; Int, Dbl &gt; &amp;lat)']]],
+  ['combolattice',['ComboLattice',['../class_lat_m_r_g_1_1_combo_lattice.html',1,'LatMRG::ComboLattice&lt; Int, Dbl &gt;'],['../class_lat_m_r_g_1_1_combo_lattice.html#a0dc138929b0bc4051b76294e5b8a74ec',1,'LatMRG::ComboLattice::ComboLattice(std::vector&lt; MRGComponent&lt; Int &gt; * &gt; &amp;comp, MRGLattice&lt; Int, Dbl &gt; &amp;lat)'],['../class_lat_m_r_g_1_1_combo_lattice.html#a7eb901b85c72f49c10a247beb213bff3',1,'LatMRG::ComboLattice::ComboLattice(const ComboLattice&lt; Int, Dbl &gt; &amp;lat)']]],
   ['combolattice_2ecc',['ComboLattice.cc',['../_combo_lattice_8cc.html',1,'']]],
   ['combolattice_2eh',['ComboLattice.h',['../_combo_lattice_8h.html',1,'']]],
   ['comp',['comp',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a29b1f706f530ab58d7f586cbacb74b04',1,'LatMRG::MRGLattice']]],
