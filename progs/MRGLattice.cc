@@ -12,6 +12,7 @@
 
 #include "Seek.h"
 #include "LatTest.h"
+#include "FindMK.h"
 
 using namespace LatMRG;
 
@@ -24,23 +25,7 @@ std::ostream* out(&std::cout);
 
 // Prints the program usage
 void print_help() {
-  *out << "Usage: MRGLattice [OPTIONS] MODE PARAMETERS\n\n";
-  *out << "Available options:\n\t" << "-h, --help\n\t\tPrint this"
-    " message.\n\t-o, --output=FILE\n\t\tOutput to FILE\n\t"
-    "-t, --types=[LD,ZD,ZR]\n\t\tUse corresponding types. (default: ZD)\n\n";
-  *out << "Available modes:\n\t" << "lat\n\t\t" << "Study the"
-    " lattice of a MRG generator.\n\t" << "seek\n\t\t" << "Search for"
-    " new MRG generators.\n\t" << "mk\n\t\t" << "Find compatible "
-    "modulus and order for MRG generators.\n\t" << "period\n\t\t" <<
-    "Test the period of a MRG generator.\n\n";
-  *out << "lat parameters:\n\t" << "    --gentype=[MRG,MWC,COMBO,MMRG]\n\t\t"
-    "Use generator type GenType. (default: MRG)\n\t"
-    "    --criterion=[LENGTH,SPECTRAL, BEYER]\n\t\t"
-    "Criterion for the figure of merit. (default: SPECTRAL)\n\t"
-    "    --dual=[true,false]\n\t\tCompute on the dual or no. (default: true)\n\t"
-    "    --reduction\n\t" << "    --normalizer\n\t" << "    --time\n\t"
-    "    --projections\n\t" << "-a, --vector\n\t" << "-m, --modulo\n\t"
-    "-k, --order\n";
+  *out << "Usage: MRGLattice file1 file2 ...\n";
 }
 
 //==============================================================================
@@ -83,12 +68,20 @@ int toVectString(const char* str, Vec& vect, int length) {
 template<typename Conf>
 int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
   tinyxml2::XMLElement* node;
+
+  int basis, exponent, order;
+  typename Conf::Int /*modulo,*/ rest;
+
+  std::string filem1 = "./tempm1" + i + std::to_string(rand());
+  std::string filer = "./tempr" + i + std::to_string(rand());
+  DecompType decompm1 = DECOMP, decompr = DECOMP;
+
   node = current->FirstChildElement("modulo");
   if (node) {
-    NTL::conv(conf.basis[i], node->Attribute("basis"));
-    NTL::conv(conf.rest[i], node->Attribute("rest"));
-    NTL::conv(conf.exponent[i], node->Attribute("exponent"));
-    conf.modulo[i] = NTL::power(conf.basis[i], conf.exponent[i]) + conf.rest[i];
+    NTL::conv(basis, node->Attribute("basis"));
+    NTL::conv(rest, node->Attribute("rest"));
+    NTL::conv(exponent, node->Attribute("exponent"));
+    //modulo = NTL::power(basis, exponent) + rest;
   } else {
     std::cerr << "No 'modulo' tag in 'mrg' tag.\n";
     return 1;
@@ -96,7 +89,7 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
 
   node = current->FirstChildElement("order");
   if (node) {
-    NTL::conv(conf.order[i], node->Attribute("k"));
+    NTL::conv(order, node->FirstAttribute()->IntValue());
   } else {
     std::cerr << "No 'order' tag in 'mrg' tag.\n";
     return 1;
@@ -107,10 +100,10 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
     auto value = node->FirstAttribute();
     if (value) {
       if (!strcmp(value->Name(), "random")) {
-        conf.coeff[i].SetLength(conf.order[i]);
-        if (toVectString(value->Value(), conf.coeff[i], conf.order[i])) return 1;
+        conf.coeff[i].SetLength(order);
+        if (toVectString(value->Value(), conf.coeff[i], order)) return 1;
       } else if (!strcmp(value->Name(), "pow2")) {
-        conf.coeff[i].SetLength(2*conf.order[i]);
+        conf.coeff[i].SetLength(2*order);
       } else {
         std::cerr << "Invalid attribute in tag 'method'.\n";
         return 1;
@@ -122,8 +115,8 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
   } else {
     node = current->FirstChildElement("coefficients");
     if (node) {
-      conf.coeff[i].SetLength(conf.order[i]);
-      toVectString(node->FirstAttribute()->Value(), conf.coeff[i], conf.order[i]);
+      conf.coeff[i].SetLength(order);
+      toVectString(node->FirstAttribute()->Value(), conf.coeff[i], order);
     } else {
       std::cerr << "No way to set coefficients in 'mrg' tag. Add 'method' or 'coefficients' tag.\n";
       return 1;
@@ -131,8 +124,14 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
   }
 
   node = current->FirstChildElement("period");
-  if (node && readGenPer(node, conf, i))
+  if (node && readGenPer(node, conf, i, filem1, filer, decompm1, decompr))
     std::cerr << "Non critical error in 'period' tag of 'mrg' tag.\n";
+
+  auto comp = new MRGComponent<typename Conf::Int>(basis, exponent, rest, order,
+      decompm1, filem1.c_str(), decompr, filer.c_str());
+  comp->set_type(MRG);
+
+  conf.fact.push_back(comp);
 
   return 0;
 }
@@ -143,6 +142,11 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
 template<typename Conf>
 int readMMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
   tinyxml2::XMLElement* node;
+
+  std::string filem1 = "./tempm1" + i + std::to_string(rand());
+  std::string filer = "./tempr" + i + std::to_string(rand());
+  DecompType decompm1 = DECOMP, decompr = DECOMP;
+
   node = current->FirstChildElement("modulo");
   if (node) {
     NTL::conv(conf.basis[i], node->Attribute("basis"));
@@ -156,14 +160,14 @@ int readMMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
 
   node = current->FirstChildElement("order");
   if (node) {
-    NTL::conv(conf.order[i], node->Attribute("k"));
+    NTL::conv(conf.order[i], node->FirstAttribute()->Value());
   } else {
     std::cerr << "No 'order' tag in 'mrg' tag.\n";
     return 1;
   }
 
   node = current->FirstChildElement("period");
-  if (node && readGenPer(node, conf, i))
+  if (node && readGenPer(node, conf, i, filem1, filer, decompm1, decompr))
     std::cerr << "Non critical error in 'period' tag of 'mmrg' tag.\n";
 
   return 0;
@@ -194,6 +198,25 @@ int readSpectral(tinyxml2::XMLNode* current, Conf& conf) {
   if (node) {
     if (toNormaString(conf.normaType, node->FirstAttribute()->Value())) std::cerr << "Invalid"
       "/inexistant attribute in 'norma' tag.\n";
+  }
+
+  node = current->FirstChildElement("dual");
+  if (node) {
+    conf.use_dual = node->FirstAttribute()->BoolValue();
+  }
+  return 0;
+}
+
+//==============================================================================
+
+// Reads parameters for shortest vector length computation
+template<typename Conf>
+int readLength(tinyxml2::XMLNode* current, Conf& conf) {
+  tinyxml2::XMLElement* node;
+  node = current->FirstChildElement("reduction");
+  if (node) {
+    if (toRedString(conf.reduction, node->FirstAttribute()->Value())) std::cerr << "Invalid"
+      "/inexistant attribute in 'reduction' tag.\n";
   }
 
   node = current->FirstChildElement("dual");
@@ -241,11 +264,9 @@ int readProj(tinyxml2::XMLNode* current, Conf& conf) {
 
 // Reads info on how to check for generator maximal period.
 template<typename Conf>
-int readGenPer(tinyxml2::XMLNode* current, Conf& conf, int i) {
-  conf.period[i] = current->ToElement()->BoolAttribute("check");
-  std::string filem1 = "./tempm1" + i + std::to_string(rand());
-  std::string filer = "./tempr" + i + std::to_string(rand());
-  DecompType decompm1 = DECOMP, decompr = DECOMP;
+int readGenPer(tinyxml2::XMLNode* current, Conf& conf, int i,
+    std::string& filem1, std::string& filer, DecompType& decompm1, DecompType& decompr) {
+  conf.period[i] = current->ToElement()->FirstAttribute()->BoolValue();
   int err = 0;
   if (conf.period[i]) {
     auto node = current->FirstChildElement("m1");
@@ -270,8 +291,6 @@ int readGenPer(tinyxml2::XMLNode* current, Conf& conf, int i) {
     }
   }
   if (err) return 1;
-  conf.fact[i] = new MRGComponent<typename Conf::Int>(conf.modulo[i], conf.order[i],
-      decompm1, filem1.c_str(), decompr, filer.c_str());
   return 0;
 }
 
@@ -284,18 +303,11 @@ int readGenerator(tinyxml2::XMLNode* current, Conf& conf) {
     conf.num_comp = tmp_node->FirstAttribute()->IntValue();
   }
 
-  conf.order.resize(conf.num_comp);
-  conf.modulo.resize(conf.num_comp);
-  conf.basis.resize(conf.num_comp);
-  conf.exponent.resize(conf.num_comp);
-  conf.rest.resize(conf.num_comp);
-  conf.period.resize(conf.num_comp);
-  conf.fact.resize(conf.num_comp);
-  conf.type.resize(conf.num_comp);
   conf.coeff.resize(conf.num_comp);
+  conf.period.resize(conf.num_comp);
 
   srand(time(NULL));
-  
+
   auto node = current->FirstChild();
   int count = 0;
   while (node && (count < conf.num_comp)) {
@@ -321,7 +333,7 @@ int readGenerator(tinyxml2::XMLNode* current, Conf& conf) {
     node->NextSibling();
   }
 
-  if (count != conf.num_comp) {
+  if (count != conf.num_comp || (unsigned)conf.num_comp != conf.fact.size()) {
     std::cerr << "Invalid number of generator components in 'gen' tag.\n";
     return 1;
   }
@@ -340,9 +352,11 @@ int tryTest(tinyxml2::XMLNode* current, Conf& conf) {
   if (!strcmp(current->Value(), "spectral")) {
     conf.criterion = LatticeTester::SPECTRAL;
     readSpectral(current, conf);
-  } else if (!strcmp(current->Value(), "beyer")) {
+  } else if (!strcmp(current->Value(), "length")) {
+    conf.criterion = LatticeTester::LENGTH;
+    readLength(current, conf);
     std::cout << current->Value() << "\n";
-  } else if (!strcmp(current->Value(), "shortest")) {
+  } else if (!strcmp(current->Value(), "beyer")) {
     std::cout << current->Value() << "\n";
   } else return 1;
   return 0;
@@ -352,21 +366,33 @@ int tryTest(tinyxml2::XMLNode* current, Conf& conf) {
 //===== Different uses reding functions
 //==============================================================================
 
-void readMK(tinyxml2::XMLNode* current) {
+template<typename Conf>
+int readMK(tinyxml2::XMLNode* current, Conf& conf) {
   //if (current->NoChild()) return;
   tinyxml2::XMLNode* node = current->FirstChild();
   while (node) {
-    if (!strcmp(node->Value(), "bounds")) {
-      std::cout << node->Value() << "\n";
+    if (!strcmp(node->Value(), "power")) {
+      conf.power = true;
+      conf.c1 = node->ToElement()->FirstAttribute()->IntValue();
+    } else if (!strcmp(node->Value(), "range")) {
+      conf.power = false;
+      auto attr = node->ToElement()->FirstAttribute();
+      conf.c1 = attr->IntValue();
+      attr = attr->Next();
+      conf.c2 = attr->IntValue();
     } else if (!strcmp(node->Value(), "k")) {
-      std::cout << node->Value() << "\n";
+      conf.k = node->ToElement()->FirstAttribute()->IntValue();
     } else if (!strcmp(node->Value(), "safe")) {
-      std::cout << node->Value() << "\n";
+      conf.safe = node->ToElement()->FirstAttribute()->BoolValue();
     } else if (!strcmp(node->Value(), "factor")) {
-      std::cout << node->Value() << "\n";
+      conf.facto = node->ToElement()->FirstAttribute()->BoolValue();
+    } else {
+      std::cerr << "Invalid mk configuration.\n";
+      return 1;
     }
     node = node->NextSibling();
   }
+  return 0;
 }
 
 //==============================================================================
@@ -443,8 +469,15 @@ int readFile(const char* filename) {
   tinyxml2::XMLNode* current;
   current = doc.FirstChild();
   if (!strcmp(current->Value(), "mk")) {
-    readMK(current);
-    // fill mk
+    if (types == "ZD" || types == "ZR") {
+      MKSearch<NTL::ZZ> prog;
+      if (readMK(current, prog)) return 1;
+      return prog.FindMK();
+    } else if (types == "LD") {
+      MKSearch<std::int64_t> prog;
+      readMK(current, prog);
+      return prog.FindMK();
+    }
   } else if (!strcmp(current->Value(), "period")) {
     readPeriod(current);
     // fill period
@@ -463,9 +496,19 @@ int readFile(const char* filename) {
       return prog.Seek();
     }
   } else if (!strcmp(current->Value(), "lattest")) {
-    LatTest<NTL::ZZ, double> prog;
-    readTest(current, prog.conf);
-    return prog.TestLat();
+    if (types == "LD") {
+      LatTest<std::int64_t, double> prog;
+      readTest(current, prog.conf);
+      return prog.TestLat();
+    } else if (types == "ZD") {
+      LatTest<NTL::ZZ, double> prog;
+      readTest(current, prog.conf);
+      return prog.TestLat();
+    } else if (types == "ZR") {
+      LatTest<NTL::ZZ, NTL::RR> prog;
+      readTest(current, prog.conf);
+      return prog.TestLat();
+    }
   }
   return 0;
 }

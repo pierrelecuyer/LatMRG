@@ -207,7 +207,6 @@ template<typename Int, typename Dbl> struct SeekMain {
   ComboLattice<Int, Dbl>* nextGenerator(ComboLattice<Int, Dbl>* lattice) {
     // Setting up two vectors. MRGComponent and MRGLattice do not use the same
     // vector format
-    std::vector<MRGComponent<Int>> components;
     for (int k = 0; k < conf.num_comp; k++) {
       IntVec A;
       A.SetLength(conf.order[k]+1);
@@ -252,11 +251,11 @@ template<typename Int, typename Dbl> struct SeekMain {
       IntVec B;
       B.SetLength(conf.order[k]);
       for (int i = 0; i < conf.order[k]; i++) B[i] = A[i+1];
-      components.push_back(MRGComponent<Int>(conf.modulo[k], B, conf.order[k]));
+      conf.fact[k]->setA(B);
     }
     if (lattice) delete lattice;
-    MRGLattice<Int, Dbl>* mrg_lat = getLatCombo<Int, Dbl>(components, conf.max_dim);
-    ComboLattice<Int, Dbl>* new_lat = new ComboLattice<Int, Dbl>(components, *mrg_lat);
+    MRGLattice<Int, Dbl>* mrg_lat = getLatCombo<Int, Dbl>(conf.fact, conf.max_dim);
+    ComboLattice<Int, Dbl>* new_lat = new ComboLattice<Int, Dbl>(conf.fact, *mrg_lat);
     delete mrg_lat;
     return new_lat;
   }
@@ -348,7 +347,20 @@ template<typename Int, typename Dbl> struct SeekMain {
     // Launching the tests
     std::cout << "Program progress:\n";
     int old = print_progress(-1);
-    if (conf.type[0] == MRG) {
+    if (conf.num_comp > 1) {
+      ComboLattice<Int, Dbl>* combolat=0;
+      MeritList<ComboLattice<Int, Dbl>> bestLattice(conf.max_gen, conf.best);
+      while (!timer.timeOver(conf.timeLimit)) {
+        combolat = nextGenerator(combolat);
+        if (combolat == NULL) continue;
+        bestLattice.add(test_seek(*combolat, conf));
+        conf.num_gen++;
+        conf.currentMerit = bestLattice.getMerit();
+        old = print_progress(old);
+      }
+      if (combolat) delete combolat;
+      printResults(bestLattice);
+    } else if (conf.type[0] == MRG) {
       MRGLattice<Int, Dbl>* mrglat = 0;
       MeritList<MRGLattice<Int, Dbl>> bestLattice(conf.max_gen, conf.best);
       while (!timer.timeOver(conf.timeLimit)) {
@@ -387,19 +399,6 @@ template<typename Int, typename Dbl> struct SeekMain {
         old = print_progress(old);
       }
       if (mmrglat) delete mmrglat;
-      printResults(bestLattice);
-    } else if (conf.type[0] == COMBO) {
-      ComboLattice<Int, Dbl>* combolat=0;
-      MeritList<ComboLattice<Int, Dbl>> bestLattice(conf.max_gen, conf.best);
-      while (!timer.timeOver(conf.timeLimit)) {
-        combolat = nextGenerator(combolat);
-        if (combolat == NULL) continue;
-        bestLattice.add(test_seek(*combolat, conf));
-        conf.num_gen++;
-        conf.currentMerit = bestLattice.getMerit();
-        old = print_progress(old);
-      }
-      if (combolat) delete combolat;
       printResults(bestLattice);
     }
     for (int i = 0; i < conf.num_comp; i++) {

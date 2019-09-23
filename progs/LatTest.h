@@ -9,12 +9,6 @@ template<typename Int, typename Dbl> struct LatTest {
   Chrono timer;
   int detail = 0;
 
-  // Program global objects
-  //int num_comp;
-  //std::vector<int> projDim;
-  std::vector<MRGComponent<Int>> combo;
-  //Int carry;
-
   /**
    * Prints the results of the program execution.
    * */
@@ -83,7 +77,14 @@ template<typename Int, typename Dbl> struct LatTest {
     timer.init();
 
     // Testing the generator(s)
-    if (conf.type[0] == MRG) {
+    if (conf.num_comp > 1) {
+      // Combined generators case
+      MeritList<ComboLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
+      MRGLattice<Int, Dbl>* mrg = getLatCombo<Int, Dbl>(conf.fact, conf.max_dim);
+      ComboLattice<Int, Dbl> combolat(conf.fact, *mrg);
+      bestLattice.add(test_lat(combolat, conf));
+      printResults(bestLattice);
+    } else if (conf.type[0] == MRG) {
       MeritList<MRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
       IntVec temp(conf.order[0]+1);
       temp[0] = Int(0);
@@ -102,12 +103,6 @@ template<typename Int, typename Dbl> struct LatTest {
       MeritList<MMRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
       MMRGLattice<Int, Dbl> mmrglat(conf.modulo[0], conf.matrix, conf.max_dim, conf.order[0]);
       bestLattice.add(test_lat(mmrglat, conf));
-      printResults(bestLattice);
-    } else if (conf.type[0] == COMBO) {
-      MeritList<ComboLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
-      MRGLattice<Int, Dbl>* mrg = getLatCombo<Int, Dbl>(combo, conf.max_dim);
-      ComboLattice<Int, Dbl> combolat(combo, *mrg);
-      bestLattice.add(test_lat(combolat, conf));
       printResults(bestLattice);
     }
     delete conf.proj;
