@@ -57,7 +57,7 @@ namespace LatMRG {
         /**
          * Same as the other constructors with `m=b^e+r`.
          * */
-        MRGComponent (int b, int e, Int r, int k, DecompType decom1,
+        MRGComponent (Int b, int e, Int r, int k, DecompType decom1,
             const char *filem1, DecompType decor,
             const char *filer);
 
@@ -145,6 +145,21 @@ namespace LatMRG {
         int getK() const { return m_k; }
 
         /**
+         * Returns the value of `b` with `b^e+r = m`.
+         */
+        Int getB() const { return m_b; }
+
+        /**
+         * Returns the value of `e` with `b^e+r = m`.
+         */
+        int getE() const { return m_e; }
+
+        /**
+         * Returns the value of `r` with `b^e+r = m`.
+         */
+        Int getR() const { return m_r; }
+
+        /**
          * Returns const reference of orbitSeed
          * */
         IntVec& getOrbitSeed() { return orbitSeed;}
@@ -222,7 +237,7 @@ namespace LatMRG {
         /**
          * Basis `b` with `b^e+r = m`.
          * */
-        int m_b;
+        Int m_b;
 
         /**
          * Exponent `e` with `b^e+r = m`.
@@ -388,13 +403,16 @@ namespace LatMRG {
     MRGComponent<Int>::MRGComponent (const Int & m, int k, DecompType decom1,
         const char *filem1, DecompType decor, const char *filer)
     {
+      m_b = m;
+      m_e = 1;
+      m_r = Int(0);
       init (m, k, decom1, filem1, decor, filer);
     }
 
   //===========================================================================
 
   template<typename Int>
-    MRGComponent<Int>::MRGComponent (int b, int e, Int r, int k, DecompType decom1,
+    MRGComponent<Int>::MRGComponent (Int b, int e, Int r, int k, DecompType decom1,
         const char *filem1, DecompType decor, const char *filer)
     {
       Int m = NTL::power(b,e) + r;

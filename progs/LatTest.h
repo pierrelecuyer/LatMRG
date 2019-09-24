@@ -17,13 +17,15 @@ template<typename Int, typename Dbl> struct LatTest {
       std::cout << "LatRe: A program to test Random Number Generators\n";
       std::cout << delim;
       std::cout << "Bellow are the results of the tests of " << conf.max_gen << " generators:\n";
-      std::cout << "Generator type: " << toStringGen(conf.type[0]) << "\n";
-      if (conf.type[0] == MRG) {
-        std::cout << "With modulus:   m = " << conf.modulo[0] << " = " << conf.basis[0] << "^"
-          << conf.exponent[0] << (conf.rest[0]>0?"+":"") << (conf.rest[0]!=0?std::to_string(conf.rest[0]):"") << "\n";
-        std::cout << "Of order:       k = " << conf.order[0] << "\n";
-      } else if (conf.type[0] == MWC) {
-      } else if (conf.type[0] == MMRG) {
+      std::cout << "Generator type: " << toStringGen(conf.fact[0]->get_type()) << "\n";
+      if (conf.fact[0]->get_type() == MRG) {
+        std::cout << "With modulus:   m = " << conf.fact[0]->getM() << " = " << conf.fact[0]->getB() << "^"
+          << conf.fact[0]->getE();
+       if (conf.fact[0]->getR() > 0) std::cout << "+" << conf.fact[0]->getR();
+       std::cout << "\n";
+        std::cout << "Of order:       k = " << conf.fact[0]->getK() << "\n";
+      } else if (conf.fact[0]->get_type() == MWC) {
+      } else if (conf.fact[0]->get_type() == MMRG) {
       }
       std::cout << "And " << (conf.period[0]?"full":"any") << " period length\n";
       std::cout << "The test was:\n";
@@ -41,11 +43,11 @@ template<typename Int, typename Dbl> struct LatTest {
       std::cout << "Number of generators tested: " << conf.max_gen << "\n\n";
       for (auto it = bestLattice.getList().begin(); it!= bestLattice.getList().end(); it++) {
         std::cout << delim;
-        if (conf.type[0] == MRG) {
+        if (conf.fact[0]->get_type() == MRG) {
           std::cout << "Coefficients:\n" << (*it).getLattice() << "\n";
-        } else if (conf.type[0] == MWC) {}
-        else if (conf.type[0] == MMRG) {}
-        else if (conf.type[0] == COMBO) {
+        } else if (conf.fact[0]->get_type() == MWC) {}
+        else if (conf.fact[0]->get_type() == MMRG) {}
+        else if (conf.fact[0]->get_type() == COMBO) {
           std::cout << (*it).getLattice();
         }
         if (detail == 0) {
@@ -84,28 +86,29 @@ template<typename Int, typename Dbl> struct LatTest {
       ComboLattice<Int, Dbl> combolat(conf.fact, *mrg);
       bestLattice.add(test_lat(combolat, conf));
       printResults(bestLattice);
-    } else if (conf.type[0] == MRG) {
+    } else if (conf.fact[0]->get_type() == MRG) {
       MeritList<MRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
-      IntVec temp(conf.order[0]+1);
+      IntVec temp(conf.fact[0]->getK()+1);
       temp[0] = Int(0);
-      for (int i = 1; i < conf.order[0]+1; i++) temp[i] = conf.coeff[0][i-1];
-      MRGLattice<Int, Dbl> mrglat(conf.modulo[0], temp, conf.max_dim, conf.order[0], FULL);
+      for (int i = 1; i < conf.fact[0]->getK()+1; i++) temp[i] = conf.coeff[0][i-1];
+      MRGLattice<Int, Dbl> mrglat(conf.fact[0]->getM(), temp, conf.max_dim, conf.fact[0]->getK(), FULL);
       bestLattice.add(test_lat(mrglat, conf));
       printResults(bestLattice);
-    } else if (conf.type[0] == MWC) {
+    } else if (conf.fact[0]->get_type() == MWC) {
       //MWCLattice<Int, Dbl>* mwclat = 0;
       //mwclat = nextGenerator(mwclat);
       //Dbl merit(test(*mwclat));
       //if (merit > bestMerit) {
       //  addLattice(mwclat, merit);
       //}
-    } else if (conf.type[0] == MMRG) {
+    } else if (conf.fact[0]->get_type() == MMRG) {
       MeritList<MMRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
-      MMRGLattice<Int, Dbl> mmrglat(conf.modulo[0], conf.matrix, conf.max_dim, conf.order[0]);
+      MMRGLattice<Int, Dbl> mmrglat(conf.fact[0]->getM(), conf.matrix, conf.max_dim, conf.fact[0]->getK());
       bestLattice.add(test_lat(mmrglat, conf));
       printResults(bestLattice);
     }
     delete conf.proj;
+    for (int i = 0; i < conf.num_comp; i++) delete conf.fact[i];
     return 0;
   }
 

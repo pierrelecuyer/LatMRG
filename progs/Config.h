@@ -7,7 +7,7 @@ typedef NTL::matrix<Int> IntMat;
 // std::string filem1, filer;
 
 // Data file read parameters
-std::vector<GenType> type;
+//std::vector<GenType> type;
 // Type of figure of merit
 LatticeTester::NormaType normaType = LatticeTester::NONE;
 LatticeTester::CriterionType criterion = LatticeTester::SPECTRAL;
@@ -38,12 +38,12 @@ Int b; // modulo of MWC recurence
 IntMat matrix;
 
 // Combo specific parameters
-std::vector<std::int64_t> order; // k for MRG and MMRG
-IntVec modulo; // m for MRG and MMRG
+//std::vector<std::int64_t> order; // k for MRG and MMRG
+//IntVec modulo; // m for MRG and MMRG
 // modulo is basis^exponent+rest
-std::vector<std::int64_t> basis;
-std::vector<std::int64_t> exponent;
-std::vector<std::int64_t> rest;
+//std::vector<std::int64_t> basis;
+//std::vector<std::int64_t> exponent;
+//std::vector<std::int64_t> rest;
 std::vector<bool> period;
 std::vector<MRGComponent<Int>*> fact;
 std::vector<IntVec> coeff;
