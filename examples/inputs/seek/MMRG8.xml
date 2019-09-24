@@ -1,10 +1,21 @@
-MMRG
-SPECTRAL true FULL BESTLAT
-true
-1
-1 35
-10
-20
-2 31 -1
-8
-true true
+<seek>
+  <gen>
+    <mmrg>
+      <modulo basis="2" exponent="31" rest="-1"/>
+      <order k="8"/>
+      <period check="true"/>
+    </mmrg>
+  </gen>
+  <spectral>
+    <reduction x="FULL"/>
+    <norma x="BESTLAT"/>
+    <dual x="true"/>
+  </spectral>
+  <proj>
+    <min x="8"/>
+    <num x="1"/>
+    <dim x="34"/>
+  </proj>
+  <time x="30"/>
+  <num_gen x="5"/>
+</seek>

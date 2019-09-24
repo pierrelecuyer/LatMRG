@@ -1,12 +1,21 @@
-MRG
-SPECTRAL true FULL BESTLAT
-false
-5
-1 40
-100 50 20 10
-5
-3600
-2 64 -59
-1
-RANDOM 1
-true true
+<seek>
+  <gen>
+    <mrg>
+      <modulo basis="2" exponent="64" rest="-59"/>
+      <order k="1"/>
+      <method random="1"/>
+      <period x="true"/>
+    </mrg>
+  </gen>
+  <spectral>
+    <reduction x="FULL"/>
+    <norma x="BESTLAT"/>
+    <dual x="true"/>
+  </spectral>
+  <proj>
+    <min x="5"/>
+    <num x="4"/>
+    <dim x="40 40 20 10"/>
+  </proj>
+  <best x="false"/>
+</seek>

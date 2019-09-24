@@ -1,0 +1,19 @@
+<lattest>
+  <gen>
+    <mrg>
+      <modulo basis="2" exponent="64" rest="-59"/>
+      <order k="1"/>
+      <coefficients x="12564428017527279798"/>
+    </mrg>
+  </gen>
+  <spectral>
+    <reduction method="FULL"/>
+    <norma lizer="BESTLAT"/>
+    <dual bool="true"/>
+  </spectral>
+  <proj>
+    <min x="2"/>
+    <num x="5"/>
+    <dim x="40 100 50 20 10"/>
+  </proj>
+</lattest>
