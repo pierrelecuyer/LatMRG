@@ -371,10 +371,10 @@ namespace LatMRG {
       typename std::list<LatticeTester::IntFactor<Int>>::const_iterator it =
         m_factorList.begin ();
       std::ostringstream out;
-      out << m_number << std::endl;
+      out << m_number << ":\n";
       //   out << "its factors:\n";
       while (it != m_factorList.end ()) {
-        out << "\t" << (*it).toString () << std::endl;
+        out << (*it).toString () << std::endl;
         ++it;
       }
       out << std::endl;

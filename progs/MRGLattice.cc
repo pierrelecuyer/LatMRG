@@ -397,10 +397,15 @@ int readMK(tinyxml2::XMLNode* current, Conf& conf) {
   while (node) {
     if (!strcmp(node->Value(), "power")) {
       conf.power = true;
-      conf.c1 = node->ToElement()->FirstAttribute()->IntValue();
+      auto attr = node->ToElement()->FirstAttribute();
+      conf.e = attr->IntValue();
+      attr = attr->Next();
+      conf.c1 = attr->IntValue();
     } else if (!strcmp(node->Value(), "range")) {
       conf.power = false;
       auto attr = node->ToElement()->FirstAttribute();
+      conf.e = attr->IntValue();
+      attr = attr->Next();
       conf.c1 = attr->IntValue();
       attr = attr->Next();
       conf.c2 = attr->IntValue();
@@ -495,11 +500,13 @@ int readFile(const char* filename) {
   if (!strcmp(current->Value(), "mk")) {
     if (types == "ZD" || types == "ZR") {
       MKSearch<NTL::ZZ> prog;
+      prog.fout = std::ofstream(std::string(filename) + ".res");
       if (readMK(current, prog)) return 1;
       return prog.FindMK();
     } else if (types == "LD") {
       MKSearch<std::int64_t> prog;
-      readMK(current, prog);
+      prog.fout = std::ofstream(std::string(filename) + ".res");
+      if (readMK(current, prog)) return 1;
       return prog.FindMK();
     }
   } else if (!strcmp(current->Value(), "period")) {

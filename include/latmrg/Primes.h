@@ -154,22 +154,25 @@ namespace LatMRG {
           }
           if (k == 1 || status == LatticeTester::PRIME || status == LatticeTester::PROB_PRIME) {
             i++;
-            fout << "   m = " << m << std::endl;
+            fout << "//========================================================"
+              "======================\n\n";
+            fout << "m = " << m << "\n";
             Int Sdiff = m - (Int(1)<<e);
-            fout << "     = 2^" << e;
+            fout << "  = 2^" << e;
             if (Sdiff >= 0) {
               fout << " + ";
-              fout << Sdiff << std::endl;
+              fout << Sdiff << "\n";
             } else {
               fout << " - ";
-              fout << (-Sdiff) << std::endl;
+              fout << (-Sdiff) << "\n";
             }
+            fout << "\n";
             if (facto) {
               IntFactorization<Int> ifac;
               ifac.clear();
-              ifac.setNumber (2*m1);
+              ifac.setNumber (m1);
               ifac.factorize ();
-              fout << "   Factors of m - 1:\n";
+              fout << "Factors of m - 1 = ";
               fout << ifac.toString ();
             }
           }
@@ -188,7 +191,7 @@ namespace LatMRG {
       writeHeader (k, e, INT_MAX, INT_MAX, safe, facto, fout);
       timer.init();
       Sm2 = (Int(1)<<e) - 1;
-      Sm1 = (Int(1)<<e) >> 1;
+      Sm1 = 2;
       find (k, e, s, Sm1, Sm2, safe, facto, fout);
       writeFooter (fout);
     }
@@ -203,7 +206,7 @@ namespace LatMRG {
       writeHeader (1, e, INT_MAX, INT_MAX, false, facto, fout);
       timer.init();
       Sm2 = (Int(1)<<e) - 1;
-      Sm1 = (Int(1)<<e) >> 1;
+      Sm1 = 2;
       find (1, e, s, Sm1, Sm2, false, facto, fout);
       writeFooter (fout);
     }
@@ -236,19 +239,21 @@ namespace LatMRG {
       if (safe)
         fout << ", (m-1)/2,";
       if (k > 1)
-        fout << " and (m^k-1)/(m-1) are prime.\n";
+        fout << " and (m^k-1)/(m-1) are prime with\n";
       else
-        fout << " is prime.\n";
-      fout << "k  = " << k << std::endl;
-      fout << "e  = " << e << std::endl;
-      if (c1 < INT_MAX)
-        fout << "c1 = " << c1 << std::endl;
-      if (c2 < INT_MAX)
-        fout << "c2 = " << c2 << std::endl;
-      fout << "safe = " << std::boolalpha << safe << std::endl;
-      fout << "facto = " << facto << std::endl;
+        fout << " is prime with\n";
+      fout << "k  = " << k << ", and\n";
+      if (c1 < INT_MAX || c2 < INT_MAX)
+        fout << "2^e + c1 < m < 2^e + c2, for e = " << e << " c1 = " << c1
+          << " c2 = " << c2 << "\n";
+      else
+        fout << "m < 2^e, and e = " << e << "\n";
 
-      if (c1 < INT_MAX) {
+      fout << "\nProgram values:\n";
+      fout << "safe = " << std::boolalpha << safe << "\n";
+      fout << "facto = " << facto << "\n\n";
+
+      /*if (c1 < INT_MAX) {
         fout << "\nm from 2^" << e;
         if (c1 >= 0)
           fout << " + ";
@@ -265,6 +270,7 @@ namespace LatMRG {
       } else {
         fout << "\nm < 2^" << e << std::endl << std::endl;
       }
+      */
     }
 
 
