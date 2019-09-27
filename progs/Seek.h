@@ -212,7 +212,6 @@ template<typename Int, typename Dbl> struct SeekMain {
       A.SetLength(conf.fact[k]->getK()+1);
       NTL::clear(A);
       IntVec coefficients(2*conf.fact[k]->getK());
-      int sign;
       int delay = 0;
       // The program will not run the maxPeriod function if it is not wanted with
       // this condition
@@ -221,31 +220,7 @@ template<typename Int, typename Dbl> struct SeekMain {
           if (timer.timeOver(conf.timeLimit)) return NULL;
           else delay = 0;
         }
-        for (long i = 0; i<conf.fact[k]->getK(); i++) {
-          if (conf.coeff[k][2*i] < 0) {
-            // This is a placeholder value for a zero coefficient
-            coefficients[2*i] = coefficients[2*i+1] = 2004012;
-            A[i+1] = 0;
-            continue;
-          }
-          coefficients[2*i] = randInt(Int(LatticeTester::Lg(abs(conf.fact[k]->getR())))+1, conf.coeff[k][2*i]);
-          sign = randInt(0,1);
-          {
-            Int tmp;
-            NTL::power2(tmp, coefficients[2*i]);
-            A[i+1] = Int(sign?1:-1) * tmp;
-          }
-          coefficients[2*i] ^= sign<<30;
-          if (!(conf.coeff[k][2*i+1] < 0)) {
-            coefficients[2*i+1] = randInt(Int(LatticeTester::Lg(abs(conf.fact[k]->getR())))+1, conf.coeff[k][2*i+1]);
-            sign = randInt(0,1);
-            Int tmp;
-            NTL::power2(tmp, coefficients[2*i+1]);
-            A[i+1] += Int(sign?1:-1) * tmp;
-            coefficients[2*i+1] ^= (sign<<30);
-          }
-          else coefficients[2*i+1] = 2004012;
-        }
+        for (long i = 0; i<conf.fact[k]->getK(); i++) A[i+1] = conf.coeff[k][i] * randInt(Int(0), conf.fact[k]->getM());
         delay++;
       } while ((A[conf.fact[k]->getK()] == 0) || (conf.period[k] && !conf.fact[k]->maxPeriod(A)));
       IntVec B;
@@ -266,25 +241,30 @@ template<typename Int, typename Dbl> struct SeekMain {
    * */
   template<typename Lat>
     void printResults(MeritList<Lat>& bestLattice) {
-      std::cout << "\nSeekRe: A search program for Random Number Generators\n";
+      std::cout << "\nSeek: A search program for Random Number Generators\n\n";
       std::cout << delim;
-      std::cout << "Bellow are the results of a search for random number generators:\n";
-      std::cout << "Generator type: " << toStringGen(conf.fact[0]->get_type()) << "\n";
-      if (conf.fact[0]->get_type() == MRG) {
-        std::cout << "With modulus:   m = " << conf.fact[0]->getM() << " = " << conf.fact[0]->getB() << "^"
-          << conf.fact[0]->getE();
-       if (conf.fact[0]->getR() > 0) std::cout << "+" << conf.fact[0]->getR();
-       std::cout << "\n";
-        std::cout << "Of order:       k = " << conf.fact[0]->getK() << "\n";
-      } else if (conf.fact[0]->get_type() == MWC) {
-      } else if (conf.fact[0]->get_type() == MMRG) {
+      std::cout << ((conf.num_comp>1)?"Combined generators":"Simple generator")
+        << " configuration" << ((conf.num_comp>1)?"s":"") << "\n\n";
+      for (int k = 0; k < conf.num_comp; k++) {
+        if (k > 0) std::cout << "\n";
+        if (conf.num_comp >1) std::cout << "Component " << k+1 << ":\n";
+        std::cout << "Generator type: " << toStringGen(conf.fact[k]->get_type()) << "\n";
+        if (conf.fact[k]->get_type() == MRG) {
+          std::cout << "Modulus:        m = " << conf.fact[k]->getM() << " = " << conf.fact[k]->getB() << "^"
+            << conf.fact[k]->getE();
+          if (conf.fact[k]->getR() > 0) std::cout << "+" << conf.fact[k]->getR();
+          std::cout << "\n";
+          std::cout << "Order:          k = " << conf.fact[k]->getK() << "\n";
+        } else if (conf.fact[k]->get_type() == MWC) {
+        } else if (conf.fact[k]->get_type() == MMRG) {
+        }
+        std::cout << (conf.period[0]?"Full":"Any") << " period length\n";
       }
-      std::cout << "And " << (conf.period[0]?"full":"any") << " period length\n";
-      std::cout << "The test was:\n" << (conf.best?"Best":"Worst") << " generators "
+      std::cout << "\nTest:\n" << (conf.best?"Best":"Worst") << " generators "
         "ranked by ";
-      if(conf.criterion == LatticeTester::SPECTRAL) std::cout << "minimal "
-        << (conf.normaType==LatticeTester::NONE?"inverse":"normalized")
-          << " shortest non-zero vector length (Spectral test)\n";
+      if(conf.criterion == LatticeTester::SPECTRAL) std::cout << " "
+        << (conf.normaType==LatticeTester::NONE?"minimal inverse shortest "
+            "non-zero vector length":"Spectral Test") << "\n";
       else if (conf.criterion == LatticeTester::LENGTH) std::cout << "minimal"
         << " shortest non-zero vector length\n";
       else if (conf.criterion == LatticeTester::BEYER) std::cout << "their Beyer quotient\n";
@@ -292,7 +272,7 @@ template<typename Int, typename Dbl> struct SeekMain {
         std::cout << "Normalizer used: "
           << LatticeTester::toStringNorma(conf.normaType) << "\n";
       }
-      std::cout << "On dimensions and projections:\n";
+      std::cout << "\nDimensions and projections:\n";
       std::cout << conf.proj->toString();
       std::cout << delim;
       std::cout << "Allowed running time: " << conf.timeLimit << "s.\n";
@@ -302,15 +282,8 @@ template<typename Int, typename Dbl> struct SeekMain {
       std::cout << "Retained generators (from best to worst):\n";
       for (auto it = bestLattice.getList().begin(); it!= bestLattice.getList().end(); it++) {
         std::cout << delim;
-        if (conf.fact[0]->get_type() == MRG) {
-          std::cout << "Coefficients:\n" << (*it).getLattice() << "\n";
-        } else if (conf.fact[0]->get_type() == MWC) {}
-        else if (conf.fact[0]->get_type() == MMRG) {
-          std::cout << "Matrix:\n" << (*it).getLattice() << "\n";
-        } else if (conf.fact[0]->get_type() == COMBO) {
-          std::cout << (*it).getLattice() << "\n";
-        }
-        std::cout << (*it).toStringMerit();
+        std::cout << (*it).getLattice() << "\n";
+        std::cout << (*it).toStringMerit() << "\n";
       }
     }
 
@@ -407,7 +380,6 @@ template<typename Int, typename Dbl> struct SeekMain {
       if (conf.fact[i]) delete conf.fact[i];
     }
     delete conf.proj;
-    for (int i = 0; i < conf.num_comp; i++) delete conf.fact[i];
     return 0;
   }
 }; // end struct SeekMain

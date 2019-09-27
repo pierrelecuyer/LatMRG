@@ -141,12 +141,12 @@ namespace LatMRG {
          */
         std::string toString() const override;
 
-        /**
+        /*
          * The components of the lattice when it is built out of more than one
          * component. When there is only one component, it is unused as the
          * parameters are the same as above.
          */
-        std::vector<MRGComponent<Int> *> comp;
+        //std::vector<MRGComponent<Int> *> comp;
 
         /**
          * Sets `m_power2` to true and sets `m_pow2_exp to `coeffs`.
@@ -581,7 +581,6 @@ namespace LatMRG {
   template<typename Int, typename Dbl>
     void MRGLattice<Int, Dbl>::incDimBasis()
     {
-
       LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::incDim();
 
       const int dim = this->getDim();

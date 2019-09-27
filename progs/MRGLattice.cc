@@ -25,7 +25,12 @@ std::ostream* out(&std::cout);
 
 // Prints the program usage
 void print_help() {
-  *out << "Usage: MRGLattice file1 file2 ...\n";
+  *out << "Usage: MRGLattice [types] file1 file2 ...\n";
+  *out << "types:\n"
+    "  LD: use long and double types.\n"
+    "  ZD: use NTL::ZZ and double types.\n"
+    "  ZR: use NTL::ZZ and NTL::RR types.\n"
+    "  This field can be ommited.\n";
 }
 
 //==============================================================================
@@ -68,7 +73,6 @@ int toVectString(const char* str, Vec& vect, int length) {
 template<typename Conf>
 int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
   tinyxml2::XMLElement* node;
-  std::cout << 1 << "\n";
 
   int exponent, order;
   typename Conf::Int /*modulo,*/ basis, rest;
@@ -77,7 +81,6 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
   std::string filer = "./tempr" + i + std::to_string(rand());
   DecompType decompm1 = DECOMP, decompr = DECOMP;
 
-  std::cout << 2 << "\n";
   node = current->FirstChildElement("modulo");
   if (node) {
     if (!node->Attribute("basis")) {
@@ -94,7 +97,6 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
     std::cerr << "No 'modulo' tag in 'mrg' tag.\n";
     return 1;
   }
-  std::cout << 3 << "\n";
 
   node = current->FirstChildElement("order");
   if (node) {
@@ -103,7 +105,6 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
     std::cerr << "No 'order' tag in 'mrg' tag.\n";
     return 1;
   }
-  std::cout << 4 << "\n";
 
   node = current->FirstChildElement("method");
   if (node) {
@@ -132,12 +133,10 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
       return 1;
     }
   }
-  std::cout << 5 << "\n";
 
   node = current->FirstChildElement("period");
   if (node && readGenPer(node, conf, i, filem1, filer, decompm1, decompr))
     std::cerr << "Non critical error in 'period' tag of 'mrg' tag.\n";
-  std::cout << 6 << "\n";
 
   auto comp = new MRGComponent<typename Conf::Int>(basis, exponent, rest, order,
       decompm1, filem1.c_str(), decompr, filer.c_str());
@@ -319,7 +318,6 @@ int readGenPer(tinyxml2::XMLNode* current, Conf& conf, int i,
 
 template<typename Conf>
 int readGenerator(tinyxml2::XMLNode* current, Conf& conf) {
-  std::cout << 0 << "\n";
   auto tmp_node = current->FirstChildElement("numcomp");
   if (tmp_node) {
     conf.num_comp = tmp_node->FirstAttribute()->IntValue();
@@ -330,13 +328,10 @@ int readGenerator(tinyxml2::XMLNode* current, Conf& conf) {
 
   srand(time(NULL));
 
-  std::cout << 1 << "\n";
   auto node = current->FirstChild();
   int count = 0;
   while (node && (count < conf.num_comp)) {
-  std::cout << 2 << "\n";
     if (!strcmp(node->Value(), "mrg")) {
-  std::cout << 3 << "\n";
       if (readMRG(node, conf, count)) {
         std::cerr << "'mrg' tag is not properly parametrized.\n";
         return 1;
@@ -352,10 +347,8 @@ int readGenerator(tinyxml2::XMLNode* current, Conf& conf) {
       std::cout << node->Value() << "\n";
       count++;
     }
-    node->NextSibling();
-  std::cout << 4 << "\n";
+    node = node->NextSibling();
   }
-  std::cout << 5 << "\n";
 
   if (count != conf.num_comp || (unsigned)conf.num_comp != conf.fact.size()) {
     std::cerr << "Invalid number of generator components in 'gen' tag.\n";
@@ -492,54 +485,28 @@ void readTest(tinyxml2::XMLNode* current, Conf& conf) {
 //===== Main reading function
 //==============================================================================
 
+template<typename Int, typename Dbl>
 int readFile(const char* filename) {
   tinyxml2::XMLDocument doc;
   doc.LoadFile(filename);
   tinyxml2::XMLNode* current;
   current = doc.FirstChild();
   if (!strcmp(current->Value(), "mk")) {
-    if (types == "ZD" || types == "ZR") {
-      MKSearch<NTL::ZZ> prog;
-      prog.fout = std::ofstream(std::string(filename) + ".res");
-      if (readMK(current, prog)) return 1;
-      return prog.FindMK();
-    } else if (types == "LD") {
-      MKSearch<std::int64_t> prog;
-      prog.fout = std::ofstream(std::string(filename) + ".res");
-      if (readMK(current, prog)) return 1;
-      return prog.FindMK();
-    }
+    MKSearch<Int> prog;
+    prog.fout = std::ofstream(std::string(filename) + ".res");
+    if (readMK(current, prog)) return 1;
+    return prog.FindMK();
   } else if (!strcmp(current->Value(), "period")) {
     readPeriod(current);
     // fill period
   } else if (!strcmp(current->Value(), "seek")) {
-    if (types == "LD") {
-      SeekMain<std::int64_t, double> prog;
-      readSeek(current, prog.conf);
-      return prog.Seek();
-    } else if (types == "ZD") {
-      SeekMain<NTL::ZZ, double> prog;
-      readSeek(current, prog.conf);
-      return prog.Seek();
-    } else if (types == "ZR") {
-      SeekMain<NTL::ZZ, NTL::RR> prog;
-      readSeek(current, prog.conf);
-      return prog.Seek();
-    }
+    SeekMain<Int, Dbl> prog;
+    readSeek(current, prog.conf);
+    return prog.Seek();
   } else if (!strcmp(current->Value(), "lattest")) {
-    if (types == "LD") {
-      LatTest<std::int64_t, double> prog;
-      readTest(current, prog.conf);
-      return prog.TestLat();
-    } else if (types == "ZD") {
-      LatTest<NTL::ZZ, double> prog;
-      readTest(current, prog.conf);
-      return prog.TestLat();
-    } else if (types == "ZR") {
-      LatTest<NTL::ZZ, NTL::RR> prog;
-      readTest(current, prog.conf);
-      return prog.TestLat();
-    }
+    LatTest<Int, Dbl> prog;
+    readTest(current, prog.conf);
+    return prog.TestLat();
   }
   return 0;
 }
@@ -551,9 +518,27 @@ int main(int argc, char** argv) {
     print_help();
     return 1;
   }
-  for (int i = 1; i < argc; i++) {
-    if (readFile(argv[i])) {
-      std::cerr << "File " << argv[i] << " exited with errors.\n";
+
+  // Check types
+  if (!(strcmp(argv[1],"ZD") && strcmp(argv[1], "LD") && strcmp(argv[1], "ZR"))) types = argv[1];
+  else if (readFile<NTL::ZZ, double>(argv[1])) {
+    std::cerr << "File " << argv[1] << " exited with errors.\n";
+  }
+
+  // Run all specified files
+  for (int i = 2; i < argc; i++) {
+    if (types == "LD") {
+      if (readFile<std::int64_t, double>(argv[i])) {
+        std::cerr << "File " << argv[i] << " exited with errors.\n";
+      }
+    } else if (types == "ZD") {
+      if (readFile<NTL::ZZ, double>(argv[i])) {
+        std::cerr << "File " << argv[i] << " exited with errors.\n";
+      }
+    } else if (types == "ZR") {
+      if (readFile<NTL::ZZ, NTL::RR>(argv[i])) {
+        std::cerr << "File " << argv[i] << " exited with errors.\n";
+      }
     }
   }
   return 0;

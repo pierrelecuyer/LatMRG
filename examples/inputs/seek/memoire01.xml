@@ -1,7 +1,8 @@
 <seek>
   <gen>
+    <numcomp x="2"/>
     <mrg>
-      <modulo basis="2" exponent="63" rest="2247"/>
+      <modulo basis="2" exponent="63" rest="-2247"/>
       <order x="3"/>
       <method random="1 1 1"/>
       <period check="true">
@@ -25,10 +26,10 @@
     <dual x="true"/>
   </spectral>
   <proj>
-    <min x="1"/>
+    <min x="3"/>
     <num x="1"/>
-    <dim x="35"/>
+    <dim x="34"/>
   </proj>
-  <time x="600"/>
+  <time x="10"/>
   <num_gen x="5"/>
 </seek>

@@ -39,7 +39,7 @@ namespace LatMRG {
 
         IntVec a(comp[j]->getA());
         for (int i = 1; i <= k; i++) {
-          A[i] += a[i-1]*n*modulo/comp[j]->getM();
+          if (i <= comp[j]->getK()) A[i] += a[i-1]*n*modulo/comp[j]->getM();
         }
       }
       // Modulo only once
@@ -109,9 +109,8 @@ namespace LatMRG {
   template<typename Int, typename Dbl>
     ComboLattice<Int, Dbl>::ComboLattice(std::vector<MRGComponent<Int>*>& comp,
         MRGLattice<Int, Dbl>& lat) : MRGLattice<Int, Dbl>(lat){
-      m_comp.resize(comp.size());
       for (unsigned int i = 0; i < comp.size(); i++) {
-        m_comp[i] = new MRGComponent<Int>(*comp[i]);
+        m_comp.push_back(new MRGComponent<Int>(*comp[i]));
       }
       m_number = comp.size();
     }
@@ -121,9 +120,8 @@ namespace LatMRG {
   template<typename Int, typename Dbl>
     ComboLattice<Int, Dbl>::ComboLattice(const ComboLattice<Int, Dbl>& lat) :
       MRGLattice<Int, Dbl>(lat){
-      m_comp.resize(lat.comp.size());
-      for (unsigned int i = 0; i < m_comp.size(); i++) {
-        m_comp[i] = new MRGComponent<Int>(*lat.comp[i]);
+      for (unsigned int i = 0; i < lat.m_comp.size(); i++) {
+        m_comp.push_back(new MRGComponent<Int>(*lat.m_comp[i]));
       }
       m_number = lat.m_number;
     }

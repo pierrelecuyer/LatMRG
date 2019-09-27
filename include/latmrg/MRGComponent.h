@@ -547,7 +547,7 @@ namespace LatMRG {
       std::ostringstream os;
       os << "MRGComponent:";
       Int mm = getM();
-      os << "\n   m = " << mm;
+      os << "\n   m = " << mm << " = " << m_b << "^" << m_e << " + " << m_r;
       os << "\n   k = " << m_k;
       os << "\n   a = ";
       std::string str (os.str ());
