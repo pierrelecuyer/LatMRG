@@ -116,7 +116,7 @@ message_obj:
 # Building the programs of ./progs
 
 $(PRO_DIR)/%.o: $(LIB_DIR)/liblatticetester.a $(LIB_DIR)/liblatmrg.a\
-  $(PRO_DIR)/%.cc $(PROG_H) | message_progs $(BIN_DIR)
+  $(PRO_DIR)/%.cc $(PROGS_H) | message_progs $(BIN_DIR)
 	$(CC) $(CFLAGS) $(INCLUDES) $(YAFU) -c $(PRO_DIR)/$(@:progs/%.o=%).cc -o $@
 	$(CC) $@ $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
 	  -o $(BIN_DIR)/$(@:progs/%.o=%)
