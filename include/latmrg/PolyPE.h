@@ -129,7 +129,7 @@ namespace LatMRG {
         /**
          * Given a vector \f$C = [c_0, c_1, …, c_{k-1}, c_k]\f$, this function
          * reorders the components of \f$C\f$ in the form \f$C = [c_k, c_{k-1},
-         * …, c_1, c_0]\f$ for `kind = 1`, and in the form \f$C =
+         * ..., c_1, c_0]\f$ for `kind = 1`, and in the form \f$C =
          * [-c_k, -c_{k-1}, …, -c_1, 1]\f$ for `kind = 2`. For other values of
          * `kind`, it has no effect.
          */
@@ -446,6 +446,7 @@ namespace LatMRG {
         const IntFactorization<Int> & fr)
     {
       Int a0;
+      // rep is the NTL::ZZ equivalent of the NTL::ZZ_p element.
       a0 = -rep (ConstTerm (getF ()));
       if ((getK () & 1) == 0)
         a0 = -a0;

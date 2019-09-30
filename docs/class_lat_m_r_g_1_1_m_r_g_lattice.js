@@ -35,7 +35,6 @@ var class_lat_m_r_g_1_1_m_r_g_lattice =
     [ "toString", "class_lat_m_r_g_1_1_m_r_g_lattice.html#a0dec6052eb30bdadfbcdaa600f7b40ca", null ],
     [ "toStringCoef", "class_lat_m_r_g_1_1_m_r_g_lattice.html#aae63f3b5d7c2cd1c0edf57d80d24b9e8", null ],
     [ "trace", "class_lat_m_r_g_1_1_m_r_g_lattice.html#a3cc8f6c49f2353998321351d1a85f9c5", null ],
-    [ "comp", "class_lat_m_r_g_1_1_m_r_g_lattice.html#a29b1f706f530ab58d7f586cbacb74b04", null ],
     [ "m_aCoef", "class_lat_m_r_g_1_1_m_r_g_lattice.html#a8e9b96e9cde623fa37f6094910e29904", null ],
     [ "m_e", "class_lat_m_r_g_1_1_m_r_g_lattice.html#aa8f96b56bfa3192ee192307938e4062d", null ],
     [ "m_ip", "class_lat_m_r_g_1_1_m_r_g_lattice.html#aebf8ce50c9ea7574f1afd4d82c0df7cd", null ],

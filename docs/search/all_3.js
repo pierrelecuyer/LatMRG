@@ -16,7 +16,6 @@ var searchData=
   ['combolattice',['ComboLattice',['../class_lat_m_r_g_1_1_combo_lattice.html',1,'LatMRG::ComboLattice&lt; Int, Dbl &gt;'],['../class_lat_m_r_g_1_1_combo_lattice.html#a0dc138929b0bc4051b76294e5b8a74ec',1,'LatMRG::ComboLattice::ComboLattice(std::vector&lt; MRGComponent&lt; Int &gt; * &gt; &amp;comp, MRGLattice&lt; Int, Dbl &gt; &amp;lat)'],['../class_lat_m_r_g_1_1_combo_lattice.html#a7eb901b85c72f49c10a247beb213bff3',1,'LatMRG::ComboLattice::ComboLattice(const ComboLattice&lt; Int, Dbl &gt; &amp;lat)']]],
   ['combolattice_2ecc',['ComboLattice.cc',['../_combo_lattice_8cc.html',1,'']]],
   ['combolattice_2eh',['ComboLattice.h',['../_combo_lattice_8h.html',1,'']]],
-  ['comp',['comp',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a29b1f706f530ab58d7f586cbacb74b04',1,'LatMRG::MRGLattice']]],
   ['compfactor',['CompFactor',['../class_lat_m_r_g_1_1_int_factorization_1_1_comp_factor.html',1,'LatMRG::IntFactorization']]],
   ['component',['component',['../results_8dox.html#ac329ce2abeb540df962348024d8264fe',1,'results.dox']]],
   ['computemerit',['computeMerit',['../class_lat_m_r_g_1_1_figure_of_merit.html#adc0c78ea0ad04f69f537254ce9d2743a',1,'LatMRG::FigureOfMerit']]],

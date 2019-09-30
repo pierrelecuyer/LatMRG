@@ -253,6 +253,7 @@ template<typename Int, typename Dbl> struct SeekMain {
           std::cout << "Modulus:        m = " << conf.fact[k]->getM() << " = " << conf.fact[k]->getB() << "^"
             << conf.fact[k]->getE();
           if (conf.fact[k]->getR() > 0) std::cout << "+" << conf.fact[k]->getR();
+          if (conf.fact[k]->getR() < 0) std::cout << conf.fact[k]->getR();
           std::cout << "\n";
           std::cout << "Order:          k = " << conf.fact[k]->getK() << "\n";
         } else if (conf.fact[k]->get_type() == MWC) {

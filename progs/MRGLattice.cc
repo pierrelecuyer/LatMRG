@@ -13,6 +13,7 @@
 #include "Seek.h"
 #include "LatTest.h"
 #include "FindMK.h"
+#include "Period.h"
 
 using namespace LatMRG;
 
@@ -419,21 +420,91 @@ int readMK(tinyxml2::XMLNode* current, Conf& conf) {
 
 //==============================================================================
 
-void readPeriod(tinyxml2::XMLNode* current) {
-  //if (current->NoChild()) return;
-  tinyxml2::XMLNode* node = current->FirstChild();
-  while (node) {
-    if (!strcmp(node->Value(), "bounds")) {
-      std::cout << node->Value() << "\n";
-    } else if (!strcmp(node->Value(), "k")) {
-      std::cout << node->Value() << "\n";
-    } else if (!strcmp(node->Value(), "safe")) {
-      std::cout << node->Value() << "\n";
-    } else if (!strcmp(node->Value(), "factor")) {
-      std::cout << node->Value() << "\n";
+template<typename Conf> 
+int readPeriod(tinyxml2::XMLNode* current, Conf& conf) {
+  srand(time(NULL));
+  conf.filem1 = "./tempm1" + std::to_string(rand());
+  conf.filer = "./tempr" + std::to_string(rand());
+  conf.decompm1 = DECOMP;
+  conf.decompr = DECOMP;
+
+  // Reading Modulo
+  auto node = current->FirstChildElement("modulo");
+  if (node) {
+    if (!node->Attribute("basis")) {
+      std::cerr << "No `basis` attribute in 'modulo' tag.\n";
+      return 1;
     }
-    node = node->NextSibling();
+    NTL::conv(conf.m_b, node->Attribute("basis"));
+    if (node->Attribute("exponent")) NTL::conv(conf.m_e, node->Attribute("exponent"));
+    else conf.m_e = 1;
+    if (node->Attribute("rest")) NTL::conv(conf.m_r, node->Attribute("rest"));
+    else conf.m_r = 0;
+    conf.m_m = NTL::power(conf.m_b, conf.m_e) + conf.m_r;
+  } else {
+    std::cerr << "No 'modulo' tag in 'period' tag.\n";
+    return 1;
   }
+
+  // Reading order
+  node = current->FirstChildElement("order");
+  if (node) {
+    NTL::conv(conf.m_k, node->FirstAttribute()->IntValue());
+    conf.m_a.SetLength(conf.m_k+1);
+  } else {
+    std::cerr << "No 'order' tag in 'period' tag.\n";
+    return 1;
+  }
+
+  // Reading type
+  node = current->FirstChildElement("type");
+  if (node && toGenString(conf.type, node->FirstAttribute()->Value())) {
+    std::cerr << "Invalid attribute " << node->FirstAttribute()->Name()
+      << " value in 'type' tag.\n";
+  }
+
+  if (conf.type == MRG) {
+    NTL::vector<typename Conf::Int> a;
+    a.SetLength(conf.m_k);
+    node = current->FirstChildElement("multipliers");
+    if (toVectString(node->FirstAttribute()->Value(), a, conf.m_k)) {
+      std::cerr << "Error in 'multiplier' tag.\n";
+    } else {
+      for (int i = 0; i < conf.m_k; i++) conf.m_a[i+1] = a[i];
+    }
+  } else if (conf.type == MMRG) {
+    // Do stuff
+  } else if (conf.type == MWC) {
+    // Do more stuff
+  } else if (conf.type == LCG) {
+    // Do some stuff here too
+  }
+
+  // Read decomposition files configuration
+  int err = 0;
+  node = current->FirstChildElement("m1");
+  if (node) {
+    auto method = node->Attribute("method");
+    if (method && toDecomString(conf.decompm1, method)) {
+      std::cerr << "Invalid 'method' attribute value in 'm1' tag.\n";
+      err = 1;
+    }
+    auto name = node->Attribute("file");
+    if (name) conf.filem1 = name;
+  }
+  node = current->FirstChildElement("r");
+  if (node) {
+    auto method = node->Attribute("method");
+    if (method && toDecomString(conf.decompr, method)) {
+      std::cerr << "Invalid 'method' attribute value in 'r' tag.\n";
+      err = 1;
+    }
+    auto name = node->Attribute("file");
+    if (name) conf.filer = name;
+  }
+  if (err) return 1;
+
+  return 0;
 }
 
 //==============================================================================
@@ -497,8 +568,9 @@ int readFile(const char* filename) {
     if (readMK(current, prog)) return 1;
     return prog.FindMK();
   } else if (!strcmp(current->Value(), "period")) {
-    readPeriod(current);
-    // fill period
+    MaxPeriod<Int, Dbl> prog;
+    if (readPeriod(current, prog)) return 1;
+    return prog.CheckPeriod();
   } else if (!strcmp(current->Value(), "seek")) {
     SeekMain<Int, Dbl> prog;
     readSeek(current, prog.conf);
