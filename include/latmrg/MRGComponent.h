@@ -111,8 +111,8 @@ namespace LatMRG {
          * carry; returns `false` otherwise.
          *
          * This checks the 2 following conditions :
-         * - If \f$q\f$ is prime and divides \f$m\f$, it must divide \f$a\f$.
-         * - If 4 divides \f$m\f$, it must divide \f$a\f$.
+         * - If \f$q\f$ is prime and divides \f$m\f$, it must divide \f$a-1\f$.
+         * - If 4 divides \f$m\f$, it must divide \f$a-1\f$.
          *
          * The user must choose the carry himself. Any carry relatively prime to
          * \f$m\f$ will give full period.
@@ -200,10 +200,17 @@ namespace LatMRG {
          */
         IntFactorization<Int> ifm1;
 
+        /**
+         * The prime factor decomposition of \f$m\f$.
+         * Used to compute the full period of a LCG with a carry.
+         */
         IntFactorization<Int> factor;
 
         /**
          * The prime factor decomposition of \f$m-1\f$.
+         * This is used when computing the full period of a matrix generator.
+         * This is because we use NTL to compute the characteristic polynomial
+         * of the matrix since it is already implemented.
          */
         IntFactorization<NTL::ZZ> ifm2;
 
@@ -212,6 +219,14 @@ namespace LatMRG {
          * \f$k\f$ is the order of the recurrence.
          */
         IntFactorization<Int> ifr;
+
+        /**
+         * The prime factor decomposition of \f$r=(m^k-1)/(m-1)\f$, where
+         * \f$k\f$ is the order of the recurrence.
+         * This is used when computing the full period of a matrix generator.
+         * This is because we use NTL to compute the characteristic polynomial
+         * of the matrix since it is already implemented.
+         */
         IntFactorization<NTL::ZZ> ifr2;
 
         /**
@@ -495,9 +510,9 @@ namespace LatMRG {
     {
       auto list = factor.getFactorList();
       for (auto iter = list.begin(); iter != list.end(); iter++) {
-        if (a0%(*iter).getFactor() != 0) return false;
+        if ((a0-Int(1))%(*iter).getFactor() != 0) return false;
       }
-      if (getM() % 4 == 0 && a0%4 != 0) return false;
+      if (getM() % 4 == 0 && (a0-Int(1))%4 != 0) return false;
 
       return true;
     }
@@ -507,6 +522,8 @@ namespace LatMRG {
   template<typename Int>
     bool MRGComponent<Int>::maxPeriod (const IntMat & a0)
     {
+      // Conerting everything to NTL::ZZ to ease the characteristic polynomial
+      // computation
       PolyPE<NTL::ZZ>::setM(NTL::ZZ(getM()));
       NTL::ZZX poly;
       NTL::matrix<NTL::ZZ> mat(m_k, m_k);
@@ -515,7 +532,9 @@ namespace LatMRG {
           mat[i][j] = NTL::ZZ(a0[i][j]);
         }
       }
+      // Characteristic polynomial computation
       NTL::CharPoly(poly, mat);
+      // Copying the polynomial to a vector
       NTL::vector<NTL::ZZ> vec(NTL::VectorCopy(poly, m_k+1));
       PolyPE<NTL::ZZ>::setF(vec);
       PolyPE<NTL::ZZ> pol;

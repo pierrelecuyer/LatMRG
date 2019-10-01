@@ -10,7 +10,7 @@ namespace LatMRG {
 
     NTL::vector<Int> m_a;
     Int m_mult;
-    NTL::vector<Int> m_A;
+    NTL::matrix<Int> m_A;
 
     DecompType decompm1;
     DecompType decompr;
@@ -29,12 +29,28 @@ namespace LatMRG {
       std::cout << "    m = " << m_m << " = " << m_b << "^" << m_e << "+"
         << m_r << "\n";
       std::cout << "    k = " << m_k << "\n";
-      std::cout << "    a = " << m_a << "\n";
 
-      if (mrg.maxPeriod (m_a))
-        std::cout << "has maximal period.\n";
-      else
-        std::cout << "does not have maximal period.\n";
+      if (type == MRG) {
+        std::cout << "    a = " << m_a << "\n";
+        if (mrg.maxPeriod (m_a))
+          std::cout << "has maximal period.\n";
+        else
+          std::cout << "does not have maximal period.\n";
+      } else if (type == LCG) {
+        std::cout << "    a = " << m_mult << "\n";
+        if (mrg.maxPeriod (m_mult))
+          std::cout << "can have maximal period 'm' if 'c' is choosen"
+            " relatively prime to 'm'.\n";
+        else
+          std::cout << "cannot have maximal period.\n";
+      } else if (type == MMRG) {
+        std::cout << "    A = " << m_A << "\n";
+        if (mrg.maxPeriod (m_A))
+          std::cout << "has maximal period.\n";
+        else
+          std::cout << "does not have maximal period.\n";
+      } else if (type == MWC) {
+      }
 
       return 0;
     }

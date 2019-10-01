@@ -67,6 +67,35 @@ int toVectString(const char* str, Vec& vect, int length) {
 }
 
 //==============================================================================
+
+/**
+ * Fills the matrix `mat` with the values of the attributes of current.
+ * This basically reshapes `mat` to a `dim*dim` size matrix and calls
+ * `toVectString()` on the successive attributes of current. This will fail if
+ * `current` has less than `dim` attributes or if any of those attributes does
+ * not contain a vector of `dim` components.
+ * */
+template<typename Mat>
+int toMatTag(tinyxml2::XMLElement* current, Mat& mat, int dim) {
+  mat.SetDims(dim, dim);
+  auto node = current->FirstAttribute();
+  for (int i = 0; i < dim; i++) {
+    if (node) {
+      if (toVectString(node->Value(), mat[i], dim)) {
+        std::cerr << "Cannot initialize line " << i+1 << " of the matrix.\n";
+        return 1;
+      }
+    } else {
+      std::cerr << "'matrix' tag expects " << dim << " attributes, but cannot "
+        "find attribute " << i+1 << ".\n";
+      return 1;
+    }
+    node = node->Next();
+  }
+  return 0;
+}
+
+//==============================================================================
 //===== Reading tags used in multiple configureations
 //==============================================================================
 
@@ -130,7 +159,8 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
       conf.coeff[i].SetLength(order);
       toVectString(node->FirstAttribute()->Value(), conf.coeff[i], order);
     } else {
-      std::cerr << "No way to set coefficients in 'mrg' tag. Add 'method' or 'coefficients' tag.\n";
+      std::cerr << "No way to set coefficients in 'mrg' tag. Add 'method' or"
+        " 'coefficients' tag.\n";
       return 1;
     }
   }
@@ -420,7 +450,7 @@ int readMK(tinyxml2::XMLNode* current, Conf& conf) {
 
 //==============================================================================
 
-template<typename Conf> 
+template<typename Conf>
 int readPeriod(tinyxml2::XMLNode* current, Conf& conf) {
   srand(time(NULL));
   conf.filem1 = "./tempm1" + std::to_string(rand());
@@ -466,14 +496,28 @@ int readPeriod(tinyxml2::XMLNode* current, Conf& conf) {
   if (conf.type == MRG) {
     NTL::vector<typename Conf::Int> a;
     a.SetLength(conf.m_k);
-    node = current->FirstChildElement("multipliers");
+    node = current->FirstChildElement("mult");
+    if (!node) {
+      std::cerr << "No 'mult' tag. Cannot check for full period without"
+        " coefficients.\n";
+      return 1;
+    }
     if (toVectString(node->FirstAttribute()->Value(), a, conf.m_k)) {
       std::cerr << "Error in 'multiplier' tag.\n";
     } else {
       for (int i = 0; i < conf.m_k; i++) conf.m_a[i+1] = a[i];
     }
   } else if (conf.type == MMRG) {
-    // Do stuff
+    node = current->FirstChildElement("matrix");
+    if (!node) {
+      std::cerr << "No 'matrix tag. Cannot check for full period without"
+        " multiplier matrix.\n";
+      return 1;
+    }
+    if (toMatTag(node, conf.m_A, conf.m_k)) {
+      std::cerr << "Error reading 'matrix' tag.\n";
+      return 1;
+    }
   } else if (conf.type == MWC) {
     // Do more stuff
   } else if (conf.type == LCG) {
