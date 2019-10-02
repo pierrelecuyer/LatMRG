@@ -23,15 +23,14 @@ template<typename Int, typename Dbl> struct LatTest {
         if (k > 0) std::cout << "\n";
         if (conf.num_comp >1) std::cout << "Component " << k+1 << ":\n";
         std::cout << "Generator type: " << toStringGen(conf.fact[k]->get_type()) << "\n";
-        if (conf.fact[k]->get_type() == MRG) {
-          std::cout << "Modulus:        m = " << conf.fact[k]->getM() << " = " << conf.fact[k]->getB() << "^"
+        if (conf.fact[k]->get_type() == MRG || conf.fact[k]->get_type() == MMRG) {
+          std::cout << "Modulo:         m = " << conf.fact[k]->getM() << " = " << conf.fact[k]->getB() << "^"
             << conf.fact[k]->getE();
           if (conf.fact[k]->getR() > 0) std::cout << "+" << conf.fact[k]->getR();
           if (conf.fact[k]->getR() < 0) std::cout << conf.fact[k]->getR();
           std::cout << "\n";
           std::cout << "Order:          k = " << conf.fact[k]->getK() << "\n";
         } else if (conf.fact[k]->get_type() == MWC) {
-        } else if (conf.fact[k]->get_type() == MMRG) {
         }
         std::cout << (conf.period[0]?"Check":"Don't check") << " full period length\n";
       }
@@ -50,16 +49,20 @@ template<typename Int, typename Dbl> struct LatTest {
       std::cout << "Actual CPU time: " << timer.toString() << "\n";
       for (auto it = bestLattice.getList().begin(); it!= bestLattice.getList().end(); it++) {
         std::cout << delim;
-        std::cout << (*it).getLattice();
+        std::cout << (*it).getLattice() << "\n";
         if (conf.num_comp > 1) {
+          bool print = false;
           for (int i = 0; i<conf.num_comp; i++) {
-            if (conf.period[i]) std::cout << "Component " << i+1
+            if (conf.period[i]){
+              std::cout << "Component " << i+1
               << ((full_period[i])?" has":" does not have") << " full period.\n";
+              print = true;
+            }
           }
+          if (print) std::cout << "\n";
         } else {
-          if (conf.period[0]) std::cout << "Full period: " << full_period[0] << "\n";
+          if (conf.period[0]) std::cout << "Full period: " << (full_period[0]?"yes":"no") << "\n\n";
         }
-        std::cout << "\n";
         if (detail == 0) {
           std::cout << (*it).toStringMerit();
         } else if (detail == 1) {
@@ -126,8 +129,9 @@ template<typename Int, typename Dbl> struct LatTest {
       //}
     } else if (conf.fact[0]->get_type() == MMRG) {
       full_period.resize(1);
+      if (conf.period[0]) full_period[0] = conf.fact[0]->maxPeriod(conf.fact[0]->getMatrix());
       MeritList<MMRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
-      MMRGLattice<Int, Dbl> mmrglat(conf.fact[0]->getM(), conf.matrix, conf.max_dim, conf.fact[0]->getK());
+      MMRGLattice<Int, Dbl> mmrglat(conf.fact[0]->getM(), conf.fact[0]->getMatrix(), conf.max_dim, conf.fact[0]->getK());
       bestLattice.add(test_lat(mmrglat, conf));
       printResults(bestLattice);
     }

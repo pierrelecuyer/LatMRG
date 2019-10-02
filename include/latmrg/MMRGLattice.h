@@ -87,7 +87,7 @@ namespace LatMRG {
         /**
          * Returns the generator matrix \f$A\f$ as a string.
          */
-        std::string toStringGeneratorMatrix() const;
+        std::string toString() const;
 
         /**
          * Builds the basis in dimension \f$d\f$.
@@ -307,20 +307,13 @@ namespace LatMRG {
   template<typename Int, typename Dbl>
     void MMRGLattice<Int, Dbl>::kill()
     {
-      LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::kill();
       if (0 != m_ip)
         delete[] m_ip;
       m_ip = 0;
       m_xi.kill();
 
-      // PW_TODO : methode kill fonctionne sur une matrice ?
-      //m_aCoef.kill();
-      //m_A.kill();
-
-      // PW_TODO à quoi ça sert de killer ça ?
       m_sta.kill();
       this->m_wSI.kill();
-      //this->m_vSI.kill(); ??
     }
 
   //===========================================================================
@@ -397,21 +390,10 @@ namespace LatMRG {
   //PW_TODO merdasse à tester
 
   template<typename Int, typename Dbl>
-    std::string MMRGLattice<Int, Dbl>::toStringGeneratorMatrix () const
+    std::string MMRGLattice<Int, Dbl>::toString () const
     {
       std::ostringstream out;
-      out << "[";
-      for (int i = 0; i < this->m_order; i++) {
-        out << "[";
-        for (int j = 0; j < (this->m_order-1); j++) {
-          out << m_A[i][j] << " ";
-        }
-        if (i == (this->m_order-1))
-          out << m_A[i][this->m_order-1] << "]";
-        else
-          out << m_A[i][this->m_order-1] << "]" << std::endl;
-      }
-      out << "]" << std::endl;
+      out << "A = " << m_A << "\n";
 
       return out.str ();
     }

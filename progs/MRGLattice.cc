@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <ctime>
 
 #include "tinyxml2.h"
 
@@ -109,7 +110,7 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
 
   std::string filem1 = "./tempm1" + i + std::to_string(rand());
   std::string filer = "./tempr" + i + std::to_string(rand());
-  DecompType decompm1 = DECOMP, decompr = DECOMP;
+  DecompType decompm1 = NO_DECOMP, decompr = NO_DECOMP;
 
   node = current->FirstChildElement("modulo");
   if (node) {
@@ -187,17 +188,24 @@ int readMMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
 
   int exponent, order;
   typename Conf::Int /*modulo,*/ basis, rest;
+  NTL::matrix<typename Conf::Int> temp_mat;
 
   std::string filem1 = "./tempm1" + i + std::to_string(rand());
   std::string filer = "./tempr" + i + std::to_string(rand());
-  DecompType decompm1 = DECOMP, decompr = DECOMP;
+  DecompType decompm1 = NO_DECOMP, decompr = NO_DECOMP;
 
   node = current->FirstChildElement("modulo");
   if (node) {
+    if (!node->Attribute("basis")) {
+      std::cerr << "No `basis` attribute in modulo tag.\n";
+      return 1;
+    }
     NTL::conv(basis, node->Attribute("basis"));
-    NTL::conv(rest, node->Attribute("rest"));
-    NTL::conv(exponent, node->Attribute("exponent"));
-    //conf.modulo[i] = NTL::power(conf.basis[i], conf.exponent[i]) + conf.rest[i];
+    if (node->Attribute("exponent")) NTL::conv(exponent, node->Attribute("exponent"));
+    else exponent = 1;
+    if (node->Attribute("rest")) NTL::conv(rest, node->Attribute("rest"));
+    else rest = 0;
+    //modulo = NTL::power(basis, exponent) + rest;
   } else {
     std::cerr << "No 'modulo' tag in 'mrg' tag.\n";
     return 1;
@@ -211,12 +219,28 @@ int readMMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
     return 1;
   }
 
+  node = current->FirstChildElement("method");
+  if (node) {
+    std::cerr << "Currently no way to build matrix for MMRG implemented.\n";
+    return 1;
+  } else {
+    node = current->FirstChildElement("matrix");
+    if (node) {
+      temp_mat.SetDims(order, order);
+      toMatTag(node, temp_mat, order);
+    } else {
+      std::cerr << "No way to set matrix in 'mmrg' tag. Add 'matrix' tag.\n";
+      return 1;
+    }
+  }
+
   node = current->FirstChildElement("period");
   if (node && readGenPer(node, conf, i, filem1, filer, decompm1, decompr))
     std::cerr << "Non critical error in 'period' tag of 'mmrg' tag.\n";
 
   auto comp = new MRGComponent<typename Conf::Int>(basis, exponent, rest, order,
       decompm1, filem1.c_str(), decompr, filer.c_str());
+  comp->setA(temp_mat);
   comp->set_type(MMRG);
 
   conf.fact.push_back(comp);
@@ -320,6 +344,8 @@ int readGenPer(tinyxml2::XMLNode* current, Conf& conf, int i,
   conf.period[i] = current->ToElement()->FirstAttribute()->BoolValue();
   int err = 0;
   if (conf.period[i]) {
+    decompm1 = DECOMP;
+    decompr = DECOMP;
     auto node = current->FirstChildElement("m1");
     if (node) {
       auto method = node->Attribute("method");
@@ -377,7 +403,15 @@ int readGenerator(tinyxml2::XMLNode* current, Conf& conf) {
     } else if (!strcmp(node->Value(), "mwc")) {
       std::cout << node->Value() << "\n";
       count++;
+    } else if (!strcmp(node->Value(), "lcg")) {
+      if (readMRG(node, conf, count)) {
+        std::cerr << "'mrg' tag is not properly parametrized.\n";
+        return 1;
+      }
+      conf.fact[count]->set_type(LCG);
+      count++;
     }
+
     node = node->NextSibling();
   }
 

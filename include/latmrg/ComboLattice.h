@@ -140,7 +140,6 @@ namespace LatMRG {
   template<typename Int, typename Dbl>
     std::string ComboLattice<Int, Dbl>::toString() const {
       std::ostringstream out;
-      out << "Number of components: " << m_number << "\n\n";
       for (int i = 0; i < m_number; i++) {
         Int m = m_comp[i]->getM();
         out << "Component " << i+1 << "\nm = " << m << "\nk = "
@@ -152,7 +151,6 @@ namespace LatMRG {
         out << "a_" << i+1 << " = " << this->m_aCoef[i];
         out << "\n";
       }
-      out << "\n";
       return out.str();
     }
 

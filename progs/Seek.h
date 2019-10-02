@@ -250,7 +250,7 @@ template<typename Int, typename Dbl> struct SeekMain {
         if (conf.num_comp >1) std::cout << "Component " << k+1 << ":\n";
         std::cout << "Generator type: " << toStringGen(conf.fact[k]->get_type()) << "\n";
         if (conf.fact[k]->get_type() == MRG) {
-          std::cout << "Modulus:        m = " << conf.fact[k]->getM() << " = " << conf.fact[k]->getB() << "^"
+          std::cout << "Modulo:         m = " << conf.fact[k]->getM() << " = " << conf.fact[k]->getB() << "^"
             << conf.fact[k]->getE();
           if (conf.fact[k]->getR() > 0) std::cout << "+" << conf.fact[k]->getR();
           if (conf.fact[k]->getR() < 0) std::cout << conf.fact[k]->getR();
@@ -336,7 +336,7 @@ template<typename Int, typename Dbl> struct SeekMain {
       }
       if (combolat) delete combolat;
       printResults(bestLattice);
-    } else if (conf.fact[0]->get_type() == MRG) {
+    } else if (conf.fact[0]->get_type() == MRG || conf.fact[0]->get_type() == LCG) {
       MRGLattice<Int, Dbl>* mrglat = 0;
       MeritList<MRGLattice<Int, Dbl>> bestLattice(conf.max_gen, conf.best);
       while (!timer.timeOver(conf.timeLimit)) {
