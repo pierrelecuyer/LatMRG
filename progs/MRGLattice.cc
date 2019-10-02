@@ -154,7 +154,7 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
       return 1;
     }
   } else {
-    node = current->FirstChildElement("coefficients");
+    node = current->FirstChildElement("coeff");
     if (node) {
       conf.coeff[i].SetLength(order);
       toVectString(node->FirstAttribute()->Value(), conf.coeff[i], order);

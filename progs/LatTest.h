@@ -8,48 +8,58 @@ template<typename Int, typename Dbl> struct LatTest {
 
   Chrono timer;
   int detail = 0;
+  std::vector<bool> full_period;
 
   /**
    * Prints the results of the program execution.
    * */
   template<typename Lat>
     void printResults(MeritList<Lat>& bestLattice) {
-      std::cout << "LatRe: A program to test Random Number Generators\n";
+      std::cout << "LatTest: A program to test Random Number Generators\n";
       std::cout << delim;
-      std::cout << "Bellow are the results of the tests of " << conf.max_gen << " generators:\n";
-      std::cout << "Generator type: " << toStringGen(conf.fact[0]->get_type()) << "\n";
-      if (conf.fact[0]->get_type() == MRG) {
-        std::cout << "With modulus:   m = " << conf.fact[0]->getM() << " = " << conf.fact[0]->getB() << "^"
-          << conf.fact[0]->getE();
-       if (conf.fact[0]->getR() > 0) std::cout << "+" << conf.fact[0]->getR();
-       std::cout << "\n";
-        std::cout << "Of order:       k = " << conf.fact[0]->getK() << "\n";
-      } else if (conf.fact[0]->get_type() == MWC) {
-      } else if (conf.fact[0]->get_type() == MMRG) {
+      std::cout << ((conf.num_comp>1)?"Combined generators":"Simple generator")
+        << " configuration" << ((conf.num_comp>1)?"s":"") << "\n\n";
+      for (int k = 0; k < conf.num_comp; k++) {
+        if (k > 0) std::cout << "\n";
+        if (conf.num_comp >1) std::cout << "Component " << k+1 << ":\n";
+        std::cout << "Generator type: " << toStringGen(conf.fact[k]->get_type()) << "\n";
+        if (conf.fact[k]->get_type() == MRG) {
+          std::cout << "Modulus:        m = " << conf.fact[k]->getM() << " = " << conf.fact[k]->getB() << "^"
+            << conf.fact[k]->getE();
+          if (conf.fact[k]->getR() > 0) std::cout << "+" << conf.fact[k]->getR();
+          if (conf.fact[k]->getR() < 0) std::cout << conf.fact[k]->getR();
+          std::cout << "\n";
+          std::cout << "Order:          k = " << conf.fact[k]->getK() << "\n";
+        } else if (conf.fact[k]->get_type() == MWC) {
+        } else if (conf.fact[k]->get_type() == MMRG) {
+        }
+        std::cout << (conf.period[0]?"Check":"Don't check") << " full period length\n";
       }
-      std::cout << "And " << (conf.period[0]?"full":"any") << " period length\n";
-      std::cout << "The test was:\n";
-      std::cout << "Minimal " << (conf.normaType==LatticeTester::NONE?"":"normalized ")
-        << "shortest" << " non-zero vector length\n";
-      if (conf.normaType != LatticeTester::NONE) {
-        std::cout << "Normalizer used: "
-          << LatticeTester::toStringNorma(conf.normaType) << "\n";
-      }
-      std::cout << "On dimensions and projections:\n";
+      std::cout << "\nTest:\n";
+      if (conf.criterion == LatticeTester::SPECTRAL) {
+        std::cout << "Spectral Test\n";
+        if (conf.normaType != LatticeTester::NONE) std::cout << "Normalizer used: "
+          << toStringNorma(conf.normaType);
+      } else if (conf.criterion == LatticeTester::BEYER) std::cout << "Beyer quotient";
+      else if (conf.criterion == LatticeTester::LENGTH) std::cout << "Shortest vector length";
+      std::cout << "\n\n";
+      std::cout << "Dimensions and projections:\n";
       std::cout << conf.proj->toString();
       std::cout << delim;
       std::cout << "Allowed running time: " << conf.timeLimit << "s.\n";
       std::cout << "Actual CPU time: " << timer.toString() << "\n";
-      std::cout << "Number of generators tested: " << conf.max_gen << "\n\n";
       for (auto it = bestLattice.getList().begin(); it!= bestLattice.getList().end(); it++) {
         std::cout << delim;
-        if (conf.fact[0]->get_type() == MRG) {
-          std::cout << "Coefficients:\n" << (*it).getLattice() << "\n";
-        } else if (conf.fact[0]->get_type() == MWC) {}
-        else if (conf.fact[0]->get_type() == MMRG) {}
-        else if (conf.fact[0]->get_type() == COMBO) {
-          std::cout << (*it).getLattice();
+        std::cout << (*it).getLattice();
+        if (conf.num_comp > 1) {
+          for (int i = 0; i<conf.num_comp; i++) {
+            if (conf.period[i]) std::cout << "Component " << i+1
+              << ((full_period[i])?" has":" does not have") << " full period.\n";
+          }
+        } else {
+          if (conf.period[0]) std::cout << "Full period: " << full_period[0] << "\n";
         }
+        std::cout << "\n";
         if (detail == 0) {
           std::cout << (*it).toStringMerit();
         } else if (detail == 1) {
@@ -80,6 +90,16 @@ template<typename Int, typename Dbl> struct LatTest {
 
     // Testing the generator(s)
     if (conf.num_comp > 1) {
+      full_period.resize(conf.num_comp);
+      // Checking full period of components that require it
+      for (int i = 0; i < conf.num_comp; i++) {
+        IntVec temp(conf.fact[i]->getK()+1);
+        temp[0] = Int(0);
+        for (int j = 1; j < conf.fact[i]->getK()+1; j++) temp[j] = conf.coeff[i][j-1];
+        if (conf.period[i]) full_period[i] = conf.fact[i]->maxPeriod(temp);
+        // This is not set because it is not needed in Seek
+        conf.fact[i]->setA(conf.coeff[i]);
+      }
       // Combined generators case
       MeritList<ComboLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
       MRGLattice<Int, Dbl>* mrg = getLatCombo<Int, Dbl>(conf.fact, conf.max_dim);
@@ -87,14 +107,17 @@ template<typename Int, typename Dbl> struct LatTest {
       bestLattice.add(test_lat(combolat, conf));
       printResults(bestLattice);
     } else if (conf.fact[0]->get_type() == MRG) {
+      full_period.resize(1);
       MeritList<MRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
       IntVec temp(conf.fact[0]->getK()+1);
       temp[0] = Int(0);
       for (int i = 1; i < conf.fact[0]->getK()+1; i++) temp[i] = conf.coeff[0][i-1];
+      if (conf.period[0]) full_period[0] = conf.fact[0]->maxPeriod(temp);
       MRGLattice<Int, Dbl> mrglat(conf.fact[0]->getM(), temp, conf.max_dim, conf.fact[0]->getK(), FULL);
       bestLattice.add(test_lat(mrglat, conf));
       printResults(bestLattice);
     } else if (conf.fact[0]->get_type() == MWC) {
+      full_period.resize(1);
       //MWCLattice<Int, Dbl>* mwclat = 0;
       //mwclat = nextGenerator(mwclat);
       //Dbl merit(test(*mwclat));
@@ -102,6 +125,7 @@ template<typename Int, typename Dbl> struct LatTest {
       //  addLattice(mwclat, merit);
       //}
     } else if (conf.fact[0]->get_type() == MMRG) {
+      full_period.resize(1);
       MeritList<MMRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
       MMRGLattice<Int, Dbl> mmrglat(conf.fact[0]->getM(), conf.matrix, conf.max_dim, conf.fact[0]->getK());
       bestLattice.add(test_lat(mmrglat, conf));

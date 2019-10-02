@@ -241,7 +241,7 @@ template<typename Int, typename Dbl> struct SeekMain {
    * */
   template<typename Lat>
     void printResults(MeritList<Lat>& bestLattice) {
-      std::cout << "\nSeek: A search program for Random Number Generators\n\n";
+      std::cout << "\nSeek: A search program for Random Number Generators\n";
       std::cout << delim;
       std::cout << ((conf.num_comp>1)?"Combined generators":"Simple generator")
         << " configuration" << ((conf.num_comp>1)?"s":"") << "\n\n";
@@ -263,7 +263,7 @@ template<typename Int, typename Dbl> struct SeekMain {
       }
       std::cout << "\nTest:\n" << (conf.best?"Best":"Worst") << " generators "
         "ranked by ";
-      if(conf.criterion == LatticeTester::SPECTRAL) std::cout << " "
+      if(conf.criterion == LatticeTester::SPECTRAL) std::cout
         << (conf.normaType==LatticeTester::NONE?"minimal inverse shortest "
             "non-zero vector length":"Spectral Test") << "\n";
       else if (conf.criterion == LatticeTester::LENGTH) std::cout << "minimal"
