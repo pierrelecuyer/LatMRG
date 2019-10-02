@@ -22,7 +22,7 @@ var class_lat_m_r_g_1_1_m_m_r_g_lattice =
     [ "kill", "class_lat_m_r_g_1_1_m_m_r_g_lattice.html#a68a26b762d554d3fad7216505511eea0", null ],
     [ "operator=", "class_lat_m_r_g_1_1_m_m_r_g_lattice.html#a3e1ebc2d84884e1e1d0fe63b374110c1", null ],
     [ "setLac", "class_lat_m_r_g_1_1_m_m_r_g_lattice.html#ad8cc39e559b2c84ca394df77bc864677", null ],
-    [ "toStringGeneratorMatrix", "class_lat_m_r_g_1_1_m_m_r_g_lattice.html#a763aca1a6a28a331520d239f62904739", null ],
+    [ "toString", "class_lat_m_r_g_1_1_m_m_r_g_lattice.html#abe30261df166e14f71d028c4d20d64a7", null ],
     [ "m_A", "class_lat_m_r_g_1_1_m_m_r_g_lattice.html#a41d00cd4a2b1a3a1c26a1ed12efb276c", null ],
     [ "m_B", "class_lat_m_r_g_1_1_m_m_r_g_lattice.html#a72ea6195258b7d06d2cde75a3fbdbba9", null ],
     [ "m_basis_max", "class_lat_m_r_g_1_1_m_m_r_g_lattice.html#a3b96658a2777dd5a419d615eb9615b68", null ],

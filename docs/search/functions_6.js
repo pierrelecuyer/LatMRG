@@ -21,7 +21,7 @@ var searchData=
   ['getlist',['getList',['../class_lat_m_r_g_1_1_merit_list.html#a16506064eb3b5a6f9fdd702433a2f522',1,'LatMRG::MeritList']]],
   ['getlossrho',['getLossRho',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#ac51719b601f5f6d5d769a298cb1f43e9',1,'LatMRG::MRGLattice']]],
   ['getm',['getM',['../class_lat_m_r_g_1_1_m_r_g_component.html#a75f5b3d8a524f4d7c356c7b6e617fbfb',1,'LatMRG::MRGComponent::getM()'],['../class_lat_m_r_g_1_1_poly_p_e.html#acc43e9689addc1f84afae2287746d0ad',1,'LatMRG::PolyPE::getM()']]],
-  ['getmatrix',['getMatrix',['../class_lat_m_r_g_1_1_mixmax_m_m_r_g.html#ae6bf97083ef04ddc3dc06802ce086386',1,'LatMRG::MixmaxMMRG']]],
+  ['getmatrix',['getMatrix',['../class_lat_m_r_g_1_1_mixmax_m_m_r_g.html#ae6bf97083ef04ddc3dc06802ce086386',1,'LatMRG::MixmaxMMRG::getMatrix()'],['../class_lat_m_r_g_1_1_m_r_g_component.html#a501152c3cc73a000288131536c2b98f0',1,'LatMRG::MRGComponent::getMatrix()']]],
   ['getmerit',['getMerit',['../class_lat_m_r_g_1_1_figure_of_merit.html#a33bc04646af174536e4a957af57c419c',1,'LatMRG::FigureOfMerit::getMerit()'],['../class_lat_m_r_g_1_1_merit_list.html#a311216a70a8d3276ed8cc7eeebd78333',1,'LatMRG::MeritList::getMerit()']]],
   ['getmwcmod',['getMWCmod',['../class_lat_m_r_g_1_1_m_w_c_lattice.html#a110762d74e1bbf4117f22bef1a04551b',1,'LatMRG::MWCLattice']]],
   ['getmwcorder',['getMWCorder',['../class_lat_m_r_g_1_1_m_w_c_lattice.html#a00748651f84945366f4ce50a20b07846',1,'LatMRG::MWCLattice']]],

@@ -4,7 +4,8 @@ var _const_8h =
       [ "DECOMP", "_const_8h.html#abab34306ba3f65f06d4919d4ae54d3f1ae594a4a78d0d11ae51b51a87b3e9b4a3", null ],
       [ "DECOMP_WRITE", "_const_8h.html#abab34306ba3f65f06d4919d4ae54d3f1a20fc861188044c65f9b1bd42d29e7806", null ],
       [ "DECOMP_READ", "_const_8h.html#abab34306ba3f65f06d4919d4ae54d3f1a9da3c652f9e8a5b551e0700723f4ac44", null ],
-      [ "DECOMP_PRIME", "_const_8h.html#abab34306ba3f65f06d4919d4ae54d3f1ae2fa14b3e79878731d2d94369e0aa2a3", null ]
+      [ "DECOMP_PRIME", "_const_8h.html#abab34306ba3f65f06d4919d4ae54d3f1ae2fa14b3e79878731d2d94369e0aa2a3", null ],
+      [ "NO_DECOMP", "_const_8h.html#abab34306ba3f65f06d4919d4ae54d3f1af7ce8bb8e6065228c3e34270131739f3", null ]
     ] ],
     [ "GenType", "_const_8h.html#ab4948e899f8c3a6fb82cff009283061e", [
       [ "LCG", "_const_8h.html#ab4948e899f8c3a6fb82cff009283061ea94058d727954dae2f0a4d63a908b3d83", null ],

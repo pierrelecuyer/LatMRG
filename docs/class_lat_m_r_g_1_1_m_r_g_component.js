@@ -13,6 +13,7 @@ var class_lat_m_r_g_1_1_m_r_g_component =
     [ "getE", "class_lat_m_r_g_1_1_m_r_g_component.html#a6113bd39bd9ad7b9eb06dc06e9b4b388", null ],
     [ "getK", "class_lat_m_r_g_1_1_m_r_g_component.html#ad7bcf9f428b1a8cc4690c9c9846b2f84", null ],
     [ "getM", "class_lat_m_r_g_1_1_m_r_g_component.html#a75f5b3d8a524f4d7c356c7b6e617fbfb", null ],
+    [ "getMatrix", "class_lat_m_r_g_1_1_m_r_g_component.html#a501152c3cc73a000288131536c2b98f0", null ],
     [ "getOrbitSeed", "class_lat_m_r_g_1_1_m_r_g_component.html#a5748dfb9d01f64ee666d44f2b6f3d694", null ],
     [ "getR", "class_lat_m_r_g_1_1_m_r_g_component.html#a181d8503d7b0ea539ffe98a4891a9ac7", null ],
     [ "init", "class_lat_m_r_g_1_1_m_r_g_component.html#a77930234d30d24bff60fcf1ac05148df", null ],
