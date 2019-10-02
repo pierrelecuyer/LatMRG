@@ -105,6 +105,8 @@ namespace LatMRG
         return "DECOMP_READ";
       case DECOMP_PRIME:
         return "DECOMP_PRIME";
+      case NO_DECOMP:
+        return "NO_DECOMP";
       default:
         return "***** DecompType: IMPOSSIBLE CASE ";
     }
@@ -220,6 +222,8 @@ namespace LatMRG
       decom = DECOMP_READ;
     } else if (decom_str == "DECOMP_PRIME") {
       decom = DECOMP_PRIME;
+    } else if (decom_str == "NO_DECOMP") {
+      decom = NO_DECOMP;
     } else {
       std::cerr << decom_str << " is not a NormaType\n";
       return 1;

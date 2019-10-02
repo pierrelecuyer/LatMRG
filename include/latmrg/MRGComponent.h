@@ -95,6 +95,11 @@ namespace LatMRG {
         IntVec getA() const {return m_a;}
 
         /**
+         * Gets the matrix multipliers of the recurrence.
+         * */
+        IntMat getMatrix() const {return m_A;}
+
+        /**
          * Sets the matrix of the recurrence to \f$A\f$.
          * */
         void setA(const IntMat& A);
@@ -367,49 +372,51 @@ namespace LatMRG {
         factor.factorize();
       }
 
-      if (decom1 == DECOMP_READ) {
-        ifm1.read (filem1);
-      } else if (decom1 == DECOMP) {
-        ifm1.factorize();
-      } else if (decom1 == DECOMP_WRITE) {
-        ifm1.factorize();
-        std::ofstream fout(filem1);
-        fout << ifm1.toString();
+      if (decom1 != NO_DECOMP) {
+        if (decom1 == DECOMP_READ) 
+          ifm1.read (filem1);
+        else
+          ifm1.factorize();
+        if (decom1 == DECOMP_WRITE) {
+          std::ofstream fout(filem1);
+          fout << ifm1.toString();
+        }
+        {
+          std::ofstream fout("dummy");
+          fout << ifm1.toString();
+        }
+        ifm2.read("dummy");
+        remove("dummy");
+        ifm1.calcInvFactors();
+        ifm2.calcInvFactors();
       }
-      {
-        std::ofstream fout("dummy");
-        fout << ifm1.toString();
-      }
-      ifm2.read("dummy");
-      remove("dummy");
-      ifm1.calcInvFactors();
-      ifm2.calcInvFactors();
 
       Int r;
       r = (NTL::power(m0, m_k) - 1) / (m0 - 1);
       ifr.setNumber(r);
       ifr2.setNumber(NTL::ZZ(r));
 
-      if (decor == DECOMP_READ)
-        ifr.read (filer);
-      else if (decor == DECOMP)
-        ifr.factorize();
-      else if (decor == DECOMP_WRITE) {
-        ifr.factorize();
-        std::ofstream fout(filer);
-        fout << ifr.toString();
-      } else if (decor == DECOMP_PRIME)
-        ifr.setStatus (LatticeTester::PRIME);
-
-      {
-        std::ofstream fout("dummy");
-        fout << ifr.toString();
+      if (decor != NO_DECOMP) {
+        if (decor == DECOMP_READ)
+          ifr.read (filer);
+        else if (decor == DECOMP_PRIME) 
+          ifr.setStatus (LatticeTester::PRIME);
+        else
+          ifr.factorize();
+        if (decor == DECOMP_WRITE) {
+          std::ofstream fout(filer);
+          fout << ifr.toString();
+        }
+        {
+          std::ofstream fout("dummy");
+          fout << ifr.toString();
+        }
+        ifr2.read("dummy");
+        remove("dummy");
+        ifr.calcInvFactors();
+        ifr2.calcInvFactors();
       }
-      ifr2.read("dummy");
-      remove("dummy");
 
-      ifr.calcInvFactors();
-      ifr2.calcInvFactors();
     }
 
   //===========================================================================

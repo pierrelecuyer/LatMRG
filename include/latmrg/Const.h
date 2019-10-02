@@ -34,7 +34,7 @@ namespace LatMRG {
    * Used to identify the type of a generator. If a generator is of type `MWC`,
    * it is converted to its corresponding `MRG` by the program.
    *
-   * `LCG`: the linear congruential generator.<br>
+   * `LCG`: the linear congruential generator with a carry.<br>
    * `MRG`: the multiple-recursive generator.<br>
    * `MWC`: the multiply-with-carry generator.<br>
    * `KOROBOV`: the Korobov lattice. (see `KorobovLattice`)<br>
@@ -84,8 +84,10 @@ namespace LatMRG {
    * factors will be read from a file.<br>
    * <tt>DECOMP_PRIME</tt>: means that \f$r\f$ is prime. No factorization will
    * be done.
+   * <tt>NO_DECOMP</tt>: The program will not need a decomposition. Used when not
+   * checking full generator period.
    */
-  enum DecompType { DECOMP, DECOMP_WRITE, DECOMP_READ, DECOMP_PRIME };
+  enum DecompType { DECOMP, DECOMP_WRITE, DECOMP_READ, DECOMP_PRIME, NO_DECOMP };
 
 
   /**
