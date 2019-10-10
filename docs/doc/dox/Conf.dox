@@ -49,7 +49,29 @@
  *
  * \section conf_mk Search for m and k
  *
+ * Here is an example parameter file to search for `m` and `k` parameters:
+ * ```
+ * <mk>
+ *   <power x="64" y="5"/>
+ *   <k x="5"/>
+ *   <safe x="false"/>
+ *   <factor x="false"/>
+ * </mk>
+ * ```
+ *
  * \section conf_period Full period test
+ *
+ * Here is an example parameter file to test a if a generator has full period.
+ * ```
+ * <period>
+ *   <type x="MRG"/>
+ *   <modulo basis="2" exponent="31" rest="-1"/>
+ *   <order k="8"/>
+ *   <mult x="1089656042 1906537547 1764115693 1304127872 189748160 1984088114 626062218 1927846343"/>
+ * </period>
+ * ```
+ * This mode is pretty straghtforward: it suffices to only feed a generator to
+ * the program to test its period length.
  *
  * \section conf_lattest_seek Generator test and search
  *

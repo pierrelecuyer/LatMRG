@@ -1,9 +1,6 @@
 var searchData=
 [
   ['c',['c',['../class_lat_m_r_g_1_1_modulus.html#a9ffc09c5cbfbd96ffa4444e4fbd417e2',1,'LatMRG::Modulus']]],
-  ['c_5f1',['c_1',['../usage_8dox.html#a654ba24b207aace5c8a24a5378fb7f89',1,'usage.dox']]],
-  ['c_5f2',['c_2',['../usage_8dox.html#abd6cb9ca0f5481ed10e6d34149fe6e20',1,'usage.dox']]],
-  ['c_5f4',['c_4',['../usage_8dox.html#a8c8336caeac00fc6dcef7da69221c435',1,'usage.dox']]],
   ['calcinvfactors',['calcInvFactors',['../class_lat_m_r_g_1_1_int_factorization.html#aec96997e6b4a9e34d1feb7845a198f42',1,'LatMRG::IntFactorization']]],
   ['checkbound',['checkBound',['../class_lat_m_r_g_1_1_param_reader_ext.html#af7d493f86015c6b16dae596b990c9392',1,'LatMRG::ParamReaderExt::checkBound(const Int &amp;m, const IntVec &amp;A, int k)'],['../class_lat_m_r_g_1_1_param_reader_ext.html#aa260e7f585313a44a9a0f8ff66646f41',1,'LatMRG::ParamReaderExt::checkBound(const Int &amp;m, const IntMat &amp;A, int k)']]],
   ['checkprimepower',['checkPrimePower',['../class_lat_m_r_g_1_1_param_reader_ext.html#ae7af80b45536717db6f97babe4a8f005',1,'LatMRG::ParamReaderExt']]],

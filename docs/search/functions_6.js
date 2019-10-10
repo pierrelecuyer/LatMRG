@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['generators',['generators',['../usage_8dox.html#a256546994efaffcf8f58b5bb967762df',1,'usage.dox']]],
   ['get_5ftype',['get_type',['../class_lat_m_r_g_1_1_m_r_g_component.html#a84e24d68bda2ff18157a70cafe0ccfe3',1,'LatMRG::MRGComponent']]],
   ['geta',['getA',['../class_lat_m_r_g_1_1_m_r_g_component.html#a6aaab3374893ebdae4e4b92d763ca0f9',1,'LatMRG::MRGComponent']]],
   ['getawcswbmod',['getAWCSWBmod',['../class_lat_m_r_g_1_1_a_w_c_s_w_b_lattice.html#ab382fb87905a75c381e66d06ddaa5d78',1,'LatMRG::AWCSWBLattice']]],

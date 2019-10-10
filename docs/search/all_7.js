@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['generators',['generators',['../usage_8dox.html#a256546994efaffcf8f58b5bb967762df',1,'usage.dox']]],
   ['gentype',['GenType',['../namespace_lat_m_r_g.html#ab4948e899f8c3a6fb82cff009283061e',1,'LatMRG']]],
   ['get_5ftype',['get_type',['../class_lat_m_r_g_1_1_m_r_g_component.html#a84e24d68bda2ff18157a70cafe0ccfe3',1,'LatMRG::MRGComponent']]],
   ['geta',['getA',['../class_lat_m_r_g_1_1_m_r_g_component.html#a6aaab3374893ebdae4e4b92d763ca0f9',1,'LatMRG::MRGComponent']]],
@@ -36,6 +35,5 @@ var searchData=
   ['getsize',['getSize',['../class_lat_m_r_g_1_1_merit_list.html#a8096ec0160d45228ede26a0b43e46937',1,'LatMRG::MeritList']]],
   ['getstatus',['getStatus',['../class_lat_m_r_g_1_1_int_factorization.html#a0a72b9709b51db70856f0d65e97222fd',1,'LatMRG::IntFactorization']]],
   ['getsubline',['getSubLine',['../class_lat_m_r_g_1_1_m_m_r_g_lattice.html#a8a04a05fba3af51548ef0cfbe82add85',1,'LatMRG::MMRGLattice']]],
-  ['getval',['getVal',['../class_lat_m_r_g_1_1_poly_p_e.html#a8b6a78d56fd938d815835369b8849e8c',1,'LatMRG::PolyPE']]],
-  ['groups',['groups',['../usage_8dox.html#a65ad238fa468f633b5cb2c544ec866f5',1,'usage.dox']]]
+  ['getval',['getVal',['../class_lat_m_r_g_1_1_poly_p_e.html#a8b6a78d56fd938d815835369b8849e8c',1,'LatMRG::PolyPE']]]
 ];

@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['m',['m',['../class_lat_m_r_g_1_1_modulus.html#a04b6c2e7301c1f34970ad214f628ed44',1,'LatMRG::Modulus::m()'],['../usage_8dox.html#a85221d61f5799fbb9790d6d2be69de5d',1,'m():&#160;usage.dox']]],
+  ['m',['m',['../class_lat_m_r_g_1_1_modulus.html#a04b6c2e7301c1f34970ad214f628ed44',1,'LatMRG::Modulus']]],
   ['m_5fa',['m_a',['../class_lat_m_r_g_1_1_korobov_lattice.html#a0e4860a2f27fb1436c4c79652418f110',1,'LatMRG::KorobovLattice::m_a()'],['../class_lat_m_r_g_1_1_m_r_g_component.html#a53a003bd95147a9d34a760ccc5d3898e',1,'LatMRG::MRGComponent::m_a()'],['../class_lat_m_r_g_1_1_mixmax_m_m_r_g.html#aed0eee57838533d3c5cbfd15acae922d',1,'LatMRG::MixmaxMMRG::m_A()'],['../class_lat_m_r_g_1_1_m_m_r_g_lattice.html#a41d00cd4a2b1a3a1c26a1ed12efb276c',1,'LatMRG::MMRGLattice::m_A()'],['../class_lat_m_r_g_1_1_m_r_g_component.html#af6cc6608c7fc81c1176cfec9447caf16',1,'LatMRG::MRGComponent::m_A()']]],
   ['m_5facoef',['m_aCoef',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a8e9b96e9cde623fa37f6094910e29904',1,'LatMRG::MRGLattice']]],
   ['m_5fb',['m_b',['../class_lat_m_r_g_1_1_m_r_g_component.html#ac02fe274cb4d3dda264ceb90a34bda8c',1,'LatMRG::MRGComponent::m_b()'],['../class_lat_m_r_g_1_1_m_m_r_g_lattice.html#a72ea6195258b7d06d2cde75a3fbdbba9',1,'LatMRG::MMRGLattice::m_B()']]],
@@ -75,7 +75,6 @@ var searchData=
   ['meritl',['meritL',['../namespace_lat_m_r_g_1_1_merit.html#af08e2c470b2df1542029d3ff048d4b54',1,'LatMRG::Merit']]],
   ['meritlist',['MeritList',['../class_lat_m_r_g_1_1_merit_list.html',1,'LatMRG::MeritList&lt; Lat &gt;'],['../class_lat_m_r_g_1_1_merit_list.html#afea0730c35252f4646a0daee3fc219e8',1,'LatMRG::MeritList::MeritList()']]],
   ['merits',['meritS',['../namespace_lat_m_r_g_1_1_merit.html#ab8dc9fa98f226c9024c7c12d10f46c6b',1,'LatMRG::Merit']]],
-  ['method',['method',['../usage_8dox.html#a10d6219287a93004e8f94d54b87d24e5',1,'usage.dox']]],
   ['microsec',['microsec',['../class_lat_m_r_g_1_1_chrono.html#ae6274d74ed64cef00a617e760100608f',1,'LatMRG::Chrono']]],
   ['min',['MIN',['../class_lat_m_r_g_1_1_chrono.html#aeb39423e55e377aac6b2aa7a2006108aad2d61c030ad4fb8d037c693b936bdf06',1,'LatMRG::Chrono']]],
   ['mindim',['minDim',['../class_lat_m_r_g_1_1_projections.html#a8641d09b0d1ef5721f9257e0819e8243',1,'LatMRG::Projections']]],

@@ -22,8 +22,6 @@ var searchData=
   ['reducem',['reduceM',['../class_lat_m_r_g_1_1_modulus.html#a8eb0ea4721f0b424ca021c900f79c57e',1,'LatMRG::Modulus']]],
   ['reducemink',['reduceMink',['../namespace_lat_m_r_g_1_1_reductions.html#a45d2fe1e9a21292923fc5fe84d9f5eef',1,'LatMRG::Reductions::reduceMink(LatticeTester::IntLattice&lt; Int, Int, Dbl, Dbl &gt; &amp;lat)'],['../namespace_lat_m_r_g_1_1_reductions.html#af9e9069346952ad11c838d14f05b7801',1,'LatMRG::Reductions::reduceMink(LatticeTester::IntLattice&lt; std::int64_t, std::int64_t, double, double &gt; &amp;lat)'],['../namespace_lat_m_r_g_1_1_reductions.html#a50227119fe0a87143f7a3e79ec034c52',1,'LatMRG::Reductions::reduceMink(LatticeTester::IntLattice&lt; NTL::ZZ, NTL::ZZ, double, double &gt; &amp;lat)'],['../namespace_lat_m_r_g_1_1_reductions.html#ad4c1fd3fdcfbb6fbaa899496f6162487',1,'LatMRG::Reductions::reduceMink(LatticeTester::IntLattice&lt; NTL::ZZ, NTL::ZZ, NTL::RR, NTL::RR &gt; &amp;lat)']]],
   ['resetdim',['resetDim',['../class_lat_m_r_g_1_1_projections.html#a0d57096ca265489376c78b02c607b517',1,'LatMRG::Projections']]],
-  ['respectively',['respectively',['../usage_8dox.html#aad62235ae6f8f2ace0c769ff98646fde',1,'usage.dox']]],
-  ['results',['results',['../usage_8dox.html#a581c869451cca85a06d5ab8a5f26f95a',1,'usage.dox']]],
   ['results_2edox',['results.dox',['../results_8dox.html',1,'']]],
   ['reverse',['reverse',['../class_lat_m_r_g_1_1_poly_p_e.html#a27b998434144c47a1022e3a35d6def55',1,'LatMRG::PolyPE']]],
   ['rho',['rho',['../class_lat_m_r_g_1_1_m_r_g_component.html#a9f6201d54f33a427ef0dd1408114f0bf',1,'LatMRG::MRGComponent']]]

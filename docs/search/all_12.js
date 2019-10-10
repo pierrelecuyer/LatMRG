@@ -4,13 +4,8 @@ var searchData=
   ['theory_20on_20lattices',['Theory on Lattices',['../lattice_back.html',1,'']]],
   ['test_2ecc',['Test.cc',['../_test_8cc.html',1,'']]],
   ['test_2eh',['Test.h',['../_test_8h.html',1,'']]],
-  ['tex_3c_2fcode_20_3e',['tex&lt;/code &gt;',['../usage_8dox.html#af8f42680300b38a2f3e2dc0512534aa6',1,'usage.dox']]],
-  ['the',['the',['../usage_8dox.html#a0aab771c40a286ab6ba544de29bd6d43',1,'usage.dox']]],
-  ['themselves',['themselves',['../usage_8dox.html#af3fdc9324e62bf50fd021d875c97e6db',1,'usage.dox']]],
-  ['thinsp',['thinsp',['../usage_8dox.html#a85bfe406b4ef7a2cd27c460393ee78c4',1,'usage.dox']]],
   ['threef',['threeF',['../class_lat_m_r_g_1_1_modulus.html#a6cabe8bdba3dd0c556a0ffc25e763e2a',1,'LatMRG::Modulus']]],
   ['tick',['tick',['../class_lat_m_r_g_1_1_chrono.html#a88dffe4529cf202e8664f2e8afac1dcd',1,'LatMRG::Chrono']]],
-  ['time',['time',['../usage_8dox.html#a96bf98f744f900ada4de233aa2f444ea',1,'usage.dox']]],
   ['timeformat',['TimeFormat',['../class_lat_m_r_g_1_1_chrono.html#aeb39423e55e377aac6b2aa7a2006108a',1,'LatMRG::Chrono']]],
   ['timeover',['timeOver',['../class_lat_m_r_g_1_1_chrono.html#a1f10d7e8705dfa18488c73000dc164a0',1,'LatMRG::Chrono']]],
   ['timer',['timer',['../class_lat_m_r_g_1_1_primes.html#a91f2e8aeb71f189482f43b285557a8b5',1,'LatMRG::Primes']]],
@@ -32,6 +27,5 @@ var searchData=
   ['tostringsearchmethod',['toStringSearchMethod',['../namespace_lat_m_r_g.html#aa88775cbc0c5bccec7a30e8a360d59df',1,'LatMRG']]],
   ['tovector',['toVector',['../class_lat_m_r_g_1_1_poly_p_e.html#a2341fa0666cdf4a4f95a116c7b40f6da',1,'LatMRG::PolyPE']]],
   ['trace',['trace',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a3cc8f6c49f2353998321351d1a85f9c5',1,'LatMRG::MRGLattice']]],
-  ['tutorial_20and_20library_20usage',['Tutorial and Library Usage',['../tutorial.html',1,'']]],
-  ['type',['type',['../usage_8dox.html#afa0450d4eb77d82a632616bf0ece59a9',1,'usage.dox']]]
+  ['tutorial_20and_20library_20usage',['Tutorial and Library Usage',['../tutorial.html',1,'']]]
 ];

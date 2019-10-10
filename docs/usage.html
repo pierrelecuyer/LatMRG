@@ -113,12 +113,12 @@ Searching m and k parameters</h2>
 <p>All these factorisations and restrictions on primality are useful because they simplify the initialization process of the search program, as the factorization of \(r\) and \((m-1)/2\) is needed to check the full period of a generator.</p>
 <h2><a class="anchor" id="usage_exec_period"></a>
 Checking for full period</h2>
-<p>This mode takes a generator and tests if it's period length is maximal. There is not much to say here except that this will need a factorization for \(r\) and \(m-1\) which can be very long to compute. This is in fact the main use case of this mode. Since this factorization can take quite some time, this can be used seperatly of the generator testing to have more flexibility with the executable time.</p>
+<p>This mode takes a generator and tests if it's period length is maximal. This will need a factorization for \(r\) and \(m-1\) which can be very long to compute. Accomplishing this factorization outside of the main program is the main use case of this mode. Using this seperately of the generator testing gives you more flexibility with the execution time.</p>
 <h2><a class="anchor" id="usage_exec_lattest"></a>
 Testing lattice structure for MRG</h2>
 <p>This mode takes a generator, a test, a description of how to apply this test and performs the test on the generator. The generator can be of any of the types of MRG described in <a class="el" href="background.html">Theory of Random Numbers</a>.</p>
 <p>The program can perform multiple computations:</p><ul>
-<li>The length of theshortest vector in the lattice of the generator in L1 and euclidian norm.</li>
+<li>The length of the shortest vector in the lattice of the generator in L1 and euclidian norm.</li>
 <li>The length of the shortest vector in the dual lattice of the generator</li>
 <li>The preceding norms normalized between 0 and 1</li>
 </ul>
@@ -131,7 +131,7 @@ Searching for new MRG</h2>
 <h2><a class="anchor" id="usage_exec_usage"></a>
 Usage of the executable</h2>
 <p>We do not provide a precompiled binairy for the main executable. To use it you must first compile it following the instructions following this section. Once this is done, you will find the main <code>MRGLattice</code> executable in the <code>bin</code> directory of the software repository.</p>
-<p>As any executable, the executable can be called from the command line as </p><div class="fragment"><div class="line">./MRGLattice file1 file2 ...</div></div><!-- fragment --><p> It is necessary to specify configuration files for the program to actually do stuff.</p>
+<p>As any executable, the executable can be called from the command line as </p><div class="fragment"><div class="line">./MRGLattice &lt;LD, ZD, ZR&gt; file1 file2 ...</div></div><!-- fragment --><p> It is necessary to specify configuration files for the program to actually do stuff. The option of <code>LD</code>, <code>ZD</code> or <code>ZR</code> can be used to change the numeric types used by the program. It can be ommited, its default value is <code>ZD</code>. For more information on what this option means, you can have a look at <a class="el" href="tutorial.html#classes_list_types">Types in LatMRG</a>.</p>
 <p><b>NEW</b> As of the last upgrade to <a class="el" href="namespace_lat_m_r_g.html">LatMRG</a>, the executable now reads it's configuration from <code>xml</code> files. Since configuration files have a quite extensive set of tags allowing users to specify the options, the list of these tags and their usage for the different modes is specified in <a class="el" href="conf_file.html">Configuration Files Synthax and Tags</a>.</p>
 <h1><a class="anchor" id="compilation"></a>
 Building LatMRG</h1>
