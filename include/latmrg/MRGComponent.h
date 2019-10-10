@@ -152,17 +152,17 @@ namespace LatMRG {
         /**
          * Returns the value of `b` with `b^e+r = m`.
          */
-        Int getB() const { return m_b; }
+        Int& getB() { return m_b; }
 
         /**
          * Returns the value of `e` with `b^e+r = m`.
          */
-        int getE() const { return m_e; }
+        int& getE() { return m_e; }
 
         /**
          * Returns the value of `r` with `b^e+r = m`.
          */
-        Int getR() const { return m_r; }
+        Int& getR() { return m_r; }
 
         /**
          * Returns const reference of orbitSeed
@@ -184,6 +184,13 @@ namespace LatMRG {
          * */
         GenType get_type() {return m_type;}
 
+        /**
+         * The modulo of the MWC generator if we study one. This is because the
+         * we check MWC period with module.m as the modulo of the equivalent
+         * LCG.
+         * */
+        Int m_MWCb;
+
       private:
 
         /**
@@ -195,8 +202,7 @@ namespace LatMRG {
 
         /**
          * The type of generator this stores. Should be MRG, MMRG or MWC. The
-         * default value is LCG. When the value is LCG, this means the object is
-         * not used to represent a generator, but to compute period length.
+         * default value is LCG.
          * */
         GenType m_type = LCG;
 
@@ -373,7 +379,7 @@ namespace LatMRG {
       }
 
       if (decom1 != NO_DECOMP) {
-        if (decom1 == DECOMP_READ) 
+        if (decom1 == DECOMP_READ)
           ifm1.read (filem1);
         else
           ifm1.factorize();
@@ -399,7 +405,7 @@ namespace LatMRG {
       if (decor != NO_DECOMP) {
         if (decor == DECOMP_READ)
           ifr.read (filer);
-        else if (decor == DECOMP_PRIME) 
+        else if (decor == DECOMP_PRIME)
           ifr.setStatus (LatticeTester::PRIME);
         else
           ifr.factorize();

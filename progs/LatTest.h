@@ -25,21 +25,20 @@ template<typename Int, typename Dbl> struct LatTest {
         if (k > 0) *out << "\n";
         if (conf.num_comp >1) *out << "Component " << k+1 << ":\n";
         *out << "Generator type: " << toStringGen(conf.fact[k]->get_type()) << "\n";
-        if (conf.fact[k]->get_type() == MRG || conf.fact[k]->get_type() == MMRG) {
-          *out << "Modulo:         m = " << conf.fact[k]->getM() << " = " << conf.fact[k]->getB() << "^"
-            << conf.fact[k]->getE();
-          if (conf.fact[k]->getR() > 0) *out << "+" << conf.fact[k]->getR();
-          if (conf.fact[k]->getR() < 0) *out << conf.fact[k]->getR();
-          *out << "\n";
-          *out << "Order:          k = " << conf.fact[k]->getK() << "\n";
-        } else if (conf.fact[k]->get_type() == MWC) {
-        }
+        *out << "Modulo:         m = " ;
+        if (conf.fact[k]->get_type() == MWC) *out << conf.fact[k]->m_MWCb;
+        else *out << conf.fact[k]->getM();
+        *out << " = " << conf.fact[k]->getB() << "^" << conf.fact[k]->getE();
+        if (conf.fact[k]->getR() > 0) *out << "+" << conf.fact[k]->getR();
+        if (conf.fact[k]->getR() < 0) *out << conf.fact[k]->getR();
+        *out << "\n";
+        *out << "Order:          k = " << conf.fact[k]->getK() << "\n";
         *out << (conf.period[0]?"Check":"Don't check") << " full period length\n";
       }
       *out << "\nTest:\n";
       if (conf.criterion == LatticeTester::SPECTRAL) {
-        *out << "Spectral Test\n";
-        if (conf.normaType != LatticeTester::NONE) *out << "Normalizer used: "
+        *out << "Spectral Test";
+        if (conf.normaType != LatticeTester::NONE) *out << "\nNormalizer used: "
           << toStringNorma(conf.normaType);
       } else if (conf.criterion == LatticeTester::BEYER) *out << "Beyer quotient";
       else if (conf.criterion == LatticeTester::LENGTH) *out << "Shortest vector length";
@@ -123,12 +122,11 @@ template<typename Int, typename Dbl> struct LatTest {
       printResults(bestLattice);
     } else if (conf.fact[0]->get_type() == MWC) {
       full_period.resize(1);
-      //MWCLattice<Int, Dbl>* mwclat = 0;
-      //mwclat = nextGenerator(mwclat);
-      //Dbl merit(test(*mwclat));
-      //if (merit > bestMerit) {
-      //  addLattice(mwclat, merit);
-      //}
+      MeritList<MWCLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
+      MWCLattice<Int, Dbl> mwclat(conf.fact[0]->m_MWCb, conf.fact[0]->getM());
+      if (conf.period[0]) full_period[0] = conf.fact[0]->maxPeriod(mwclat.getCoef());
+      bestLattice.add(test_lat(mwclat, conf));
+      printResults(bestLattice);
     } else if (conf.fact[0]->get_type() == MMRG) {
       full_period.resize(1);
       if (conf.period[0]) full_period[0] = conf.fact[0]->maxPeriod(conf.fact[0]->getMatrix());

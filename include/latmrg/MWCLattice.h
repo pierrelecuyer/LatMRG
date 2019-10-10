@@ -206,10 +206,21 @@ namespace LatMRG {
       MRGLattice<Int, Dbl>(m, NTL::InvMod(b, m), 1, FULL)
   {
     m_MWCmod = Int(b);
-    m_MWCorder = 0;
-    // Even though this is not needed, this constructor should set the
-    // coefficients of the MWC generator to the representation of m in base b.
-    m_eCoef.SetLength(1);
+    // This is not needed in reality, but this tries to compute the coefficients
+    // of the MWC generator. This is imperfect because we do not know if the
+    // coefficients are negative.
+    Int modulo(m);
+    int k = -1;
+    m_eCoef.SetLength(0);
+    while (modulo != 0) {
+      k++;
+      Int rest = modulo % b;
+      if (rest > b/2) rest = rest-b;
+      m_eCoef.append(rest);
+      modulo -= rest;
+      modulo /= b;
+    }
+    m_MWCorder = k;
   }
 
   //===========================================================================
@@ -283,14 +294,14 @@ namespace LatMRG {
     std::string MWCLattice<Int, Dbl>::toString () const
     {
       std::ostringstream out;
-      out << "LCG coefficient: ";
-      //out << "[ ";
-      for (int i = 0; i < this->m_order; i++)
-        out << this->m_aCoef[i] << "  ";
-      //out << "]";
-      out << "MWC coefficients: ";
-      for (int i = 0; i <= this->m_MWCorder; i++)
-        out << m_eCoef[i] << "  ";
+      for (int i = 0; i <= this->m_MWCorder; i++) {
+        out << "a_" << i << " = " << m_eCoef[i];
+        out << "\n";
+      }
+
+      out << "\nLCG equivalent:\n";
+      out << "m = " << this->m_modulo << "\n";
+      out << "a = " << this->m_aCoef[0] << "\n";
       return out.str ();
     }
 

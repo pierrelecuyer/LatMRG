@@ -251,8 +251,76 @@ int readMMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
 //==============================================================================
 
 template<typename Conf>
-int readMWC(tinyxml2::XMLNode* current, Conf& conf) {
-  return 1;
+int readMWC(tinyxml2::XMLNode* current, Conf& conf, int i) {
+  tinyxml2::XMLElement* node;
+
+  int exponent, order;
+  typename Conf::Int modulo, basis, rest, m(0);
+
+  std::string filem1 = "./tempm1" + i + std::to_string(rand());
+  std::string filer = "./tempr" + i + std::to_string(rand());
+  DecompType decompm1 = NO_DECOMP, decompr = NO_DECOMP;
+
+  node = current->FirstChildElement("modulo");
+  if (node) {
+    if (!node->Attribute("basis")) {
+      std::cerr << "No `basis` attribute in modulo tag.\n";
+      return 1;
+    }
+    NTL::conv(basis, node->Attribute("basis"));
+    if (node->Attribute("exponent")) NTL::conv(exponent, node->Attribute("exponent"));
+    else exponent = 1;
+    if (node->Attribute("rest")) NTL::conv(rest, node->Attribute("rest"));
+    else rest = 0;
+    modulo = NTL::power(basis, exponent) + rest;
+  } else {
+    std::cerr << "No 'modulo' tag in 'mrg' tag.\n";
+    return 1;
+  }
+
+  node = current->FirstChildElement("order");
+  if (node) {
+    NTL::conv(order, node->FirstAttribute()->IntValue());
+  } else {
+    std::cerr << "No 'order' tag in 'mrg' tag.\n";
+    return 1;
+  }
+
+  node = current->FirstChildElement("method");
+  if (node) {
+    std::cerr << "Currently no way to search for coefficients for MWC.\n";
+    return 1;
+  } else {
+    node = current->FirstChildElement("coeff");
+    if (node) {
+      conf.coeff[i].SetLength(order+1);
+      toVectString(node->FirstAttribute()->Value(), conf.coeff[i], order+1);
+    } else {
+      std::cerr << "No way to set coefficients in 'mwc' tag. Add 'method' or"
+        " 'coeff' tag.\n";
+      return 1;
+    }
+  }
+
+  node = current->FirstChildElement("period");
+  if (node && readGenPer(node, conf, i, filem1, filer, decompm1, decompr))
+    std::cerr << "Non critical error in 'period' tag of 'mrg' tag.\n";
+
+
+  for(int j = 0; j <= order; j++) {
+    m += conf.coeff[i][j] * NTL::power(modulo, j);
+  }
+  auto comp = new MRGComponent<typename Conf::Int>(m, order,
+      decompm1, filem1.c_str(), decompr, filer.c_str());
+  comp->set_type(MWC);
+  comp->m_MWCb = modulo;
+  comp->getB() = basis;
+  comp->getE() = exponent;
+  comp->getR() = rest;
+
+  conf.fact.push_back(comp);
+
+  return 0;
 }
 
 
@@ -401,7 +469,10 @@ int readGenerator(tinyxml2::XMLNode* current, Conf& conf) {
       }
       count++;
     } else if (!strcmp(node->Value(), "mwc")) {
-      std::cout << node->Value() << "\n";
+      if (readMWC(node, conf, count)) {
+        std::cerr << "'mwc' tag is not properly parametrized.\n";
+        return 1;
+      }
       count++;
     } else if (!strcmp(node->Value(), "lcg")) {
       if (readMRG(node, conf, count)) {
