@@ -8,11 +8,6 @@ DEBUG_FLAGS = -std=c++14 -g -Wall -O2
 # The header files of the LatMRG library and the LatticeTester library
 INCLUDES = -I./include -I./latticetester/include
 
-# This is included for backwards compatibility
-DEF_LLDD = -DNTL_TYPES_CODE=1
-DEF_ZZDD = -DNTL_TYPES_CODE=2
-DEF_ZZRR = -DNTL_TYPES_CODE=3
-
 #Definition to compile with yafu on if it is included
 ifeq ($(wildcard data/yafu),)
     YAFU =
@@ -129,20 +124,6 @@ $(BIN_DIR):
 	mkdir -p $(BIN_DIR)
 	@echo
 
-# Builds objects and binaries for every of the programs of LatMRG
-#progs_objects: $(PROGS_O)# ./progs/SeekMain.o
-
-#./progs/SeekMain.o: lib ./progs/SeekMain.cc
-#	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_LLDD) $(YAFU) -c ./progs/SeekMain.cc -o ./progs/SeekMain.o
-#	$(CC) ./progs/SeekMain.o $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
-#	  -o $(BIN_DIR)/SeekLLDD
-#	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_ZZDD) $(YAFU) -c ./progs/SeekMain.cc -o ./progs/SeekMain.o
-#	$(CC) ./progs/SeekMain.o $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
-#	  -o $(BIN_DIR)/SeekZZDD
-#	$(CC) $(CFLAGS) $(INCLUDES) $(DEF_ZZRR) $(YAFU) -c ./progs/SeekMain.cc -o ./progs/SeekMain.o
-#	$(CC) ./progs/SeekMain.o $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
-#	  -o $(BIN_DIR)/SeekZZRR
-
 #===============================================================================
 # Building the documentation
 
@@ -155,26 +136,6 @@ doc:
 	@echo
 
 #===============================================================================
-# Building the examples
-
-examples:$(EX_BUILD)/ build_ex
-	@echo 'LatMRG examples compiled in ./bin/examples'
-	@echo
-
-$(EX_BUILD)/:
-	@echo
-	$(SEP)
-	@echo 'Building the examples'
-	@echo
-	mkdir -p $(EX_BUILD)
-
-build_ex:$(EX_O)
-
-$(EX_DIR)/%.o:$(EX_DIR)/%.cc
-	$(CC) $< $(INCLUDES) -I. $(YAFU) $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) \
-	  $(DYN_LIBS) -o $(EX_BUILD)/$(<:examples/%.cc=%)
-
-#===============================================================================
 # Installation/removal of LatMRG
 
 #===============================================================================
@@ -182,31 +143,29 @@ $(EX_DIR)/%.o:$(EX_DIR)/%.cc
 
 PROGS_INPUTS = $(EX_DIR)/inputs
 
+MK_XML = $(wildcard $(PROGS_INPUTS)/mk/mk*.xml)
+PERIOD_XML = $(wildcard $(PROGS_INPUTS)/period/period*.xml)
+LAT_XML = $(wildcard $(PROGS_INPUTS)/lat/lat*.xml)
+SEEK_XML = $(wildcard $(PROGS_INPUTS)/seek/seek*.xml)
+
 # Don't call this unless you are reckless
-all_ex:mk_ex_head mk_ex seek_ex_head seek_ex
-
-MK_DAT = $(wildcard $(PROGS_INPUTS)/mk/mk*.dat)
-MK_RES = $(MK_DAT:%.dat=%)
-SEEK_DAT = $(wildcard $(PROGS_INPUTS)/seek/seek*.dat)
-SEEK_RES = $(SEEK_DAT:%.dat=%)
-
-mk_ex_head:
+examples:default
+	@echo
 	$(SEP)
-	@echo 'Making FindMK examples'
-
-mk_ex:$(MK_RES)
-
-seek_ex_head:
+	@echo 'FindMK examples'
+	./bin/MRGLattice $(MK_XML)
+	@echo
 	$(SEP)
-	@echo 'Making SeekMain examples'
-
-seek_ex:$(SEEK_RES)
-
-$(PROGS_INPUTS)/mk/%:$(PROGS_INPUTS)/mk/%.dat
-	$(BIN_DIR)/FindMK Z $@
-
-$(PROGS_INPUTS)/seek/%:$(PROGS_INPUTS)/seek/%.dat
-	$(BIN_DIR)/SeekZZDD $@
+	@echo 'Period examples'
+	./bin/MRGLattice $(PERIOD_XML)
+	@echo
+	$(SEP)
+	@echo 'Lattest examples'
+	./bin/MRGLattice $(LAT_XML)
+	@echo
+	$(SEP)
+	@echo 'Seek examples'
+	./bin/MRGLattice $(SEEK_XML)
 
 clean_ex:
 	rm -f $(PROGS_INPUTS)/*/*.res
@@ -269,9 +228,6 @@ clean_doc:
 	rm -rf docs/*.png
 	rm -rf docs/*.css
 	rm -rf docs/search
-
-clean_examples:
-	rm -rf $(BIN_DIR)/examples
 
 #===============================================================================
 # Graphical stuff
