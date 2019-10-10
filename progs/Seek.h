@@ -3,6 +3,7 @@
 
 // Number of generators to generate before testing time in nextGenerator
 #define DELAY 1000
+extern std::ostream* out;
 
 template<typename Int, typename Dbl> struct SeekMain {
   typedef NTL::vector<Int> IntVec;
@@ -241,50 +242,50 @@ template<typename Int, typename Dbl> struct SeekMain {
    * */
   template<typename Lat>
     void printResults(MeritList<Lat>& bestLattice) {
-      std::cout << "\nSeek: A search program for Random Number Generators\n";
-      std::cout << delim;
-      std::cout << ((conf.num_comp>1)?"Combined generators":"Simple generator")
+      *out << "\nSeek: A search program for Random Number Generators\n";
+      *out << delim;
+      *out << ((conf.num_comp>1)?"Combined generators":"Simple generator")
         << " configuration" << ((conf.num_comp>1)?"s":"") << "\n\n";
       for (int k = 0; k < conf.num_comp; k++) {
-        if (k > 0) std::cout << "\n";
-        if (conf.num_comp >1) std::cout << "Component " << k+1 << ":\n";
-        std::cout << "Generator type: " << toStringGen(conf.fact[k]->get_type()) << "\n";
+        if (k > 0) *out << "\n";
+        if (conf.num_comp >1) *out << "Component " << k+1 << ":\n";
+        *out << "Generator type: " << toStringGen(conf.fact[k]->get_type()) << "\n";
         if (conf.fact[k]->get_type() == MRG) {
-          std::cout << "Modulo:         m = " << conf.fact[k]->getM() << " = " << conf.fact[k]->getB() << "^"
+          *out << "Modulo:         m = " << conf.fact[k]->getM() << " = " << conf.fact[k]->getB() << "^"
             << conf.fact[k]->getE();
-          if (conf.fact[k]->getR() > 0) std::cout << "+" << conf.fact[k]->getR();
-          if (conf.fact[k]->getR() < 0) std::cout << conf.fact[k]->getR();
-          std::cout << "\n";
-          std::cout << "Order:          k = " << conf.fact[k]->getK() << "\n";
+          if (conf.fact[k]->getR() > 0) *out << "+" << conf.fact[k]->getR();
+          if (conf.fact[k]->getR() < 0) *out << conf.fact[k]->getR();
+          *out << "\n";
+          *out << "Order:          k = " << conf.fact[k]->getK() << "\n";
         } else if (conf.fact[k]->get_type() == MWC) {
         } else if (conf.fact[k]->get_type() == MMRG) {
         }
-        std::cout << (conf.period[0]?"Full":"Any") << " period length\n";
+        *out << (conf.period[0]?"Full":"Any") << " period length\n";
       }
-      std::cout << "\nTest:\n" << (conf.best?"Best":"Worst") << " generators "
+      *out << "\nTest:\n" << (conf.best?"Best":"Worst") << " generators "
         "ranked by ";
-      if(conf.criterion == LatticeTester::SPECTRAL) std::cout
+      if(conf.criterion == LatticeTester::SPECTRAL) *out
         << (conf.normaType==LatticeTester::NONE?"minimal inverse shortest "
             "non-zero vector length":"Spectral Test") << "\n";
-      else if (conf.criterion == LatticeTester::LENGTH) std::cout << "minimal"
+      else if (conf.criterion == LatticeTester::LENGTH) *out << "minimal"
         << " shortest non-zero vector length\n";
-      else if (conf.criterion == LatticeTester::BEYER) std::cout << "their Beyer quotient\n";
+      else if (conf.criterion == LatticeTester::BEYER) *out << "their Beyer quotient\n";
       if (conf.normaType != LatticeTester::NONE) {
-        std::cout << "Normalizer used: "
+        *out << "Normalizer used: "
           << LatticeTester::toStringNorma(conf.normaType) << "\n";
       }
-      std::cout << "\nDimensions and projections:\n";
-      std::cout << conf.proj->toString();
-      std::cout << delim;
-      std::cout << "Allowed running time: " << conf.timeLimit << "s.\n";
-      std::cout << "Actual CPU time: " << timer.toString() << "\n";
-      std::cout << "Number of generators kept: " << conf.max_gen << "\n";
-      std::cout << "Number of generators tested: " << conf.num_gen << "\n\n";
-      std::cout << "Retained generators (from best to worst):\n";
+      *out << "\nDimensions and projections:\n";
+      *out << conf.proj->toString();
+      *out << delim;
+      *out << "Allowed running time: " << conf.timeLimit << "s.\n";
+      *out << "Actual CPU time: " << timer.toString() << "\n";
+      *out << "Number of generators kept: " << conf.max_gen << "\n";
+      *out << "Number of generators tested: " << conf.num_gen << "\n\n";
+      *out << "Retained generators (from best to worst):\n";
       for (auto it = bestLattice.getList().begin(); it!= bestLattice.getList().end(); it++) {
-        std::cout << delim;
-        std::cout << (*it).getLattice() << "\n";
-        std::cout << (*it).toStringMerit() << "\n";
+        *out << delim;
+        *out << (*it).getLattice() << "\n";
+        *out << (*it).toStringMerit() << "\n";
       }
     }
 
@@ -295,8 +296,8 @@ template<typename Int, typename Dbl> struct SeekMain {
     // We do not print for no reason as this slows the program a lot.
     if (per_80 <= old) return old;
     std::cout << "[";
-    for (int i = 0; i < per_80; i++) std::cout << "#";
-    for (int i = per_80; i < 80; i++) std::cout << " ";
+    for (int i = 0; i < per_80; i++) *out << "#";
+    for (int i = per_80; i < 80; i++) *out << " ";
     std::cout << "] ";
     std::cout << std::setw(2) << int(per_80/80.0*100) << " %\r" << std::flush;
     return per_80;
@@ -320,9 +321,12 @@ template<typename Int, typename Dbl> struct SeekMain {
     // Dynamically allocated objects
     timer.init();
 
+    int old = 0;
     // Launching the tests
-    std::cout << "Program progress:\n";
-    int old = print_progress(-1);
+    if (conf.progress) {
+      std::cout << "Program progress:\n";
+      old = print_progress(-1);
+    }
     if (conf.num_comp > 1) {
       ComboLattice<Int, Dbl>* combolat=0;
       MeritList<ComboLattice<Int, Dbl>> bestLattice(conf.max_gen, conf.best);
@@ -332,7 +336,7 @@ template<typename Int, typename Dbl> struct SeekMain {
         bestLattice.add(test_seek(*combolat, conf));
         conf.num_gen++;
         conf.currentMerit = bestLattice.getMerit();
-        old = print_progress(old);
+        if (conf.progress) old = print_progress(old);
       }
       if (combolat) delete combolat;
       printResults(bestLattice);
@@ -346,7 +350,7 @@ template<typename Int, typename Dbl> struct SeekMain {
         bestLattice.add(test_seek(*mrglat, conf));
         conf.num_gen++;
         conf.currentMerit = bestLattice.getMerit();
-        old = print_progress(old);
+        if (conf.progress) old = print_progress(old);
       }
       if (mrglat) delete mrglat;
       printResults(bestLattice);
@@ -359,7 +363,7 @@ template<typename Int, typename Dbl> struct SeekMain {
         bestLattice.add(test_seek(*mwclat, conf));
         conf.num_gen++;
         conf.currentMerit = bestLattice.getMerit();
-        old = print_progress(old);
+        if (conf.progress) old = print_progress(old);
       }
       if (mwclat) delete mwclat;
       printResults(bestLattice);
@@ -372,7 +376,7 @@ template<typename Int, typename Dbl> struct SeekMain {
         bestLattice.add(test_seek(*mmrglat, conf));
         conf.num_gen++;
         conf.currentMerit = bestLattice.getMerit();
-        old = print_progress(old);
+        if (conf.progress) old = print_progress(old);
       }
       if (mmrglat) delete mmrglat;
       printResults(bestLattice);

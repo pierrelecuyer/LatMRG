@@ -22,8 +22,8 @@ bool options = true;
 std::string exec_mode;
 
 // Output stuff
-std::ofstream fout;
 std::ostream* out(&std::cout);
+std::ofstream fout;
 
 // Prints the program usage
 void print_help() {
@@ -161,7 +161,7 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
       toVectString(node->FirstAttribute()->Value(), conf.coeff[i], order);
     } else {
       std::cerr << "No way to set coefficients in 'mrg' tag. Add 'method' or"
-        " 'coefficients' tag.\n";
+        " 'coeff' tag.\n";
       return 1;
     }
   }
@@ -640,9 +640,23 @@ int readFile(const char* filename) {
   doc.LoadFile(filename);
   tinyxml2::XMLNode* current;
   current = doc.FirstChild();
+  auto out_name = current->FirstChildElement("out");
+  if (out_name) {
+    if  (strcmp(out_name->FirstAttribute()->Value(), "terminal")) {
+      if (!strcmp(out_name->FirstAttribute()->Value(), "file")) {
+        std::string name = filename;
+        for (int i = 0; i < 3; i++) name.pop_back();
+        name += "res";
+        fout = std::ofstream(name);
+        out = &fout;
+      } else {
+        fout = std::ofstream(out_name->FirstAttribute()->Value());
+        out = &fout;
+      }
+    }
+  }
   if (!strcmp(current->Value(), "mk")) {
     MKSearch<Int> prog;
-    prog.fout = std::ofstream(std::string(filename) + ".res");
     if (readMK(current, prog)) return 1;
     return prog.FindMK();
   } else if (!strcmp(current->Value(), "period")) {

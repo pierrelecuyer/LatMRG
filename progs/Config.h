@@ -17,9 +17,7 @@ std::string construction = "RANDOM";
 Projections* proj;
 int max_dim = 48;
 
-double timeLimit = 600;
 int max_gen = 10;
-
 
 // MWC Specific parameters
 Int b; // modulo of MWC recurence
@@ -33,7 +31,13 @@ std::vector<MRGComponent<Int>*> fact;
 // search for coefficients of a generator. This can have multiple different formats.
 std::vector<IntVec> coeff;
 
-
 bool gen_set = false;
 bool test_set = false;
 bool proj_set = false;
+
+// Program variables
+double timeLimit = 600;
+int detail = 1;
+#ifdef LATMRG_SEEK
+bool progress = true; // Prints the program progress between generators
+#endif

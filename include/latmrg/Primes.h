@@ -46,7 +46,7 @@ namespace LatMRG {
          * \f$2^e\f$. If `facto` is `true`, then \f$m-1\f$ is factorized in its
          * prime factors. The results are printed on stream `fout`.
          */
-        void find (int e, int s, bool facto, std::ofstream & fout);
+        void find (int e, int s, bool facto, std::ostream & fout);
 
         /**
          * Finds \f$s\f$ prime integers \f$m<2^e\f$ that are closest to
@@ -56,7 +56,7 @@ namespace LatMRG {
          * \f$m-1\f$ is factorized in its prime factors. If \f$k=1\f$, \f$r\f$
          * is considered to be prime.
          */
-        void find (int k, int e, int s, bool safe, bool facto, std::ofstream & fout);
+        void find (int k, int e, int s, bool safe, bool facto, std::ostream & fout);
 
         /**
          * Finds all integers \f$m\f$, in \f$2^e + c_1 \le m \le2^e + c_2\f$,
@@ -67,7 +67,7 @@ namespace LatMRG {
          * to be prime.
          */
         void find (int k, int e, long c1, long c2, bool safe, bool facto,
-            std::ofstream & fout);
+            std::ostream & fout);
 
       private:
 
@@ -75,19 +75,19 @@ namespace LatMRG {
          * Writes the parameters of the find to the stream `fout`.
          */
         void writeHeader (int k, int e, long c1, long c2, bool safe, bool facto,
-            std::ofstream & fout);
+            std::ostream & fout);
 
         /**
          * Writes the CPU time of the find to the stream `fout`.
          */
-        void writeFooter (std::ofstream & fout);
+        void writeFooter (std::ostream & fout);
 
         /**
          * This is the general purpose function used by this program. This
          * method searches for `s` prime integers between `S1` and `S2`.
          * */
         void find (int k, int e, int s, const Int & S1, const Int & S2, bool safe,
-            bool facto, std::ofstream & fout);
+            bool facto, std::ostream & fout);
 
         Chrono timer;
 
@@ -118,7 +118,7 @@ namespace LatMRG {
 
   template<typename Int>
     void Primes<Int>::find (int k, int e, int s, const Int & S1, const Int & S2,
-        bool safe, bool facto, std::ofstream & fout)
+        bool safe, bool facto, std::ostream & fout)
     {
       Int m;
       if (NTL::IsOdd (S2))
@@ -185,7 +185,7 @@ namespace LatMRG {
 
   template<typename Int>
     void Primes<Int>::find (int k, int e, int s, bool safe, bool facto,
-        std::ofstream & fout)
+        std::ostream & fout)
     {
       Int Sm1, Sm2;
       writeHeader (k, e, INT_MAX, INT_MAX, safe, facto, fout);
@@ -200,7 +200,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    void Primes<Int>::find (int e, int s, bool facto, std::ofstream & fout)
+    void Primes<Int>::find (int e, int s, bool facto, std::ostream & fout)
     {
       Int Sm1, Sm2;
       writeHeader (1, e, INT_MAX, INT_MAX, false, facto, fout);
@@ -216,7 +216,7 @@ namespace LatMRG {
 
   template<typename Int>
     void Primes<Int>::find (int k, int e, long c1, long c2, bool safe,
-        bool facto, std::ofstream & fout)
+        bool facto, std::ostream & fout)
     {
       Int Sm1, Sm2;
       writeHeader (k, e, c1, c2, safe, facto, fout);
@@ -232,7 +232,7 @@ namespace LatMRG {
 
   template<typename Int>
     void Primes<Int>::writeHeader (int k, int e, long c1, long c2, bool safe,
-        bool facto, std::ofstream & fout)
+        bool facto, std::ostream & fout)
     {
       fout << "-----------------------------------------------------" << std::endl;
       fout << "Values such that m";
@@ -253,39 +253,16 @@ namespace LatMRG {
       fout << "safe = " << std::boolalpha << safe << "\n";
       fout << "facto = " << facto << "\n\n";
 
-      /*if (c1 < INT_MAX) {
-        fout << "\nm from 2^" << e;
-        if (c1 >= 0)
-          fout << " + ";
-        else
-          fout << " ";
-        fout << c1;
-        fout << " to 2^" << e;
-        if (c2 >= 0)
-          fout << " + ";
-        else
-          fout << " ";
-        fout << c2 << std::endl << std::endl;
-
-      } else {
-        fout << "\nm < 2^" << e << std::endl << std::endl;
-      }
-      */
     }
 
 
   //===========================================================================
 
   template<typename Int>
-    void Primes<Int>::writeFooter (std::ofstream & fout)
+    void Primes<Int>::writeFooter (std::ostream & fout)
     {
       fout << "\nCPU time: ";
       fout << timer.toString () << std::endl;
-      // Find an alternative to this to, maybe, print the CPU name and memory
-      // size of the machine
-      // char *machine;
-      // machine = getenv ("HOST");
-      // fout << "Tests made on " << machine << std::endl << std::endl;
     }
 
 }

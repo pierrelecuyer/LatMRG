@@ -1,6 +1,8 @@
 #ifndef LATMRG_LATTEST_H
 #define LATMRG_LATTEST_H
 
+extern std::ostream* out;
+
 template<typename Int, typename Dbl> struct LatTest {
   typedef NTL::vector<Int> IntVec;
 
@@ -15,60 +17,60 @@ template<typename Int, typename Dbl> struct LatTest {
    * */
   template<typename Lat>
     void printResults(MeritList<Lat>& bestLattice) {
-      std::cout << "LatTest: A program to test Random Number Generators\n";
-      std::cout << delim;
-      std::cout << ((conf.num_comp>1)?"Combined generators":"Simple generator")
+      *out << "LatTest: A program to test Random Number Generators\n";
+      *out << delim;
+      *out << ((conf.num_comp>1)?"Combined generators":"Simple generator")
         << " configuration" << ((conf.num_comp>1)?"s":"") << "\n\n";
       for (int k = 0; k < conf.num_comp; k++) {
-        if (k > 0) std::cout << "\n";
-        if (conf.num_comp >1) std::cout << "Component " << k+1 << ":\n";
-        std::cout << "Generator type: " << toStringGen(conf.fact[k]->get_type()) << "\n";
+        if (k > 0) *out << "\n";
+        if (conf.num_comp >1) *out << "Component " << k+1 << ":\n";
+        *out << "Generator type: " << toStringGen(conf.fact[k]->get_type()) << "\n";
         if (conf.fact[k]->get_type() == MRG || conf.fact[k]->get_type() == MMRG) {
-          std::cout << "Modulo:         m = " << conf.fact[k]->getM() << " = " << conf.fact[k]->getB() << "^"
+          *out << "Modulo:         m = " << conf.fact[k]->getM() << " = " << conf.fact[k]->getB() << "^"
             << conf.fact[k]->getE();
-          if (conf.fact[k]->getR() > 0) std::cout << "+" << conf.fact[k]->getR();
-          if (conf.fact[k]->getR() < 0) std::cout << conf.fact[k]->getR();
-          std::cout << "\n";
-          std::cout << "Order:          k = " << conf.fact[k]->getK() << "\n";
+          if (conf.fact[k]->getR() > 0) *out << "+" << conf.fact[k]->getR();
+          if (conf.fact[k]->getR() < 0) *out << conf.fact[k]->getR();
+          *out << "\n";
+          *out << "Order:          k = " << conf.fact[k]->getK() << "\n";
         } else if (conf.fact[k]->get_type() == MWC) {
         }
-        std::cout << (conf.period[0]?"Check":"Don't check") << " full period length\n";
+        *out << (conf.period[0]?"Check":"Don't check") << " full period length\n";
       }
-      std::cout << "\nTest:\n";
+      *out << "\nTest:\n";
       if (conf.criterion == LatticeTester::SPECTRAL) {
-        std::cout << "Spectral Test\n";
-        if (conf.normaType != LatticeTester::NONE) std::cout << "Normalizer used: "
+        *out << "Spectral Test\n";
+        if (conf.normaType != LatticeTester::NONE) *out << "Normalizer used: "
           << toStringNorma(conf.normaType);
-      } else if (conf.criterion == LatticeTester::BEYER) std::cout << "Beyer quotient";
-      else if (conf.criterion == LatticeTester::LENGTH) std::cout << "Shortest vector length";
-      std::cout << "\n\n";
-      std::cout << "Dimensions and projections:\n";
-      std::cout << conf.proj->toString();
-      std::cout << delim;
-      std::cout << "Allowed running time: " << conf.timeLimit << "s.\n";
-      std::cout << "Actual CPU time: " << timer.toString() << "\n";
+      } else if (conf.criterion == LatticeTester::BEYER) *out << "Beyer quotient";
+      else if (conf.criterion == LatticeTester::LENGTH) *out << "Shortest vector length";
+      *out << "\n\n";
+      *out << "Dimensions and projections:\n";
+      *out << conf.proj->toString();
+      *out << delim;
+      *out << "Allowed running time: " << conf.timeLimit << "s.\n";
+      *out << "Actual CPU time: " << timer.toString() << "\n";
       for (auto it = bestLattice.getList().begin(); it!= bestLattice.getList().end(); it++) {
-        std::cout << delim;
-        std::cout << (*it).getLattice() << "\n";
+        *out << delim;
+        *out << (*it).getLattice() << "\n";
         if (conf.num_comp > 1) {
           bool print = false;
           for (int i = 0; i<conf.num_comp; i++) {
             if (conf.period[i]){
-              std::cout << "Component " << i+1
+              *out << "Component " << i+1
               << ((full_period[i])?" has":" does not have") << " full period.\n";
               print = true;
             }
           }
-          if (print) std::cout << "\n";
+          if (print) *out << "\n";
         } else {
-          if (conf.period[0]) std::cout << "Full period: " << (full_period[0]?"yes":"no") << "\n\n";
+          if (conf.period[0]) *out << "Full period: " << (full_period[0]?"yes":"no") << "\n\n";
         }
         if (detail == 0) {
-          std::cout << (*it).toStringMerit();
+          *out << (*it).toStringMerit();
         } else if (detail == 1) {
-          std::cout << (*it).toStringDim();
+          *out << (*it).toStringDim();
         } else if (detail == 2) {
-          std::cout << (*it).toStringProjections();
+          *out << (*it).toStringProjections();
         }
       }
     }
@@ -77,15 +79,15 @@ template<typename Int, typename Dbl> struct LatTest {
 
   int TestLat () {
     if (!conf.gen_set) {
-      std::cerr << "No generator set for in seek tag. Aborting.\n";
+      std::cerr << "No generator set for in lattest tag. Aborting.\n";
       return 1;
     }
     if (!(conf.test_set)) {
-      std::cerr << "No test set for in seek tag. Aborting.\n";
+      std::cerr << "No test set for in lattest tag. Aborting.\n";
       return 1;
     }
     if (!conf.proj_set) {
-      std::cerr << "No projections set for in seek tag. Aborting.\n";
+      std::cerr << "No projections set for in lattest tag. Aborting.\n";
       return 1;
     }
     // Initializing values

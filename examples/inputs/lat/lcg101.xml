@@ -4,7 +4,7 @@
       <modulo basis="101"/>
       <order k="1"/>
       <period check="true"/>
-      <coefficients x="51"/>
+      <coeff x="51"/>
     </mrg>
   </gen>
   <spectral>
@@ -17,4 +17,5 @@
     <num x="1"/>
     <dim x="30"/>
   </proj>
+  <out x="file"/>
 </lattest>
