@@ -3,9 +3,9 @@
  *
  * This page lists the tags available for the xml configuration files. These
  * tags are sorted by the program modes where they can be used.
- * The page also presents the default values the tags have, and every tag with a
+ * The page also presents the default values the tags have. Every tag with a
  * default value can be ommited. Additionaly, the ordering of tags in
- * configuration files should not matter if you get an error regarding that,
+ * configuration files should not matter. If you get an error regarding that,
  * please report it.
  * Example configuration files are bundled with the software in the examples
  * directory.
@@ -47,8 +47,22 @@
  * Below, we present the tags the same way that they need to be nested in the
  * configuration files.
  *
+ * \section conf_all Program wide tags
+ *
+ * There currently is only one tag that is valid for any of the program mode.
+ * This tag must be specified **inside** the mode tag to be recognized.
+ *
+ * `<out>` is a program wide tag that lets the user specify the program output.
+ * If it is not specified, the program will print its output in the command line.
+ * If it is specified, it must have an attribute specifying the name of the
+ * output file of the program (relatively to the invocation path). To ease the
+ * program usage, if the value of this attribute is `file`, the program will
+ * output in a file in the same directory as the configuration file with the
+ * same name as the configuration file, but a `.res` extension.
+ *
  * \section conf_mk Search for m and k
  *
+ * Given `k`, this mode searches for `m` such that \f$r = (m^k-1)/(m-1)\f$ is prime.
  * Here is an example parameter file to search for `m` and `k` parameters:
  * ```
  * <mk>
@@ -59,8 +73,24 @@
  * </mk>
  * ```
  *
+ * This program mode uses 5 tags specific to it:
+ * - <b>`<power x="x" y="y"/>`</b> (no default): When this tag is specified, the
+ *   program will search for `y` `m` smaller than `2^x`. This tag is
+ *   exclusive with `range`.
+ * - <b>`<range x="x" y="y" z="z"/>`</b> (no default): When this tag is
+ *   specified, the program will search for all `m` in the range
+ *   `[2^x+y, 2^x+z]`. This tag is exclusive with `power`.
+ * - <b>`<k k="k"/>`</b> (no default): The order of the generator for which you want a
+ *   modulo.
+ * - <b>`<safe x="bool"/>`</b> (no default): If this is true, the program will
+ *   also force \f$(m-1)/2\f$ to be prime. Otherwise, this won't be verified.
+ * - <b>`<factor x="bool"/>`</b> (default: x="false"): If this is false, the
+ *   program will factor and print the factorisation of
+ *   \f$m-1\f$ in its output. This is only usefull if `safe` is false.
+ *
  * \section conf_period Full period test
  *
+ * Given a generator, this tests if it has full period.
  * Here is an example parameter file to test a if a generator has full period.
  * ```
  * <period>
@@ -70,13 +100,67 @@
  *   <mult x="1089656042 1906537547 1764115693 1304127872 189748160 1984088114 626062218 1927846343"/>
  * </period>
  * ```
- * This mode is pretty straghtforward: it suffices to only feed a generator to
- * the program to test its period length.
+ *
+ * This mode takes tags similar to those you will see in the next mode.
+ * - <b>`<type x="GenType"/>`</b> (default: x="MRG"): The type of the generator to be
+ *   tested. This can be either `MRG`, `LCG`, `MMRG` or `MWC`. `LCG` is not for
+ *   a simple LCG, but rather for generators with a single coefficient with
+ *   non-zero carry.
+ * - <b>`<modulo basis="b" exponent="e" rest="r"/>`</b> (no default): The modulo of the
+ *   recurrence. Needs to have attributes
+ *   `basis`, `exponent` and `rest`. Will compute the modulo as
+ *    `m = b^e+r`
+ * - <b><tt><order k="k"/></tt></b> (no default): The order of the recurrence. Needs to have an attribute
+ *   whose value is the order.
+ * - <b>`<mult x="a1 a2 ... ak"/>`</b> (no default): The coefficients of the
+ *   generator. This is not valid for `MMRG` `type`. If `type` is `MWC`, the
+ *   vector must be of the form x="a0 a1 ... ak" (with `k+1` coefficients).
+ * - <b>`<matrix a1="a11 a12 ... a1k" ... ak="ak1 ak2 ... akk"/>`</b> (no default):
+ *   contains the multiplier matrix for MMRG generator period check. Must have k
+ *   attributes that each contain a line of k elements the matrix.
+ *
+ * \todo Full period check is not implemented for MWC. This is because it is
+ * somewhat useless. Maybe decide the form we want to check before implementing.
  *
  * \section conf_lattest_seek Generator test and search
  *
  * We now talk about both the generator testing and generator search specific
- * tags. These are grouped because most of their tags are shared.
+ * tags. Here is an
+ * example file to test the MRG32k3a \cite rLEC99b generator
+ * ```
+ * <lattest>
+ *   <gen>
+ *     <numcomp x="2"/>
+ *     <mrg>
+ *       <modulo basis="2" exponent="32" rest="-209"/>
+ *       <order x="3"/>
+ *       <coeff x="0 1403580 -810728"/>
+ *       <period x="true"/>
+ *     </mrg>
+ *     <mrg>
+ *       <modulo basis="2" exponent="32" rest="-22853"/>
+ *       <order x="3"/>
+ *       <coeff x="527612 0 -1370589"/>
+ *       <period x="true"/>
+ *     </mrg>
+ *   </gen>
+ *   <spectral>
+ *     <norma x="ROGERS"/>
+ *     <reduction x="FULL"/>
+ *     <dual x="true"/>
+ *   </spectral>
+ *   <proj>
+ *     <min x="3"/>
+ *     <num x="1"/>
+ *     <dim x="31"/>
+ *   </proj>
+ * </lattest>
+ * ```
+ * Searching and testing generators is very similar and most tags repeat between
+ * the two modes. There mainly are two differences: generators tests take
+ * multipliers in their input but searching takes a description of how you want
+ * the multipliers to be, and testing will only test one generator at a time
+ * while searching will find and test generators as long as it has time left.
  *
  * - <b>`<gen>`</b>: A tag to specify generator parameters. By default, generators are
  *   considered to be combined. You can nest any combination of the following
@@ -163,7 +247,9 @@
  *   program will search for good generators, otherwise, it will search for
  *   bad generators. Bad generators search is mainly implemented to search for
  *   examples. It is recommended to have <time> be small if <best> is set to
- *   false.
+ *   false. Unless looking for something with an abysmal spectral test, it is
+ *   fairly easy to find a generator with bad enough performance in the spectral
+ *   test for illustration purpose..
  * - <b>`<detail level="x">`</b> (Not implemented yet): Intended as a way to
  *   specify the verbosity of the output, particularly regarding the results of
  *   the tests in different dimensions.
