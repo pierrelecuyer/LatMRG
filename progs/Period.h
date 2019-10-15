@@ -33,7 +33,9 @@ namespace LatMRG {
       *out << "    k = " << m_k << "\n";
 
       if (type == MRG) {
-        *out << "    a = " << m_a << "\n";
+        *out << "    a = [";
+        for (int i = 1; i < m_k; i++) *out << m_a[i] << " ";
+        *out << m_a[m_k] << "]\n";
         if (mrg.maxPeriod (m_a))
           *out << "has maximal period.\n";
         else

@@ -9,7 +9,6 @@ namespace LatMRG {
     bool power = false, safe, facto = false;
 
     int FindMK() {
-      // trouver 3 modules m proches de 2^31 pour des MRGs d'ordre k
       Primes<Int> primes;
       if (power) primes.find (k, e, c1, safe, facto, *out);
       else primes.find (k, e, c1, c2, safe, facto, *out);

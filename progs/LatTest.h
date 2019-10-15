@@ -110,13 +110,17 @@ template<typename Int, typename Dbl> struct LatTest {
       ComboLattice<Int, Dbl> combolat(conf.fact, *mrg);
       bestLattice.add(test_lat(combolat, conf));
       printResults(bestLattice);
-    } else if (conf.fact[0]->get_type() == MRG) {
+    } else if (conf.fact[0]->get_type() == MRG || conf.fact[0]->get_type() == LCG) {
       full_period.resize(1);
       MeritList<MRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
       IntVec temp(conf.fact[0]->getK()+1);
       temp[0] = Int(0);
       for (int i = 1; i < conf.fact[0]->getK()+1; i++) temp[i] = conf.coeff[0][i-1];
-      if (conf.period[0]) full_period[0] = conf.fact[0]->maxPeriod(temp);
+      if (conf.fact[0]->get_type() == MRG && conf.period[0]) {
+        full_period[0] = conf.fact[0]->maxPeriod(temp);
+      } else if (conf.period[0]) {
+        full_period[0] = conf.fact[0]->maxPeriod(conf.coeff[0][0]);
+      }
       MRGLattice<Int, Dbl> mrglat(conf.fact[0]->getM(), temp, conf.max_dim, conf.fact[0]->getK(), FULL);
       bestLattice.add(test_lat(mrglat, conf));
       printResults(bestLattice);

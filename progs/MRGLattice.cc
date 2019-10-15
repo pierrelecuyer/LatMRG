@@ -476,7 +476,7 @@ int readGenerator(tinyxml2::XMLNode* current, Conf& conf) {
       count++;
     } else if (!strcmp(node->Value(), "lcg")) {
       if (readMRG(node, conf, count)) {
-        std::cerr << "'mrg' tag is not properly parametrized.\n";
+        std::cerr << "'lcg' tag is not properly parametrized.\n";
         return 1;
       }
       conf.fact[count]->set_type(LCG);
@@ -544,9 +544,6 @@ int readMK(tinyxml2::XMLNode* current, Conf& conf) {
       conf.safe = node->ToElement()->FirstAttribute()->BoolValue();
     } else if (!strcmp(node->Value(), "factor")) {
       conf.facto = node->ToElement()->FirstAttribute()->BoolValue();
-    } else {
-      std::cerr << "Invalid mk configuration.\n";
-      return 1;
     }
     node = node->NextSibling();
   }
@@ -581,21 +578,25 @@ int readPeriod(tinyxml2::XMLNode* current, Conf& conf) {
     return 1;
   }
 
-  // Reading order
-  node = current->FirstChildElement("order");
-  if (node) {
-    NTL::conv(conf.m_k, node->FirstAttribute()->IntValue());
-    conf.m_a.SetLength(conf.m_k+1);
-  } else {
-    std::cerr << "No 'order' tag in 'period' tag.\n";
-    return 1;
-  }
-
   // Reading type
   node = current->FirstChildElement("type");
   if (node && toGenString(conf.type, node->FirstAttribute()->Value())) {
     std::cerr << "Invalid attribute " << node->FirstAttribute()->Name()
       << " value in 'type' tag.\n";
+  }
+
+  // Reading order
+  if (conf.type != LCG) {
+    node = current->FirstChildElement("order");
+    if (node) {
+      NTL::conv(conf.m_k, node->FirstAttribute()->IntValue());
+      conf.m_a.SetLength(conf.m_k+1);
+    } else {
+      std::cerr << "No 'order' tag in 'period' tag.\n";
+      return 1;
+    }
+  } else {
+    conf.m_k = 1;
   }
 
   if (conf.type == MRG) {
@@ -608,14 +609,14 @@ int readPeriod(tinyxml2::XMLNode* current, Conf& conf) {
       return 1;
     }
     if (toVectString(node->FirstAttribute()->Value(), a, conf.m_k)) {
-      std::cerr << "Error in 'multiplier' tag.\n";
+      std::cerr << "Error in 'mult' tag.\n";
     } else {
       for (int i = 0; i < conf.m_k; i++) conf.m_a[i+1] = a[i];
     }
   } else if (conf.type == MMRG) {
     node = current->FirstChildElement("matrix");
     if (!node) {
-      std::cerr << "No 'matrix tag. Cannot check for full period without"
+      std::cerr << "No 'matrix' tag. Cannot check for full period without"
         " multiplier matrix.\n";
       return 1;
     }
@@ -624,9 +625,23 @@ int readPeriod(tinyxml2::XMLNode* current, Conf& conf) {
       return 1;
     }
   } else if (conf.type == MWC) {
-    // Do more stuff
+    node = current->FirstChildElement("mult");
+    if (!node) {
+      std::cerr << "No 'mult' tag. Cannot check for full period without"
+        " coefficients.\n";
+      return 1;
+    }
+    conf.m_a.SetLength(conf.m_k+1);
+    if (toVectString(node->FirstAttribute()->Value(), conf.m_a, conf.m_k+1)) 
+      std::cerr << "Error in 'mult' tag.\n";
   } else if (conf.type == LCG) {
-    // Do some stuff here too
+    node = current->FirstChildElement("mult");
+    if (!node) {
+      std::cerr << "No 'mult' tag. Cannot check for full period without"
+        " coefficient.\n";
+      return 1;
+    }
+    NTL::conv(conf.m_mult, node->FirstAttribute()->Value());
   }
 
   // Read decomposition files configuration
@@ -716,7 +731,7 @@ int readFile(const char* filename) {
     if  (strcmp(out_name->FirstAttribute()->Value(), "terminal")) {
       if (!strcmp(out_name->FirstAttribute()->Value(), "file")) {
         std::string name = filename;
-        for (int i = 0; i < 3; i++) name.pop_back();
+        while (name.back() != '.') name.pop_back();
         name += "res";
         fout = std::ofstream(name);
         out = &fout;
@@ -726,22 +741,25 @@ int readFile(const char* filename) {
       }
     }
   }
-  if (!strcmp(current->Value(), "mk")) {
-    MKSearch<Int> prog;
-    if (readMK(current, prog)) return 1;
-    return prog.FindMK();
-  } else if (!strcmp(current->Value(), "period")) {
-    MaxPeriod<Int, Dbl> prog;
-    if (readPeriod(current, prog)) return 1;
-    return prog.CheckPeriod();
-  } else if (!strcmp(current->Value(), "seek")) {
-    SeekMain<Int, Dbl> prog;
-    readSeek(current, prog.conf);
-    return prog.Seek();
-  } else if (!strcmp(current->Value(), "lattest")) {
-    LatTest<Int, Dbl> prog;
-    readTest(current, prog.conf);
-    return prog.TestLat();
+  while (current) {
+    if (!strcmp(current->Value(), "mk")) {
+      MKSearch<Int> prog;
+      if (readMK(current, prog)) return 1;
+      return prog.FindMK();
+    } else if (!strcmp(current->Value(), "period")) {
+      MaxPeriod<Int, Dbl> prog;
+      if (readPeriod(current, prog)) return 1;
+      return prog.CheckPeriod();
+    } else if (!strcmp(current->Value(), "seek")) {
+      SeekMain<Int, Dbl> prog;
+      readSeek(current, prog.conf);
+      return prog.Seek();
+    } else if (!strcmp(current->Value(), "lattest")) {
+      LatTest<Int, Dbl> prog;
+      readTest(current, prog.conf);
+      return prog.TestLat();
+    }
+    current = current->NextSibling();
   }
   return 0;
 }
