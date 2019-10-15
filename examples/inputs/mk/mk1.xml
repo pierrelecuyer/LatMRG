@@ -1,0 +1,6 @@
+<mk>
+  <power x="31" y="5"/>
+  <k x="3"/>
+  <safe x="true"/>
+  <out x="file"/>
+</mk>

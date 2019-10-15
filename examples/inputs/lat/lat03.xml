@@ -1,0 +1,20 @@
+<!--64 bits LCG with carry-->
+<lattest>
+  <gen>
+    <lcg>
+      <modulo basis="2" exponent="64"/>
+      <order k="1"/>
+      <coefficients x="15750249268501108917"/>
+    </lcg>
+  </gen>
+  <spectral>
+    <reduction method="FULL"/>
+    <norma lizer="BESTLAT"/>
+    <dual bool="true"/>
+  </spectral>
+  <proj>
+    <min x="2"/>
+    <num x="8"/>
+    <dim x="40 100 100 50 50 25 25 20"/>
+  </proj>
+</lattest>

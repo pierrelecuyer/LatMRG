@@ -1,10 +1,7 @@
-<mk x="">
-  <bounds>
-    <power x=""/>
-    <exponent x=""/>
-    <lower x=""/>
-    <upper x="0"/>
-  </bounds>
+<mk>
+  <!--range and power are mutually exclusive-->
+  <range x="" y="" z=""/>
+  <power x="" y=""/>
   <k x=""/>
   <safe x=""/>
   <factor x=""/>
@@ -36,29 +33,3 @@
   <!--The following is not yet implemented-->
   <function_params max_nodes_BB="" LLL_prec=""/>
 </lattest>
-
-<!--The following describes longer tags gen and test-->
-<mrg>
-  <modulo/>
-  <order/>
-  <a/>
-  <power2/>
-</mrg>
-
-<mwc>
-</mwc>
-
-<mmrg>
-</mmrg>
-
-<combo>
-</combo>
-
-<spectral>
-</spectral>
-
-<beyer>
-</beyer>
-
-<shortest>
-</shortest>
