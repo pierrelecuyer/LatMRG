@@ -37,9 +37,10 @@ namespace LatMRG {
    * `LCG`: the linear congruential generator with a carry.<br>
    * `MRG`: the multiple-recursive generator.<br>
    * `MWC`: the multiply-with-carry generator.<br>
-   * `KOROBOV`: the Korobov lattice. (see `KorobovLattice`)<br>
-   * `RANK1`: the rank 1 lattice. \todo Explain what this is<br>
-   * `MMRG`: the matrix multiple-recursive generator. \todo Explain what this is
+   * `KOROBOV`: the Korobov lattice. This is not used in LatMRG.<br>
+   * `RANK1`: the rank 1 lattice. This is not used in LatMRG<br>
+   * `MMRG`: the matrix multiple-recursive generator. A generator with a matrix
+   * multiplier.
    */
   enum GenType { LCG, MRG, MWC, KOROBOV, RANK1, MMRG, COMBO};
 

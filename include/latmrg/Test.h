@@ -18,7 +18,6 @@ namespace LatMRG {
   /**
    * The methods in this namespace can compute the merit of a reduced lattice
    * for a given projection and return it as a `Dbl`.
-   * \todo add extern definitions
    * */
   namespace Merit {
 
