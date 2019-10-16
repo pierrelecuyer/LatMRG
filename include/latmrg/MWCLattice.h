@@ -79,13 +79,13 @@ namespace LatMRG {
          * constructor work before using it, because the program will crash of
          * `validate(b, e) != 0`.
          */
-        MWCLattice (const Int & b, const IntVec & e, int k);
+        MWCLattice (const Int & b, const IntVec & e, int k, int maxDim = 1);
 
         /**
          * Another constructor with just `b` and `m`. Of course, `b` and `m`
          * have to be valid.
          * */
-        MWCLattice (const Int & b, const Int & m);
+        MWCLattice (const Int & b, const Int & m, int maxDim = 1);
 
         /**
          * Copy constructor. The maximal dimension of the created basis is set
@@ -189,8 +189,8 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int, typename Dbl>
-    MWCLattice<Int, Dbl>::MWCLattice(const Int & b, const IntVec & e, int k):
-      MRGLattice<Int, Dbl>(LCGMod(b, e), LCGCoeff(b,e), 1, 1, FULL)
+    MWCLattice<Int, Dbl>::MWCLattice(const Int & b, const IntVec & e, int k, int maxDim):
+      MRGLattice<Int, Dbl>(LCGMod(b, e), LCGCoeff(b,e), maxDim, 1, FULL)
   {
     m_MWCmod = b;
     m_MWCorder = k;
@@ -202,8 +202,8 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int, typename Dbl>
-    MWCLattice<Int, Dbl>::MWCLattice(const Int & b, const Int & m):
-      MRGLattice<Int, Dbl>(m, NTL::InvMod(b, m), 1, FULL)
+    MWCLattice<Int, Dbl>::MWCLattice(const Int & b, const Int & m, int maxDim):
+      MRGLattice<Int, Dbl>(m, NTL::InvMod(b, m), maxDim, FULL)
   {
     m_MWCmod = Int(b);
     // This is not needed in reality, but this tries to compute the coefficients

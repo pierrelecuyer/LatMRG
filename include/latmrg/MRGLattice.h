@@ -539,7 +539,11 @@ namespace LatMRG {
         dk = this->m_order;
       this->m_basis.SetDims(dk, dk);
       this->m_dualbasis.SetDims(dk, dk);
+      this->m_vecNorm.SetLength(dk);
+      this->m_dualvecNorm.SetLength(dk);
       this->setDim(dk);
+      this->setNegativeNorm();
+      this->setDualNegativeNorm();
 
       int i, j;
       for (i = 0; i < dk; i++) {
@@ -586,6 +590,8 @@ namespace LatMRG {
       const int dim = this->getDim();
       this->m_vSI.resize(dim, dim);
       this->m_wSI.resize(dim, dim);
+      this->m_vecNorm.resize(dim);
+      this->m_dualvecNorm.resize(dim);
 
       for (int i = 0; i < dim; i++) {
         NTL::clear (this->m_vSI[0][i]);

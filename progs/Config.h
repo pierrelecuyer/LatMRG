@@ -15,7 +15,6 @@ std::string construction = "RANDOM";
 #endif
 // Projection
 Projections* proj;
-int max_dim = 48;
 
 int max_gen = 10;
 

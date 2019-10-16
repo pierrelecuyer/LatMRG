@@ -105,7 +105,7 @@ template<typename Int, typename Dbl> struct SeekMain {
       delay++;
     } while ((A[conf.fact[0]->getK()] == 0) || (conf.period[0] && !conf.fact[0]->maxPeriod(A)));
     if (lattice) delete lattice;
-    return new MRGLattice<Int, Dbl>(conf.fact[0]->getM(), A, conf.max_dim, conf.fact[0]->getK(), FULL);
+    return new MRGLattice<Int, Dbl>(conf.fact[0]->getM(), A, conf.proj->numProj(), conf.fact[0]->getK(), FULL);
   }
 
   MRGLattice<Int, Dbl>* nextGeneratorPow2(MRGLattice<Int, Dbl>* lattice) {
@@ -152,7 +152,7 @@ template<typename Int, typename Dbl> struct SeekMain {
       delay++;
     } while ((A[conf.fact[0]->getK()] == 0) || (conf.period[0] && !conf.fact[0]->maxPeriod(A)));
     if (lattice) delete lattice;
-    MRGLattice<Int, Dbl>* lat = new MRGLattice<Int, Dbl>(conf.fact[0]->getM(), A, conf.max_dim, conf.fact[0]->getK(), FULL);
+    MRGLattice<Int, Dbl>* lat = new MRGLattice<Int, Dbl>(conf.fact[0]->getM(), A, conf.proj->numProj(), conf.fact[0]->getK(), FULL);
     lat->setPower2(coefficients);
     return lat;
   }
@@ -202,7 +202,7 @@ template<typename Int, typename Dbl> struct SeekMain {
       for (int j = 0; j<conf.fact[0]->getK(); j++)
         A[i][j] = A[i][j]%conf.fact[0]->getM();
     if (lattice) delete lattice;
-    return new MMRGLattice<Int, Dbl>(conf.fact[0]->getM(), A, conf.max_dim, conf.fact[0]->getK());
+    return new MMRGLattice<Int, Dbl>(conf.fact[0]->getM(), A, conf.proj->numProj(), conf.fact[0]->getK());
   }
 
   ComboLattice<Int, Dbl>* nextGenerator(ComboLattice<Int, Dbl>* lattice) {
@@ -230,7 +230,7 @@ template<typename Int, typename Dbl> struct SeekMain {
       conf.fact[k]->setA(B);
     }
     if (lattice) delete lattice;
-    MRGLattice<Int, Dbl>* mrg_lat = getLatCombo<Int, Dbl>(conf.fact, conf.max_dim);
+    MRGLattice<Int, Dbl>* mrg_lat = getLatCombo<Int, Dbl>(conf.fact, conf.proj->numProj());
     ComboLattice<Int, Dbl>* new_lat = new ComboLattice<Int, Dbl>(conf.fact, *mrg_lat);
     delete mrg_lat;
     return new_lat;

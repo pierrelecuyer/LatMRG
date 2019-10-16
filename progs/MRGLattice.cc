@@ -160,7 +160,7 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
       conf.coeff[i].SetLength(order);
       toVectString(node->FirstAttribute()->Value(), conf.coeff[i], order);
     } else {
-      std::cerr << "No way to set coefficients in 'mrg' tag. Add 'method' or"
+      std::cerr << "No way to set coefficients in 'mrg' or 'lcg' tag. Add 'method' or"
         " 'coeff' tag.\n";
       return 1;
     }
@@ -394,9 +394,7 @@ int readProj(tinyxml2::XMLNode* current, Conf& conf) {
     return 1;
   }
   if(!toVectString(node->FirstAttribute()->Value(), projDim, numProj)) {
-    for (int i = 0; i < numProj; i++){
-      if (conf.max_dim < projDim[i]) conf.max_dim = projDim[i];
-    }
+    for (unsigned int i = 0; i < projDim.size(); i++) projDim[i] -= 1;
     conf.proj = new Projections(numProj, minDim, projDim);
     return 0;
   }
@@ -632,7 +630,7 @@ int readPeriod(tinyxml2::XMLNode* current, Conf& conf) {
       return 1;
     }
     conf.m_a.SetLength(conf.m_k+1);
-    if (toVectString(node->FirstAttribute()->Value(), conf.m_a, conf.m_k+1)) 
+    if (toVectString(node->FirstAttribute()->Value(), conf.m_a, conf.m_k+1))
       std::cerr << "Error in 'mult' tag.\n";
   } else if (conf.type == LCG) {
     node = current->FirstChildElement("mult");
@@ -726,19 +724,18 @@ int readFile(const char* filename) {
   doc.LoadFile(filename);
   tinyxml2::XMLNode* current;
   current = doc.FirstChild();
-  auto out_name = current->FirstChildElement("out");
+  auto out_name = doc.FirstChildElement("out");
   if (out_name) {
-    if  (strcmp(out_name->FirstAttribute()->Value(), "terminal")) {
-      if (!strcmp(out_name->FirstAttribute()->Value(), "file")) {
-        std::string name = filename;
-        while (name.back() != '.') name.pop_back();
-        name += "res";
-        fout = std::ofstream(name);
-        out = &fout;
-      } else {
-        fout = std::ofstream(out_name->FirstAttribute()->Value());
-        out = &fout;
-      }
+    auto attr = out_name->FirstAttribute();
+    if (attr) {
+      fout = std::ofstream(attr->Value());
+      out = &fout;
+    } else {
+      std::string name = filename;
+      while (name.back() != '.') name.pop_back();
+      name += "res";
+      fout = std::ofstream(name);
+      out = &fout;
     }
   }
   while (current) {

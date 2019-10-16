@@ -93,6 +93,11 @@ template<typename Int, typename Dbl> struct LatTest {
     timer.init();
 
     // Testing the generator(s)
+    // Generators are initiated with dim = conf.proj->numProj() because this is
+    // the best way to make sure the normalizer construction will work while
+    // being efficient in the execution. This is so that we will precompute all
+    // bounds we will use more than once, but do not instanciate the object with
+    // a dimension so big it throws an error.
     if (conf.num_comp > 1) {
       full_period.resize(conf.num_comp);
       // Checking full period of components that require it
@@ -106,7 +111,7 @@ template<typename Int, typename Dbl> struct LatTest {
       }
       // Combined generators case
       MeritList<ComboLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
-      MRGLattice<Int, Dbl>* mrg = getLatCombo<Int, Dbl>(conf.fact, conf.max_dim);
+      MRGLattice<Int, Dbl>* mrg = getLatCombo<Int, Dbl>(conf.fact, conf.proj->numProj());
       ComboLattice<Int, Dbl> combolat(conf.fact, *mrg);
       bestLattice.add(test_lat(combolat, conf));
       printResults(bestLattice);
@@ -121,13 +126,13 @@ template<typename Int, typename Dbl> struct LatTest {
       } else if (conf.period[0]) {
         full_period[0] = conf.fact[0]->maxPeriod(conf.coeff[0][0]);
       }
-      MRGLattice<Int, Dbl> mrglat(conf.fact[0]->getM(), temp, conf.max_dim, conf.fact[0]->getK(), FULL);
+      MRGLattice<Int, Dbl> mrglat(conf.fact[0]->getM(), temp, conf.proj->numProj(), conf.fact[0]->getK(), FULL);
       bestLattice.add(test_lat(mrglat, conf));
       printResults(bestLattice);
     } else if (conf.fact[0]->get_type() == MWC) {
       full_period.resize(1);
       MeritList<MWCLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
-      MWCLattice<Int, Dbl> mwclat(conf.fact[0]->m_MWCb, conf.fact[0]->getM());
+      MWCLattice<Int, Dbl> mwclat(conf.fact[0]->m_MWCb, conf.fact[0]->getM(), conf.proj->numProj());
       if (conf.period[0]) full_period[0] = conf.fact[0]->maxPeriod(mwclat.getCoef());
       bestLattice.add(test_lat(mwclat, conf));
       printResults(bestLattice);
@@ -135,7 +140,7 @@ template<typename Int, typename Dbl> struct LatTest {
       full_period.resize(1);
       if (conf.period[0]) full_period[0] = conf.fact[0]->maxPeriod(conf.fact[0]->getMatrix());
       MeritList<MMRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
-      MMRGLattice<Int, Dbl> mmrglat(conf.fact[0]->getM(), conf.fact[0]->getMatrix(), conf.max_dim, conf.fact[0]->getK());
+      MMRGLattice<Int, Dbl> mmrglat(conf.fact[0]->getM(), conf.fact[0]->getMatrix(), conf.proj->numProj(), conf.fact[0]->getK());
       bestLattice.add(test_lat(mmrglat, conf));
       printResults(bestLattice);
     }
