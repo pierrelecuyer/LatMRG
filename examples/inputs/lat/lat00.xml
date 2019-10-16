@@ -5,7 +5,7 @@
       <modulo basis="2" exponent="61" rest="-1"/>
       <order k="3"/>
       <period check="true"/>
-      <coefficients x="8796093054976 282574488338432 4503599593816064"/>
+      <coeff x="8796093054976 282574488338432 4503599593816064"/>
     </mrg>
   </gen>
   <spectral>
@@ -15,7 +15,8 @@
   </spectral>
   <proj>
     <min x="4"/>
-    <num x="5"/>
-    <dim x="40 100 50 20 10"/>
+    <num x="3"/>
+    <dim x="40 50 50"/>
   </proj>
 </lattest>
+<out/>

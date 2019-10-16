@@ -22,7 +22,8 @@
   </spectral>
   <proj>
     <min x="9"/>
-    <num x="1"/>
-    <dim x="34"/>
+    <num x="3"/>
+    <dim x="35 20 20"/>
   </proj>
 </lattest>
+<out/>

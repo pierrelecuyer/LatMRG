@@ -3,5 +3,5 @@
   <k x="3"/>
   <safe x="false"/>
   <factor x="true"/>
-  <out x="file"/>
 </mk>
+<out/>

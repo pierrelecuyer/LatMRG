@@ -4,7 +4,8 @@
     <lcg>
       <modulo basis="2" exponent="64"/>
       <order k="1"/>
-      <coefficients x="15750249268501108917"/>
+      <coeff x="15750249268501108917"/>
+      <period check="true"/>
     </lcg>
   </gen>
   <spectral>
@@ -14,7 +15,7 @@
   </spectral>
   <proj>
     <min x="2"/>
-    <num x="8"/>
-    <dim x="40 100 100 50 50 25 25 20"/>
+    <num x="3"/>
+    <dim x="40 50 50"/>
   </proj>
 </lattest>
