@@ -105,7 +105,7 @@ var searchData=
   ['mrglattice_2eh',['MRGLattice.h',['../_m_r_g_lattice_8h.html',1,'']]],
   ['mrglattice_3c_20int_2c_20dbl_20_3e',['MRGLattice&lt; Int, Dbl &gt;',['../class_lat_m_r_g_1_1_m_r_g_lattice.html',1,'LatMRG']]],
   ['mwc',['MWC',['../namespace_lat_m_r_g.html#ab4948e899f8c3a6fb82cff009283061ea9a98771a3304da67b9ed878d6e0aa1c9',1,'LatMRG']]],
-  ['mwclattice',['MWCLattice',['../class_lat_m_r_g_1_1_m_w_c_lattice.html',1,'LatMRG::MWCLattice&lt; Int, Dbl &gt;'],['../class_lat_m_r_g_1_1_m_w_c_lattice.html#a90517675b490766dacf1c7f3da56d21e',1,'LatMRG::MWCLattice::MWCLattice(const Int &amp;b, const IntVec &amp;e, int k)'],['../class_lat_m_r_g_1_1_m_w_c_lattice.html#a04f406caefbd2930222fc660140396d0',1,'LatMRG::MWCLattice::MWCLattice(const Int &amp;b, const Int &amp;m)'],['../class_lat_m_r_g_1_1_m_w_c_lattice.html#a4483430258ad0329c2f4fd2786440cff',1,'LatMRG::MWCLattice::MWCLattice(const MWCLattice&lt; Int, Dbl &gt; &amp;Lat)']]],
+  ['mwclattice',['MWCLattice',['../class_lat_m_r_g_1_1_m_w_c_lattice.html',1,'LatMRG::MWCLattice&lt; Int, Dbl &gt;'],['../class_lat_m_r_g_1_1_m_w_c_lattice.html#a67ee3f72beac7e88c0ffaaa552a30e3f',1,'LatMRG::MWCLattice::MWCLattice(const Int &amp;b, const IntVec &amp;e, int k, int maxDim=1)'],['../class_lat_m_r_g_1_1_m_w_c_lattice.html#ae657c51a3122bd7e4d1ff0fef4bd84dd',1,'LatMRG::MWCLattice::MWCLattice(const Int &amp;b, const Int &amp;m, int maxDim=1)'],['../class_lat_m_r_g_1_1_m_w_c_lattice.html#a4483430258ad0329c2f4fd2786440cff',1,'LatMRG::MWCLattice::MWCLattice(const MWCLattice&lt; Int, Dbl &gt; &amp;Lat)']]],
   ['mwclattice_2ecc',['MWCLattice.cc',['../_m_w_c_lattice_8cc.html',1,'']]],
   ['mwclattice_2eh',['MWCLattice.h',['../_m_w_c_lattice_8h.html',1,'']]]
 ];

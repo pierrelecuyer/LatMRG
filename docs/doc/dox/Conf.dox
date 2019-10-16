@@ -50,15 +50,14 @@
  * \section conf_all Program wide tags
  *
  * There currently is only one tag that is valid for any of the program mode.
- * This tag must be specified **inside** the mode tag to be recognized.
+ * This tag must be specified at the same level as the mode tag to be recognized.
  *
- * `<out>` is a program wide tag that lets the user specify the program output.
+ * `<out>` is a program wide tag that lets the user specify where the program outputs.
  * If it is not specified, the program will print its output in the command line.
- * If it is specified, it must have an attribute specifying the name of the
- * output file of the program (relatively to the invocation path). To ease the
- * program usage, if the value of this attribute is `file`, the program will
- * output in a file in the same directory as the configuration file with the
- * same name as the configuration file, but a `.res` extension.
+ * If it is specified without attribute, it will print in a file in the same
+ * directory as the configuration file, but with a `.res` extension.
+ * Otherwise, it will print the output in a file named after the value of the
+ * first attribute.
  *
  * \section conf_mk Search for m and k
  *

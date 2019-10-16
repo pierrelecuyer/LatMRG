@@ -2,8 +2,8 @@ var class_lat_m_r_g_1_1_m_w_c_lattice =
 [
     [ "IntMat", "class_lat_m_r_g_1_1_m_w_c_lattice.html#ac05da9f5c698cbe68f3420ea72abfb46", null ],
     [ "IntVec", "class_lat_m_r_g_1_1_m_w_c_lattice.html#a338e747dcba9b8b051a6821e6a3eb8ee", null ],
-    [ "MWCLattice", "class_lat_m_r_g_1_1_m_w_c_lattice.html#a90517675b490766dacf1c7f3da56d21e", null ],
-    [ "MWCLattice", "class_lat_m_r_g_1_1_m_w_c_lattice.html#a04f406caefbd2930222fc660140396d0", null ],
+    [ "MWCLattice", "class_lat_m_r_g_1_1_m_w_c_lattice.html#a67ee3f72beac7e88c0ffaaa552a30e3f", null ],
+    [ "MWCLattice", "class_lat_m_r_g_1_1_m_w_c_lattice.html#ae657c51a3122bd7e4d1ff0fef4bd84dd", null ],
     [ "MWCLattice", "class_lat_m_r_g_1_1_m_w_c_lattice.html#a4483430258ad0329c2f4fd2786440cff", null ],
     [ "~MWCLattice", "class_lat_m_r_g_1_1_m_w_c_lattice.html#ac1be4c5b374fe96e617aad7aab2b7f09", null ],
     [ "fullPeriod", "class_lat_m_r_g_1_1_m_w_c_lattice.html#a47353f4be2df2e2943121967cb21661e", null ],
