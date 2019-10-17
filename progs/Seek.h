@@ -4,6 +4,7 @@
 // Number of generators to generate before testing time in nextGenerator
 #define DELAY 1000
 extern std::ostream* out;
+extern bool print_time;
 
 template<typename Int, typename Dbl> struct SeekMain {
   typedef NTL::vector<Int> IntVec;
@@ -277,8 +278,10 @@ template<typename Int, typename Dbl> struct SeekMain {
       *out << "\nDimensions and projections:\n";
       *out << conf.proj->toString();
       *out << delim;
-      *out << "Allowed running time: " << conf.timeLimit << "s.\n";
-      *out << "Actual CPU time: " << timer.toString() << "\n";
+      if (print_time) {
+        *out << "Allowed running time: " << conf.timeLimit << "s.\n";
+        *out << "Actual CPU time: " << timer.toString() << "\n";
+      }
       *out << "Number of generators kept: " << conf.max_gen << "\n";
       *out << "Number of generators tested: " << conf.num_gen << "\n\n";
       *out << "Retained generators (from best to worst):\n";

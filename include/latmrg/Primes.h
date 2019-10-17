@@ -69,6 +69,11 @@ namespace LatMRG {
         void find (int k, int e, long c1, long c2, bool safe, bool facto,
             std::ostream & fout);
 
+        /**
+         * Used by the main executable to compare the examples.
+         * */
+        bool print_time = true;
+
       private:
 
         /**
@@ -193,7 +198,7 @@ namespace LatMRG {
       Sm2 = (Int(1)<<e) - 1;
       Sm1 = 2;
       find (k, e, s, Sm1, Sm2, safe, facto, fout);
-      writeFooter (fout);
+      if (print_time) writeFooter (fout);
     }
 
 
@@ -208,7 +213,7 @@ namespace LatMRG {
       Sm2 = (Int(1)<<e) - 1;
       Sm1 = 2;
       find (1, e, s, Sm1, Sm2, false, facto, fout);
-      writeFooter (fout);
+      if (print_time) writeFooter (fout);
     }
 
 
@@ -224,7 +229,7 @@ namespace LatMRG {
       Sm1 = (Int(1)<<e) + c1;
       Sm2 = (Int(1)<<e) + c2;
       find (k, e, INT_MAX, Sm1, Sm2, safe, facto, fout);
-      writeFooter (fout);
+      if (print_time) writeFooter (fout);
     }
 
 

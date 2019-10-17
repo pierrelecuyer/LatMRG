@@ -148,20 +148,68 @@ PERIOD_XML = $(wildcard $(PROGS_INPUTS)/period/period*.xml)
 LAT_XML = $(wildcard $(PROGS_INPUTS)/lat/lat*.xml)
 SEEK_XML = $(wildcard $(PROGS_INPUTS)/seek/seek*.xml)
 
+EX_PRE = $(EX_DIR)/outputs
+EX_OUTPUTS = $(wildcard $(EX_PRE)/lat/*) $(wildcard $(EX_PRE)/mk/*) $(wildcard $(EX_PRE)/period/*)
+
 # Don't call this unless you are reckless
-examples:default
+examples:default mk_ex period_ex lattest_ex seek_ex
+
+check_ex:default mk_ex period_ex lattest_ex
+	@echo
+	$(SEP)
+	@echo 'Testing if examples outputs match'
+	@echo
+	@for filename in ./examples/outputs/mk/*;\
+	  do foo=$${filename#"$(EX_PRE)"};\
+	  foo="$(PROGS_INPUTS)$${foo}";\
+	  if [ "$$(diff $$foo $$filename)" != "" ]; then\
+	    echo "Example $$foo has errors."; else\
+	    echo "Example $$foo executes as expected.";\
+	  fi;\
+        done
+	@for filename in ./examples/outputs/period/*;\
+	  do foo=$${filename#"$(EX_PRE)"};\
+	  foo="$(PROGS_INPUTS)$${foo}";\
+	  if [ "$$(diff $$foo $$filename)" != "" ]; then\
+	    echo "Example $$foo has errors."; else\
+	    echo "Example $$foo executes as expected.";\
+	  fi;\
+        done
+	@for filename in ./examples/outputs/lat/*;\
+	  do foo=$${filename#"$(EX_PRE)"};\
+	  foo="$(PROGS_INPUTS)$${foo}";\
+	  if [ "$$(diff $$foo $$filename)" != "" ]; then\
+	    echo "Example $$foo has errors."; else\
+	    echo "Example $$foo executes as expected.";\
+	  fi;\
+        done
+	@echo
+	$(SEP)
+	@echo 'Cleaning test examples'
+	@echo
+	rm -f $(PROGS_INPUTS)/lat/lat*.res
+	rm -f $(PROGS_INPUTS)/mk/mk*.res
+	rm -f $(PROGS_INPUTS)/period/period*.res
+
+mk_ex:
 	@echo
 	$(SEP)
 	@echo 'FindMK examples'
 	./bin/MRGLattice $(MK_XML)
+
+period_ex:
 	@echo
 	$(SEP)
 	@echo 'Period examples'
 	./bin/MRGLattice $(PERIOD_XML)
+
+lattest_ex:
 	@echo
 	$(SEP)
 	@echo 'Lattest examples'
 	./bin/MRGLattice $(LAT_XML)
+
+seek_ex:
 	@echo
 	$(SEP)
 	@echo 'Seek examples'
@@ -240,4 +288,4 @@ separator:
 # PHONY targets
 
 .PHONY: doc clean clean_all examples $(EX_BUILD)/ $(EX_CC) separator\
-  config_latticetester $(MK_DAT) mk_ex_head seek_ex_head all_ex
+  config_latticetester $(MK_DAT) mk_ex period_ex seek_ex lattest_ex $(EX_OUTPUTS)

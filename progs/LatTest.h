@@ -2,6 +2,7 @@
 #define LATMRG_LATTEST_H
 
 extern std::ostream* out;
+extern bool print_time;
 
 template<typename Int, typename Dbl> struct LatTest {
   typedef NTL::vector<Int> IntVec;
@@ -45,9 +46,11 @@ template<typename Int, typename Dbl> struct LatTest {
       *out << "\n\n";
       *out << "Dimensions and projections:\n";
       *out << conf.proj->toString();
-      *out << delim;
-      *out << "Allowed running time: " << conf.timeLimit << "s.\n";
-      *out << "Actual CPU time: " << timer.toString() << "\n";
+      if (print_time) {
+        *out << delim;
+        *out << "Allowed running time: " << conf.timeLimit << "s.\n";
+        *out << "Actual CPU time: " << timer.toString() << "\n";
+      }
       for (auto it = bestLattice.getList().begin(); it!= bestLattice.getList().end(); it++) {
         *out << delim;
         *out << (*it).getLattice() << "\n";

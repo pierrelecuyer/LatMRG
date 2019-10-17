@@ -18,12 +18,15 @@
 
 using namespace LatMRG;
 
-bool options = true;
 std::string exec_mode;
+
+// ===== Whole program configuration options ===================================
 
 // Output stuff
 std::ostream* out(&std::cout);
 std::ofstream fout;
+// Printing time or not. This is used to compare outputs
+bool print_time = true;
 
 // Prints the program usage
 void print_help() {
@@ -724,9 +727,9 @@ int readFile(const char* filename) {
   doc.LoadFile(filename);
   tinyxml2::XMLNode* current;
   current = doc.FirstChild();
-  auto out_name = doc.FirstChildElement("out");
-  if (out_name) {
-    auto attr = out_name->FirstAttribute();
+  out = &std::cout;
+  if (doc.FirstChildElement("out")) {
+    auto attr = doc.FirstChildElement("out")->FirstAttribute();
     if (attr) {
       fout = std::ofstream(attr->Value());
       out = &fout;
@@ -737,6 +740,11 @@ int readFile(const char* filename) {
       fout = std::ofstream(name);
       out = &fout;
     }
+  }
+  print_time = true;
+  if (doc.FirstChildElement("print_time")) {
+    auto attr = doc.FirstChildElement("print_time")->FirstAttribute();
+    if (attr) print_time = attr->BoolValue();
   }
   while (current) {
     if (!strcmp(current->Value(), "mk")) {
