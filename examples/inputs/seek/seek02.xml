@@ -1,0 +1,23 @@
+<!--A search for a bad 64 bits LCG with carry-->
+<seek>
+  <gen>
+    <mrg>
+      <modulo basis="2" exponent="64" rest="-59"/>
+      <order k="1"/>
+      <method random="1"/>
+      <period x="true"/>
+    </mrg>
+  </gen>
+  <spectral>
+    <reduction x="FULL"/>
+    <norma x="BESTLAT"/>
+    <dual x="true"/>
+  </spectral>
+  <proj>
+    <min x="1"/>
+    <num x="1"/>
+    <dim x="30"/>
+  </proj>
+  <best x="false"/>
+  <time x="60"/>
+</seek>

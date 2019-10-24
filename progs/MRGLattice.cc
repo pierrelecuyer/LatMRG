@@ -28,6 +28,8 @@ std::ofstream fout;
 // Printing time or not. This is used to compare outputs
 bool print_time = true;
 
+std::string mode;
+
 // Prints the program usage
 void print_help() {
   *out << "Usage: MRGLattice [types] file1 file2 ...\n";
@@ -336,13 +338,13 @@ int readSpectral(tinyxml2::XMLNode* current, Conf& conf) {
   tinyxml2::XMLElement* node;
   node = current->FirstChildElement("reduction");
   if (node) {
-    if (toRedString(conf.reduction, node->FirstAttribute()->Value())) std::cerr << "Invalid"
+    if (LatticeTester::toPreRedString(conf.reduction, node->FirstAttribute()->Value())) std::cerr << "Invalid"
       "/inexistant attribute in 'reduction' tag.\n";
   }
 
   node = current->FirstChildElement("norma");
   if (node) {
-    if (toNormaString(conf.normaType, node->FirstAttribute()->Value())) std::cerr << "Invalid"
+    if (LatticeTester::toNormaString(conf.normaType, node->FirstAttribute()->Value())) std::cerr << "Invalid"
       "/inexistant attribute in 'norma' tag.\n";
   }
 
@@ -361,7 +363,7 @@ int readLength(tinyxml2::XMLNode* current, Conf& conf) {
   tinyxml2::XMLElement* node;
   node = current->FirstChildElement("reduction");
   if (node) {
-    if (toRedString(conf.reduction, node->FirstAttribute()->Value())) std::cerr << "Invalid"
+    if (LatticeTester::toPreRedString(conf.reduction, node->FirstAttribute()->Value())) std::cerr << "Invalid"
       "/inexistant attribute in 'reduction' tag.\n";
   }
 
@@ -369,6 +371,12 @@ int readLength(tinyxml2::XMLNode* current, Conf& conf) {
   if (node) {
     conf.use_dual = node->FirstAttribute()->BoolValue();
   }
+
+  node = current->FirstChildElement("norm");
+  if (node && LatticeTester::toNormString(conf.norm, node->FirstAttribute()->Value())) {
+      std::cerr << "Ivalide first attribute value in node norm.\n";
+  }
+
   return 0;
 }
 
@@ -509,7 +517,6 @@ int tryTest(tinyxml2::XMLNode* current, Conf& conf) {
   } else if (!strcmp(current->Value(), "length")) {
     conf.criterion = LatticeTester::LENGTH;
     readLength(current, conf);
-    std::cout << current->Value() << "\n";
   } else if (!strcmp(current->Value(), "beyer")) {
     std::cout << current->Value() << "\n";
   } else return 1;
@@ -723,6 +730,8 @@ void readTest(tinyxml2::XMLNode* current, Conf& conf) {
 
 template<typename Int, typename Dbl>
 int readFile(const char* filename) {
+  mode = "";
+
   tinyxml2::XMLDocument doc;
   doc.LoadFile(filename);
   tinyxml2::XMLNode* current;
@@ -748,18 +757,22 @@ int readFile(const char* filename) {
   }
   while (current) {
     if (!strcmp(current->Value(), "mk")) {
+      mode = "mk";
       MKSearch<Int> prog;
       if (readMK(current, prog)) return 1;
       return prog.FindMK();
     } else if (!strcmp(current->Value(), "period")) {
+      mode = "period";
       MaxPeriod<Int, Dbl> prog;
       if (readPeriod(current, prog)) return 1;
       return prog.CheckPeriod();
     } else if (!strcmp(current->Value(), "seek")) {
+      mode = "seek";
       SeekMain<Int, Dbl> prog;
       readSeek(current, prog.conf);
       return prog.Seek();
     } else if (!strcmp(current->Value(), "lattest")) {
+      mode = "lattest";
       LatTest<Int, Dbl> prog;
       readTest(current, prog.conf);
       return prog.TestLat();

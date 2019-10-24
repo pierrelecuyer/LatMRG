@@ -1,0 +1,23 @@
+<!--A search for a 32 bits MRG-->
+<seek>
+  <gen>
+    <mrg>
+      <modulo basis="2" exponent="31" rest="-1"/>
+      <order k="8"/>
+      <method random="1 1 1 1 1 1 1 1"/>
+      <period check="true"/>
+    </mrg>
+  </gen>
+  <spectral>
+    <reduction method="FULL"/>
+    <norma n="BESTLAT"/>
+    <dual d="true"/>
+  </spectral>
+  <proj>
+    <min x="9"/>
+    <num x="1"/>
+    <dim x="34"/>
+  </proj>
+  <time x="60"/>
+  <num_gen x="5"/>
+</seek>

@@ -26,10 +26,11 @@ namespace LatMRG {
      * */
     template<typename Lat>
       typename Lat::Dbl meritL(Lat& lat) {
-        typename Lat::IntVec shortest(lat.getBasis()[0]);
-        typename Lat::Dbl tmp;
-        LatticeTester::ProdScal<typename Lat::Int>(shortest, shortest, shortest.length(), tmp);
-        return NTL::sqrt(tmp);
+        // typename Lat::IntVec shortest(lat.getBasis()[0]);
+        // typename Lat::Dbl tmp;
+        // LatticeTester::ProdScal<typename Lat::Int>(shortest, shortest, shortest.length(), tmp);
+        lat.updateVecNorm();
+        return lat.getVecNorm(0);
       }
 
     /**

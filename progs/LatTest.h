@@ -129,7 +129,7 @@ template<typename Int, typename Dbl> struct LatTest {
       } else if (conf.period[0]) {
         full_period[0] = conf.fact[0]->maxPeriod(conf.coeff[0][0]);
       }
-      MRGLattice<Int, Dbl> mrglat(conf.fact[0]->getM(), temp, conf.proj->numProj(), conf.fact[0]->getK(), FULL);
+      MRGLattice<Int, Dbl> mrglat(conf.fact[0]->getM(), temp, conf.proj->numProj(), conf.fact[0]->getK(), FULL, conf.norm);
       bestLattice.add(test_lat(mrglat, conf));
       printResults(bestLattice);
     } else if (conf.fact[0]->get_type() == MWC) {

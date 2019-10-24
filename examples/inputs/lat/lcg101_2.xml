@@ -1,0 +1,19 @@
+<lattest>
+  <gen>
+    <mrg>
+      <modulo basis="101"/>
+      <order k="1"/>
+      <coeff x="51"/>
+    </mrg>
+  </gen>
+  <length>
+    <reduction method="FULL"/>
+    <dual x="false"/>
+    <norm x="L1NORM"/>
+  </length>
+  <proj>
+    <min x="2"/>
+    <num x="1"/>
+    <dim x="30"/>
+  </proj>
+</lattest>

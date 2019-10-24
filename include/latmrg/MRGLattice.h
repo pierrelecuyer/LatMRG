@@ -326,7 +326,7 @@ namespace LatMRG {
   template<typename Int, typename Dbl>
     MRGLattice<Int, Dbl>::MRGLattice(const MRGLattice<Int, Dbl> &lat):
       LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::IntLattice (
-          lat.m_modulo, lat.m_order, lat.getDim(), lat.getNorm ()),
+          lat.m_modulo, lat.m_order, lat.getDim(), lat.withDual(), lat.getNorm ()),
       m_lac(lat.m_lac)
   {
     m_lossRho = lat.m_lossRho;
@@ -373,7 +373,7 @@ namespace LatMRG {
     MRGLattice<Int, Dbl>::MRGLattice(const Int & m, const IntVec & a, int maxDim,
         int k, LatticeType lat, LatticeTester::NormType norm):
       LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::IntLattice(
-          m, k, maxDim, norm)
+          m, k, maxDim, true, norm)
   {
     m_latType = lat;
     m_lacunaryFlag = false;
@@ -390,7 +390,7 @@ namespace LatMRG {
     MRGLattice<Int, Dbl>::MRGLattice(const Int & m, const Int & a, int maxDim,
         LatticeType lat, LatticeTester::NormType norm):
       LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::IntLattice(
-          m, 1, maxDim, norm)
+          m, 1, maxDim, true, norm)
   {
     m_latType = lat;
     m_lacunaryFlag = false;
@@ -405,8 +405,9 @@ namespace LatMRG {
     MRGLattice<Int, Dbl>::MRGLattice(const Int & m, const IntVec & a, int maxDim,
         int k, IntVec & I, LatticeType lat, LatticeTester::NormType norm):
       LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::IntLattice (
-          m, k, maxDim, norm), m_lac(I, maxDim), m_ip(0)
+          m, k, maxDim, true, norm), m_lac(I, maxDim), m_ip(0)
   {
+    std::cout << 4 << "\n";
     m_latType = lat;
     m_lacunaryFlag = true;
     init();

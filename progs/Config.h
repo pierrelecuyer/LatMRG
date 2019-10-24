@@ -6,6 +6,8 @@ typedef NTL::matrix<Int> IntMat;
 LatticeTester::NormaType normaType = LatticeTester::NONE;
 LatticeTester::CriterionType criterion = LatticeTester::SPECTRAL;
 LatticeTester::PreReductionType reduction = LatticeTester::FULL;
+LatticeTester::NormType norm = LatticeTester::L2NORM;
+
 bool use_dual = true;
 #ifdef LATMRG_SEEK
 bool best = true;

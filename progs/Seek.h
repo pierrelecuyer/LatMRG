@@ -104,7 +104,10 @@ template<typename Int, typename Dbl> struct SeekMain {
       }
       for (long i = 0; i<conf.fact[0]->getK(); i++) A[i+1] = conf.coeff[0][i] * randInt(Int(0), conf.fact[0]->getM());
       delay++;
-    } while ((A[conf.fact[0]->getK()] == 0) || (conf.period[0] && !conf.fact[0]->maxPeriod(A)));
+    } while ((A[conf.fact[0]->getK()] == 0) ||
+        (conf.period[0] && (conf.fact[0]->get_type()==MRG) ?
+         !conf.fact[0]->maxPeriod(A) :
+         conf.fact[0]->maxPeriod(A[conf.fact[0]->getK()])));
     if (lattice) delete lattice;
     return new MRGLattice<Int, Dbl>(conf.fact[0]->getM(), A, conf.proj->numProj(), conf.fact[0]->getK(), FULL);
   }
@@ -299,8 +302,8 @@ template<typename Int, typename Dbl> struct SeekMain {
     // We do not print for no reason as this slows the program a lot.
     if (per_80 <= old) return old;
     std::cout << "[";
-    for (int i = 0; i < per_80; i++) *out << "#";
-    for (int i = per_80; i < 80; i++) *out << " ";
+    for (int i = 0; i < per_80; i++) std::cout << "#";
+    for (int i = per_80; i < 80; i++) std::cout << " ";
     std::cout << "] ";
     std::cout << std::setw(2) << int(per_80/80.0*100) << " %\r" << std::flush;
     return per_80;

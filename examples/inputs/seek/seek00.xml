@@ -1,3 +1,4 @@
+<!--Searching for a LCG with a carry and 2^128 modulo-->
 <seek>
   <gen>
     <lcg>
@@ -14,8 +15,9 @@
   <proj>
     <min x="1"/>
     <num x="1"/>
-    <dim x="31"/>
+    <dim x="32"/>
   </proj>
   <time x="60"/>
   <num_gen x="5"/>
 </seek>
+<out/>
