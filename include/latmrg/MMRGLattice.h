@@ -225,7 +225,7 @@ namespace LatMRG {
   template<typename Int, typename Dbl>
     MMRGLattice<Int, Dbl>::MMRGLattice(const Int & m, const IntMat & A, int maxDim,
         int r, LatticeTester::NormType norm, LatticeType lat):
-      LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::IntLattice(m, r, maxDim, norm)
+      LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::IntLattice(m, r, maxDim, true, norm)
   {
     m_A = A;
     m_latType = lat;
@@ -241,7 +241,7 @@ namespace LatMRG {
     MMRGLattice<Int, Dbl>::MMRGLattice(const Int & m, const IntMat & A, int maxDim,
         int r, LacunaryType & lacunaryType, IntVec & lac,
         LatticeTester::NormType norm, LatticeType lat):
-      LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::IntLattice (m, r, maxDim, norm)
+      LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::IntLattice (m, r, maxDim, true, norm)
       //m_lac(lac, r)
       //PW_TODO r ou maxDim?
   {
@@ -261,7 +261,7 @@ namespace LatMRG {
   template<typename Int, typename Dbl>
     MMRGLattice<Int, Dbl>::MMRGLattice(const MMRGLattice & lat):
       LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::IntLattice (lat.m_modulo, lat.m_order,
-          lat.getDim(), lat.getNorm ()), m_lac(lat.m_lac)
+          lat.getDim(), true, lat.getNorm ()), m_lac(lat.m_lac)
   {
     m_A = lat.m_A;
     m_latType = lat.m_latType;

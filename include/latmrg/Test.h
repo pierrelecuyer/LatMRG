@@ -30,7 +30,8 @@ namespace LatMRG {
         // typename Lat::Dbl tmp;
         // LatticeTester::ProdScal<typename Lat::Int>(shortest, shortest, shortest.length(), tmp);
         lat.updateVecNorm();
-        return lat.getVecNorm(0);
+        if (lat.getNorm() == LatticeTester::L2NORM) return NTL::sqrt(lat.getVecNorm(0));
+        else return lat.getVecNorm(0);
       }
 
     /**

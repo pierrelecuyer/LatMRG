@@ -7,8 +7,8 @@
       <order x="3"/>
       <method random="0 1 1"/>
       <period check="true">
-        <m1 x="DECOMP" file="examples/inputs/seek/memoire01m1.fact"/>
-        <r x="DECOMP" file="examples/inputs/seek/memoire01r.fact"/>
+        <m1 x="DECOMP_WRITE" file="examples/inputs/seek/memoire01m1.fact"/>
+        <r x="DECOMP_WRITE" file="examples/inputs/seek/memoire01r.fact"/>
       </period>
     </mrg>
     <mrg>
@@ -16,8 +16,8 @@
       <order x="3"/>
       <method random="1 0 1"/>
       <period check="true">
-        <m1 x="DECOMP" file="examples/inputs/seek/memoire01m1.fact"/>
-        <r x="DECOMP" file="examples/inputs/seek/memoire01r.fact"/>
+        <m1 x="DECOMP_WRITE" file="examples/inputs/seek/memoire01m1.fact"/>
+        <r x="DECOMP_WRITE" file="examples/inputs/seek/memoire01r.fact"/>
       </period>
     </mrg>
   </gen>
@@ -34,3 +34,4 @@
   <time x="60"/>
   <num_gen x="5"/>
 </seek>
+<out/>

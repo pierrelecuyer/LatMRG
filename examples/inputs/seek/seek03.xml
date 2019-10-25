@@ -17,6 +17,7 @@
     <num x="1"/>
     <dim x="34"/>
   </proj>
-  <time x="60"/>
+  <time x="10"/>
   <num_gen x="5"/>
 </seek>
+<out/>

@@ -10,7 +10,6 @@ template<typename Int, typename Dbl> struct LatTest {
   ConfigLat<Int, Dbl> conf;
 
   Chrono timer;
-  int detail = 0;
   std::vector<bool> full_period;
 
   /**
@@ -67,11 +66,11 @@ template<typename Int, typename Dbl> struct LatTest {
         } else {
           if (conf.period[0]) *out << "Full period: " << (full_period[0]?"yes":"no") << "\n\n";
         }
-        if (detail == 0) {
+        if (conf.detail == 0) {
           *out << (*it).toStringMerit();
-        } else if (detail == 1) {
+        } else if (conf.detail == 1) {
           *out << (*it).toStringDim();
-        } else if (detail == 2) {
+        } else if (conf.detail == 2) {
           *out << (*it).toStringProjections();
         }
       }
@@ -143,7 +142,7 @@ template<typename Int, typename Dbl> struct LatTest {
       full_period.resize(1);
       if (conf.period[0]) full_period[0] = conf.fact[0]->maxPeriod(conf.fact[0]->getMatrix());
       MeritList<MMRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
-      MMRGLattice<Int, Dbl> mmrglat(conf.fact[0]->getM(), conf.fact[0]->getMatrix(), conf.proj->numProj(), conf.fact[0]->getK());
+      MMRGLattice<Int, Dbl> mmrglat(conf.fact[0]->getM(), conf.fact[0]->getMatrix(), conf.proj->numProj(), conf.fact[0]->getK(), conf.norm);
       bestLattice.add(test_lat(mmrglat, conf));
       printResults(bestLattice);
     }

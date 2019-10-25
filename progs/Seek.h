@@ -301,11 +301,11 @@ template<typename Int, typename Dbl> struct SeekMain {
     if (per_80 < 0) per_80 = 0;
     // We do not print for no reason as this slows the program a lot.
     if (per_80 <= old) return old;
-    std::cout << "[";
+    std::cout << "Program progress: [";
     for (int i = 0; i < per_80; i++) std::cout << "#";
     for (int i = per_80; i < 80; i++) std::cout << " ";
     std::cout << "] ";
-    std::cout << std::setw(2) << int(per_80/80.0*100) << " %\r" << std::flush;
+    std::cout << std::setw(3) << int(per_80/80.0*100) << " %\r" << std::flush;
     return per_80;
   }
 
@@ -330,7 +330,6 @@ template<typename Int, typename Dbl> struct SeekMain {
     int old = 0;
     // Launching the tests
     if (conf.progress) {
-      std::cout << "Program progress:\n";
       old = print_progress(-1);
     }
     if (conf.num_comp > 1) {
@@ -344,6 +343,7 @@ template<typename Int, typename Dbl> struct SeekMain {
         conf.currentMerit = bestLattice.getMerit();
         if (conf.progress) old = print_progress(old);
       }
+      std::cout << "\r                                                                                                          \r";
       if (combolat) delete combolat;
       printResults(bestLattice);
     } else if (conf.fact[0]->get_type() == MRG || conf.fact[0]->get_type() == LCG) {
@@ -358,6 +358,7 @@ template<typename Int, typename Dbl> struct SeekMain {
         conf.currentMerit = bestLattice.getMerit();
         if (conf.progress) old = print_progress(old);
       }
+      std::cout << "\r                                                                                                          \r";
       if (mrglat) delete mrglat;
       printResults(bestLattice);
     } else if (conf.fact[0]->get_type() == MWC) {
@@ -371,6 +372,7 @@ template<typename Int, typename Dbl> struct SeekMain {
         conf.currentMerit = bestLattice.getMerit();
         if (conf.progress) old = print_progress(old);
       }
+      std::cout << "\r                                                                                                          \r";
       if (mwclat) delete mwclat;
       printResults(bestLattice);
     } else if (conf.fact[0]->get_type() == MMRG) {
@@ -384,6 +386,7 @@ template<typename Int, typename Dbl> struct SeekMain {
         conf.currentMerit = bestLattice.getMerit();
         if (conf.progress) old = print_progress(old);
       }
+      std::cout << "\r                                                                                                          \r";
       if (mmrglat) delete mmrglat;
       printResults(bestLattice);
     }

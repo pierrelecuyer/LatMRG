@@ -18,8 +18,6 @@
 
 using namespace LatMRG;
 
-std::string exec_mode;
-
 // ===== Whole program configuration options ===================================
 
 // Output stuff
@@ -142,24 +140,30 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
     return 1;
   }
 
-  node = current->FirstChildElement("method");
-  if (node) {
-    auto value = node->FirstAttribute();
-    if (value) {
-      if (!strcmp(value->Name(), "random")) {
-        conf.coeff[i].SetLength(order);
-        if (toVectString(value->Value(), conf.coeff[i], order)) return 1;
-      } else if (!strcmp(value->Name(), "pow2")) {
-        conf.coeff[i].SetLength(2*order);
+  if (mode == "seek") {
+    node = current->FirstChildElement("method");
+    if (node) {
+      auto value = node->FirstAttribute();
+      if (value) {
+        if (!strcmp(value->Name(), "random")) {
+          conf.coeff[i].SetLength(order);
+          if (toVectString(value->Value(), conf.coeff[i], order)) return 1;
+        } else if (!strcmp(value->Name(), "pow2")) {
+          conf.coeff[i].SetLength(2*order);
+        } else {
+          std::cerr << "Invalid attribute in tag 'method'.\n";
+          return 1;
+        }
       } else {
-        std::cerr << "Invalid attribute in tag 'method'.\n";
+        std::cerr << "Tag 'method' has no attribute.\n";
         return 1;
       }
     } else {
-      std::cerr << "Tag 'method' has no attribute.\n";
+      std::cerr << "No way to set coefficients in 'mrg' or 'lcg' tag. Add 'method'"
+       " tag.\n";
       return 1;
     }
-  } else {
+  } else if (mode == "lattest") {
     node = current->FirstChildElement("coeff");
     if (node) {
       conf.coeff[i].SetLength(order);
@@ -224,11 +228,13 @@ int readMMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
     return 1;
   }
 
-  node = current->FirstChildElement("method");
-  if (node) {
-    std::cerr << "Currently no way to build matrix for MMRG implemented.\n";
-    return 1;
-  } else {
+  if (mode == "seek") {
+    node = current->FirstChildElement("method");
+    if (node) {
+      std::cerr << "Currently no way to build matrix for MMRG implemented.\n";
+      return 1;
+    }
+  } else if (mode == "lattest") {
     node = current->FirstChildElement("matrix");
     if (node) {
       temp_mat.SetDims(order, order);
@@ -718,6 +724,8 @@ void readTest(tinyxml2::XMLNode* current, Conf& conf) {
       if (!readProj(node, conf)) conf.proj_set = true;
     } else if (!strcmp(node->Value(), "time")) {
       conf.timeLimit = node->ToElement()->FirstAttribute()->DoubleValue();
+    } else if (!strcmp(node->Value(), "detail")) {
+      conf.detail = node->ToElement()->FirstAttribute()->IntValue();
     }
     node = node->NextSibling();
   }
