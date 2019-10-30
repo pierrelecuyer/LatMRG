@@ -1,9 +1,9 @@
 <seek>
   <gen>
     <mrg>
-      <modulo basis="2" exponent="16" rest="-155"/>
-      <order k="3"/>
-      <method random="1 1 1"/>
+      <modulo basis="2" exponent="8" rest="-5"/>
+      <order k="7"/>
+      <method random="1 0 1 0 1 0 1"/>
       <period check="true"/>
     </mrg>
   </gen>
@@ -13,7 +13,7 @@
     <dual d="true"/>
   </spectral>
   <proj>
-    <min x="4"/>
+    <min x="8"/>
     <num x="1"/>
     <dim x="35"/>
   </proj>

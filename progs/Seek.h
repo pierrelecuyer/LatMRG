@@ -6,217 +6,98 @@
 extern std::ostream* out;
 extern bool print_time;
 
-template<typename Int, typename Dbl> struct SeekMain {
-  typedef NTL::vector<Int> IntVec;
-  typedef NTL::matrix<Int> IntMat;
-
-  ConfigSeek<Int, Dbl> conf;
-
+namespace {
   // Program global objects
   Chrono timer; // program timer
+}
 
+/**
+ * A namespace containing all the search functions.
+ * */
+namespace LatMRGSeek {
   /**
    * A small class to search for modulus for MWC generators.
    * */
-  class Modulus {
-    public:
+  template<typename Int>
+    class Modulus {
+      public:
 
-      /**
-       * Search will begin at `2^e±c` and will increase of decrease depending on
-       * `increase`.
-       * */
-      Modulus(long e, Int c, bool increase) {
-        m = (Int(1)<<e) - 1;
-        this->increase = increase;
-        if (increase) m+=c;
-        else m-=c;
-      }
-
-      /**
-       * This function finds the next value for `m`. This can return 1 if
-       * `increase` is `false` and `m` gets to 1.
-       * */
-      Int next() {
-        while (m > 1) {
-          nextM();
-          LatticeTester::PrimeType status = LatticeTester::IntFactor<Int>::isPrime (m, KTRIALS);
-          if (status == LatticeTester::PRIME || status == LatticeTester::PROB_PRIME) {
-            if (1 == m % 4) continue;
-            Int m1 = (m - 1)/2;
-            status = LatticeTester::IntFactor<Int>::isPrime (m1, KTRIALS);
-            if (status != LatticeTester::PRIME && status != LatticeTester::PROB_PRIME) continue;
-            // For MWC we check 2^{(m-1)/2} \neq 1 mod m.
-            NTL::ZZ_p::init(NTL::ZZ(m));
-            NTL::ZZ_p a = NTL::power(NTL::ZZ_p(2), m1);
-            if (NTL::IsOne(a)) {
-              continue;
-            }
-            return m;
-          }
+        /**
+         * Search will begin at `2^e±c` and will increase of decrease depending on
+         * `increase`.
+         * */
+        Modulus(long e, Int c, bool increase) {
+          m = (Int(1)<<e) - 1;
+          this->increase = increase;
+          if (increase) m+=c;
+          else m-=c;
         }
-        return Int(-1);
-      }
 
-    private:
+        /**
+         * This function finds the next value for `m`. This can return 1 if
+         * `increase` is `false` and `m` gets to 1.
+         * */
+        Int next() {
+          while (m > 1) {
+            nextM();
+            LatticeTester::PrimeType status = LatticeTester::IntFactor<Int>::isPrime (m, KTRIALS);
+            if (status == LatticeTester::PRIME || status == LatticeTester::PROB_PRIME) {
+              if (1 == m % 4) continue;
+              Int m1 = (m - 1)/2;
+              status = LatticeTester::IntFactor<Int>::isPrime (m1, KTRIALS);
+              if (status != LatticeTester::PRIME && status != LatticeTester::PROB_PRIME) continue;
+              // For MWC we check 2^{(m-1)/2} \neq 1 mod m.
+              NTL::ZZ_p::init(NTL::ZZ(m));
+              NTL::ZZ_p a = NTL::power(NTL::ZZ_p(2), m1);
+              if (NTL::IsOne(a)) {
+                continue;
+              }
+              return m;
+            }
+          }
+          return Int(-1);
+        }
 
-      static const long KTRIALS = 200;
+      private:
 
-      /**
-       * Last valid modulus found (or 2^e).
-       * */
-      Int m;
+        static const long KTRIALS = 200;
 
-      /**
-       * As passed to constructor.
-       * */
-      bool increase;
+        /**
+         * Last valid modulus found (or 2^e).
+         * */
+        Int m;
 
-      /**
-       * Increment/decrement m
-       * */
-      void nextM () {
-        if (increase) m += 2;
-        else m -= 2;
-        if (0 == m % 5){
+        /**
+         * As passed to constructor.
+         * */
+        bool increase;
+
+        /**
+         * Increment/decrement m
+         * */
+        void nextM () {
           if (increase) m += 2;
           else m -= 2;
+          if (0 == m % 5){
+            if (increase) m += 2;
+            else m -= 2;
+          }
         }
-      }
-  } /**mod*/;
+    } /**mod*/;
+  // extern template class Modulus<std::int64_t>;
+  // extern template class Modulus<NTL::ZZ>;
 
   /*
    * The goal is to create this overload and to use it to switch generators
    * without requiring the use of switch statements.
    * */
-  MRGLattice<Int, Dbl>* nextGenerator(MRGLattice<Int, Dbl>* lattice) {
-    // Setting up two vectors. MRGComponent and MRGLattice do not use the same
-    // vector format
-    IntVec A;
-    A.SetLength(conf.fact[0]->getK()+1);
-    NTL::clear(A);
-    int delay = 0;
-    // The program will not run the maxPeriod function if it is not wanted with
-    // this condition
-    do {
-      if (delay >= DELAY) {
-        if (timer.timeOver(conf.timeLimit)) return NULL;
-        else delay = 0;
-      }
-      for (long i = 0; i<conf.fact[0]->getK(); i++) A[i+1] = conf.coeff[0][i] * randInt(Int(0), conf.fact[0]->getM());
-      delay++;
-    } while ((A[conf.fact[0]->getK()] == 0) ||
-        (conf.period[0] && (conf.fact[0]->get_type()==MRG) ?
-         !conf.fact[0]->maxPeriod(A) :
-         conf.fact[0]->maxPeriod(A[conf.fact[0]->getK()])));
-    if (lattice) delete lattice;
-    return new MRGLattice<Int, Dbl>(conf.fact[0]->getM(), A, conf.proj->numProj(), conf.fact[0]->getK(), FULL);
-  }
-
-  MRGLattice<Int, Dbl>* nextGeneratorPow2(MRGLattice<Int, Dbl>* lattice) {
-    // Setting up two vectors. MRGComponent and MRGLattice do not use the same
-    // vector format
-    IntVec A;
-    A.SetLength(conf.fact[0]->getK()+1);
-    NTL::clear(A);
-    IntVec coefficients(2*conf.fact[0]->getK());
-    int sign;
-    int delay = 0;
-    // The program will not run the maxPeriod function if it is not wanted with
-    // this condition
-    do {
-      if (delay >= DELAY) {
-        if (timer.timeOver(conf.timeLimit)) return NULL;
-        else delay = 0;
-      }
-      for (long i = 0; i<conf.fact[0]->getK(); i++) {
-        if (conf.coeff[0][2*i] < 0) {
-          // This is a placeholder value for a zero coefficient
-          coefficients[2*i] = coefficients[2*i+1] = 2004012;
-          A[i+1] = 0;
-          continue;
-        }
-        coefficients[2*i] = randInt(Int(LatticeTester::Lg(conf.fact[0]->getR()))+1, conf.coeff[0][2*i]);
-        sign = randInt(0,1);
-        {
-          Int tmp;
-          NTL::power2(tmp, coefficients[2*i]);
-          A[i+1] = Int(sign?1:-1) * tmp;
-        }
-        coefficients[2*i] ^= sign<<30;
-        if (!(conf.coeff[0][2*i+1] < 0)) {
-          coefficients[2*i+1] = randInt(Int(LatticeTester::Lg(conf.fact[0]->getR()))+1, conf.coeff[0][2*i+1]);
-          sign = randInt(0,1);
-          Int tmp;
-          NTL::power2(tmp, coefficients[2*i+1]);
-          A[i+1] += Int(sign?1:-1) * tmp;
-          coefficients[2*i+1] ^= (sign<<30);
-        }
-        else coefficients[2*i+1] = 2004012;
-      }
-      delay++;
-    } while ((A[conf.fact[0]->getK()] == 0) || (conf.period[0] && !conf.fact[0]->maxPeriod(A)));
-    if (lattice) delete lattice;
-    MRGLattice<Int, Dbl>* lat = new MRGLattice<Int, Dbl>(conf.fact[0]->getM(), A, conf.proj->numProj(), conf.fact[0]->getK(), FULL);
-    lat->setPower2(coefficients);
-    return lat;
-  }
-
-  MWCLattice<Int, Dbl>* nextGenerator(MWCLattice<Int, Dbl>* lattice) {
-    Int m(0);
-    long exp = conf.fact[0]->getE()-1;
-    // 63 bits at a time because NTL converts from SIGNED long
-    while(exp > 0) {
-      if (exp < 63) {
-        m = (m << exp) + LatticeTester::RandBits(exp);
-        exp -= exp;
-      }
-      m = (m << 63) + LatticeTester::RandBits(63);
-      exp -= 63;
-    }
-    if ((m&1) == 1) m+=1;
-    Modulus mod(conf.fact[0]->getE(), m, true);
-    if (lattice) delete lattice;
-    return new MWCLattice<Int, Dbl>(conf.b, mod.next());
-  }
-
-  /*
-   * Goin' full random for now
-   * */
-  MMRGLattice<Int, Dbl>* nextGenerator(MMRGLattice<Int, Dbl>* lattice) {
-    IntMat A;
-    A.SetDims(conf.fact[0]->getK(), conf.fact[0]->getK());
-    NTL::clear(A);
-    int delay = 0;
-    do {
-      if (delay >= DELAY) {
-        if (timer.timeOver(conf.timeLimit)) return NULL;
-        else delay = 0;
-      }
-      for (long i = 0; i<conf.fact[0]->getK()-1; i++) {
-        A[i][i+1] = Int(1);
-      }
-      for (long i = 0; i<conf.fact[0]->getK(); i++) {
-        A[conf.fact[0]->getK()-1][i] = randInt(Int(0), conf.fact[0]->getM());
-      }
-      delay++;
-    } while ((NTL::determinant(A) == 0) || (conf.period[0] && !conf.fact[0]->maxPeriod(A)));
-    // Correcting the matrix to a full matrix
-    //for (int i = 0; i<conf.fact[0]->getK(); i++) A *= A;
-    for (int i = 0; i<conf.fact[0]->getK(); i++)
-      for (int j = 0; j<conf.fact[0]->getK(); j++)
-        A[i][j] = A[i][j]%conf.fact[0]->getM();
-    if (lattice) delete lattice;
-    return new MMRGLattice<Int, Dbl>(conf.fact[0]->getM(), A, conf.proj->numProj(), conf.fact[0]->getK());
-  }
-
-  ComboLattice<Int, Dbl>* nextGenerator(ComboLattice<Int, Dbl>* lattice) {
-    // Setting up two vectors. MRGComponent and MRGLattice do not use the same
-    // vector format
-    for (int k = 0; k < conf.num_comp; k++) {
-      IntVec A;
-      A.SetLength(conf.fact[k]->getK()+1);
+  template<typename Int, typename Dbl>
+    MRGLattice<Int, Dbl>* nextGenerator(ConfigSeek<Int, Dbl>& conf) {
+      // Setting up two vectors. MRGComponent and MRGLattice do not use the same
+      // vector format
+      NTL::vector<Int> A;
+      A.SetLength(conf.fact[0]->getK()+1);
       NTL::clear(A);
-      IntVec coefficients(2*conf.fact[k]->getK());
       int delay = 0;
       // The program will not run the maxPeriod function if it is not wanted with
       // this condition
@@ -225,75 +106,245 @@ template<typename Int, typename Dbl> struct SeekMain {
           if (timer.timeOver(conf.timeLimit)) return NULL;
           else delay = 0;
         }
-        for (long i = 0; i<conf.fact[k]->getK(); i++) A[i+1] = conf.coeff[k][i] * randInt(Int(0), conf.fact[k]->getM());
+        for (long i = 0; i<conf.fact[0]->getK(); i++) A[i+1] = conf.coeff[0][i] * randInt(Int(0), conf.fact[0]->getM());
         delay++;
-      } while ((A[conf.fact[k]->getK()] == 0) || (conf.period[k] && !conf.fact[k]->maxPeriod(A)));
-      IntVec B;
-      B.SetLength(conf.fact[k]->getK());
-      for (int i = 0; i < conf.fact[k]->getK(); i++) B[i] = A[i+1];
-      conf.fact[k]->setA(B);
+      } while ((A[conf.fact[0]->getK()] == 0) ||
+          (conf.period[0] && (conf.fact[0]->get_type()==MRG) ?
+           !conf.fact[0]->maxPeriod(A) :
+           conf.fact[0]->maxPeriod(A[conf.fact[0]->getK()])));
+      return new MRGLattice<Int, Dbl>(conf.fact[0]->getM(), A, conf.proj->numProj(), conf.fact[0]->getK(), FULL);
     }
-    if (lattice) delete lattice;
-    MRGLattice<Int, Dbl>* mrg_lat = getLatCombo<Int, Dbl>(conf.fact, conf.proj->numProj());
-    ComboLattice<Int, Dbl>* new_lat = new ComboLattice<Int, Dbl>(conf.fact, *mrg_lat);
-    delete mrg_lat;
-    return new_lat;
+
+  template<typename Int, typename Dbl>
+    MRGLattice<Int, Dbl>* nextGeneratorPow2(ConfigSeek<Int, Dbl>& conf) {
+      typedef NTL::vector<Int> IntVec;
+      // Setting up two vectors. MRGComponent and MRGLattice do not use the same
+      // vector format
+      IntVec A;
+      A.SetLength(conf.fact[0]->getK()+1);
+      NTL::clear(A);
+      IntVec coefficients(2*conf.fact[0]->getK());
+      int sign;
+      int delay = 0;
+      // The program will not run the maxPeriod function if it is not wanted with
+      // this condition
+      do {
+        if (delay >= DELAY) {
+          if (timer.timeOver(conf.timeLimit)) return NULL;
+          else delay = 0;
+        }
+        for (long i = 0; i<conf.fact[0]->getK(); i++) {
+          if (conf.coeff[0][2*i] < 0) {
+            // This is a placeholder value for a zero coefficient
+            coefficients[2*i] = coefficients[2*i+1] = 2004012;
+            A[i+1] = 0;
+            continue;
+          }
+          coefficients[2*i] = randInt(Int(LatticeTester::Lg(conf.fact[0]->getR()))+1, conf.coeff[0][2*i]);
+          sign = randInt(0,1);
+          {
+            Int tmp;
+            NTL::power2(tmp, coefficients[2*i]);
+            A[i+1] = Int(sign?1:-1) * tmp;
+          }
+          coefficients[2*i] ^= sign<<30;
+          if (!(conf.coeff[0][2*i+1] < 0)) {
+            coefficients[2*i+1] = randInt(Int(LatticeTester::Lg(conf.fact[0]->getR()))+1, conf.coeff[0][2*i+1]);
+            sign = randInt(0,1);
+            Int tmp;
+            NTL::power2(tmp, coefficients[2*i+1]);
+            A[i+1] += Int(sign?1:-1) * tmp;
+            coefficients[2*i+1] ^= (sign<<30);
+          }
+          else coefficients[2*i+1] = 2004012;
+        }
+        delay++;
+      } while ((A[conf.fact[0]->getK()] == 0) || (conf.period[0] && !conf.fact[0]->maxPeriod(A)));
+      MRGLattice<Int, Dbl>* lat = new MRGLattice<Int, Dbl>(conf.fact[0]->getM(), A, conf.proj->numProj(), conf.fact[0]->getK(), FULL);
+      lat->setPower2(coefficients);
+      return lat;
+    }
+
+  template<typename Int, typename Dbl>
+    MWCLattice<Int, Dbl>* nextGenerator(ConfigSeek<Int, Dbl>& conf) {
+      Int m(0);
+      long exp = conf.fact[0]->getE()-1;
+      // 63 bits at a time because NTL converts from SIGNED long
+      while(exp > 0) {
+        if (exp < 63) {
+          m = (m << exp) + LatticeTester::RandBits(exp);
+          exp -= exp;
+        }
+        m = (m << 63) + LatticeTester::RandBits(63);
+        exp -= 63;
+      }
+      if ((m&1) == 1) m+=1;
+      Modulus<Int> mod(conf.fact[0]->getE(), m, true);
+      return new MWCLattice<Int, Dbl>(conf.b, mod.next());
+    }
+
+  /*
+   * Goin' full random for now
+   * */
+  template<typename Int, typename Dbl>
+    MMRGLattice<Int, Dbl>* nextGenerator(ConfigSeek<Int, Dbl>& conf) {
+      NTL::matrix<Int> A;
+      A.SetDims(conf.fact[0]->getK(), conf.fact[0]->getK());
+      NTL::clear(A);
+      int delay = 0;
+      do {
+        if (delay >= DELAY) {
+          if (timer.timeOver(conf.timeLimit)) return NULL;
+          else delay = 0;
+        }
+        for (long i = 0; i<conf.fact[0]->getK()-1; i++) {
+          A[i][i+1] = Int(1);
+        }
+        for (long i = 0; i<conf.fact[0]->getK(); i++) {
+          A[conf.fact[0]->getK()-1][i] = randInt(Int(0), conf.fact[0]->getM());
+        }
+        delay++;
+      } while ((NTL::determinant(A) == 0) || (conf.period[0] && !conf.fact[0]->maxPeriod(A)));
+      // Correcting the matrix to a full matrix
+      //for (int i = 0; i<conf.fact[0]->getK(); i++) A *= A;
+      for (int i = 0; i<conf.fact[0]->getK(); i++)
+        for (int j = 0; j<conf.fact[0]->getK(); j++)
+          A[i][j] = A[i][j]%conf.fact[0]->getM();
+      return new MMRGLattice<Int, Dbl>(conf.fact[0]->getM(), A, conf.proj->numProj(), conf.fact[0]->getK());
+    }
+
+  /**
+   * Sing there can be a great variety of combined lattices, this class helps
+   * choose the correct constructor for such lattices.
+   * */
+  template<typename Int, typename Dbl>
+    class ComboLatticeFinder {
+      typedef NTL::vector<Int> IntVec;
+
+      public:
+      /**
+       * The only public and visible function in this class. Calls the correct
+       * underlying function.
+       * */
+      static ComboLattice<Int,Dbl>* getFunction(ConfigSeek<Int, Dbl>& conf) {
+        return nextGenerator(conf);
+      }
+
+      private:
+
+      static ComboLattice<Int, Dbl>* nextGenerator(ConfigSeek<Int, Dbl>& conf) {
+        // Setting up two vectors. MRGComponent and MRGLattice do not use the same
+        // vector format
+        for (int k = 0; k < conf.num_comp; k++) {
+          IntVec A;
+          A.SetLength(conf.fact[k]->getK()+1);
+          NTL::clear(A);
+          int delay = 0;
+          // The program will not run the maxPeriod function if it is not wanted with
+          // this condition
+          do {
+            if (delay >= DELAY) {
+              if (timer.timeOver(conf.timeLimit)) return NULL;
+              else delay = 0;
+            }
+            for (long i = 0; i<conf.fact[k]->getK(); i++) {
+              if (conf.fact[k]->get_type() == MRG)
+                A[i+1] = conf.coeff[k][i] * randInt(Int(0), conf.fact[k]->getM());
+              if (conf.fact[k]->get_type() == MWC)
+                A[i+1] = conf.coeff[k][i] * randInt(Int(0), conf.fact[k]->m_MWCb);
+            }
+            if (conf.fact[k]->get_type() == MWC) A[0] = -1;
+            delay++;
+          } while ((A[conf.fact[k]->getK()] == 0) || (conf.period[k] && !conf.fact[k]->maxPeriod(A)));
+          if (conf.fact[k]->get_type() == MRG) {
+            IntVec B;
+            B.SetLength(conf.fact[k]->getK());
+            for (int i = 0; i < conf.fact[k]->getK(); i++) B[i] = A[i+1];
+            conf.fact[k]->setA(B);
+          } else {
+            conf.fact[k]->setA(A);
+          }
+        }
+        MRGLattice<Int, Dbl>* mrg_lat = getLatCombo<Int, Dbl>(conf.fact, conf.proj->numProj());
+        ComboLattice<Int, Dbl>* new_lat = new ComboLattice<Int, Dbl>(conf.fact, *mrg_lat);
+        delete mrg_lat;
+        return new_lat;
+      }
+    };
+}
+
+template<typename Lat> struct SeekMain {
+  typedef typename Lat::Int Int;
+  typedef typename Lat::Dbl Dbl;
+  typedef NTL::vector<Int> IntVec;
+  typedef NTL::matrix<Int> IntMat;
+
+  ConfigSeek<Int, Dbl> conf;
+  Lat* lat = 0;
+
+  SeekMain(ConfigSeek<Int, Dbl>& conf) { this->conf = conf;}
+
+  ~SeekMain() {
+    if (lat != NULL) delete lat;
+    for (int i = 0; i < conf.num_comp; i++) {
+      if (conf.fact[i]) delete conf.fact[i];
+    }
+    delete conf.proj;
   }
 
   /*
    * These next function add the tested lattices to the list of the best ones.
    * This only add the lattices that are good enough.
    * */
-  template<typename Lat>
-    void printResults(MeritList<Lat>& bestLattice) {
-      *out << "\nSeek: A search program for Random Number Generators\n";
-      *out << delim;
-      *out << ((conf.num_comp>1)?"Combined generators":"Simple generator")
-        << " configuration" << ((conf.num_comp>1)?"s":"") << "\n\n";
-      for (int k = 0; k < conf.num_comp; k++) {
-        if (k > 0) *out << "\n";
-        if (conf.num_comp >1) *out << "Component " << k+1 << ":\n";
-        *out << "Generator type: " << toStringGen(conf.fact[k]->get_type()) << "\n";
-        if (conf.fact[k]->get_type() == MRG) {
-          *out << "Modulo:         m = " << conf.fact[k]->getM() << " = " << conf.fact[k]->getB() << "^"
-            << conf.fact[k]->getE();
-          if (conf.fact[k]->getR() > 0) *out << "+" << conf.fact[k]->getR();
-          if (conf.fact[k]->getR() < 0) *out << conf.fact[k]->getR();
-          *out << "\n";
-          *out << "Order:          k = " << conf.fact[k]->getK() << "\n";
-        } else if (conf.fact[k]->get_type() == MWC) {
-        } else if (conf.fact[k]->get_type() == MMRG) {
-        }
-        *out << (conf.period[0]?"Full":"Any") << " period length\n";
+  void printResults(MeritList<Lat>& bestLattice) {
+    *out << "\nSeek: A search program for Random Number Generators\n";
+    *out << delim;
+    *out << ((conf.num_comp>1)?"Combined generators":"Simple generator")
+      << " configuration" << ((conf.num_comp>1)?"s":"") << "\n\n";
+    for (int k = 0; k < conf.num_comp; k++) {
+      if (k > 0) *out << "\n";
+      if (conf.num_comp >1) *out << "Component " << k+1 << ":\n";
+      *out << "Generator type: " << toStringGen(conf.fact[k]->get_type()) << "\n";
+      if (conf.fact[k]->get_type() == MRG) {
+        *out << "Modulo:         m = " << conf.fact[k]->getM() << " = " << conf.fact[k]->getB() << "^"
+          << conf.fact[k]->getE();
+        if (conf.fact[k]->getR() > 0) *out << "+" << conf.fact[k]->getR();
+        if (conf.fact[k]->getR() < 0) *out << conf.fact[k]->getR();
+        *out << "\n";
+        *out << "Order:          k = " << conf.fact[k]->getK() << "\n";
+      } else if (conf.fact[k]->get_type() == MWC) {
+      } else if (conf.fact[k]->get_type() == MMRG) {
       }
-      *out << "\nTest:\n" << (conf.best?"Best":"Worst") << " generators "
-        "ranked by ";
-      if(conf.criterion == LatticeTester::SPECTRAL) *out
-        << (conf.normaType==LatticeTester::NONE?"minimal inverse shortest "
-            "non-zero vector length":"Spectral Test") << "\n";
-      else if (conf.criterion == LatticeTester::LENGTH) *out << "minimal"
-        << " shortest non-zero vector length\n";
-      else if (conf.criterion == LatticeTester::BEYER) *out << "their Beyer quotient\n";
-      if (conf.normaType != LatticeTester::NONE) {
-        *out << "Normalizer used: "
-          << LatticeTester::toStringNorma(conf.normaType) << "\n";
-      }
-      *out << "\nDimensions and projections:\n";
-      *out << conf.proj->toString();
-      *out << delim;
-      if (print_time) {
-        *out << "Allowed running time: " << conf.timeLimit << "s.\n";
-        *out << "Actual CPU time: " << timer.toString() << "\n";
-      }
-      *out << "Number of generators kept: " << conf.max_gen << "\n";
-      *out << "Number of generators tested: " << conf.num_gen << "\n\n";
-      *out << "Retained generators (from best to worst):\n";
-      for (auto it = bestLattice.getList().begin(); it!= bestLattice.getList().end(); it++) {
-        *out << delim;
-        *out << (*it).getLattice() << "\n";
-        *out << (*it).toStringMerit() << "\n";
-      }
+      *out << (conf.period[0]?"Full":"Any") << " period length\n";
     }
+    *out << "\nTest:\n" << (conf.best?"Best":"Worst") << " generators "
+      "ranked by ";
+    if(conf.criterion == LatticeTester::SPECTRAL) *out
+      << (conf.normaType==LatticeTester::NONE?"minimal inverse shortest "
+          "non-zero vector length":"Spectral Test") << "\n";
+    else if (conf.criterion == LatticeTester::LENGTH) *out << "minimal"
+      << " shortest non-zero vector length\n";
+    else if (conf.criterion == LatticeTester::BEYER) *out << "their Beyer quotient\n";
+    if (conf.normaType != LatticeTester::NONE) {
+      *out << "Normalizer used: "
+        << LatticeTester::toStringNorma(conf.normaType) << "\n";
+    }
+    *out << "\nDimensions and projections:\n";
+    *out << conf.proj->toString();
+    *out << delim;
+    if (print_time) {
+      *out << "Allowed running time: " << conf.timeLimit << "s.\n";
+      *out << "Actual CPU time: " << timer.toString() << "\n";
+    }
+    *out << "Number of generators kept: " << conf.max_gen << "\n";
+    *out << "Number of generators tested: " << conf.num_gen << "\n\n";
+    *out << "Retained generators (from best to worst):\n";
+    for (auto it = bestLattice.getList().begin(); it!= bestLattice.getList().end(); it++) {
+      *out << delim;
+      *out << (*it).getLattice() << "\n";
+      *out << (*it).toStringMerit() << "\n";
+    }
+  }
 
   int print_progress(int old) {
     int per_80 = timer.val(Chrono::SEC)/conf.timeLimit * 80;
@@ -309,7 +360,7 @@ template<typename Int, typename Dbl> struct SeekMain {
     return per_80;
   }
 
-  int Seek ()
+  int Seek (Lat* (*nextGenerator)(ConfigSeek<Int, Dbl>&) )
   {
     if (!conf.gen_set) {
       std::cerr << "No generator set for in seek tag. Aborting.\n";
@@ -332,68 +383,18 @@ template<typename Int, typename Dbl> struct SeekMain {
     if (conf.progress) {
       old = print_progress(-1);
     }
-    if (conf.num_comp > 1) {
-      ComboLattice<Int, Dbl>* combolat=0;
-      MeritList<ComboLattice<Int, Dbl>> bestLattice(conf.max_gen, conf.best);
-      while (!timer.timeOver(conf.timeLimit)) {
-        combolat = nextGenerator(combolat);
-        if (combolat == NULL) continue;
-        bestLattice.add(test_seek(*combolat, conf));
-        conf.num_gen++;
-        conf.currentMerit = bestLattice.getMerit();
-        if (conf.progress) old = print_progress(old);
-      }
-      std::cout << "\r                                                                                                          \r";
-      if (combolat) delete combolat;
-      printResults(bestLattice);
-    } else if (conf.fact[0]->get_type() == MRG || conf.fact[0]->get_type() == LCG) {
-      MRGLattice<Int, Dbl>* mrglat = 0;
-      MeritList<MRGLattice<Int, Dbl>> bestLattice(conf.max_gen, conf.best);
-      while (!timer.timeOver(conf.timeLimit)) {
-        if (conf.construction == "POW2") mrglat = nextGeneratorPow2(mrglat);
-        else if (conf.construction == "RANDOM") mrglat = nextGenerator(mrglat);
-        if (mrglat == NULL) continue;
-        bestLattice.add(test_seek(*mrglat, conf));
-        conf.num_gen++;
-        conf.currentMerit = bestLattice.getMerit();
-        if (conf.progress) old = print_progress(old);
-      }
-      std::cout << "\r                                                                                                          \r";
-      if (mrglat) delete mrglat;
-      printResults(bestLattice);
-    } else if (conf.fact[0]->get_type() == MWC) {
-      MWCLattice<Int, Dbl>* mwclat = 0;
-      MeritList<MWCLattice<Int, Dbl>> bestLattice(conf.max_gen, conf.best);
-      while (!timer.timeOver(conf.timeLimit)) {
-        mwclat = nextGenerator(mwclat);
-        if (mwclat == NULL) continue;
-        bestLattice.add(test_seek(*mwclat, conf));
-        conf.num_gen++;
-        conf.currentMerit = bestLattice.getMerit();
-        if (conf.progress) old = print_progress(old);
-      }
-      std::cout << "\r                                                                                                          \r";
-      if (mwclat) delete mwclat;
-      printResults(bestLattice);
-    } else if (conf.fact[0]->get_type() == MMRG) {
-      MMRGLattice<Int, Dbl>* mmrglat = 0;
-      MeritList<MMRGLattice<Int, Dbl>> bestLattice(conf.max_gen, conf.best);
-      while (!timer.timeOver(conf.timeLimit)) {
-        mmrglat = nextGenerator(mmrglat);
-        if (mmrglat == NULL) continue;
-        bestLattice.add(test_seek(*mmrglat, conf));
-        conf.num_gen++;
-        conf.currentMerit = bestLattice.getMerit();
-        if (conf.progress) old = print_progress(old);
-      }
-      std::cout << "\r                                                                                                          \r";
-      if (mmrglat) delete mmrglat;
-      printResults(bestLattice);
+    MeritList<Lat> bestLattice(conf.max_gen, conf.best);
+    while (!timer.timeOver(conf.timeLimit)) {
+      if (lat != NULL) delete lat;
+      lat = nextGenerator(conf);
+      if (lat == NULL) continue;
+      bestLattice.add(test_seek(*lat, conf));
+      conf.num_gen++;
+      conf.currentMerit = bestLattice.getMerit();
+      if (conf.progress) old = print_progress(old);
     }
-    for (int i = 0; i < conf.num_comp; i++) {
-      if (conf.fact[i]) delete conf.fact[i];
-    }
-    delete conf.proj;
+    std::cout << "\r                                                                                                          \r";
+    printResults(bestLattice);
     return 0;
   }
 }; // end struct SeekMain

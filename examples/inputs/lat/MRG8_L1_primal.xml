@@ -6,14 +6,15 @@
       <coeff x="1089656042 1906537547 1764115693 1304127872 189748160 1984088114 626062218 1927846343"/>
     </mrg>
   </gen>
-  <spectral>
+  <length>
     <reduction x="FULL"/>
-    <norma x="BESTLAT"/>
-    <dual x="true"/> 
-  </spectral>
+    <dual x="false"/>
+    <norm x="L1NORM"/>
+  </length>
   <proj>
     <min x="9"/>
     <num x="1"/>
-    <dim x="34"/>
+    <dim x="15"/>
   </proj>
+  <detail x="0"/>
 </lattest>

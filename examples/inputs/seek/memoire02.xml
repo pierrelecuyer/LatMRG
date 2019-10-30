@@ -1,2 +1,33 @@
+<!--Example of a search of combined MRGs with 64 bits-->
 <seek>
+  <gen>
+    <numcomp x="2"/>
+    <mrg>
+      <modulo basis="2" exponent="64" rest="-353"/>
+      <order x="3"/>
+      <method random="1 1 1"/>
+      <period check="true">
+        <m1 method="DECOMP_READ" file="examples/inputs/seek/memoire02m1.fact"/>
+        <r method="DECOMP_READ" file="examples/inputs/seek/memoire02r.fact"/>
+      </period>
+    </mrg>
+    <mrg>
+      <modulo basis="2" exponent="64" rest="-503"/>
+      <order x="3"/>
+      <method random="1 1 1"/>
+      <period check="true"/>
+    </mrg>
+  </gen>
+  <spectral>
+    <reduction method="FULL"/>
+    <norma x="BESTLAT"/>
+    <dual x="true"/>
+  </spectral>
+  <proj>
+    <min x="3"/>
+    <num x="1"/>
+    <dim x="34"/>
+  </proj>
+  <time x="60"/>
+  <num_gen x="5"/>
 </seek>

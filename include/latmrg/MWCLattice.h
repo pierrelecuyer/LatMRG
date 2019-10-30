@@ -11,7 +11,11 @@
 
 #include <string>
 
-namespace {
+/**
+ * Small functions to give the modulo and the coefficient of the LCG generator
+ * equivalent to a MWC generator with modulo b and coefficients e.
+ * */
+namespace MWCEquiv{
   /**
    * Returns the modulo for an MWC with coefficients in `e` and
    * modulo `b`.
@@ -19,7 +23,7 @@ namespace {
   template<typename Int>
     Int LCGMod(const Int& b, const NTL::vector<Int>& e){
       Int m(0);
-      for(int i = 0; i <= e.length(); i++) {
+      for(int i = 0; i < e.length(); i++) {
         m += e[i] * NTL::power(b, i);
       }
       return m;
@@ -34,7 +38,6 @@ namespace {
   template<typename Int>
     NTL::vector<Int> LCGCoeff(const Int& b, const NTL::vector<Int>& e){
       Int mult = LCGMod(b,e);
-      std::cout << b << "\n";
       Int a = NTL::InvMod(b, mult);
       NTL::vector<Int> coeff;
       coeff.SetLength(2);
@@ -190,7 +193,7 @@ namespace LatMRG {
 
   template<typename Int, typename Dbl>
     MWCLattice<Int, Dbl>::MWCLattice(const Int & b, const IntVec & e, int k, int maxDim):
-      MRGLattice<Int, Dbl>(LCGMod(b, e), LCGCoeff(b,e), maxDim, 1, FULL)
+      MRGLattice<Int, Dbl>(MWCEquiv::LCGMod(b, e), MWCEquiv::LCGCoeff(b,e), maxDim, 1, FULL)
   {
     m_MWCmod = b;
     m_MWCorder = k;

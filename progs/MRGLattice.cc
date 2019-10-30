@@ -136,8 +136,7 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
   if (node) {
     NTL::conv(order, node->FirstAttribute()->IntValue());
   } else {
-    std::cerr << "No 'order' tag in 'mrg' tag.\n";
-    return 1;
+    NTL::conv(order, 1);
   }
 
   if (mode == "seek") {
@@ -229,12 +228,10 @@ int readMMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
   }
 
   if (mode == "seek") {
-    node = current->FirstChildElement("method");
-    if (node) {
-      std::cerr << "Currently no way to build matrix for MMRG implemented.\n";
-      return 1;
-    }
-  } else if (mode == "lattest") {
+    std::cerr << "Currently no way to build matrix for MMRG implemented.\n";
+    return 1;
+  }
+  if (mode == "lattest") {
     node = current->FirstChildElement("matrix");
     if (node) {
       temp_mat.SetDims(order, order);
@@ -285,7 +282,7 @@ int readMWC(tinyxml2::XMLNode* current, Conf& conf, int i) {
     else rest = 0;
     modulo = NTL::power(basis, exponent) + rest;
   } else {
-    std::cerr << "No 'modulo' tag in 'mrg' tag.\n";
+    std::cerr << "No 'modulo' tag in 'mwc' tag.\n";
     return 1;
   }
 
@@ -293,15 +290,26 @@ int readMWC(tinyxml2::XMLNode* current, Conf& conf, int i) {
   if (node) {
     NTL::conv(order, node->FirstAttribute()->IntValue());
   } else {
-    std::cerr << "No 'order' tag in 'mrg' tag.\n";
+    std::cerr << "No 'order' tag in 'mwc' tag.\n";
     return 1;
   }
 
-  node = current->FirstChildElement("method");
-  if (node) {
-    std::cerr << "Currently no way to search for coefficients for MWC.\n";
-    return 1;
-  } else {
+  if (mode == "seek") {
+    node = current->FirstChildElement("method");
+    if (node) {
+      auto value = node->FirstAttribute();
+      if (value) {
+        if (!strcmp(value->Name(), "random")) {
+          conf.coeff[i].SetLength(order);
+          if (toVectString(value->Value(), conf.coeff[i], order)) return 1;
+        }
+      }
+    } else {
+      std::cerr << "Currently no way to search for coefficients for MWC.\n";
+      return 1;
+    }
+  }
+  if (mode == "lattest") {
     node = current->FirstChildElement("coeff");
     if (node) {
       conf.coeff[i].SetLength(order+1);
@@ -313,13 +321,17 @@ int readMWC(tinyxml2::XMLNode* current, Conf& conf, int i) {
     }
   }
 
-  node = current->FirstChildElement("period");
-  if (node && readGenPer(node, conf, i, filem1, filer, decompm1, decompr))
-    std::cerr << "Non critical error in 'period' tag of 'mrg' tag.\n";
+  if (mode == "lattest") {
+    node = current->FirstChildElement("period");
+    if (node && readGenPer(node, conf, i, filem1, filer, decompm1, decompr))
+      std::cerr << "Non critical error in 'period' tag of 'mwc' tag.\n";
 
-
-  for(int j = 0; j <= order; j++) {
-    m += conf.coeff[i][j] * NTL::power(modulo, j);
+    for(int j = 0; j <= order; j++) {
+      m += conf.coeff[i][j] * NTL::power(modulo, j);
+    }
+  }
+  if (mode == "seek") {
+    m = 2;
   }
   auto comp = new MRGComponent<typename Conf::Int>(m, order,
       decompm1, filem1.c_str(), decompr, filer.c_str());
@@ -776,9 +788,26 @@ int readFile(const char* filename) {
       return prog.CheckPeriod();
     } else if (!strcmp(current->Value(), "seek")) {
       mode = "seek";
-      SeekMain<Int, Dbl> prog;
-      readSeek(current, prog.conf);
-      return prog.Seek();
+      ConfigSeek<Int, Dbl> conf;
+      readSeek(current, conf);
+      if (conf.num_comp > 1) {
+        SeekMain<ComboLattice<Int, Dbl>> prog(conf);
+        return prog.Seek(LatMRGSeek::ComboLatticeFinder<Int, Dbl>::getFunction);
+      } else if (conf.fact[0]->get_type() == MRG) {
+        SeekMain<MRGLattice<Int, Dbl>> prog(conf);
+        return prog.Seek(LatMRGSeek::nextGenerator);
+      } else if (conf.fact[0]->get_type() == LCG) {
+        SeekMain<MRGLattice<Int, Dbl>> prog(conf);
+        return prog.Seek(LatMRGSeek::nextGenerator);
+      } else if (conf.fact[0]->get_type() == MWC) {
+        SeekMain<MWCLattice<Int, Dbl>> prog(conf);
+        return prog.Seek(LatMRGSeek::nextGenerator);
+      } else if (conf.fact[0]->get_type() == MMRG) {
+        SeekMain<MMRGLattice<Int, Dbl>> prog(conf);
+        return prog.Seek(LatMRGSeek::nextGenerator);
+      }
+      std::cerr << "Seek exited prematurely.\n";
+      return 1;
     } else if (!strcmp(current->Value(), "lattest")) {
       mode = "lattest";
       LatTest<Int, Dbl> prog;

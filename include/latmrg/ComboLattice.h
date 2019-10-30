@@ -7,6 +7,7 @@
 
 #include "latmrg/MRGLattice.h"
 #include "latmrg/MRGComponent.h"
+#include "latmrg/MWCLattice.h"
 
 namespace LatMRG {
 
@@ -23,23 +24,39 @@ namespace LatMRG {
       int k = 0;
       Int modulo = Int(1);
       for (int i = 0; i < num_comp; i++) {
-        modulo *= comp[i]->getM();
-        k = std::max(k, comp[i]->getK());
+          modulo *= comp[i]->getM();
+        if (comp[i]->get_type() == MRG)
+          k = std::max(k, comp[i]->getK());
+        else if (comp[i]->get_type() == MWC)
+          k = std::max(k, 1);
       }
       // Filling up vector A
       IntVec A(k+1);
       for (int j = 0; j < num_comp; j++) {
         // Assumes the modulus of the components are relatively primes
+        Int mod_gen(1);
+        if (comp[j]->get_type() == MRG) {
+          mod_gen = comp[j]->getM();
+        } else if (comp[j]->get_type() == MWC) {
+          mod_gen = MWCEquiv::LCGMod(comp[j]->m_MWCb, comp[j]->getA());
+        }
         Int n;
         {
           Int b, c, d, e;
-          LatticeTester::Euclide(modulo/comp[j]->getM(), comp[j]->getM(), n, b, c, d, e);
+          LatticeTester::Euclide(modulo/mod_gen, mod_gen, n, b, c, d, e);
         }
-        n %= comp[j]->getM();
+        n %= mod_gen;
 
-        IntVec a(comp[j]->getA());
+        IntVec a;
+        if (comp[j]->get_type() == MRG) {
+          a = comp[j]->getA();
+        } else if (comp[j]->get_type() == MWC) {
+          a.resize(1);
+          a[0] = MWCEquiv::LCGCoeff(comp[j]->m_MWCb, comp[j]->getA())[1];
+        }
         for (int i = 1; i <= k; i++) {
-          if (i <= comp[j]->getK()) A[i] += a[i-1]*n*modulo/comp[j]->getM();
+          if (comp[j]->get_type() == MRG && i <= comp[j]->getK()) A[i] += a[i-1]*n*modulo/mod_gen;
+          if (comp[j]->get_type() == MWC && i <= 1) A[i] += a[i-1]*n*modulo/mod_gen;
         }
       }
       // Modulo only once
