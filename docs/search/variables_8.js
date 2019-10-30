@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['orbitseed',['orbitSeed',['../class_lat_m_r_g_1_1_m_r_g_component.html#a30a42afa4a8c3457a933363324a5af00',1,'LatMRG::MRGComponent']]]
+  ['lattice',['lattice',['../background_8dox.html#a99b617dab208bcfce181fbbdb12ecbc7',1,'background.dox']]],
+  ['lattices',['lattices',['../background_8dox.html#a153076dda2c098274b7affae0f7e3796',1,'background.dox']]]
 ];

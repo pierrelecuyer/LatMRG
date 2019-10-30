@@ -49,8 +49,8 @@
  *
  * \section conf_all Program wide tags
  *
- * There currently is only one tag that is valid for any of the program mode.
- * This tag must be specified at the same level as the mode tag to be recognized.
+ * There currently are two tags that are valid for any of the program mode.
+ * These tags must be specified at the same level as the mode tag to be recognized.
  *
  * `<out>` is a program wide tag that lets the user specify where the program outputs.
  * If it is not specified, the program will print its output in the command line.
@@ -58,6 +58,13 @@
  * directory as the configuration file, but with a `.res` extension.
  * Otherwise, it will print the output in a file named after the value of the
  * first attribute.
+ *
+ * `<print_time>` is a tag that lets the user control if the program prints the
+ * time it took to execute or not. If this tag is ommited, time will be printed.
+ * If you want to avoid printing time, simply add `<print_time x="false"/>` at
+ * the end of the configuration. This is mainly used for development purposes.
+ * We can run examples files and compare their outputs with what is expected to
+ * make sure everything works as expected.
  *
  * \section conf_mk Search for m and k
  *
@@ -109,8 +116,7 @@
  *   recurrence. Needs to have attributes
  *   `basis`, `exponent` and `rest`. Will compute the modulo as
  *    `m = b^e+r`
- * - <b><tt><order k="k"/></tt></b> (no default): The order of the recurrence. Needs to have an attribute
- *   whose value is the order.
+ * - <b><tt><order k="k"/></tt></b> (no default): The order of the recurrence.
  * - <b>`<mult x="a1 a2 ... ak"/>`</b> (no default): The coefficients of the
  *   generator. This is not valid for `MMRG` `type`. If `type` is `MWC`, the
  *   vector must be of the form x="a0 a1 ... ak" (with `k+1` coefficients).
@@ -149,9 +155,9 @@
  *     <dual x="true"/>
  *   </spectral>
  *   <proj>
- *     <min x="3"/>
+ *     <min x="4"/>
  *     <num x="1"/>
- *     <dim x="31"/>
+ *     <dim x="32"/>
  *   </proj>
  * </lattest>
  * ```
@@ -169,8 +175,10 @@
  *        recurrence. Needs to have attributes
  *       `basis`, `exponent` and `rest`. Will compute the modulo as
  *        `m = b^e+r`
- *     - <b><tt><order k="k"/></tt></b> (no default): The order of the recurrence. Needs to have an attribute
- *       whose value is the order.
+ *     - <b><tt><order k="k"/></tt></b> (default: k="1"): The order of the
+ *       recurrence. Needs to have an attribute whose value is the order. If
+ *       none is not given, it is assumed the generator is of order 1. This
+ *       simplifies LCG specification.
  *     - <b>`<period check="bool"/>`</b> (default: `true`): Indicates wheter or not to verify the full
  *       period via its attribute. Nested tags are unecessary if `check` is `false`.
  *       - <b>`<m1 method="m" file="filename"/>`</b> (default: method="DECOMP", file: a random filename): Indicates how to obtain
@@ -190,17 +198,20 @@
  *       0, the coefficient is 0 and `pow2="a[1,1] a[2,1] ... a[1,k-1] a[2,k-1]",
  *       the coefficients are search randombly, taken as a sum of powers of 2 with
  *       exponents between `a[1,i]` and `a[2,i]`.
- *     - <b>`<coefficients a="a1 a2 ... ak"/>`</b> (`<lattest>` only) (no default):
+ *     - <b>`<coeff a="a1 a2 ... ak"/>`</b> (`<lattest>` only) (no default):
  *       The coefficients of the generator. `"a1 a2 ... ak"` are the numerical
  *       values for the coefficients.
  *   - <b>`<mmrg>`</b>: A MMRG component
  *     - <b>`<modulo basis="b" exponent="e" rest="r"/>`</b>: See modulo in <b>`<mrg>`</b>
- *     - <b>`<order k="k">`</b>: See order in <b>`<mrg>`</b>
+ *     - <b>`<order k="k">`</b> (no default): See order in <b>`<mrg>`</b>
  *     - <b>`<period check="bool"/>`</b>: See period in <b>`<mrg>`</b>
  *   - <b>`<mwc>`</b>: A MWC component
  *     - <b>`<modulo basis="b" exponent="e" rest="r"/>`</b>: See modulo in <b>`<mrg>`</b>
- *     - <b>`<order k="k">`</b>: See order in <b>`<mrg>`</b>
+ *     - <b>`<order k="k">`</b> (no default): See order in <b>`<mrg>`</b>
  *     - <b>`<period check="bool"/>`</b>: See period in <b>`<mrg>`</b>
+ *     - <b>`<coeff a="a0 a1 ... ak"/>`</b> (`<lattest>` only) (no default):
+ *       The coefficients of the generator. `"a0 a1 ... ak"` are the numerical
+ *       values for the coefficients.
  * - <b>`<spectral>`</b>: Contains the parameters to perform a spectral test.
  *   Here, we consider every test based on the inverse of the length of the
  *   shortest non-zero lattice vector.
@@ -225,7 +236,10 @@
  *     <b>`<spectral>`</b>.
  *   - <b>`<dual d="bool"/>`</b> (default: `false`): see dual in
  *     <b>`<spectral>`</b>.
- *   - <b>`<norm n="norm"/>`</b> (default: `L2`):
+ *   - <b>`<norm n="norm"/>`</b> (default: `L2NORM`): Can be used to change the
+ *     norm used to compute the vector length. `L2NORM` is the default euclidian
+ *     norm, but `L1NORM` can also be used as a way to obtain the number of
+ *     hyperplans spanned by the generator points.
  * - <b>`<proj>`</b>: Contains the parameters of the projections to use.
  *   - <b>`<min min="x">`</b>: The minimal dimension. The program will test
  *     sequential projection starting with \f$\{0, \ldots, x-1\}\f$, and every
@@ -249,9 +263,9 @@
  *   false. Unless looking for something with an abysmal spectral test, it is
  *   fairly easy to find a generator with bad enough performance in the spectral
  *   test for illustration purpose..
- * - <b>`<detail level="x">`</b> (Not implemented yet): Intended as a way to
- *   specify the verbosity of the output, particularly regarding the results of
- *   the tests in different dimensions.
+ * - <b>`<detail level="int">`</b> (lattest only) (default: `1`): level has to be an integer
+ *   between 0 and 2. The highest level of detail will print the most
+ *   information on the tested generator.
  * - <b>`<function_params>`</b> (To come): Re-add options to fine grain
  *   functions parameters in the reduction to avoid recompiling if the program
  *   fails.

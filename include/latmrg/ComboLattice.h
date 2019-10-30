@@ -24,11 +24,15 @@ namespace LatMRG {
       int k = 0;
       Int modulo = Int(1);
       for (int i = 0; i < num_comp; i++) {
-          modulo *= comp[i]->getM();
-        if (comp[i]->get_type() == MRG)
+        Int mod_gen(1);
+        if (comp[i]->get_type() == MRG) {
           k = std::max(k, comp[i]->getK());
-        else if (comp[i]->get_type() == MWC)
+          mod_gen = comp[i]->getM();
+        } else if (comp[i]->get_type() == MWC) {
+          mod_gen = MWCEquiv::LCGMod(comp[i]->m_MWCb, comp[i]->getA());
           k = std::max(k, 1);
+        }
+        modulo *= mod_gen;
       }
       // Filling up vector A
       IntVec A(k+1);
@@ -158,7 +162,9 @@ namespace LatMRG {
     std::string ComboLattice<Int, Dbl>::toString() const {
       std::ostringstream out;
       for (int i = 0; i < m_number; i++) {
-        Int m = m_comp[i]->getM();
+        Int m;
+        if (m_comp[i]->get_type() == MRG) m = m_comp[i]->getM();
+        if (m_comp[i]->get_type() == MWC) m = m_comp[i]->m_MWCb;
         out << "Component " << i+1 << "\nm = " << m << "\nk = "
           << m_comp[i]->getK() << "\na = " << m_comp[i]->getA() << "\n\n";
       }

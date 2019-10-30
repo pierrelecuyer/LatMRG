@@ -162,7 +162,8 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
        " tag.\n";
       return 1;
     }
-  } else if (mode == "lattest") {
+  }
+  if (mode == "lattest") {
     node = current->FirstChildElement("coeff");
     if (node) {
       conf.coeff[i].SetLength(order);

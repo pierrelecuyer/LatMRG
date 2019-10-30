@@ -56,22 +56,11 @@ var NAVTREE =
         [ "Lattice of a MRG", "background.html#back_lat", null ],
         [ "Measures on MRGs", "background.html#back_merit", [
           [ "Period Length", "background.html#back_merit_per", null ],
-          [ "Shortest Vector and Figures of Merit", "background.html#back_merit_spectral", null ]
-        ] ]
+          [ "Figures of Merit", "background.html#back_merit_spectral", null ]
+        ] ],
+        [ "Minkowski reduced basis", "background.html#minkowski", null ]
       ] ],
       [ "A Good Parameter Choice", "background.html#back_param", null ],
-      [ "Lacunary indices", "background.html#lacunary", null ],
-      [ "Figures of Merit", "background.html#merit", [
-        [ "The spectral test", "background.html#spectral", null ],
-        [ "Minkowski reduced basis", "background.html#minkowski", null ],
-        [ "The P alpha criterion", "background.html#palpha", null ]
-      ] ],
-      [ "Types of Multiple Recursive Generators", "background.html#gentype", [
-        [ "Matrix multiple recursive generators", "background.html#MMRG_sec", null ],
-        [ "Multiply-with-carry", "background.html#MWC_sec", null ],
-        [ "Combined generators", "background.html#combo_sec", null ]
-      ] ],
-      [ "Computing a shortest nonzero vector or a reduced basis", "background.html#computing_short", null ],
       [ "Large numbers, matrices and polynomials", "background.html#numbers_sec", null ]
     ] ],
     [ "Compilation and Executables Usage", "usage.html", [
@@ -98,9 +87,7 @@ var NAVTREE =
         [ "Testing and Reducing Lattices", "tutorial.html#classes_list_tests", null ]
       ] ]
     ] ],
-    [ "FindMK", "_find_m_k.html", null ],
     [ "LatMain", "_lat_main.html", null ],
-    [ "MaxPeriod", "_max_period.html", null ],
     [ "SeekMain", "_seek_main.html", [
       [ "SeekMain", "_seek_main.html#seek", [
         [ "Searching method", "_seek_main.html#method_seek", null ],
@@ -149,8 +136,8 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_a_w_c_s_w_b_lattice_8cc.html",
-"class_lat_m_r_g_1_1_int_factorization.html#aa211a786babba5efb92e112a1ad5911e",
-"class_lat_m_r_g_1_1_modulus.html#a4992d978a438cdbb21b22f6320bf2efa"
+"class_lat_m_r_g_1_1_int_primitivity.html#a137859e5e72e7b7feab7b722a6da2603",
+"class_lat_m_r_g_1_1_modulus.html#ae877f0255be3f2666a4b560989b53729"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

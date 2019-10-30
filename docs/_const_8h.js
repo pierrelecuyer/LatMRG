@@ -38,11 +38,8 @@ var _const_8h =
       [ "EXHAUST", "_const_8h.html#a1fd35b5cabbc11ccb440e722240ca3e8af348ef97764bf697a7be024947e10330", null ],
       [ "RANDOM", "_const_8h.html#a1fd35b5cabbc11ccb440e722240ca3e8a57df570a60b5ea66ef4a74640b026c8b", null ]
     ] ],
-    [ "toCriterionString", "_const_8h.html#ac9e420f43435bf66503673afbe11ed29", null ],
     [ "toDecomString", "_const_8h.html#ae32569ce5d86b6a4efc7b5d3d4db24ae", null ],
     [ "toGenString", "_const_8h.html#a353ee26848721ee28c6b1a5d42fd6527", null ],
-    [ "toNormaString", "_const_8h.html#a318a44b6a90237a33622e7a4c22e5d75", null ],
-    [ "toRedString", "_const_8h.html#af5fc2e0ff2efabb468b0194fc09c5fd3", null ],
     [ "toStringDecomp", "_const_8h.html#a11cf659cd2c05a28eb882045c54530ee", null ],
     [ "toStringGen", "_const_8h.html#a27c39fa42b0fd834112771f605c15aee", null ],
     [ "toStringImplemCond", "_const_8h.html#abc84bd6bef937f4ffac109ede7af5fa1", null ],

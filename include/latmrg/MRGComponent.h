@@ -320,12 +320,13 @@ namespace LatMRG {
     rho = lat.rho;
     //   a.kill();
     m_a.resize(m_k);
-    LatticeTester::CopyVect(m_a, lat.m_a, m_k);
+    m_a = lat.m_a;
     //   orbitSeed.kill();
     orbitSeed.resize(m_k);
-    LatticeTester::CopyVect(orbitSeed, lat.orbitSeed, m_k);
+    orbitSeed = lat.orbitSeed;
 
     m_type = lat.m_type;
+    if (m_type == MWC) m_MWCb = lat.m_MWCb;
     m_b = lat.m_b;
     m_e = lat.m_e;
     m_r = lat.m_r;

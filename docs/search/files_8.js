@@ -1,7 +1,6 @@
 var searchData=
 [
   ['main_2edox',['main.dox',['../main_8dox.html',1,'']]],
-  ['maxperiod_2edox',['MaxPeriod.dox',['../_max_period_8dox.html',1,'']]],
   ['mixmaxmmrg_2ecc',['MixmaxMMRG.cc',['../_mixmax_m_m_r_g_8cc.html',1,'']]],
   ['mixmaxmmrg_2eh',['MixmaxMMRG.h',['../_mixmax_m_m_r_g_8h.html',1,'']]],
   ['mmrglattice_2ecc',['MMRGLattice.cc',['../_m_m_r_g_lattice_8cc.html',1,'']]],

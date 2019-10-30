@@ -9,5 +9,6 @@ var class_lat_m_r_g_1_1_primes =
     [ "nextM", "class_lat_m_r_g_1_1_primes.html#af10aec1069d0a74b31b94513f3cbb542", null ],
     [ "writeFooter", "class_lat_m_r_g_1_1_primes.html#aefb098ef102ce7d96fb6f6b29cecd37d", null ],
     [ "writeHeader", "class_lat_m_r_g_1_1_primes.html#a55bfb001dac5147bdc37282ebbd80290", null ],
+    [ "print_time", "class_lat_m_r_g_1_1_primes.html#a45ef80d7e75263652e30b507cba4402e", null ],
     [ "timer", "class_lat_m_r_g_1_1_primes.html#a91f2e8aeb71f189482f43b285557a8b5", null ]
 ];

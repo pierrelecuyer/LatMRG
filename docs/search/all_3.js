@@ -20,5 +20,6 @@ var searchData=
   ['configuration_20files_20synthax_20and_20tags',['Configuration Files Synthax and Tags',['../conf_file.html',1,'']]],
   ['const_2ecc',['Const.cc',['../_const_8cc.html',1,'']]],
   ['const_2eh',['Const.h',['../_const_8h.html',1,'']]],
+  ['convenient',['convenient',['../background_8dox.html#aa6c358819e6f9719a4d5e911a5b77696',1,'background.dox']]],
   ['compilation_20and_20executables_20usage',['Compilation and Executables Usage',['../usage.html',1,'']]]
 ];

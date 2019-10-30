@@ -31,9 +31,7 @@ var dir_8be9fa745236e63deff07f5f1b560ea6 =
       [ "MRGComponent", "class_lat_m_r_g_1_1_m_r_g_component.html", "class_lat_m_r_g_1_1_m_r_g_component" ]
     ] ],
     [ "MRGLattice.h", "_m_r_g_lattice_8h.html", "_m_r_g_lattice_8h" ],
-    [ "MWCLattice.h", "_m_w_c_lattice_8h.html", [
-      [ "MWCLattice", "class_lat_m_r_g_1_1_m_w_c_lattice.html", "class_lat_m_r_g_1_1_m_w_c_lattice" ]
-    ] ],
+    [ "MWCLattice.h", "_m_w_c_lattice_8h.html", "_m_w_c_lattice_8h" ],
     [ "ParamReaderExt.h", "_param_reader_ext_8h.html", [
       [ "ParamReaderExt", "class_lat_m_r_g_1_1_param_reader_ext.html", "class_lat_m_r_g_1_1_param_reader_ext" ]
     ] ],

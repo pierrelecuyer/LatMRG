@@ -3,6 +3,8 @@ var searchData=
   ['maxdim',['maxDim',['../class_lat_m_r_g_1_1_projections.html#a485528cbfadaaaa1f7ac41a1e8adb51e',1,'LatMRG::Projections']]],
   ['maxperiod',['maxPeriod',['../class_lat_m_r_g_1_1_m_r_g_component.html#a4263f4cddc7d798c0b346f82cc02cedb',1,'LatMRG::MRGComponent::maxPeriod(const IntVec &amp;A)'],['../class_lat_m_r_g_1_1_m_r_g_component.html#ac27d417d2ea126d20d97f044a28dc891',1,'LatMRG::MRGComponent::maxPeriod(const Int &amp;a)'],['../class_lat_m_r_g_1_1_m_r_g_component.html#ab14e4f61853a5c4fce2e87454ee9cb61',1,'LatMRG::MRGComponent::maxPeriod(const IntMat &amp;A)']]],
   ['maxperiod23',['maxPeriod23',['../class_lat_m_r_g_1_1_m_r_g_component.html#abbf4c02d11f8c21c1a59dd6c0b32c2a5',1,'LatMRG::MRGComponent']]],
+  ['mcon88a',['mCON88a',['../background_8dox.html#ad307b95d9ad64f10dbc65a0985681385',1,'background.dox']]],
+  ['mcon99a',['mCON99a',['../background_8dox.html#a8f9a7e67caae1e99ed2e3096fd247c36',1,'background.dox']]],
   ['meritb',['meritB',['../namespace_lat_m_r_g_1_1_merit.html#a9cb72d70a4306d2c6d6af80738b814e7',1,'LatMRG::Merit']]],
   ['meritl',['meritL',['../namespace_lat_m_r_g_1_1_merit.html#af08e2c470b2df1542029d3ff048d4b54',1,'LatMRG::Merit']]],
   ['meritlist',['MeritList',['../class_lat_m_r_g_1_1_merit_list.html#afea0730c35252f4646a0daee3fc219e8',1,'LatMRG::MeritList']]],

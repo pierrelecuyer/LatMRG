@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['page',['page',['../background_8dox.html#a1d3327a873b036824a6ca5a0167023b4',1,'background.dox']]],
   ['paramreaderext',['ParamReaderExt',['../class_lat_m_r_g_1_1_param_reader_ext.html',1,'LatMRG::ParamReaderExt&lt; Int, Dbl &gt;'],['../class_lat_m_r_g_1_1_param_reader_ext.html#a032e66d3b4ec9c17e288829820ab5f31',1,'LatMRG::ParamReaderExt::ParamReaderExt()'],['../class_lat_m_r_g_1_1_param_reader_ext.html#aebd93a2382ea5ce14b9d11bcf7fa2e09',1,'LatMRG::ParamReaderExt::ParamReaderExt(std::string fileName)']]],
   ['paramreaderext_2ecc',['ParamReaderExt.cc',['../_param_reader_ext_8cc.html',1,'']]],
   ['paramreaderext_2eh',['ParamReaderExt.h',['../_param_reader_ext_8h.html',1,'']]],
@@ -16,6 +17,7 @@ var searchData=
   ['primepower',['PRIMEPOWER',['../namespace_lat_m_r_g.html#a86edf8445f847038592d741fd49b2b09a7677349e86aa9f7110f03320a428cfc6',1,'LatMRG']]],
   ['primes',['Primes',['../class_lat_m_r_g_1_1_primes.html',1,'LatMRG::Primes&lt; Int &gt;'],['../class_lat_m_r_g_1_1_primes.html#a971062650e59fef3785444626b3b8729',1,'LatMRG::Primes::Primes()']]],
   ['primes_2eh',['Primes.h',['../_primes_8h.html',1,'']]],
+  ['print_5ftime',['print_time',['../class_lat_m_r_g_1_1_primes.html#a45ef80d7e75263652e30b507cba4402e',1,'LatMRG::Primes']]],
   ['projdim',['projDim',['../class_lat_m_r_g_1_1_projections.html#a0ebf6145037b082eb850ca94d4f5aa50',1,'LatMRG::Projections']]],
   ['projections',['Projections',['../class_lat_m_r_g_1_1_projections.html',1,'LatMRG::Projections'],['../class_lat_m_r_g_1_1_projections.html#a608d792c8c3d60ec8fafdeb0f8f6872a',1,'LatMRG::Projections::Projections()']]],
   ['projections_2ecc',['Projections.cc',['../_projections_8cc.html',1,'']]],
