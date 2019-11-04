@@ -1,0 +1,26 @@
+<!--A 64 bits generator using coefficients that are powers of 2-->
+<lattest>
+  <gen>
+    <numcomp x="2"/>
+    <mrg>
+      <modulo basis="2" exponent="64"/>
+      <coeff x="11128573284576306746"/>
+    </mrg>
+    <mwc>
+      <modulo basis="2" exponent="20"/>
+      <order x="3"/>
+      <coeff x="-1 713057 1016635 623975"/>
+    </mwc>
+  </gen>
+  <spectral>
+    <reduction method="FULL"/>
+    <norma lizer="BESTLAT"/>
+    <dual bool="true"/>
+  </spectral>
+  <proj>
+    <min x="2"/>
+    <num x="4"/>
+    <dim x="40 50 50 50"/>
+  </proj>
+  <detail x="1"/>
+</lattest>

@@ -1,15 +1,8 @@
-<!--Combining 64 bits LCG and MRG-->
+<!--MWC generator with 64 bits-->
 <seek>
   <gen>
-    <numcomp x="2"/>
-    <mrg>
-      <modulo basis="2" exponent="64"/>
-      <order x="1"/>
-      <method random="1"/>
-      <period check="true"/>
-    </mrg>
     <mwc>
-      <modulo basis="2" exponent="61" rest="-1"/>
+      <modulo basis="2" exponent="63"/>
       <order x="3"/>
       <method random="1 1 1"/>
     </mwc>
@@ -20,11 +13,10 @@
     <dual x="true"/>
   </spectral>
   <proj>
-    <min x="3"/>
+    <min x="2"/>
     <num x="1"/>
     <dim x="34"/>
   </proj>
   <time x="60"/>
   <num_gen x="5"/>
-  <detail x="2"/>
 </seek>

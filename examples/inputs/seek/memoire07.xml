@@ -1,0 +1,33 @@
+<!--Combining 64 bits LCG and a MWC with smaller modulo. Hope the equivalent LCG
+has modulo close to 2^64 so that we obtain a potent combination-->
+<!--We know this works for sequential projections. We now search good ones for
+multiple projections-->
+<seek>
+  <gen>
+    <numcomp x="2"/>
+    <mrg>
+      <modulo basis="2" exponent="64"/>
+      <order x="1"/>
+      <method random="1"/>
+      <period check="true"/>
+    </mrg>
+    <mwc>
+      <modulo basis="2" exponent="20"/>
+      <order x="3"/>
+      <method random="1 1 1"/>
+    </mwc>
+  </gen>
+  <spectral>
+    <reduction method="FULL"/>
+    <norma x="BESTLAT"/>
+    <dual x="true"/>
+  </spectral>
+  <proj>
+    <min x="2"/>
+    <num x="4"/>
+    <dim x="40 50 50 25"/>
+  </proj>
+  <time x="1800"/>
+  <num_gen x="5"/>
+</seek>
+<out/>

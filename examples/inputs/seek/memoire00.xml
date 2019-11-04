@@ -1,9 +1,10 @@
+<!--Exhaustive search for a 8 bit MRG of order 8-->
 <seek>
   <gen>
     <mrg>
       <modulo basis="2" exponent="8" rest="-5"/>
-      <order k="7"/>
-      <method random="1 0 1 0 1 0 1"/>
+      <order k="8"/>
+      <method exhaust="1 0 0 1 1 0 0 1"/>
       <period check="true"/>
     </mrg>
   </gen>
@@ -13,10 +14,10 @@
     <dual d="true"/>
   </spectral>
   <proj>
-    <min x="8"/>
+    <min x="9"/>
     <num x="1"/>
     <dim x="35"/>
   </proj>
-  <time x="60"/>
+  <time x="36000"/>
   <num_gen x="5"/>
 </seek>

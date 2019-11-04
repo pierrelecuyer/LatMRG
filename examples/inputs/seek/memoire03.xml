@@ -1,11 +1,11 @@
-<!--Example of a search of a LCG-->
+<!--Example of a search of a LCG with a carry-->
 <seek>
   <gen>
-    <mrg>
-      <modulo basis="2" exponent="64"/>
+    <lcg>
+      <modulo basis="2" exponent="63"/>
       <method random="1"/>
       <period check="true"/>
-    </mrg>
+    </lcg>
   </gen>
   <spectral>
     <reduction method="FULL"/>
@@ -13,7 +13,7 @@
     <dual x="true"/>
   </spectral>
   <proj>
-    <min x="3"/>
+    <min x="2"/>
     <num x="1"/>
     <dim x="34"/>
   </proj>

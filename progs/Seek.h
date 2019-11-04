@@ -115,6 +115,55 @@ namespace LatMRGSeek {
       return new MRGLattice<Int, Dbl>(conf.fact[0]->getM(), A, conf.proj->numProj(), conf.fact[0]->getK(), FULL);
     }
 
+  /**
+   * Enuemrates all the possible generators for this generator. Needs to
+   * remember previous generator and last modified coordinate between calls.
+   * */
+  template<typename Int, typename Dbl>
+    class MRGLatticeExhaust {
+      static NTL::vector<Int> A;
+      public:
+        static MRGLattice<Int, Dbl>* nextGenerator(ConfigSeek<Int, Dbl>& conf) {
+          // Setting up two vectors. MRGComponent and MRGLattice do not use the same
+          // vector format
+          if (conf.num_gen == 0) {
+            A.SetLength(conf.fact[0]->getK()+1);
+          }
+          //int delay = 0;
+          // The program will not run the maxPeriod function if it is not wanted with
+          // this condition
+          do {
+            // if (delay >= DELAY) {
+            //   if (timer.timeOver(conf.timeLimit)) return NULL;
+            //   else delay = 0;
+            // }
+            for (int i = 1; i <= conf.fact[0]->getK(); i++) {
+              if (conf.coeff[0][i-1] == 0) continue;
+              A[i]++;
+              if (i == conf.fact[0]->getK()) {
+                std::cout << A << "\n";
+              }
+              if (A[i] < conf.fact[0]->getM()) break;
+              else {
+                if (i == conf.fact[0]->getK()) {
+                  std::cout << "Final A: " << A << "\nExhausted all possibilities\n";
+                  return NULL;
+                }
+                A[i] = 0;
+              }
+            }
+            //delay++;
+          } while ((A[conf.fact[0]->getK()] == 0) ||
+              (conf.period[0] && (conf.fact[0]->get_type()==MRG) ?
+               !conf.fact[0]->maxPeriod(A) :
+               conf.fact[0]->maxPeriod(A[conf.fact[0]->getK()])));
+          return new MRGLattice<Int, Dbl>(conf.fact[0]->getM(), A, conf.proj->numProj(), conf.fact[0]->getK(), FULL);
+        }
+    };
+  template<> NTL::vector<std::int64_t> MRGLatticeExhaust<std::int64_t, double>::A(0);
+  template<> NTL::vector<NTL::ZZ> MRGLatticeExhaust<NTL::ZZ, double>::A(0);
+  template<> NTL::vector<NTL::ZZ> MRGLatticeExhaust<NTL::ZZ, NTL::RR>::A(0);
+
   template<typename Int, typename Dbl>
     MRGLattice<Int, Dbl>* nextGeneratorPow2(ConfigSeek<Int, Dbl>& conf) {
       typedef NTL::vector<Int> IntVec;
@@ -384,7 +433,7 @@ template<typename Lat> struct SeekMain {
       old = print_progress(-1);
     }
     MeritList<Lat> bestLattice(conf.max_gen, conf.best);
-    while (!timer.timeOver(conf.timeLimit)) {
+    do {
       if (lat != NULL) delete lat;
       lat = nextGenerator(conf);
       if (lat == NULL) continue;
@@ -392,7 +441,7 @@ template<typename Lat> struct SeekMain {
       conf.num_gen++;
       conf.currentMerit = bestLattice.getMerit();
       if (conf.progress) old = print_progress(old);
-    }
+    } while (!timer.timeOver(conf.timeLimit) && lat);
     std::cout << "\r                                                                                                          \r";
     printResults(bestLattice);
     return 0;

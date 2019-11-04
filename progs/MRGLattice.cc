@@ -27,6 +27,7 @@ std::ofstream fout;
 bool print_time = true;
 
 std::string mode;
+std::string search_mode;
 
 // Prints the program usage
 void print_help() {
@@ -145,10 +146,15 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
       auto value = node->FirstAttribute();
       if (value) {
         if (!strcmp(value->Name(), "random")) {
+          search_mode = "random";
           conf.coeff[i].SetLength(order);
           if (toVectString(value->Value(), conf.coeff[i], order)) return 1;
         } else if (!strcmp(value->Name(), "pow2")) {
           conf.coeff[i].SetLength(2*order);
+        } else if (!strcmp(value->Name(), "exhaust")) {
+          search_mode = "exhaust";
+          conf.coeff[i].SetLength(order);
+          if (toVectString(value->Value(), conf.coeff[i], order)) return 1;
         } else {
           std::cerr << "Invalid attribute in tag 'method'.\n";
           return 1;
@@ -796,6 +802,9 @@ int readFile(const char* filename) {
         return prog.Seek(LatMRGSeek::ComboLatticeFinder<Int, Dbl>::getFunction);
       } else if (conf.fact[0]->get_type() == MRG) {
         SeekMain<MRGLattice<Int, Dbl>> prog(conf);
+        if (search_mode == "exhaust") {
+          return prog.Seek(LatMRGSeek::MRGLatticeExhaust<Int, Dbl>::nextGenerator);
+        }
         return prog.Seek(LatMRGSeek::nextGenerator);
       } else if (conf.fact[0]->get_type() == LCG) {
         SeekMain<MRGLattice<Int, Dbl>> prog(conf);
