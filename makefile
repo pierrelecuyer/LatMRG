@@ -86,8 +86,6 @@ message_lib:
 	$(SEP)
 	@echo 'Building library(ies)'
 	@echo
-	@make -q $(LIB_DIR)/liblatticetester.a && echo Everything up to date! || true
-
 
 $(LIB_DIR):
 	mkdir -p $(LIB_DIR)
@@ -107,11 +105,23 @@ message_obj:
 	@echo 'Compiling the LatMRG library'
 	@echo
 
+
+#===============================================================================
+#Included library tinyxml2
+
+$(LIB_DIR)/libtinyxml2.a:$(OBJ_DIR)/tinyxml2.o | message_lib $(LIB_DIR) $(OBJ_DIR)
+	$(CC) -fPIC $(INCLUDES) -c -o $^ $(SRC_DIR)/tinyxml2.cpp
+	ar cr $@ $^
+	ranlib $@
+	@echo
+
+$(OBJ_DIR)/tinyxml2.o:$(SRC_DIR)/tinyxml2.cpp
+
 #===============================================================================
 # Building the programs of ./progs
 
-$(PRO_DIR)/%.o: $(LIB_DIR)/liblatticetester.a $(LIB_DIR)/liblatmrg.a\
-  $(PRO_DIR)/%.cc $(PROGS_H) | message_progs $(BIN_DIR)
+$(PRO_DIR)/%.o:$(LIB_DIR)/libtinyxml2.a $(LIB_DIR)/liblatticetester.a\
+  $(LIB_DIR)/liblatmrg.a $(PRO_DIR)/%.cc $(PROGS_H) | message_progs $(BIN_DIR)
 	$(CC) $(CFLAGS) $(INCLUDES) $(YAFU) -c $(PRO_DIR)/$(@:progs/%.o=%).cc -o $@
 	$(CC) $@ $(STAT_LIBS_PATH) $(STAT_LIBS) $(DYN_LIBS_PATH) $(DYN_LIBS) \
 	  -o $(BIN_DIR)/$(@:progs/%.o=%)
