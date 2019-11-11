@@ -18,13 +18,14 @@
   <spectral>
     <reduction x="FULL"/>
     <norma x="BESTLAT"/>
-    <dual x="true"/> 
+    <dual x="true"/>
   </spectral>
   <proj>
     <min x="9"/>
-    <num x="3"/>
-    <dim x="35 20 20"/>
+    <num x="6"/>
+    <dim x="35 0 0 10 0 15"/>
   </proj>
+  <detail x="2"/>
 </lattest>
 <out/>
 <print_time x="false"/>

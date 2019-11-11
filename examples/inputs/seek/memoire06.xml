@@ -5,16 +5,16 @@ has modulo close to 2^64 so that we obtain a potent combination-->
   <gen>
     <numcomp x="2"/>
     <mrg>
-      <modulo basis="2" exponent="64"/>
+      <modulo basis="2" exponent="63"/>
       <order x="1"/>
       <method random="1"/>
       <period check="true"/>
     </mrg>
-    <mwc>
-      <modulo basis="2" exponent="20"/>
-      <order x="3"/>
-      <method random="1 1 1"/>
-    </mwc>
+    <mrg>
+      <modulo basis="2" exponent="63" rest="-25"/>
+      <method random="1"/>
+      <period check="true"/>
+    </mrg>
   </gen>
   <spectral>
     <reduction method="FULL"/>

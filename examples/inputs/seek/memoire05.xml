@@ -2,7 +2,7 @@
 <seek>
   <gen>
     <mwc>
-      <modulo basis="2" exponent="63"/>
+      <modulo basis="2" exponent="64"/>
       <order x="3"/>
       <method random="1 1 1"/>
     </mwc>
@@ -13,7 +13,7 @@
     <dual x="true"/>
   </spectral>
   <proj>
-    <min x="2"/>
+    <min x="4"/>
     <num x="1"/>
     <dim x="34"/>
   </proj>

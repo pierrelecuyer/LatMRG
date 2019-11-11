@@ -71,7 +71,12 @@ var NAVTREE =
         [ "Searching for new MRG", "usage.html#usage_exec_search", null ],
         [ "Usage of the executable", "usage.html#usage_exec_usage", null ]
       ] ],
-      [ "Building LatMRG", "usage.html#compilation", null ]
+      [ "Building LatMRG", "usage.html#compilation", null ],
+      [ "A programmer's guide to LatMRG", "usage.html#program", [
+        [ "Working with types", "usage.html#program_types", null ],
+        [ "Adding new types of generators", "usage.html#program_creating", null ],
+        [ "Expanding the executable", "usage.html#program_expanding", null ]
+      ] ]
     ] ],
     [ "Configuration Files Synthax and Tags", "conf_file.html", [
       [ "A short note on XML", "conf_file.html#xml_note", null ],
@@ -118,7 +123,8 @@ var NAVTREE =
         [ "Variables", "functions_vars.html", null ],
         [ "Typedefs", "functions_type.html", null ],
         [ "Enumerations", "functions_enum.html", null ],
-        [ "Enumerator", "functions_eval.html", null ]
+        [ "Enumerator", "functions_eval.html", null ],
+        [ "Related Functions", "functions_rela.html", null ]
       ] ]
     ] ],
     [ "Files", "files.html", [
@@ -137,7 +143,10 @@ var NAVTREEINDEX =
 [
 "_a_w_c_s_w_b_lattice_8cc.html",
 "class_lat_m_r_g_1_1_int_primitivity.html#a137859e5e72e7b7feab7b722a6da2603",
-"class_lat_m_r_g_1_1_modulus.html#ae877f0255be3f2666a4b560989b53729"
+"class_lat_m_r_g_1_1_modulus.html#ae877f0255be3f2666a4b560989b53729",
+"classtinyxml2_1_1_x_m_l_document.html#a1dbdc7feaa58007403c20243ac5abbd3",
+"classtinyxml2_1_1_x_m_l_printer.html#a2ce2aa508c21ac91615093ddb9c282c5",
+"tinyxml2_8h.html#ac94d4b856d14f3c3a8c1dcdbd6ee13b4"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['lcg',['LCG',['../namespace_lat_m_r_g.html#ab4948e899f8c3a6fb82cff009283061ea94058d727954dae2f0a4d63a908b3d83',1,'LatMRG']]]
+  ['items_5fper_5fblock',['ITEMS_PER_BLOCK',['../classtinyxml2_1_1_mem_pool_t.html#a04cf45156e6f913f93972869ff8a1d94ab72c1e16d6626854c41feb19e60c54d1',1,'tinyxml2::MemPoolT']]]
 ];

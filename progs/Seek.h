@@ -216,6 +216,28 @@ namespace LatMRGSeek {
 
   template<typename Int, typename Dbl>
     MWCLattice<Int, Dbl>* nextGenerator(ConfigSeek<Int, Dbl>& conf) {
+      // Setting up two vectors. MRGComponent and MRGLattice do not use the same
+      // vector format
+      NTL::vector<Int> A;
+      A.SetLength(conf.fact[0]->getK()+1);
+      NTL::clear(A);
+      int delay = 0;
+      // The program will not run the maxPeriod function if it is not wanted with
+      // this condition
+      do {
+        if (delay >= DELAY) {
+          if (timer.timeOver(conf.timeLimit)) return NULL;
+          else delay = 0;
+        }
+        for (long i = 0; i<conf.fact[0]->getK(); i++) A[i+1] = conf.coeff[0][i] * randInt(Int(0), conf.fact[0]->m_MWCb);
+        delay++;
+        A[0] = -1;
+      } while ((A[conf.fact[0]->getK()] == 0));
+      return new MWCLattice<Int, Dbl>(conf.fact[0]->m_MWCb, A, conf.fact[0]->getK(), conf.proj->numProj());
+    }
+
+  template<typename Int, typename Dbl>
+    MWCLattice<Int, Dbl>* nextFullGenerator(ConfigSeek<Int, Dbl>& conf) {
       Int m(0);
       long exp = conf.fact[0]->getE()-1;
       // 63 bits at a time because NTL converts from SIGNED long

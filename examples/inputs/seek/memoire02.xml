@@ -2,7 +2,7 @@
 <seek>
   <gen>
     <mrg>
-      <modulo basis="2" exponent="63"/>
+      <modulo basis="2" exponent="64"/>
       <method random="1"/>
       <period check="true"/>
     </mrg>

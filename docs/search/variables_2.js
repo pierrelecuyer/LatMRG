@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['c',['c',['../class_lat_m_r_g_1_1_modulus.html#a9ffc09c5cbfbd96ffa4444e4fbd417e2',1,'LatMRG::Modulus']]],
-  ['component',['component',['../results_8dox.html#ac329ce2abeb540df962348024d8264fe',1,'results.dox']]],
-  ['convenient',['convenient',['../background_8dox.html#aa6c358819e6f9719a4d5e911a5b77696',1,'background.dox']]]
+  ['b',['b',['../class_lat_m_r_g_1_1_modulus.html#adafc6998c59f307c80101b3ac581d517',1,'LatMRG::Modulus']]],
+  ['b2',['b2',['../class_lat_m_r_g_1_1_modulus.html#ae59f79e82048c6d62c3357eea32fb53c',1,'LatMRG::Modulus']]],
+  ['bm1',['bm1',['../class_lat_m_r_g_1_1_modulus.html#a2992d9fdb3886f51a6783d388f81f0b6',1,'LatMRG::Modulus']]]
 ];

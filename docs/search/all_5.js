@@ -1,10 +1,26 @@
 var searchData=
 [
-  ['e',['e',['../class_lat_m_r_g_1_1_modulus.html#a4992d978a438cdbb21b22f6320bf2efa',1,'LatMRG::Modulus']]],
-  ['eight',['Eight',['../class_lat_m_r_g_1_1_modulus.html#a8b5c8246471560f8f325847c5f1ca348',1,'LatMRG::Modulus']]],
-  ['end',['end',['../class_lat_m_r_g_1_1_projections.html#a036c762af724fac1c547d62545dcbd82',1,'LatMRG::Projections']]],
-  ['equal_5fcoef',['EQUAL_COEF',['../namespace_lat_m_r_g.html#ad049f9925bbec6f1e1b8097723c01d95aa6f98d6ee60b601dd3f366499899cd67',1,'LatMRG']]],
-  ['example',['example',['../background_8dox.html#ac52493e983082d45e6bd3c43b125de6f',1,'background.dox']]],
-  ['examples_2edox',['examples.dox',['../examples_8dox.html',1,'']]],
-  ['exhaust',['EXHAUST',['../namespace_lat_m_r_g.html#a1fd35b5cabbc11ccb440e722240ca3e8af348ef97764bf697a7be024947e10330',1,'LatMRG']]]
+  ['days',['DAYS',['../class_lat_m_r_g_1_1_chrono.html#aeb39423e55e377aac6b2aa7a2006108aa7c03877074201724d262cacca802fbe7',1,'LatMRG::Chrono']]],
+  ['dbl',['Dbl',['../class_lat_m_r_g_1_1_figure_of_merit.html#a739faa2efa53f137053cfc6cc70174ec',1,'LatMRG::FigureOfMerit::Dbl()'],['../class_lat_m_r_g_1_1_merit_list.html#afd6f2255d17b3455e755f5cf83e2b755',1,'LatMRG::MeritList::Dbl()'],['../class_lat_m_r_g_1_1_m_m_r_g_lattice.html#a0bf039ca760a408df6872b1f14936b32',1,'LatMRG::MMRGLattice::Dbl()'],['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a2c8d8d4bc2cfd4673e36c61fe1257cb8',1,'LatMRG::MRGLattice::Dbl()']]],
+  ['decomp',['DECOMP',['../namespace_lat_m_r_g.html#abab34306ba3f65f06d4919d4ae54d3f1ae594a4a78d0d11ae51b51a87b3e9b4a3',1,'LatMRG']]],
+  ['decomp_5fprime',['DECOMP_PRIME',['../namespace_lat_m_r_g.html#abab34306ba3f65f06d4919d4ae54d3f1ae2fa14b3e79878731d2d94369e0aa2a3',1,'LatMRG']]],
+  ['decomp_5fread',['DECOMP_READ',['../namespace_lat_m_r_g.html#abab34306ba3f65f06d4919d4ae54d3f1a9da3c652f9e8a5b551e0700723f4ac44',1,'LatMRG']]],
+  ['decomp_5fwrite',['DECOMP_WRITE',['../namespace_lat_m_r_g.html#abab34306ba3f65f06d4919d4ae54d3f1a20fc861188044c65f9b1bd42d29e7806',1,'LatMRG']]],
+  ['decomptype',['DecompType',['../namespace_lat_m_r_g.html#abab34306ba3f65f06d4919d4ae54d3f1',1,'LatMRG']]],
+  ['deepclone',['DeepClone',['../classtinyxml2_1_1_x_m_l_node.html#a62c71b6bf8734b5424063b8d9a61c266',1,'tinyxml2::XMLNode']]],
+  ['deepcopy',['DeepCopy',['../classtinyxml2_1_1_x_m_l_document.html#af592ffc91514e25a39664521ac83db45',1,'tinyxml2::XMLDocument']]],
+  ['deleteattribute',['DeleteAttribute',['../classtinyxml2_1_1_x_m_l_element.html#aebd45aa7118964c30b32fe12e944628a',1,'tinyxml2::XMLElement::DeleteAttribute(const char *name)'],['../classtinyxml2_1_1_x_m_l_element.html#af6af63c153c343cc71638375c4a2085d',1,'tinyxml2::XMLElement::DeleteAttribute(XMLAttribute *attribute)']]],
+  ['deletechild',['DeleteChild',['../classtinyxml2_1_1_x_m_l_node.html#a363b6edbd6ebd55f8387d2b89f2b0921',1,'tinyxml2::XMLNode']]],
+  ['deletechildren',['DeleteChildren',['../classtinyxml2_1_1_x_m_l_node.html#a0360085cc54df5bff85d5c5da13afdce',1,'tinyxml2::XMLNode']]],
+  ['deletenode',['DeleteNode',['../classtinyxml2_1_1_x_m_l_node.html#af86facb14f441c2b91f3518f106dc943',1,'tinyxml2::XMLNode::DeleteNode()'],['../classtinyxml2_1_1_x_m_l_document.html#ac1d6e2c7fcc1a660624ac4f68e96380d',1,'tinyxml2::XMLDocument::DeleteNode()']]],
+  ['delta_5ft',['delta_t',['../background_8dox.html#a3d4342fcef3db343c42a74eb3ec88e3a',1,'background.dox']]],
+  ['depthtracker',['DepthTracker',['../classtinyxml2_1_1_x_m_l_document_1_1_depth_tracker.html',1,'tinyxml2::XMLDocument::DepthTracker'],['../classtinyxml2_1_1_x_m_l_document_1_1_depth_tracker.html#ac2782a163c2da773b84cb2c610b79bcb',1,'tinyxml2::XMLDocument::DepthTracker::DepthTracker()']]],
+  ['doubleattribute',['DoubleAttribute',['../classtinyxml2_1_1_x_m_l_element.html#a10a90c505aea716bf073eea1c97f33b5',1,'tinyxml2::XMLElement']]],
+  ['doubletext',['DoubleText',['../classtinyxml2_1_1_x_m_l_element.html#a81b1ff0cf2f2cd09be8badc08b39a2b7',1,'tinyxml2::XMLElement']]],
+  ['doublevalue',['DoubleValue',['../classtinyxml2_1_1_x_m_l_attribute.html#a4aa73513f54ff0087d3e804f0f54e30f',1,'tinyxml2::XMLAttribute']]],
+  ['dynarray',['DynArray',['../classtinyxml2_1_1_dyn_array.html',1,'tinyxml2::DynArray&lt; T, INITIAL_SIZE &gt;'],['../classtinyxml2_1_1_dyn_array.html#aaad72f384e761c70a4519183eb8fea17',1,'tinyxml2::DynArray::DynArray()'],['../classtinyxml2_1_1_dyn_array.html#a8e2251588f079f2e7a4080b2c53dabea',1,'tinyxml2::DynArray::DynArray(const DynArray &amp;)']]],
+  ['dynarray_3c_20char_2c_2020_20_3e',['DynArray&lt; char, 20 &gt;',['../classtinyxml2_1_1_dyn_array.html',1,'tinyxml2']]],
+  ['dynarray_3c_20const_20char_20_2a_2c_2010_20_3e',['DynArray&lt; const char *, 10 &gt;',['../classtinyxml2_1_1_dyn_array.html',1,'tinyxml2']]],
+  ['dynarray_3c_20tinyxml2_3a_3amempoolt_3a_3ablock_20_2a_2c_2010_20_3e',['DynArray&lt; tinyxml2::MemPoolT::Block *, 10 &gt;',['../classtinyxml2_1_1_dyn_array.html',1,'tinyxml2']]],
+  ['dynarray_3c_20tinyxml2_3a_3axmlnode_20_2a_2c_2010_20_3e',['DynArray&lt; tinyxml2::XMLNode *, 10 &gt;',['../classtinyxml2_1_1_dyn_array.html',1,'tinyxml2']]]
 ];

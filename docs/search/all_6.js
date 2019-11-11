@@ -1,15 +1,20 @@
 var searchData=
 [
-  ['f',['f',['../background_8dox.html#ab1028d0c1942705bbf68da672518a52e',1,'f():&#160;background.dox'],['../background_8dox.html#a302170441629196c428bdf58033a21e9',1,'f(\gamma_t^{\mathrm{L}}/\gamma_t^{\mathrm{R}})^:&#160;background.dox']]],
-  ['factor',['factor',['../class_lat_m_r_g_1_1_m_r_g_component.html#ac9335033f77bc924d467c68a1f873732',1,'LatMRG::MRGComponent']]],
-  ['factorize',['factorize',['../class_lat_m_r_g_1_1_int_factorization.html#a87697c2fd8388b6ba7af985fee17f12d',1,'LatMRG::IntFactorization']]],
-  ['figureofmerit',['FigureOfMerit',['../class_lat_m_r_g_1_1_figure_of_merit.html',1,'LatMRG::FigureOfMerit&lt; Lat &gt;'],['../class_lat_m_r_g_1_1_figure_of_merit.html#afcb03bb3f7c500b00329a355326943b1',1,'LatMRG::FigureOfMerit::FigureOfMerit()'],['../class_lat_m_r_g_1_1_figure_of_merit.html#ab824d0e19bad1f8a8c88349a404acc4c',1,'LatMRG::FigureOfMerit::FigureOfMerit(const Lat &amp;lattice, const Projections &amp;proj)']]],
-  ['figureofmerit_2ecc',['FigureOfMerit.cc',['../_figure_of_merit_8cc.html',1,'']]],
-  ['figureofmerit_2eh',['FigureOfMerit.h',['../_figure_of_merit_8h.html',1,'']]],
-  ['find',['find',['../class_lat_m_r_g_1_1_primes.html#a686309b71dc86fe91dea5818993494c6',1,'LatMRG::Primes::find(int e, int s, bool facto, std::ostream &amp;fout)'],['../class_lat_m_r_g_1_1_primes.html#ae70b9cbe41003a4b2bfadf9afa75a6fd',1,'LatMRG::Primes::find(int k, int e, int s, bool safe, bool facto, std::ostream &amp;fout)'],['../class_lat_m_r_g_1_1_primes.html#ac427f10c4f50b670f10d3c2ae5e5ac31',1,'LatMRG::Primes::find(int k, int e, long c1, long c2, bool safe, bool facto, std::ostream &amp;fout)'],['../class_lat_m_r_g_1_1_primes.html#a45f393c637053bd4929606ca7726d3f9',1,'LatMRG::Primes::find(int k, int e, int s, const Int &amp;S1, const Int &amp;S2, bool safe, bool facto, std::ostream &amp;fout)']]],
-  ['finished',['finished',['../class_lat_m_r_g_1_1_figure_of_merit.html#aeaedeb63c35b0bd078cb5a29ff05e844',1,'LatMRG::FigureOfMerit']]],
-  ['float',['Float',['../class_lat_m_r_g_1_1_combo_lattice.html#a72a31e9f984452c0ced8660e15eba7cb',1,'LatMRG::ComboLattice']]],
-  ['four',['Four',['../class_lat_m_r_g_1_1_modulus.html#abeb5a1387ef0acfd428b6be6bfbc7f9c',1,'LatMRG::Modulus']]],
-  ['full',['FULL',['../namespace_lat_m_r_g.html#a86edf8445f847038592d741fd49b2b09aadd01ce47ad19c016e7dcaf75dc70810',1,'LatMRG']]],
-  ['fullperiod',['fullPeriod',['../class_lat_m_r_g_1_1_m_w_c_lattice.html#a47353f4be2df2e2943121967cb21661e',1,'LatMRG::MWCLattice']]]
+  ['e',['e',['../class_lat_m_r_g_1_1_modulus.html#a4992d978a438cdbb21b22f6320bf2efa',1,'LatMRG::Modulus']]],
+  ['eight',['Eight',['../class_lat_m_r_g_1_1_modulus.html#a8b5c8246471560f8f325847c5f1ca348',1,'LatMRG::Modulus']]],
+  ['elementclosingtype',['ElementClosingType',['../classtinyxml2_1_1_x_m_l_element.html#ab5f90e2493c35702175235127e2935b4',1,'tinyxml2::XMLElement']]],
+  ['empty',['Empty',['../classtinyxml2_1_1_str_pair.html#aca963a7eaa900bfddbea7312f040b39c',1,'tinyxml2::StrPair::Empty()'],['../classtinyxml2_1_1_dyn_array.html#a044fc26f44ed3e96ffaeac542188149e',1,'tinyxml2::DynArray::Empty()']]],
+  ['end',['end',['../class_lat_m_r_g_1_1_projections.html#a036c762af724fac1c547d62545dcbd82',1,'LatMRG::Projections']]],
+  ['ensurecapacity',['EnsureCapacity',['../classtinyxml2_1_1_dyn_array.html#a30f2dec82744b45667452e6ce3d51e32',1,'tinyxml2::DynArray']]],
+  ['entity_5frange',['ENTITY_RANGE',['../classtinyxml2_1_1_x_m_l_printer.html#ac9049bee10d230eb31ff7d146d538f7aa2ddc02813235fe451809606959166db5',1,'tinyxml2::XMLPrinter']]],
+  ['equal_5fcoef',['EQUAL_COEF',['../namespace_lat_m_r_g.html#ad049f9925bbec6f1e1b8097723c01d95aa6f98d6ee60b601dd3f366499899cd67',1,'LatMRG']]],
+  ['error',['Error',['../classtinyxml2_1_1_x_m_l_document.html#a34e6318e182e40e3cc4f4ba5d59ed9ed',1,'tinyxml2::XMLDocument']]],
+  ['errorid',['ErrorID',['../classtinyxml2_1_1_x_m_l_document.html#afa3ed33b3107f920ec2b301f805ac17d',1,'tinyxml2::XMLDocument']]],
+  ['erroridtoname',['ErrorIDToName',['../classtinyxml2_1_1_x_m_l_document.html#aba60537a6ee44c2b8e010c6ffc84ccfe',1,'tinyxml2::XMLDocument']]],
+  ['errorlinenum',['ErrorLineNum',['../classtinyxml2_1_1_x_m_l_document.html#a57400f816dbe7799ece33615ead9ab76',1,'tinyxml2::XMLDocument']]],
+  ['errorname',['ErrorName',['../classtinyxml2_1_1_x_m_l_document.html#ac75d2de15c78497eadb4245b9a9862c7',1,'tinyxml2::XMLDocument']]],
+  ['errorstr',['ErrorStr',['../classtinyxml2_1_1_x_m_l_document.html#ad75aa9d32c4e8b300655186808aa9abf',1,'tinyxml2::XMLDocument']]],
+  ['example',['example',['../background_8dox.html#ac52493e983082d45e6bd3c43b125de6f',1,'background.dox']]],
+  ['examples_2edox',['examples.dox',['../examples_8dox.html',1,'']]],
+  ['exhaust',['EXHAUST',['../namespace_lat_m_r_g.html#a1fd35b5cabbc11ccb440e722240ca3e8af348ef97764bf697a7be024947e10330',1,'LatMRG']]]
 ];
