@@ -68,7 +68,7 @@ namespace LatMRG {
        * Initializes the object for `lattice` and `proj`.
        * This won't contain any merit value.
        * */
-      FigureOfMerit(const Lat& lattice, const Projections& proj):
+      FigureOfMerit(Lat& lattice, const Projections& proj):
         m_lattice(lattice), m_projSet(proj) {
           m_finished = false;
         }

@@ -27,7 +27,6 @@ std::ofstream fout;
 bool print_time = true;
 
 std::string mode;
-std::string search_mode;
 
 // Prints the program usage
 void print_help() {
@@ -146,13 +145,19 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
       auto value = node->FirstAttribute();
       if (value) {
         if (!strcmp(value->Name(), "random")) {
-          search_mode = "random";
+          conf.search_mode[i] = "random";
           conf.coeff[i].SetLength(order);
           if (toVectString(value->Value(), conf.coeff[i], order)) return 1;
         } else if (!strcmp(value->Name(), "pow2")) {
-          conf.coeff[i].SetLength(2*order);
+          conf.search_mode[i] = "pow2";
+          conf.coeff[i].SetLength(order+1);
+          std::vector<long> tmp;
+          tmp.resize(order+1);
+          if (toVectString(value->Value(), tmp, order+1)) return 1;
+          for (int j = 0; j < order; j++) conf.coeff[i][j] = typename Conf::Int(tmp[j+1]);
+          conf.coeff[i][order] = typename Conf::Int(tmp[0]);
         } else if (!strcmp(value->Name(), "exhaust")) {
-          search_mode = "exhaust";
+          conf.search_mode[i] = "exhaust";
           conf.coeff[i].SetLength(order);
           if (toVectString(value->Value(), conf.coeff[i], order)) return 1;
         } else {
@@ -484,6 +489,7 @@ int readGenerator(tinyxml2::XMLNode* current, Conf& conf) {
 
   conf.coeff.resize(conf.num_comp);
   conf.period.resize(conf.num_comp);
+  conf.search_mode.resize(conf.num_comp);
 
   srand(time(NULL));
 
@@ -804,6 +810,8 @@ int readFile(const char* filename) {
         SeekMain<MRGLattice<Int, Dbl>> prog(conf);
         if (search_mode == "exhaust") {
           return prog.Seek(LatMRGSeek::MRGLatticeExhaust<Int, Dbl>::nextGenerator);
+        } else if (search_mode == "pow2") {
+          return prog.Seek(LatMRGSeek::nextGeneratorPow2);
         }
         return prog.Seek(LatMRGSeek::nextGenerator);
       } else if (conf.fact[0]->get_type() == LCG) {

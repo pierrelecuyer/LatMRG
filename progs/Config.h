@@ -26,6 +26,7 @@ Int b; // modulo of MWC recurence
 // MRGComponent stores the stuff we might want to know, such as the modulo
 // the order and even the coefficients
 int num_comp = 1;
+std::vector<string> search_mode;
 std::vector<bool> period;
 std::vector<MRGComponent<Int>*> fact;
 // This is used to store the coefficients of a MRG and the information on how to

@@ -151,7 +151,7 @@ namespace LatMRG {
         /**
          * Sets `m_power2` to true and sets `m_pow2_exp to `coeffs`.
          * */
-        void setPower2(IntVec& coeffs);
+        void setPower2(std::vector<IntVec>& coeffs);
 
         /**
          * Builds a projection for this lattice on the set in indices in `proj`.
@@ -285,7 +285,7 @@ namespace LatMRG {
         /**
          * The powers of 2 used if this generator has power of 2 coefficients.
          * */
-        IntVec m_pow2_exp;
+        std::vector<IntVec> m_pow2_exp;
 
     }; // End class declaration
 
@@ -337,8 +337,16 @@ namespace LatMRG {
 
     for (int i = 0; i < this->m_order; i++)
       m_aCoef[i] = lat.m_aCoef[i];
-  }
 
+    m_power2 = lat.m_power2;
+    if (m_power2) {
+      m_pow2_exp.resize(lat.m_pow2_exp.size());
+      for (unsigned int i = 0; i < lat.m_pow2_exp.size(); i++) {
+        m_pow2_exp[i].resize(lat.m_pow2_exp[i].length());
+        for (int j = 0; j < lat.m_pow2_exp[i].length(); j++) m_pow2_exp[i][j] = lat.m_pow2_exp[i][j];
+      }
+    }
+  }
 
   //===========================================================================
 
@@ -359,6 +367,15 @@ namespace LatMRG {
       this->copyBasis(lat);
       this->m_order = lat.m_order;
       this->m_ip = lat.m_ip;
+
+      m_power2 = lat.m_power2;
+      if (m_power2) {
+        m_pow2_exp.resize(lat.m_pow2_exp.size());
+        for (unsigned int i = 0; i < lat.m_pow2_exp.size(); i++) {
+          m_pow2_exp[i].resize(lat.m_pow2_exp[i].length());
+          for (int j = 0; j < lat.m_pow2_exp[i].length(); j++) m_pow2_exp[i][j] = lat.m_pow2_exp[i][j];
+        }
+      }
       //m_shift = lat.m_shift;
       return *this;
       //MyExit (1, " MRGLattice::operator= n'est pas terminé   " );
@@ -501,12 +518,21 @@ namespace LatMRG {
         out << "a_" << i+1 << " = " << m_aCoef[i];
         if(m_power2) {
           out << " = ";
-          if (m_pow2_exp[2*i] == 2004012) out << 0;
-          else out << (((m_pow2_exp[2*i]>>30)!=0)?" ":"-") << 2 << "^"
-            << (m_pow2_exp[2*i] & ((1<<30)-1));
-          if (m_pow2_exp[2*i+1] == 2004012) out << " + " << 0;
-          else out << (((m_pow2_exp[2*i+1]>>30)!=0)?" + ":" - ") << 2 << "^"
-            << (m_pow2_exp[2*i+1] & ((1<<30)-1));
+          Int tmp = m_aCoef[i];
+          for (int j = 0; j < m_pow2_exp[i].length(); j++) {
+            Int tmp2, tmp3 = m_pow2_exp[i][j];
+            NTL::power2(tmp2, tmp3);
+            if (tmp > 0) {
+              if (j != 0) out << " + ";
+              out << "2^" << m_pow2_exp[i][j];
+              tmp -= tmp2;
+            } else if (tmp < 0) {
+              if (j != 0) out << " - ";
+              else out << "-";
+              out << "2^" << m_pow2_exp[i][j];
+              tmp += tmp2;
+            } else out << 0;
+          }
         }
         out << "\n";
       }
@@ -1067,11 +1093,21 @@ namespace LatMRG {
          */
     }
   template<typename Int, typename Dbl>
-    void MRGLattice<Int, Dbl>::setPower2(IntVec& coeffs) {
+    void MRGLattice<Int, Dbl>::setPower2(std::vector<IntVec>& coeffs) {
       this->m_power2 = true;
-      this->m_pow2_exp.SetLength(2*this->m_order);
-      for (int i = 0; i < this->m_order*2; i++) {
-        this->m_pow2_exp[i] = coeffs[i];
+      this->m_pow2_exp.resize(this->m_order);
+      for (int i = 0; i < this->m_order; i++) {
+        this->m_pow2_exp[i].resize(coeffs[i].length());
+        // Sorting the exponents
+        for (int j = 0; j < coeffs[i].length(); j++) {
+          for (int k = j; k < coeffs[i].length(); k++) {
+            if (m_pow2_exp[i][j] < coeffs[i][k]) {
+              m_pow2_exp[i][j] = coeffs[i][k];
+              coeffs[i][k] = coeffs[i][j];
+              coeffs[i][j] = m_pow2_exp[i][j];
+            }
+          }
+        }
       }
     }
 

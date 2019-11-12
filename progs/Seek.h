@@ -165,57 +165,42 @@ namespace LatMRGSeek {
   template<> NTL::vector<NTL::ZZ> MRGLatticeExhaust<NTL::ZZ, NTL::RR>::A(0);
 
   template<typename Int, typename Dbl>
-    MRGLattice<Int, Dbl>* nextGeneratorPow2(ConfigSeek<Int, Dbl>& conf) {
+    MRGLattice<Int, Dbl>* nextGeneratorPow2(ConfigSeek<Int, Dbl>& conf, int k) {
       typedef NTL::vector<Int> IntVec;
       // Setting up two vectors. MRGComponent and MRGLattice do not use the same
       // vector format
       IntVec A;
       A.SetLength(conf.fact[0]->getK()+1);
-      NTL::clear(A);
-      IntVec coefficients(2*conf.fact[0]->getK());
-      int sign;
       int delay = 0;
+      std::vector<IntVec> coeffs;
+      coeffs.resize(conf.fact[0]->getK());
+      for (int i = 0; i < conf.fact[0]->getK(); i++) coeffs[i].resize(NTL::conv<int>(conf.coeff[0][conf.fact[0]->getK()]));
       // The program will not run the maxPeriod function if it is not wanted with
       // this condition
       do {
+        NTL::clear(A);
         if (delay >= DELAY) {
           if (timer.timeOver(conf.timeLimit)) return NULL;
           else delay = 0;
         }
         for (long i = 0; i<conf.fact[0]->getK(); i++) {
-          if (conf.coeff[0][2*i] < 0) {
-            // This is a placeholder value for a zero coefficient
-            coefficients[2*i] = coefficients[2*i+1] = 2004012;
-            A[i+1] = 0;
-            continue;
+          for (long j = 0; j < conf.coeff[0][conf.fact[0]->getK()]; j++) {
+            coeffs[i][j] = randInt(Int(0), conf.coeff[0][i]);
+            Int tmp2;
+            NTL::power2(tmp2, coeffs[i][j]);
+            if (conf.coeff[0][i] != 0)
+              A[i+1] += Int(randInt(0,1)?-1:1) * tmp2;
           }
-          coefficients[2*i] = randInt(Int(LatticeTester::Lg(conf.fact[0]->getR()))+1, conf.coeff[0][2*i]);
-          sign = randInt(0,1);
-          {
-            Int tmp;
-            NTL::power2(tmp, coefficients[2*i]);
-            A[i+1] = Int(sign?1:-1) * tmp;
-          }
-          coefficients[2*i] ^= sign<<30;
-          if (!(conf.coeff[0][2*i+1] < 0)) {
-            coefficients[2*i+1] = randInt(Int(LatticeTester::Lg(conf.fact[0]->getR()))+1, conf.coeff[0][2*i+1]);
-            sign = randInt(0,1);
-            Int tmp;
-            NTL::power2(tmp, coefficients[2*i+1]);
-            A[i+1] += Int(sign?1:-1) * tmp;
-            coefficients[2*i+1] ^= (sign<<30);
-          }
-          else coefficients[2*i+1] = 2004012;
         }
         delay++;
       } while ((A[conf.fact[0]->getK()] == 0) || (conf.period[0] && !conf.fact[0]->maxPeriod(A)));
       MRGLattice<Int, Dbl>* lat = new MRGLattice<Int, Dbl>(conf.fact[0]->getM(), A, conf.proj->numProj(), conf.fact[0]->getK(), FULL);
-      lat->setPower2(coefficients);
+      lat->setPower2(coeffs);
       return lat;
     }
 
   template<typename Int, typename Dbl>
-    MWCLattice<Int, Dbl>* nextGenerator(ConfigSeek<Int, Dbl>& conf) {
+    MWCLattice<Int, Dbl>* nextGenerator(ConfigSeek<Int, Dbl>& conf, int k) {
       // Setting up two vectors. MRGComponent and MRGLattice do not use the same
       // vector format
       NTL::vector<Int> A;
