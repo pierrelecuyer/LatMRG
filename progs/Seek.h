@@ -165,7 +165,7 @@ namespace LatMRGSeek {
   template<> NTL::vector<NTL::ZZ> MRGLatticeExhaust<NTL::ZZ, NTL::RR>::A(0);
 
   template<typename Int, typename Dbl>
-    MRGLattice<Int, Dbl>* nextGeneratorPow2(ConfigSeek<Int, Dbl>& conf, int k) {
+    MRGLattice<Int, Dbl>* nextGeneratorPow2(ConfigSeek<Int, Dbl>& conf) {
       typedef NTL::vector<Int> IntVec;
       // Setting up two vectors. MRGComponent and MRGLattice do not use the same
       // vector format
@@ -200,7 +200,7 @@ namespace LatMRGSeek {
     }
 
   template<typename Int, typename Dbl>
-    MWCLattice<Int, Dbl>* nextGenerator(ConfigSeek<Int, Dbl>& conf, int k) {
+    MWCLattice<Int, Dbl>* nextGenerator(ConfigSeek<Int, Dbl>& conf) {
       // Setting up two vectors. MRGComponent and MRGLattice do not use the same
       // vector format
       NTL::vector<Int> A;

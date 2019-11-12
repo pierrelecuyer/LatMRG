@@ -808,9 +808,9 @@ int readFile(const char* filename) {
         return prog.Seek(LatMRGSeek::ComboLatticeFinder<Int, Dbl>::getFunction);
       } else if (conf.fact[0]->get_type() == MRG) {
         SeekMain<MRGLattice<Int, Dbl>> prog(conf);
-        if (search_mode == "exhaust") {
+        if (conf.search_mode[0] == "exhaust") {
           return prog.Seek(LatMRGSeek::MRGLatticeExhaust<Int, Dbl>::nextGenerator);
-        } else if (search_mode == "pow2") {
+        } else if (conf.search_mode[0] == "pow2") {
           return prog.Seek(LatMRGSeek::nextGeneratorPow2);
         }
         return prog.Seek(LatMRGSeek::nextGenerator);
