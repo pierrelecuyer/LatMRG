@@ -1,9 +1,16 @@
 <seek>
   <gen>
+    <numcomp x="2"/>
     <mrg>
-      <modulo basis="2" exponent="61" rest="-1"/>
+      <modulo basis="2" exponent="63" rest="-21129"/>
       <order x="3"/>
-      <method pow2="4 -1 50 50"/>
+      <method pow2="2 -1 50 50"/>
+      <period check="true"/>
+    </mrg>
+    <mrg>
+      <modulo basis="2" exponent="63" rest="-275025"/>
+      <order x="3"/>
+      <method pow2="2 50 -1 50"/>
       <period check="true"/>
     </mrg>
   </gen>

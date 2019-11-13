@@ -516,7 +516,7 @@ namespace LatMRG {
       std::ostringstream out;
       for (int i = 0; i < this->m_order; i++) {
         out << "a_" << i+1 << " = " << m_aCoef[i];
-        if(m_power2) {
+        if(m_power2 && m_aCoef[i] != 0) {
           out << " = ";
           Int tmp = m_aCoef[i];
           for (int j = 0; j < m_pow2_exp[i].length(); j++) {

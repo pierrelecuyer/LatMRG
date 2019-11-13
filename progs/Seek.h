@@ -174,22 +174,24 @@ namespace LatMRGSeek {
       int delay = 0;
       std::vector<IntVec> coeffs;
       coeffs.resize(conf.fact[0]->getK());
-      for (int i = 0; i < conf.fact[0]->getK(); i++) coeffs[i].resize(NTL::conv<int>(conf.coeff[0][conf.fact[0]->getK()]));
+      for (int i = 0; i < conf.fact[0]->getK(); i++) coeffs[i].resize(
+          NTL::conv<int>(conf.coeff[0][conf.fact[0]->getK()]));
       // The program will not run the maxPeriod function if it is not wanted with
       // this condition
       do {
-        NTL::clear(A);
         if (delay >= DELAY) {
           if (timer.timeOver(conf.timeLimit)) return NULL;
           else delay = 0;
         }
         for (long i = 0; i<conf.fact[0]->getK(); i++) {
-          for (long j = 0; j < conf.coeff[0][conf.fact[0]->getK()]; j++) {
-            coeffs[i][j] = randInt(Int(0), conf.coeff[0][i]);
-            Int tmp2;
-            NTL::power2(tmp2, coeffs[i][j]);
-            if (conf.coeff[0][i] != 0)
+          A[i+1] = 0;
+          if (conf.coeff[0][i] >= 0) {
+            for (long j = 0; j < conf.coeff[0][conf.fact[0]->getK()]; j++) {
+              coeffs[i][j] = randInt(Int(0), conf.coeff[0][i]);
+              Int tmp2;
+              NTL::power2(tmp2, coeffs[i][j]);
               A[i+1] += Int(randInt(0,1)?-1:1) * tmp2;
+            }
           }
         }
         delay++;
@@ -304,8 +306,21 @@ namespace LatMRGSeek {
               else delay = 0;
             }
             for (long i = 0; i<conf.fact[k]->getK(); i++) {
-              if (conf.fact[k]->get_type() == MRG)
-                A[i+1] = conf.coeff[k][i] * randInt(Int(0), conf.fact[k]->getM());
+              if (conf.fact[k]->get_type() == MRG) {
+                if (conf.search_mode[k] == "pow2") {
+                  A[i+1] = 0;
+                  if (conf.coeff[k][i] >= 0) {
+                    for (long j = 0; j < conf.coeff[k][conf.fact[k]->getK()]; j++) {
+                      Int tmp1 = randInt(Int(0), conf.coeff[k][i]);
+                      Int tmp2;
+                      NTL::power2(tmp2, tmp1);
+                      A[i+1] += Int(randInt(0,1)?-1:1) * tmp2;
+                    }
+                  }
+                } else if (conf.search_mode[k] == "random") {
+                  A[i+1] = conf.coeff[k][i] * randInt(Int(0), conf.fact[k]->getM());
+                }
+              }
               if (conf.fact[k]->get_type() == MWC)
                 A[i+1] = conf.coeff[k][i] * randInt(Int(0), conf.fact[k]->m_MWCb);
             }
