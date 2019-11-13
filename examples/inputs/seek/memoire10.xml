@@ -1,17 +1,16 @@
-<!--Searching a combined generator with powers of 2 coefficients-->
 <seek>
   <gen>
     <numcomp x="2"/>
     <mrg>
-      <modulo basis="2" exponent="63" rest="-21129"/>
+      <modulo basis="2" exponent="41" rest="-53493"/>
       <order x="3"/>
-      <method pow2="2 -1 50 50"/>
+      <method random="0 1 1"/>
       <period check="true"/>
     </mrg>
     <mrg>
-      <modulo basis="2" exponent="63" rest="-275025"/>
+      <modulo basis="2" exponent="41" rest="-57009"/>
       <order x="3"/>
-      <method pow2="2 50 -1 50"/>
+      <method random="1 0 1"/>
       <period check="true"/>
     </mrg>
   </gen>

@@ -116,13 +116,25 @@ namespace LatMRG {
          * */
         std::string toString() const override;
 
+        /**
+         * */
+        std::string& getCompString(int i) {return m_compstr[i];}
+
       private:
+        /**
+         * The MRG components of this combined generator.
+         * */
         std::vector<MRGComponent<Int>*> m_comp;
 
         /**
          * The number of components stored in this object.
          * */
         int m_number;
+
+        /**
+         * Strings to represent each component.
+         * */
+        std::vector<std::string> m_compstr;
     }; // end class ComboLattice
 
   //============================================================================
@@ -134,6 +146,7 @@ namespace LatMRG {
         m_comp.push_back(new MRGComponent<Int>(*comp[i]));
       }
       m_number = comp.size();
+      m_compstr.resize(m_number);
     }
 
   //============================================================================
@@ -141,10 +154,12 @@ namespace LatMRG {
   template<typename Int, typename Dbl>
     ComboLattice<Int, Dbl>::ComboLattice(const ComboLattice<Int, Dbl>& lat) :
       MRGLattice<Int, Dbl>(lat){
+      m_number = lat.m_number;
+      m_compstr.resize(m_number);
       for (unsigned int i = 0; i < lat.m_comp.size(); i++) {
         m_comp.push_back(new MRGComponent<Int>(*lat.m_comp[i]));
+        m_compstr[i] = lat.m_compstr[i];
       }
-      m_number = lat.m_number;
     }
 
   //============================================================================
@@ -166,7 +181,7 @@ namespace LatMRG {
         if (m_comp[i]->get_type() == MRG) m = m_comp[i]->getM();
         if (m_comp[i]->get_type() == MWC) m = m_comp[i]->m_MWCb;
         out << "Component " << i+1 << "\nm = " << m << "\nk = "
-          << m_comp[i]->getK() << "\na = " << m_comp[i]->getA() << "\n\n";
+          << m_comp[i]->getK() << "\n" << m_compstr[i] << "\n";
       }
       out << "Equivalent to\n";
       out << "m = " << this->m_modulo << "\nk = " << this->m_order << "\n";

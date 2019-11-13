@@ -141,12 +141,10 @@ namespace LatMRGSeek {
               if (conf.coeff[0][i-1] == 0) continue;
               A[i]++;
               if (i == conf.fact[0]->getK()) {
-                std::cout << A << "\n";
               }
               if (A[i] < conf.fact[0]->getM()) break;
               else {
                 if (i == conf.fact[0]->getK()) {
-                  std::cout << "Final A: " << A << "\nExhausted all possibilities\n";
                   return NULL;
                 }
                 A[i] = 0;
@@ -293,11 +291,16 @@ namespace LatMRGSeek {
       static ComboLattice<Int, Dbl>* nextGenerator(ConfigSeek<Int, Dbl>& conf) {
         // Setting up two vectors. MRGComponent and MRGLattice do not use the same
         // vector format
+        std::vector<std::string> compstr;
+        compstr.resize(conf.num_comp);
         for (int k = 0; k < conf.num_comp; k++) {
+          // Generating all components
           IntVec A;
           A.SetLength(conf.fact[k]->getK()+1);
           NTL::clear(A);
           int delay = 0;
+          std::vector<IntVec> coeffs;
+          coeffs.resize(conf.fact[k]->getK());
           // The program will not run the maxPeriod function if it is not wanted with
           // this condition
           do {
@@ -305,26 +308,36 @@ namespace LatMRGSeek {
               if (timer.timeOver(conf.timeLimit)) return NULL;
               else delay = 0;
             }
-            for (long i = 0; i<conf.fact[k]->getK(); i++) {
+            for (long i = 0; i < conf.fact[k]->getK(); i++) {
               if (conf.fact[k]->get_type() == MRG) {
                 if (conf.search_mode[k] == "pow2") {
+                  coeffs[i].resize(NTL::conv<int>(conf.coeff[k][conf.fact[k]->getK()]));
                   A[i+1] = 0;
                   if (conf.coeff[k][i] >= 0) {
                     for (long j = 0; j < conf.coeff[k][conf.fact[k]->getK()]; j++) {
-                      Int tmp1 = randInt(Int(0), conf.coeff[k][i]);
+                      coeffs[i][j] = randInt(Int(0), conf.coeff[k][i]);
                       Int tmp2;
-                      NTL::power2(tmp2, tmp1);
+                      NTL::power2(tmp2, coeffs[i][j]);
                       A[i+1] += Int(randInt(0,1)?-1:1) * tmp2;
                     }
                   }
+                  auto lat = MRGLattice<Int, Dbl>(conf.fact[k]->getM(), A, conf.proj->numProj(), conf.fact[k]->getK(), FULL);
+                  lat.setPower2(coeffs);
+                  compstr[k] = lat.toString();
                 } else if (conf.search_mode[k] == "random") {
                   A[i+1] = conf.coeff[k][i] * randInt(Int(0), conf.fact[k]->getM());
+                  auto lat = MRGLattice<Int, Dbl>(conf.fact[k]->getM(), A, conf.proj->numProj(), conf.fact[k]->getK(), FULL);
+                  compstr[k] = lat.toString();
                 }
               }
               if (conf.fact[k]->get_type() == MWC)
                 A[i+1] = conf.coeff[k][i] * randInt(Int(0), conf.fact[k]->m_MWCb);
             }
-            if (conf.fact[k]->get_type() == MWC) A[0] = -1;
+            if (conf.fact[k]->get_type() == MWC) {
+              A[0] = -1;
+              auto lat = MWCLattice<Int, Dbl>(conf.fact[k]->m_MWCb, A, conf.fact[k]->getK(), conf.proj->numProj());
+              compstr[k] = lat.toString();
+            }
             delay++;
           } while ((A[conf.fact[k]->getK()] == 0) || (conf.period[k] && !conf.fact[k]->maxPeriod(A)));
           if (conf.fact[k]->get_type() == MRG) {
@@ -339,6 +352,7 @@ namespace LatMRGSeek {
         MRGLattice<Int, Dbl>* mrg_lat = getLatCombo<Int, Dbl>(conf.fact, conf.proj->numProj());
         ComboLattice<Int, Dbl>* new_lat = new ComboLattice<Int, Dbl>(conf.fact, *mrg_lat);
         delete mrg_lat;
+        for (int i = 0; i < conf.num_comp; i++) new_lat->getCompString(i) = compstr[i];
         return new_lat;
       }
     };

@@ -191,6 +191,8 @@ namespace LatMRG {
          * */
         Int m_MWCb;
 
+        void setPower2(std::vector<IntVec>& coeffs);
+
       private:
 
         /**

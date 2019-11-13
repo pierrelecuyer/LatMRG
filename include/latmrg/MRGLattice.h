@@ -1092,6 +1092,9 @@ namespace LatMRG {
          }
          */
     }
+
+  //============================================================================
+
   template<typename Int, typename Dbl>
     void MRGLattice<Int, Dbl>::setPower2(std::vector<IntVec>& coeffs) {
       this->m_power2 = true;
