@@ -19,7 +19,7 @@ var searchData=
   ['setname',['SetName',['../classtinyxml2_1_1_x_m_l_attribute.html#a469c2363600007f49e62a8048a362d57',1,'tinyxml2::XMLAttribute::SetName()'],['../classtinyxml2_1_1_x_m_l_element.html#a97712009a530d8cb8a63bf705f02b4f1',1,'tinyxml2::XMLElement::SetName()']]],
   ['setnumber',['setNumber',['../class_lat_m_r_g_1_1_int_factorization.html#af4818dbb2124b9b949ec11179e434314',1,'LatMRG::IntFactorization']]],
   ['setpe',['setpe',['../class_lat_m_r_g_1_1_int_primitivity.html#a81a4b174eddf88604fb2da7fb19c6e55',1,'LatMRG::IntPrimitivity']]],
-  ['setpower2',['setPower2',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a7813cf5ccc66d379666ab7abc3a1f18b',1,'LatMRG::MRGLattice']]],
+  ['setpower2',['setPower2',['../class_lat_m_r_g_1_1_m_r_g_component.html#a18d9f54a9cbac464df4e377de55a6b15',1,'LatMRG::MRGComponent::setPower2()'],['../class_lat_m_r_g_1_1_m_r_g_lattice.html#a7c9a6d2fb7212b59bb25386786432f63',1,'LatMRG::MRGLattice::setPower2()']]],
   ['setrho',['setRho',['../class_lat_m_r_g_1_1_m_r_g_lattice.html#ac4066cdc8d9ae377b43762933eaf0257',1,'LatMRG::MRGLattice']]],
   ['setstatus',['setStatus',['../class_lat_m_r_g_1_1_int_factorization.html#a7383630d35fbadd8e202136e933717a0',1,'LatMRG::IntFactorization']]],
   ['setstr',['SetStr',['../classtinyxml2_1_1_str_pair.html#a1f82ec6b5bee35ee7466d8565e43b1de',1,'tinyxml2::StrPair']]],

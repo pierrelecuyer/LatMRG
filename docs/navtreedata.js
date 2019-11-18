@@ -71,12 +71,7 @@ var NAVTREE =
         [ "Searching for new MRG", "usage.html#usage_exec_search", null ],
         [ "Usage of the executable", "usage.html#usage_exec_usage", null ]
       ] ],
-      [ "Building LatMRG", "usage.html#compilation", null ],
-      [ "A programmer's guide to LatMRG", "usage.html#program", [
-        [ "Working with types", "usage.html#program_types", null ],
-        [ "Adding new types of generators", "usage.html#program_creating", null ],
-        [ "Expanding the executable", "usage.html#program_expanding", null ]
-      ] ]
+      [ "Building LatMRG", "usage.html#compilation", null ]
     ] ],
     [ "Configuration Files Synthax and Tags", "conf_file.html", [
       [ "A short note on XML", "conf_file.html#xml_note", null ],
@@ -90,6 +85,14 @@ var NAVTREE =
         [ "Types in LatMRG", "tutorial.html#classes_list_types", null ],
         [ "MRG Representation", "tutorial.html#classes_list_mrg", null ],
         [ "Testing and Reducing Lattices", "tutorial.html#classes_list_tests", null ]
+      ] ],
+      [ "Programming LatMRG", "tutorial.html#program", [
+        [ "Working with types", "tutorial.html#program_types", null ],
+        [ "Adding new types of generators", "tutorial.html#program_creating", null ],
+        [ "Expanding the executable", "tutorial.html#program_expanding", [
+          [ "nextGenerator Functions", "tutorial.html#next_gen", null ],
+          [ "Accessing the New Function", "tutorial.html#program_exec_mod", null ]
+        ] ]
       ] ]
     ] ],
     [ "LatMain", "_lat_main.html", null ],
@@ -142,11 +145,11 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "_a_w_c_s_w_b_lattice_8cc.html",
-"class_lat_m_r_g_1_1_int_primitivity.html#a137859e5e72e7b7feab7b722a6da2603",
-"class_lat_m_r_g_1_1_modulus.html#ae877f0255be3f2666a4b560989b53729",
-"classtinyxml2_1_1_x_m_l_document.html#a1dbdc7feaa58007403c20243ac5abbd3",
-"classtinyxml2_1_1_x_m_l_printer.html#a2ce2aa508c21ac91615093ddb9c282c5",
-"tinyxml2_8h.html#ac94d4b856d14f3c3a8c1dcdbd6ee13b4"
+"class_lat_m_r_g_1_1_int_primitivity.html#a052b2cf875fc202c6c72f767bcb666e1",
+"class_lat_m_r_g_1_1_modulus.html#adafc6998c59f307c80101b3ac581d517",
+"classtinyxml2_1_1_x_m_l_document.html#a14419b698f7c4b140df4e80f3f0c93b0",
+"classtinyxml2_1_1_x_m_l_printer.html#a1dbb1390e829d0673af66b9cd1928bd7",
+"tinyxml2_8h.html#a7f91d00f77360f850fd5da0861e27dd5a751769aa625fe5fe5286e9779edec56a"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

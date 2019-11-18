@@ -25,6 +25,7 @@ var class_lat_m_r_g_1_1_m_r_g_component =
     [ "set_type", "class_lat_m_r_g_1_1_m_r_g_component.html#ae4b861b4291eb60de85a2a7cbaaa2754", null ],
     [ "setA", "class_lat_m_r_g_1_1_m_r_g_component.html#a0689f092b93c27cda47fb64ef070132d", null ],
     [ "setA", "class_lat_m_r_g_1_1_m_r_g_component.html#a86bfba300ecfe4bddcf9e2611bbff275", null ],
+    [ "setPower2", "class_lat_m_r_g_1_1_m_r_g_component.html#a18d9f54a9cbac464df4e377de55a6b15", null ],
     [ "toString", "class_lat_m_r_g_1_1_m_r_g_component.html#afe8a90c6fdfb81611d2a7ee2a052dbb0", null ],
     [ "factor", "class_lat_m_r_g_1_1_m_r_g_component.html#ac9335033f77bc924d467c68a1f873732", null ],
     [ "ifm1", "class_lat_m_r_g_1_1_m_r_g_component.html#af4c586a97741eab86bed1320186f9122", null ],

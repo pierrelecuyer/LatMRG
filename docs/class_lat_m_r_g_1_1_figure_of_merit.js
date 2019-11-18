@@ -3,7 +3,7 @@ var class_lat_m_r_g_1_1_figure_of_merit =
     [ "Dbl", "class_lat_m_r_g_1_1_figure_of_merit.html#a739faa2efa53f137053cfc6cc70174ec", null ],
     [ "Int", "class_lat_m_r_g_1_1_figure_of_merit.html#ac005d6d7db2c0a431a0f749dfc360207", null ],
     [ "FigureOfMerit", "class_lat_m_r_g_1_1_figure_of_merit.html#afcb03bb3f7c500b00329a355326943b1", null ],
-    [ "FigureOfMerit", "class_lat_m_r_g_1_1_figure_of_merit.html#ab824d0e19bad1f8a8c88349a404acc4c", null ],
+    [ "FigureOfMerit", "class_lat_m_r_g_1_1_figure_of_merit.html#a6e6fdcdc2d1dddfd28102eb543f85c4f", null ],
     [ "addMerit", "class_lat_m_r_g_1_1_figure_of_merit.html#ac223c30ffb16b209b4d0b38f62501748", null ],
     [ "computeMerit", "class_lat_m_r_g_1_1_figure_of_merit.html#adc0c78ea0ad04f69f537254ce9d2743a", null ],
     [ "finished", "class_lat_m_r_g_1_1_figure_of_merit.html#aeaedeb63c35b0bd078cb5a29ff05e844", null ],
