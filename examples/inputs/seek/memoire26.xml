@@ -2,15 +2,15 @@
   <gen>
     <numcomp x="2"/>
     <mrg>
-      <modulo basis="2" exponent="47" rest="-19041"/>
+      <modulo basis="2" exponent="38" rest="-4625"/>
       <order x="3"/>
-      <method random="0 65536 65536"/>
+      <method random="0 33554434 33554434"/>
       <period check="true"/>
     </mrg>
     <mrg>
-      <modulo basis="2" exponent="47" rest="-32145"/>
+      <modulo basis="2" exponent="38" rest="-21257"/>
       <order x="3"/>
-      <method random="65536 0 65536"/>
+      <method random="33554434 0 33554434"/>
       <period check="true"/>
     </mrg>
   </gen>
@@ -24,7 +24,7 @@
     <num x="4"/>
     <dim x="35 15 15 15"/>
   </proj>
-  <time x="3600"/>
+  <time x="7200"/>
   <num_gen x="5"/>
 </seek>
 <out/>
