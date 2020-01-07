@@ -106,7 +106,35 @@ namespace LatMRGSeek {
           if (timer.timeOver(conf.timeLimit)) return NULL;
           else delay = 0;
         }
-        for (long i = 0; i<conf.fact[0]->getK(); i++) A[i+1] = conf.coeff[0][i] * randInt(Int(0), conf.fact[0]->getM());
+        for (long i = 0; i<conf.fact[0]->getK(); i++) A[i+1] = randInt(Int(0), conf.coeff[0][i]);
+        delay++;
+      } while ((A[conf.fact[0]->getK()] == 0) ||
+          (conf.period[0] && (conf.fact[0]->get_type()==MRG) ?
+           !conf.fact[0]->maxPeriod(A) :
+           conf.fact[0]->maxPeriod(A[conf.fact[0]->getK()])));
+      return new MRGLattice<Int, Dbl>(conf.fact[0]->getM(), A, conf.proj->numProj(), conf.fact[0]->getK(), FULL);
+    }
+
+  /*
+   * The goal is to create this overload and to use it to switch generators
+   * without requiring the use of switch statements.
+   * */
+  template<typename Int, typename Dbl>
+    MRGLattice<Int, Dbl>* MRGApproxFactor(ConfigSeek<Int, Dbl>& conf) {
+      // Setting up two vectors. MRGComponent and MRGLattice do not use the same
+      // vector format
+      NTL::vector<Int> A;
+      A.SetLength(conf.fact[0]->getK()+1);
+      NTL::clear(A);
+      int delay = 0;
+      // The program will not run the maxPeriod function if it is not wanted with
+      // this condition
+      do {
+        if (delay >= DELAY) {
+          if (timer.timeOver(conf.timeLimit)) return NULL;
+          else delay = 0;
+        }
+        for (long i = 0; i<conf.fact[0]->getK(); i++) A[i+1] = conf.coeff[0][i] * randInt(Int(0), NTL::SqrRoot(conf.fact[0]->getM()));
         delay++;
       } while ((A[conf.fact[0]->getK()] == 0) ||
           (conf.period[0] && (conf.fact[0]->get_type()==MRG) ?
@@ -151,6 +179,7 @@ namespace LatMRGSeek {
               }
             }
             //delay++;
+            // std::cout << "A " << A << "\n";
           } while ((A[conf.fact[0]->getK()] == 0) ||
               (conf.period[0] && (conf.fact[0]->get_type()==MRG) ?
                !conf.fact[0]->maxPeriod(A) :
@@ -315,7 +344,7 @@ namespace LatMRGSeek {
                   A[i+1] = 0;
                   if (conf.coeff[k][i] >= 0) {
                     for (long j = 0; j < conf.coeff[k][conf.fact[k]->getK()]; j++) {
-                      coeffs[i][j] = randInt(Int(0), conf.coeff[k][i]);
+                      coeffs[i][j] = randInt(Int(LatticeTester::Lg(abs(conf.fact[k]->getR()))+1), conf.coeff[k][i]);
                       Int tmp2;
                       NTL::power2(tmp2, coeffs[i][j]);
                       A[i+1] += Int(randInt(0,1)?-1:1) * tmp2;
@@ -324,8 +353,12 @@ namespace LatMRGSeek {
                   auto lat = MRGLattice<Int, Dbl>(conf.fact[k]->getM(), A, conf.proj->numProj(), conf.fact[k]->getK(), FULL);
                   lat.setPower2(coeffs);
                   compstr[k] = lat.toString();
+                } else if (conf.search_mode[k] == "af") {
+                  A[i+1] = conf.coeff[k][i] * randInt(Int(0), NTL::SqrRoot(conf.fact[k]->getM()));
+                  auto lat = MRGLattice<Int, Dbl>(conf.fact[k]->getM(), A, conf.proj->numProj(), conf.fact[k]->getK(), FULL);
+                  compstr[k] = lat.toString();
                 } else if (conf.search_mode[k] == "random") {
-                  A[i+1] = conf.coeff[k][i] * randInt(Int(0), conf.fact[k]->getM());
+                  A[i+1] = randInt(Int(0), conf.coeff[k][i]);
                   auto lat = MRGLattice<Int, Dbl>(conf.fact[k]->getM(), A, conf.proj->numProj(), conf.fact[k]->getK(), FULL);
                   compstr[k] = lat.toString();
                 }

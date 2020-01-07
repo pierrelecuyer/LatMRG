@@ -1,18 +1,17 @@
-<!--Combining 64 bits LCG and a MWC with smaller modulo. Hope the equivalent LCG
-has modulo close to 2^64 so that we obtain a potent combination-->
-<!--This works but not in higher dimensions-->
+<!--Random coefficients for combined MRG with approximate factoring-->
 <seek>
   <gen>
     <numcomp x="2"/>
     <mrg>
-      <modulo basis="2" exponent="63"/>
-      <order x="1"/>
-      <method random="1"/>
+      <modulo basis="2" exponent="59" rest="-140769"/>
+      <order x="3"/>
+      <method random="0 m m"/>
       <period check="true"/>
     </mrg>
     <mrg>
-      <modulo basis="2" exponent="63" rest="-25"/>
-      <method random="1"/>
+      <modulo basis="2" exponent="59" rest="-194745"/>
+      <order x="3"/>
+      <method random="m 0 m"/>
       <period check="true"/>
     </mrg>
   </gen>
@@ -22,10 +21,10 @@ has modulo close to 2^64 so that we obtain a potent combination-->
     <dual x="true"/>
   </spectral>
   <proj>
-    <min x="2"/>
+    <min x="4"/>
     <num x="1"/>
-    <dim x="34"/>
+    <dim x="35"/>
   </proj>
-  <time x="60"/>
+  <time x="120"/>
   <num_gen x="5"/>
 </seek>

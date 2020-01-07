@@ -194,9 +194,11 @@
  *       method to use to select the coefficients of the generators. It also
  *       needs to have an attribute, specifying the method by its name, with a
  *       value describing how to use it. The options are:
- *       `random="a[1] a[2] ... a[k-1]"` the coefficients are search randomly, if `a[i]` is
- *       0, the coefficient is 0 and `pow2="a[1,1] a[2,1] ... a[1,k-1] a[2,k-1]",
- *       the coefficients are search randombly, taken as a sum of powers of 2 with
+ *       - `random="a[1] a[2] ... a[k-1]"` the coefficients are searched randomly between
+ *       0 and the value of `a[i]`. `a[i]` can take the value `m` and the program
+ *       will give it the value of the modulo.
+ *       - `pow2="a[1,1] a[2,1] ... a[1,k-1] a[2,k-1]",
+ *       the coefficients are searched randomly, taken as a sum of powers of 2 with
  *       exponents between `a[1,i]` and `a[2,i]`.
  *     - <b>`<coeff a="a1 a2 ... ak"/>`</b> (`<lattest>` only) (no default):
  *       The coefficients of the generator. `"a1 a2 ... ak"` are the numerical

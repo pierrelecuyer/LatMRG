@@ -153,7 +153,11 @@ Generator test and search</h1>
 <li><b><code>&lt;r m="method" name="filename"/&gt;</code></b> (default: m="DECOMP", name: a random filename): Same as <code>&lt;m1&gt;</code> but for \(r = (m^k-1)/(m-1)\).</li>
 </ul>
 </li>
-<li><b><code>&lt;method/&gt;</code></b> (&lt;seek&gt; only) (no default): This tag indicates which method to use to select the coefficients of the generators. It also needs to have an attribute, specifying the method by its name, with a value describing how to use it. The options are: <code>random="a[1] a[2] ... a[k-1]"</code> the coefficients are search randomly, if <code>a[i]</code> is 0, the coefficient is 0 and `pow2="a[1,1] a[2,1] ... a[1,k-1] a[2,k-1]", the coefficients are search randombly, taken as a sum of powers of 2 with exponents between <code>a[1,i]</code> and <code>a[2,i]</code>.</li>
+<li><b><code>&lt;method/&gt;</code></b> (&lt;seek&gt; only) (no default): This tag indicates which method to use to select the coefficients of the generators. It also needs to have an attribute, specifying the method by its name, with a value describing how to use it. The options are:<ul>
+<li><code>random="a[1] a[2] ... a[k-1]"</code> the coefficients are searched randomly between 0 and the value of <code>a[i]</code>. <code>a[i]</code> can take the value <code>m</code> and the program will give it the value of the modulo.</li>
+<li>`pow2="a[1,1] a[2,1] ... a[1,k-1] a[2,k-1]", the coefficients are searched randomly, taken as a sum of powers of 2 with exponents between <code>a[1,i]</code> and <code>a[2,i]</code>.</li>
+</ul>
+</li>
 <li><b><code>&lt;coeff a="a1 a2 ... ak"/&gt;</code></b> (<code>&lt;lattest&gt;</code> only) (no default): The coefficients of the generator. <code>"a1 a2 ... ak"</code> are the numerical values for the coefficients.</li>
 </ul>
 </li>

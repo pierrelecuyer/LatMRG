@@ -5,7 +5,7 @@
     <mrg>
       <modulo basis="2" exponent="32" rest="-209"/>
       <order x="3"/>
-      <method random="0 1 1"/>
+      <method random="0 m m"/>
       <period check="true">
         <m1 x="DECOMP_WRITE" file="examples/inputs/seek/memoire01m1.fact"/>
         <r x="DECOMP_WRITE" file="examples/inputs/seek/memoire01r.fact"/>
@@ -14,7 +14,7 @@
     <mrg>
       <modulo basis="2" exponent="32" rest="-22853"/>
       <order x="3"/>
-      <method random="1 0 1"/>
+      <method random="m 0 m"/>
       <period check="true">
         <m1 x="DECOMP_WRITE" file="examples/inputs/seek/memoire01m1.fact"/>
         <r x="DECOMP_WRITE" file="examples/inputs/seek/memoire01r.fact"/>

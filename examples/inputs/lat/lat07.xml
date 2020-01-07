@@ -16,14 +16,14 @@
     </mrg>
   </gen>
   <spectral>
-    <norma x="ROGERS"/>
+    <norma x="BESTLAT"/>
     <reduction x="FULL"/>
     <dual x="true"/>
   </spectral>
   <proj>
     <min x="4"/>
-    <num x="4"/>
-    <dim x="40 50 50 25"/>
+    <num x="5"/>
+    <dim x="45 50 50 50 25"/>
   </proj>
 </lattest>
 <out/>

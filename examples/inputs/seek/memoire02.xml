@@ -1,19 +1,20 @@
-<!--Search for a 64 bits LCG-->
+<!--(3)-->
 <seek>
   <gen>
     <mrg>
-      <modulo basis="2" exponent="64"/>
-      <method random="1"/>
+      <modulo basis="2" exponent="16" rest="-15"/>
+      <order k="4"/>
+      <method random="m 0 0 m"/>
       <period check="true"/>
     </mrg>
   </gen>
   <spectral>
     <reduction method="FULL"/>
-    <norma x="BESTLAT"/>
-    <dual x="true"/>
+    <norma n="BESTLAT"/>
+    <dual d="true"/>
   </spectral>
   <proj>
-    <min x="2"/>
+    <min x="5"/>
     <num x="1"/>
     <dim x="35"/>
   </proj>

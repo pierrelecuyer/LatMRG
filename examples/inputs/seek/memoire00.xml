@@ -1,23 +1,22 @@
-<!--Exhaustive search for a 8 bit MRG of order 8-->
+<!--(1)-->
 <seek>
   <gen>
-    <mrg>
-      <modulo basis="2" exponent="8" rest="-5"/>
-      <order k="8"/>
-      <method exhaust="1 0 0 1 1 0 0 1"/>
+    <lcg>
+      <modulo basis="2" exponent="16"/>
+      <method exhaust="1"/>
       <period check="true"/>
-    </mrg>
+    </lcg>
   </gen>
   <spectral>
     <reduction method="FULL"/>
-    <norma n="BESTLAT"/>
-    <dual d="true"/>
+    <norma x="BESTLAT"/>
+    <dual x="true"/>
   </spectral>
   <proj>
-    <min x="9"/>
+    <min x="2"/>
     <num x="1"/>
     <dim x="35"/>
   </proj>
-  <time x="36000"/>
+  <time x="3600"/>
   <num_gen x="5"/>
 </seek>

@@ -1,9 +1,16 @@
-<!--Generator found with examples/inputs/seek/memoire03.xml-->
+<!--(4)-->
 <lattest>
   <gen>
+    <numcomp x="2"/>
     <mrg>
-      <modulo basis="2" exponent="64"/>
-      <coeff x="6328659727172721891"/>
+      <modulo basis="2" exponent="16" rest="-269"/>
+      <order x="2"/>
+      <coeff x="29602 44944"/>
+    </mrg>
+    <mrg>
+      <modulo basis="2" exponent="16" rest="-389"/>
+      <order x="2"/>
+      <coeff x="10445 7526"/>
     </mrg>
   </gen>
   <spectral>
@@ -12,9 +19,9 @@
     <dual bool="true"/>
   </spectral>
   <proj>
-    <min x="2"/>
-    <num x="4"/>
-    <dim x="40 50 50 25"/>
+    <min x="3"/>
+    <num x="3"/>
+    <dim x="45 50 50"/>
   </proj>
+  <detail x="1"/>
 </lattest>
-<out/>

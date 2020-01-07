@@ -3,7 +3,7 @@
     <mrg>
       <modulo basis="2" exponent="64" rest="-59"/>
       <order k="1"/>
-      <method random="1"/>
+      <method random="m"/>
       <period x="true"/>
     </mrg>
   </gen>

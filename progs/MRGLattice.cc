@@ -65,7 +65,8 @@ int toVectString(const char* str, Vec& vect, int length) {
     strncpy(to, str+old, j-old);
     to[j-old] = '\0';
     old = j = j+1;
-    NTL::conv(vect[i], to);
+    if (!strcmp(to, "m")) NTL::conv(vect[i], -1);
+    else NTL::conv(vect[i], to);
   }
   return 0;
 }
@@ -109,7 +110,7 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
   tinyxml2::XMLElement* node;
 
   int exponent, order;
-  typename Conf::Int /*modulo,*/ basis, rest;
+  typename Conf::Int modulo, basis, rest;
 
   std::string filem1 = "./tempm1" + i + std::to_string(rand());
   std::string filer = "./tempr" + i + std::to_string(rand());
@@ -126,7 +127,7 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
     else exponent = 1;
     if (node->Attribute("rest")) NTL::conv(rest, node->Attribute("rest"));
     else rest = 0;
-    //modulo = NTL::power(basis, exponent) + rest;
+    modulo = NTL::power(basis, exponent) + rest;
   } else {
     std::cerr << "No 'modulo' tag in 'mrg' tag.\n";
     return 1;
@@ -144,12 +145,13 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
     if (node) {
       auto value = node->FirstAttribute();
       if (value) {
-        if (!strcmp(value->Name(), "random")) {
-          conf.search_mode[i] = "random";
+        conf.search_mode[i] = value->Name();
+        if (!strcmp(value->Name(), "random") || strcmp(value->Name(), "af")) {
           conf.coeff[i].SetLength(order);
           if (toVectString(value->Value(), conf.coeff[i], order)) return 1;
+          for (int j = 0; j < order; j++) if (conf.coeff[i][j] < 0) conf.coeff[i][j] = modulo;
         } else if (!strcmp(value->Name(), "pow2")) {
-          conf.search_mode[i] = "pow2";
+          //conf.search_mode[i] = "pow2";
           conf.coeff[i].SetLength(order+1);
           std::vector<long> tmp;
           tmp.resize(order+1);
@@ -157,7 +159,7 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
           for (int j = 0; j < order; j++) conf.coeff[i][j] = typename Conf::Int(tmp[j+1]);
           conf.coeff[i][order] = typename Conf::Int(tmp[0]);
         } else if (!strcmp(value->Name(), "exhaust")) {
-          conf.search_mode[i] = "exhaust";
+          //conf.search_mode[i] = "exhaust";
           conf.coeff[i].SetLength(order);
           if (toVectString(value->Value(), conf.coeff[i], order)) return 1;
         } else {
@@ -816,6 +818,9 @@ int readFile(const char* filename) {
         return prog.Seek(LatMRGSeek::nextGenerator);
       } else if (conf.fact[0]->get_type() == LCG) {
         SeekMain<MRGLattice<Int, Dbl>> prog(conf);
+        if (conf.search_mode[0] == "exhaust") {
+          return prog.Seek(LatMRGSeek::MRGLatticeExhaust<Int, Dbl>::nextGenerator);
+        }
         return prog.Seek(LatMRGSeek::nextGenerator);
       } else if (conf.fact[0]->get_type() == MWC) {
         SeekMain<MWCLattice<Int, Dbl>> prog(conf);

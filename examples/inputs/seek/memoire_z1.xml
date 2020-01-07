@@ -4,7 +4,7 @@
     <mrg>
       <modulo basis="2" exponent="63" rest="-2247"/>
       <order x="3"/>
-      <method random="0 1 1"/>
+      <method random="0 m m"/>
       <period check="true">
         <m1 x="READ" file="examples/inputs/seek/memoire01m1.fact"/>
         <r x="READ" file="examples/inputs/seek/memoire01r.fact"/>
@@ -13,7 +13,7 @@
     <mrg>
       <modulo basis="2" exponent="63" rest="-6477"/>
       <order x="1"/>
-      <method random="1"/>
+      <method random="m"/>
       <period check="true">
         <m1 x="READ" file="examples/inputs/seek/memoire01m1.fact"/>
         <r x="READ" file="examples/inputs/seek/memoire01r.fact"/>
