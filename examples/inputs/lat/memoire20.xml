@@ -1,0 +1,28 @@
+<!--MRG-->
+<lattest>
+  <gen>
+    <numcomp x="2"/>
+    <mrg>
+      <modulo basis="2" exponent="37" rest="-20745"/>
+      <order x="3"/>
+      <coeff x="0 27768811 8176518"/>
+    </mrg>
+    <mrg>
+      <modulo basis="2" exponent="37" rest="-29313"/>
+      <order x="3"/>
+      <coeff x="46909 0 15672925"/>
+    </mrg>
+  </gen>
+  <spectral>
+    <reduction method="FULL"/>
+    <norma lizer="BESTLAT"/>
+    <dual bool="true"/>
+  </spectral>
+  <proj>
+    <min x="4"/>
+    <num x="5"/>
+    <dim x="45 50 50 50 25"/>
+  </proj>
+  <detail x="1"/>
+</lattest>
+<out/>
