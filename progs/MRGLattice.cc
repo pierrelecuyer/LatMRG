@@ -372,6 +372,10 @@ int readSpectral(tinyxml2::XMLNode* current, Conf& conf) {
   if (node) {
     if (LatticeTester::toPreRedString(conf.reduction, node->FirstAttribute()->Value())) std::cerr << "Invalid"
       "/inexistant attribute in 'reduction' tag.\n";
+    if (conf.reduction == LatticeTester::FULL) {
+      node = current->FirstChildElement("nodesBB");
+      if (node) conf.nodesBB = node->FirstAttribute()->IntValue();
+    }
   }
 
   node = current->FirstChildElement("norma");

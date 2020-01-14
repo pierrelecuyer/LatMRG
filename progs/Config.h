@@ -8,6 +8,8 @@ LatticeTester::CriterionType criterion = LatticeTester::SPECTRAL;
 LatticeTester::PreReductionType reduction = LatticeTester::FULL;
 LatticeTester::NormType norm = LatticeTester::L2NORM;
 
+std::int64_t nodesBB = 100000000000;
+
 bool use_dual = true;
 #ifdef LATMRG_SEEK
 bool best = true;

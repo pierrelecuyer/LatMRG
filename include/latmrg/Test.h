@@ -69,9 +69,9 @@ namespace LatMRG {
      * This performs a BKZ reduction and a shortest vector search.
      * */
     template<typename Int, typename Dbl>
-      void reduceFull(LatticeTester::IntLattice<Int, Int, Dbl, Dbl>& lat) {
+      void reduceFull(LatticeTester::IntLattice<Int, Int, Dbl, Dbl>& lat, std::int64_t maxNodesBB = 100000000000) {
         LatticeTester::Reducer<Int, Int, Dbl, Dbl> red(lat);
-        LatticeTester::Reducer<Int, Int, Dbl, Dbl>::maxNodesBB = 100000000000;
+        LatticeTester::Reducer<Int, Int, Dbl, Dbl>::maxNodesBB = maxNodesBB;
         //red.redDieter(0);
         //red.redBKZ(0.999999, 10, LatticeTester::EXPONENT, lat.getDim());
         red.redLLLNTL(0.999999, LatticeTester::EXPONENT, lat.getDim());
@@ -81,15 +81,15 @@ namespace LatMRG {
     /**
      * Instanciation of `reduceFull()`.
      * */
-    extern template void reduceFull(LatticeTester::IntLattice<std::int64_t, std::int64_t, double, double>& lat);
+    extern template void reduceFull(LatticeTester::IntLattice<std::int64_t, std::int64_t, double, double>& lat, std::int64_t);
     /**
      * Instanciation of `reduceFull()`.
      * */
-    extern template void reduceFull(LatticeTester::IntLattice<NTL::ZZ, NTL::ZZ, double, double>& lat);
+    extern template void reduceFull(LatticeTester::IntLattice<NTL::ZZ, NTL::ZZ, double, double>& lat, std::int64_t);
     /**
      * Instanciation of `reduceFull()`.
      * */
-    extern template void reduceFull(LatticeTester::IntLattice<NTL::ZZ, NTL::ZZ, NTL::RR, NTL::RR>& lat);
+    extern template void reduceFull(LatticeTester::IntLattice<NTL::ZZ, NTL::ZZ, NTL::RR, NTL::RR>& lat, std::int64_t);
 
     /**
      * This performs the BKZ reduction.

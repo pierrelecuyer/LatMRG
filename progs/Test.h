@@ -25,7 +25,7 @@ for (int i = proj->minDim(); i <= proj->maxDim(); i++){
   if (conf.use_dual) lattice.dualize();
   // Reducing the lattice
   if (conf.reduction == LatticeTester::FULL)
-    Reductions::reduceFull(lattice);
+    Reductions::reduceFull(lattice, conf.nodesBB);
   else if (conf.reduction == LatticeTester::LLL)
     Reductions::reduceLLL(lattice);
   else if (conf.reduction == LatticeTester::BKZ)
@@ -83,7 +83,7 @@ for (int i = 2; i <= proj->numProj(); i++) {
     if (conf.use_dual) proj_lat.dualize();
     // Reduction
     if (conf.reduction == LatticeTester::FULL)
-      Reductions::reduceFull(proj_lat);
+      Reductions::reduceFull(proj_lat, conf.nodesBB);
     else if (conf.reduction == LatticeTester::LLL)
       Reductions::reduceLLL(proj_lat);
     else if (conf.reduction == LatticeTester::BKZ)

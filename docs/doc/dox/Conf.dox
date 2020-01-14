@@ -223,6 +223,9 @@
  *     program uses the shortest lattice vector found after BKZ reduction to
  *     compute the merit, and `LLL`, the program uses the shortest lattice vector
  *     found after LLL reduction to compute the merit.
+ *   - <b>`<nodesBB n="num"/>`</b> (default: `100000000`): The number of nodes
+ *     the branch and bound algorithm will explore. This is only read when
+ *     `reduction` is `FULL`.
  *   - <b>`<norma n="normalizer"/>`</b> (default: `NONE`): The normalizer used by
  *     the spectral test. The spectral test will compute \f$\ell_t/\ell_t^*\f$
  *     if this has a value, it will otherwise compute \f$1/\ell_t\f$.
