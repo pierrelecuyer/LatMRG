@@ -1,8 +1,8 @@
 # About LatMRG
 
 **LatMRG** is a sofware package intended as the most up to date and feature
-complete tool to search and test **Multiple Recursive** and similar **Random 
-Number Generators**. The generators considered here are all linear and this 
+complete tool to search and test **Multiple Recursive** and similar **Random
+Number Generators**. The generators considered here are all linear and this
 linearity means that they all have a **lattice structure** of some sort.
 
 The goal of this software is to provide reliable theoretical tests of uniformity
@@ -96,14 +96,6 @@ make
 This will pull and build the LatMRG library in `./LatMRG/lib`, and the executable
 programs in `./LatMRG/bin`. There is currently no way to install LatMRG in
 standard path to ease the usage of the library or invoke it via the command line.
-
-## Todo List
-
-Here is a list of things that need to be done on this repository:
-- Implement a good IO for executable. Make them fully command line instead of
-using config files for more flexibility and scripting potential.
-- Have the makefile look for dependencies
-- Have an installation option
 
 ### Current maintainer(s)
 
