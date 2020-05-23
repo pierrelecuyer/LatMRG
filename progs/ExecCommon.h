@@ -14,6 +14,7 @@
 #include "latticetester/Random.h"
 #include "latticetester/Const.h"
 #include "latticetester/Reducer.h"
+#include "latticetester/Util.h"
 
 #include "latmrg/MWCLattice.h"
 #include "latmrg/MMRGLattice.h"
