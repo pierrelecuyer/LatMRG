@@ -21,7 +21,6 @@
 #include "latmrg/MRGComponent.h"
 
 
-
 namespace LatMRG {
 
   /**
@@ -35,6 +34,14 @@ namespace LatMRG {
       private:
         typedef NTL::vector<Int> IntVec;
         typedef NTL::matrix<Int> IntMat;
+
+        /**
+         * Wraps LatticeTester::toLowerString for this class.
+         * */
+        std::string toLowerString(const std::string& str) {
+          return LatticeTester::toLowerString(str);
+        }
+
       public:
         static const int MAX_WORD_SIZE = 64;
 
@@ -243,19 +250,19 @@ namespace LatMRG {
       std::string val;
       this->getToken(val, ln, pos);
 
-      if (strcasecmp(val.c_str(), "LCG") == 0)
+      if (toLowerString(val).compare("lcg") == 0)
         field = LCG;
-      else if (strcasecmp(val.c_str(), "MRG") == 0)
+      else if (toLowerString(val).compare("mrg") == 0)
         field = MRG;
-      else if (strcasecmp(val.c_str(), "MWC") == 0)
+      else if (toLowerString(val).compare("mwc") == 0)
         field = MWC;
-      else if (strcasecmp(val.c_str(), "KOROBOV") == 0)
+      else if (toLowerString(val).compare("korobov") == 0)
         field = KOROBOV;
-      else if (strcasecmp(val.c_str(), "RANK1") == 0)
+      else if (toLowerString(val).compare("rank1") == 0)
         field = RANK1;
-      else if (strcasecmp(val.c_str(), "MMRG") == 0)
+      else if (toLowerString(val).compare("mmrg") == 0)
         field = MMRG;
-      else if (strcasecmp(val.c_str(), "COMBO") == 0)
+      else if (toLowerString(val).compare("combo") == 0)
         field = COMBO;
       else
         LatticeTester::MyExit(1, "readGenType:   NO SUCH CASE");
@@ -269,11 +276,11 @@ namespace LatMRG {
       std::string val;
       this->getToken(val, ln, pos);
 
-      if (strcasecmp(val.c_str(), "NONE") == 0)
+      if (toLowerString(val).compare("none") == 0)
         lacunaryType = NONE;
-      else if (strcasecmp(val.c_str(), "SUBVECTOR") == 0)
+      else if (toLowerString(val).compare("subvector") == 0)
         lacunaryType = SUBVECTOR;
-      else if (strcasecmp(val.c_str(), "ARBITRARYINDICES") == 0)
+      else if (toLowerString(val).compare("arbitraryindices") == 0)
         lacunaryType = ARBITRARYINDICES;
       else
         LatticeTester::MyExit(1, "readLacunaryType:   NO SUCH CASE");
@@ -319,13 +326,13 @@ namespace LatMRG {
       std::string val;
       this->getToken(val, ln, pos);
 
-      if (0 == strcasecmp(val.c_str(), "PAL"))
+      if (toLowerString(val).compare("pal") == 0)
         field = LatticeTester::PAL;
-      else if (0 == strcasecmp(val.c_str(), "NORMPAL"))
+      else if (toLowerString(val).compare("normpal") == 0)
         field = LatticeTester::NORMPAL;
-      else if (0 == strcasecmp(val.c_str(), "BAL"))
+      else if (toLowerString(val).compare("bal") == 0)
         field = LatticeTester::BAL;
-      else if (0 == strcasecmp(val.c_str(), "SEEKPAL"))
+      else if (toLowerString(val).compare("seekpal") == 0)
         field = LatticeTester::SEEKPAL;
       else
         LatticeTester::MyExit(1, "readCalcType:   NO SUCH CASE");
@@ -341,13 +348,13 @@ namespace LatMRG {
       std::string val;
       this->getToken(val, line, pos);
 
-      if (0 == strcasecmp(val.c_str(), "decomp"))
+      if (toLowerString(val).compare("decomp") == 0)
         field = DECOMP;
-      else if (0 == strcasecmp(val.c_str(), "write"))
+      else if (toLowerString(val).compare("write") == 0)
         field = DECOMP_WRITE;
-      else if (0 == strcasecmp(val.c_str(), "read"))
+      else if (toLowerString(val).compare("read") == 0)
         field = DECOMP_READ;
-      else if (0 == strcasecmp(val.c_str(), "prime"))
+      else if (toLowerString(val).compare("prime") == 0)
         field = DECOMP_PRIME;
       else
         LatticeTester::MyExit(1, "readDecompType:   NO SUCH CASE");
@@ -362,13 +369,13 @@ namespace LatMRG {
       std::string val;
       this->getToken(val, ln, pos);
 
-      if (0 == strcasecmp(val.c_str(), "FULL"))
+      if (toLowerString(val).compare("full") == 0)
         field = FULL;
-      else if (0 == strcasecmp(val.c_str(), "RECURRENT"))
+      else if (toLowerString(val).compare("recurrent") == 0)
         field = RECURRENT;
-      else if (0 == strcasecmp(val.c_str(), "ORBIT"))
+      else if (toLowerString(val).compare("orbit") == 0)
         field = ORBIT;
-      else if (0 == strcasecmp(val.c_str(), "PRIMEPOWER"))
+      else if (toLowerString(val).compare("primepower") == 0)
         field = PRIMEPOWER;
       else
         LatticeTester::MyExit(1, "readLatticeType:   NO SUCH CASE");
@@ -396,15 +403,15 @@ namespace LatMRG {
       std::string val;
       this->getToken(val, ln, pos);
 
-      if (0 == strcasecmp(val.c_str(), "NoCond"))
+      if (toLowerString(val).compare("nocond") == 0)
         field = NO_COND;
-      else if (0 == strcasecmp(val.c_str(), "AppFact"))
+      else if (toLowerString(val).compare("appfact") == 0)
         field = APP_FACT;
-      else if (0 == strcasecmp(val.c_str(), "NonZero")) {
+      else if (toLowerString(val).compare("nonzero") == 0)
         field = ZERO_COEF;
-      } else if (0 == strcasecmp(val.c_str(), "Equal"))
+      else if (toLowerString(val).compare("equal") == 0)
         field = EQUAL_COEF;
-      else if (0 == strcasecmp(val.c_str(), "PowerTwo"))
+      else if (toLowerString(val).compare("powertwo") == 0)
         field = POWER_TWO;
       else
         LatticeTester::MyExit(1, "readImplemCond:   NO SUCH CASE");
@@ -418,9 +425,9 @@ namespace LatMRG {
       std::string val;
       this->getToken(val, ln, pos);
 
-      if (0 == strcasecmp(val.c_str(), "Exhaust"))
+      if (toLowerString(val).compare("exhaust") == 0)
         field = EXHAUST;
-      else if (0 == strcasecmp(val.c_str(), "Random"))
+      else if (toLowerString(val).compare("random") == 0)
         field = RANDOM;
       else
         LatticeTester::MyExit(1, "readSearchMethod:   NO SUCH CASE");
