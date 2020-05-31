@@ -19,7 +19,7 @@ endif
 STAT_LIBS_PATH = -Wl,-Bstatic -L$(LIB_DIR)
 STAT_LIBS = -llatmrg -llatticetester
 DYN_LIBS_PATH = -Wl,-Bdynamic -L/usr/local/lib
-DYN_LIBS = -lntl -lgmp -ltinyxml2 #-ltestu01 -lmylib
+DYN_LIBS = -lntl -lgmp -ltinyxml2
 
 # A few directories we need to be aware of
 SRC_DIR = ./src
@@ -34,8 +34,6 @@ EX_BUILD = ./bin/examples
 
 # Other source files locations
 MRG_LOW = $(SRC_DIR)/latmrg
-#MRG_HIGH  = $(SRC_DIR)/latmrg-high
-#MRG_TYPES = $(SRC_DIR)/latmrg/mrgtypes
 
 # The source files are in SRC_DIR. This grabs subdirectories
 SRCS = $(wildcard $(MRG_LOW)/*.cc)
@@ -43,14 +41,6 @@ PROGS_CC = $(filter-out ./progs/SeekMain.cc, $(wildcard $(PRO_DIR)/*.cc))
 PROGS_H = $(wildcard $(PRO_DIR)/*.h)
 EX_CC = $(wildcard $(EX_DIR)/*.cc)
 
-# define the C object files
-#
-# This uses Suffix Replacement within a macro:
-#   $(name:string1=string2)
-#         For each word in 'name' replace 'string1' with 'string2'
-# Below we are replacing the suffix .c of all words in the macro SRCS
-# with the .o suffix
-#
 STA_OBJS = $(SRCS:$(SRC_DIR)/%.cc=$(OBJ_DIR)/%.o)
 DYN_OBJS = $(SRCS:$(SRC_DIR)/%.cc=$(OBJ_DIR)/%.so)
 PROGS_O = $(PROGS_CC:$(PRO_DIR)/%.cc=$(PRO_DIR)/%.o)
@@ -69,7 +59,7 @@ default: $(PROGS_O)
 	@echo
 	@echo 'LatMRG programs compiled in ./bin'
 
-all: clean_all default examples doc
+all: clean_all default doc
 
 #===============================================================================
 # Building the library
@@ -77,7 +67,6 @@ all: clean_all default examples doc
 $(LIB_DIR)/liblatmrg.a: $(STA_OBJS) | message_lib $(LIB_DIR)
 	rm -f $(LIB_DIR)/liblatmrg.a
 	ar rcs $(LIB_DIR)/liblatmrg.a $(STA_OBJS)
-	$(CC) -o $(LIB_DIR)/liblatmrg.so -shared $(DYN_OBJS)
 	@echo
 	@echo 'LatMRG library archive created: ./lib/liblatmrg.a'
 	@echo
@@ -98,7 +87,6 @@ $(OBJ_DIR):
 
 $(OBJ_DIR)/%.o:$(SRC_DIR)/%.cc $(INC_DIR)/%.h | message_obj $(OBJ_DIR)
 	$(CC) $(CFLAGS) $(INCLUDES) $(YAFU) -c $< -o $@
-	$(CC) -fPIC $(CFLAGS) $(INCLUDES) $(YAFU) -c $< -o $(@:%.o=%).so
 
 message_obj:
 	$(SEP)
@@ -238,14 +226,8 @@ config_latticetester:
 	  else\
 	    NTL_PREFIX='--ntl '$$NTL_PREFIX;\
 	  fi;\
-	  read -p 'Enter boost prefix (default: empty string): ' BOOST_PREFIX;\
-	  if [ -z $$BOOST_PREFIX ] ; then\
-	    BOOST_PREFIX='';\
-	  else\
-	    BOOST_PREFIX='--boost '$$BOOST_PREFIX;\
-	  fi;\
 	  cd latticetester;\
-	  ./waf configure $$NTL_PREFIX $$BOOST_PREFIX
+	  ./waf configure $$NTL_PREFIX
 
 $(LIB_DIR)/liblatticetester.a:$(LATTEST_DEP) | message_lib $(LIB_DIR)
 	$(SEP)
