@@ -2,8 +2,8 @@
 CC = g++
 
 # define any compile-time flags
-CFLAGS = -std=c++14 -Wall -O2
-DEBUG_FLAGS = -std=c++14 -g -Wall -O2
+CFLAGS = -std=c++17 -Wall -O2
+DEBUG_FLAGS = -std=c++17 -g -Wall -O2
 
 # The header files of the LatMRG library and the LatticeTester library
 INCLUDES = -I./include -I./latticetester/include
@@ -69,7 +69,7 @@ default: $(PROGS_O)
 	@echo
 	@echo 'LatMRG programs compiled in ./bin'
 
-all: clean_all default examples doc
+all: clean_all default doc
 
 #===============================================================================
 # Building the library
@@ -147,6 +147,20 @@ doc:
 
 #===============================================================================
 # Installation/removal of LatMRG
+
+install:
+	$(SEP)
+	@echo 'Creating folders'
+	mkdir -p /usr/local/LatMRG
+	mkdir -p /usr/local/LatMRG/lib
+	mkdir -p /usr/local/LatMRG/bin
+	@echo 'Copying files'
+	cp ./bin/* /usr/local/LatMRG/bin
+	cp ./lib/* /usr/local/LatMRG/lib
+
+remove:
+	rm -rf /usr/local/LatMRG
+
 
 #===============================================================================
 # Execution of the examples
@@ -298,4 +312,5 @@ separator:
 # PHONY targets
 
 .PHONY: doc clean clean_all examples $(EX_BUILD)/ $(EX_CC) separator\
-  config_latticetester $(MK_DAT) mk_ex period_ex seek_ex lattest_ex $(EX_OUTPUTS)
+  config_latticetester $(MK_DAT) mk_ex period_ex seek_ex lattest_ex $(EX_OUTPUTS)\
+  install remove
