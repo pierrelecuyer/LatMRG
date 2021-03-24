@@ -309,7 +309,7 @@ namespace LatMRG {
   template <typename Int, typename Dbl>
     void ParamReaderExt<Int, Dbl>::readInterval (IntVec & B, IntVec & C, unsigned int & ln, int k)
     {
-      long m1, m2, m3;
+      long long m1, m2, m3;
       for (int i = 0; i < k; i++) {
         this->readNumber3 (B[i], m1, m2, m3, ++ln, 0);
         this->readNumber3 (C[i], m1, m2, m3, ++ln, 0);

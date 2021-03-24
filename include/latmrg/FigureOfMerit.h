@@ -61,7 +61,7 @@ namespace LatMRG {
       public:
 
       FigureOfMerit() {
-        finished = false;
+        m_finished = false;
       }
 
       /**
