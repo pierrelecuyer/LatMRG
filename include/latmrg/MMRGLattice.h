@@ -491,8 +491,7 @@ namespace LatMRG {
       this->m_vecNorm.resize(dimension);
       this->m_dualvecNorm.resize(dimension);
 
-      // NTL::conv<int>(long long) is not supported, so convert to NTL::ZZ first
-      int maxIndiceLac = NTL::conv<int>(static_cast<NTL::ZZ>(m_lac[m_lac.getSize()-1]));
+      int maxIndiceLac = NTL::conv<int>(m_lac[m_lac.getSize()-1]);
 
       // building the complete basis until: dimension = max lacunary indice
       //-----------------------------------------------------------------------
@@ -544,8 +543,7 @@ namespace LatMRG {
 
       for (int j = 0; j < m_numberLacIndices; j++) {
         for (int i = 0; i < this->m_order; i++)
-          // NTL::conv<int>(long long) is not supported, so convert to NTL::ZZ first
-          this->m_wSI[i][j] = tempBasis[ i ][ NTL::conv<int>(static_cast<NTL::ZZ>(m_lac[j])) ];
+          this->m_wSI[i][j] = tempBasis[ i ][ NTL::conv<int>(m_lac[j]) ];
       }
 
       /*

@@ -202,8 +202,7 @@ namespace LatMRGSeek {
       std::vector<IntVec> coeffs;
       coeffs.resize(conf.fact[0]->getK());
       for (int i = 0; i < conf.fact[0]->getK(); i++) coeffs[i].resize(
-          // NTL::conv<int>(long long) is not supported, so we convert to ZZ first.
-          NTL::conv<int>(static_cast<NTL::ZZ>(conf.coeff[0][conf.fact[0]->getK()])));
+          NTL::conv<int>(conf.coeff[0][conf.fact[0]->getK()]));
       // The program will not run the maxPeriod function if it is not wanted with
       // this condition
       do {
@@ -341,8 +340,7 @@ namespace LatMRGSeek {
             for (long i = 0; i < conf.fact[k]->getK(); i++) {
               if (conf.fact[k]->get_type() == MRG) {
                 if (conf.search_mode[k] == "pow2") {
-                  // NTL::conv<int>(long long) is not supported, so we convert to ZZ first.
-                  coeffs[i].resize(NTL::conv<int>(static_cast<NTL::ZZ>(conf.coeff[k][conf.fact[k]->getK()])));
+                  coeffs[i].resize(NTL::conv<int>(conf.coeff[k][conf.fact[k]->getK()]));
                   A[i+1] = 0;
                   if (conf.coeff[k][i] >= 0) {
                     for (long j = 0; j < conf.coeff[k][conf.fact[k]->getK()]; j++) {
