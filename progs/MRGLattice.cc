@@ -65,7 +65,8 @@ int toVectString(const char* str, Vec& vect, int length) {
     strncpy(to, str+old, j-old);
     to[j-old] = '\0';
     old = j = j+1;
-    if (!strcmp(to, "m")) NTL::conv(vect[i], -1);
+    // the .0 double-literal is needed on some systems to prevent compilation error
+    if (!strcmp(to, "m")) NTL::conv(vect[i], -1.0);
     else NTL::conv(vect[i], to);
   }
   return 0;

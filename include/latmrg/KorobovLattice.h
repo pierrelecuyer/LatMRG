@@ -192,7 +192,8 @@ namespace LatMRG {
       //assert(d <= getMaxDim());
       this->setDim(d);
       Int tmp;
-      NTL::conv(tmp, 1);
+      // the .0 double-literal is needed on some systems to prevent compilation error
+      NTL::conv(tmp, 1.0);
 
       for (int i = 0; i < m_shift; i++) {
         tmp *= m_a;
