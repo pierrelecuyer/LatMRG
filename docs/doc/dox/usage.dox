@@ -101,7 +101,7 @@
  *
  * \section compilation Building LatMRG
  *
- * LatMRG is available on [**Github**](https://github.com/savamarc/latmrg) and
+ * LatMRG is available on [**Github**](https://github.com/umontreal-simul/latmrg) and
  * can be downloaded either via `git` or as a `.zip` archive. We do not provide
  * precompiled binairies, so you have to follow these instruction to use the
  * software. Once
@@ -137,7 +137,7 @@
  * First, download the source code via github as a `.zip` unpack it and open a
  * terminal in that directory, or use git:
  * ```
- * git clone --recursive https://github.com/savamarc/LatMRG.git
+ * git clone --recursive https://github.com/umontreal-simul/LatMRG.git
  * cd LatMRG
  * ```
  * If you downloaded the zip, you will also need to download and extract Lattice

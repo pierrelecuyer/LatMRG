@@ -30,14 +30,14 @@ are
 
 The documentation of this software is segmented in multiple locations that each
 contain different information:
-- You can easily [get started](https://savamarc.github.io/LatMRG/usage.html) by
+- You can easily [get started](https://umontreal-simul.github.io/LatMRG/usage.html) by
   intalling and using the executables
-- [Survey the contents of LatMRG](https://savamarc.github.io/LatMRG) in the full
+- [Survey the contents of LatMRG](https://umontreal-simul.github.io/LatMRG) in the full
   guide
-- [Read the theory](https://savamarc.github.io/LatMRG/background.html) behind LatMRG
-- [Look at examples](https://savamarc.github.io/LatMRG/tutorial.html) and learn
+- [Read the theory](https://umontreal-simul.github.io/LatMRG/background.html) behind LatMRG
+- [Look at examples](https://umontreal-simul.github.io/LatMRG/tutorial.html) and learn
   how LatMRG can be used as a library
-- Access the full [API documentation](https://savamarc.github.io/LatMRG/annotated.html) for the library.
+- Access the full [API documentation](https://umontreal-simul.github.io/LatMRG/annotated.html) for the library.
 
 ### Use appropriate RNGs
 
@@ -86,7 +86,7 @@ default prefix such as `/usr/local`, or if you use `clang` instead of `gcc` you
 will need to modify it manually before building LatMRG. The following commands
 will build the library and executables.
 ```
-git clone --recursive https://github.com/savamarc/LatMRG.git
+git clone --recursive https://github.com/umontreal-simul/LatMRG.git
 cd LatMRG/latticetester
 ./waf configure
 cd ..
