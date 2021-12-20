@@ -5,8 +5,8 @@ var class_lat_m_r_g_1_1_param_reader_ext =
     [ "ParamReaderExt", "class_lat_m_r_g_1_1_param_reader_ext.html#a032e66d3b4ec9c17e288829820ab5f31", null ],
     [ "ParamReaderExt", "class_lat_m_r_g_1_1_param_reader_ext.html#aebd93a2382ea5ce14b9d11bcf7fa2e09", null ],
     [ "~ParamReaderExt", "class_lat_m_r_g_1_1_param_reader_ext.html#a9c718833fae6198df29b768ec161ec21", null ],
-    [ "checkBound", "class_lat_m_r_g_1_1_param_reader_ext.html#af7d493f86015c6b16dae596b990c9392", null ],
     [ "checkBound", "class_lat_m_r_g_1_1_param_reader_ext.html#aa260e7f585313a44a9a0f8ff66646f41", null ],
+    [ "checkBound", "class_lat_m_r_g_1_1_param_reader_ext.html#af7d493f86015c6b16dae596b990c9392", null ],
     [ "checkPrimePower", "class_lat_m_r_g_1_1_param_reader_ext.html#ae7af80b45536717db6f97babe4a8f005", null ],
     [ "init", "class_lat_m_r_g_1_1_param_reader_ext.html#a83423efb7e9b95bf72faec9d3d41f189", null ],
     [ "isDelim", "class_lat_m_r_g_1_1_param_reader_ext.html#a92748fdeb5ed620bb94a1b14e2ba607e", null ],
@@ -22,6 +22,7 @@ var class_lat_m_r_g_1_1_param_reader_ext =
     [ "readMMRGLacunary", "class_lat_m_r_g_1_1_param_reader_ext.html#a011b4bd4662fd9a9f8d0411d7d0cf815", null ],
     [ "readOrbit", "class_lat_m_r_g_1_1_param_reader_ext.html#a594baa76afdb00e65e409ea108fc4479", null ],
     [ "readSearchMethod", "class_lat_m_r_g_1_1_param_reader_ext.html#ae0458edfcd4a0617ec2f7b39d2f01f93", null ],
+    [ "toLowerString", "class_lat_m_r_g_1_1_param_reader_ext.html#ab89ba557c2c3c8ac0f745c0800754582", null ],
     [ "m_fileName", "class_lat_m_r_g_1_1_param_reader_ext.html#a4070adac3918ec9a756d717ca0dc42be", null ],
     [ "m_lines", "class_lat_m_r_g_1_1_param_reader_ext.html#adc447e4295ab54bdad389d62ea8896c6", null ],
     [ "MAX_WORD_SIZE", "class_lat_m_r_g_1_1_param_reader_ext.html#a60ae285423a0b12575644ba7de61152f", null ]

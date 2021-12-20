@@ -1,18 +1,17 @@
 /*
-@ @licstart  The following is the entire license notice for the
+@licstart  The following is the entire license notice for the
 JavaScript code in this file.
 
-Copyright (C) 1997-2017 by Dimitri van Heesch
+Copyright (C) 1997-2019 by Dimitri van Heesch
 
 This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
+it under the terms of version 2 of the GNU General Public License as published by
+the Free Software Foundation
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
@@ -147,9 +146,9 @@ var NAVTREEINDEX =
 "_a_w_c_s_w_b_lattice_8cc.html",
 "class_lat_m_r_g_1_1_int_primitivity.html#a052b2cf875fc202c6c72f767bcb666e1",
 "class_lat_m_r_g_1_1_modulus.html#adafc6998c59f307c80101b3ac581d517",
-"classtinyxml2_1_1_x_m_l_document.html#a14419b698f7c4b140df4e80f3f0c93b0",
-"classtinyxml2_1_1_x_m_l_printer.html#a1dbb1390e829d0673af66b9cd1928bd7",
-"tinyxml2_8h.html#a7f91d00f77360f850fd5da0861e27dd5a751769aa625fe5fe5286e9779edec56a"
+"classtinyxml2_1_1_x_m_l_document.html#a13a35ff680994da3fc2d2b2e62a33f8d",
+"classtinyxml2_1_1_x_m_l_printer.html#a1cc16a9362df4332012cb13cff6441b3",
+"tinyxml2_8h.html#a7f91d00f77360f850fd5da0861e27dd5"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
