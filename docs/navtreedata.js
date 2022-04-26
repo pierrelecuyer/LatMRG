@@ -1,25 +1,3 @@
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this file.
-
-Copyright (C) 1997-2019 by Dimitri van Heesch
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of version 2 of the GNU General Public License as published by
-the Free Software Foundation
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-@licend  The above is the entire license notice
-for the JavaScript code in this file
-*/
 var NAVTREE =
 [
   [ "LatMRG Guide", "index.html", [
@@ -106,8 +84,8 @@ var NAVTREE =
     ] ],
     [ "Todo List", "todo.html", null ],
     [ "Bibliography", "citelist.html", null ],
-    [ "Namespaces", "namespaces.html", [
-      [ "Namespace List", "namespaces.html", "namespaces_dup" ],
+    [ "Namespaces", null, [
+      [ "Namespace List", "namespaces.html", "namespaces" ],
       [ "Namespace Members", "namespacemembers.html", [
         [ "All", "namespacemembers.html", null ],
         [ "Functions", "namespacemembers_func.html", null ],
@@ -129,8 +107,8 @@ var NAVTREE =
         [ "Related Functions", "functions_rela.html", null ]
       ] ]
     ] ],
-    [ "Files", "files.html", [
-      [ "File List", "files.html", "files_dup" ],
+    [ "Files", null, [
+      [ "File List", "files.html", "files" ],
       [ "File Members", "globals.html", [
         [ "All", "globals.html", null ],
         [ "Functions", "globals_func.html", null ],
@@ -148,7 +126,7 @@ var NAVTREEINDEX =
 "class_lat_m_r_g_1_1_modulus.html#adafc6998c59f307c80101b3ac581d517",
 "classtinyxml2_1_1_x_m_l_document.html#a13a35ff680994da3fc2d2b2e62a33f8d",
 "classtinyxml2_1_1_x_m_l_printer.html#a1cc16a9362df4332012cb13cff6441b3",
-"tinyxml2_8h.html#a7f91d00f77360f850fd5da0861e27dd5"
+"tinyxml2_8h.html#ae81f14093bb46006bfba7bbb874f2ad7"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
