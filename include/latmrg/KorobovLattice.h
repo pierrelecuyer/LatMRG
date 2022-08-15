@@ -149,8 +149,8 @@ namespace LatMRG {
     {
       if (this == &lat)
         return *this;
-      this->m_dim = lat.m_dim;
-      this->copyBasis(lat);
+      // this->m_dim = lat.m_dim;
+      this->copyLattice(lat);
       this->m_order = lat.m_order;
       m_a = lat.m_a;
       m_shift = lat.m_shift;

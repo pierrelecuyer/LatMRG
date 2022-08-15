@@ -363,8 +363,8 @@ namespace LatMRG {
 
       for (int i = 0; i < this->m_order; i++)
         m_aCoef[i] = lat.m_aCoef[i];
-      this->m_dim = lat.m_dim;
-      this->copyBasis(lat);
+      // this->m_dim = lat.m_dim;
+      this->copyLattice(lat);
       this->m_order = lat.m_order;
       this->m_ip = lat.m_ip;
 
