@@ -91,9 +91,9 @@ namespace LatMRGSeek {
    * The goal is to create this overload and to use it to switch generators
    * without requiring the use of switch statements.
    * */
-  template<typename Int, typename Dbl>
-    MRGLattice<Int, Dbl>* nextGenerator(ConfigSeek<Int, Dbl>& conf) {
-      // Setting up two vectors. MRGComponent and MRGLattice do not use the same
+  template<typename Int, typename Real>
+    MRGLattice<Int, Real>* nextGenerator(ConfigSeek<Int, Real>& conf) {
+      // Setting up two vectors. MRGPeriod and MRGLattice do not use the same
       // vector format
       NTL::vector<Int> A;
       A.SetLength(conf.fact[0]->getK()+1);
@@ -112,16 +112,16 @@ namespace LatMRGSeek {
           (conf.period[0] && (conf.fact[0]->get_type()==MRG) ?
            !conf.fact[0]->maxPeriod(A) :
            conf.fact[0]->maxPeriod(A[conf.fact[0]->getK()])));
-      return new MRGLattice<Int, Dbl>(conf.fact[0]->getM(), A, conf.proj->numProj(), conf.fact[0]->getK(), FULL);
+      return new MRGLattice<Int, Real>(conf.fact[0]->getM(), A, conf.proj->numProj(), conf.fact[0]->getK(), FULL);
     }
 
   /*
    * The goal is to create this overload and to use it to switch generators
    * without requiring the use of switch statements.
    * */
-  template<typename Int, typename Dbl>
-    MRGLattice<Int, Dbl>* MRGApproxFactor(ConfigSeek<Int, Dbl>& conf) {
-      // Setting up two vectors. MRGComponent and MRGLattice do not use the same
+  template<typename Int, typename Real>
+    MRGLattice<Int, Real>* MRGApproxFactor(ConfigSeek<Int, Real>& conf) {
+      // Setting up two vectors. MRGPeriod and MRGLattice do not use the same
       // vector format
       NTL::vector<Int> A;
       A.SetLength(conf.fact[0]->getK()+1);
@@ -140,19 +140,19 @@ namespace LatMRGSeek {
           (conf.period[0] && (conf.fact[0]->get_type()==MRG) ?
            !conf.fact[0]->maxPeriod(A) :
            conf.fact[0]->maxPeriod(A[conf.fact[0]->getK()])));
-      return new MRGLattice<Int, Dbl>(conf.fact[0]->getM(), A, conf.proj->numProj(), conf.fact[0]->getK(), FULL);
+      return new MRGLattice<Int, Real>(conf.fact[0]->getM(), A, conf.proj->numProj(), conf.fact[0]->getK(), FULL);
     }
 
   /**
    * Enuemrates all the possible generators for this generator. Needs to
    * remember previous generator and last modified coordinate between calls.
    * */
-  template<typename Int, typename Dbl>
+  template<typename Int, typename Real>
     class MRGLatticeExhaust {
       static NTL::vector<Int> A;
       public:
-        static MRGLattice<Int, Dbl>* nextGenerator(ConfigSeek<Int, Dbl>& conf) {
-          // Setting up two vectors. MRGComponent and MRGLattice do not use the same
+        static MRGLattice<Int, Real>* nextGenerator(ConfigSeek<Int, Real>& conf) {
+          // Setting up two vectors. MRGPeriod and MRGLattice do not use the same
           // vector format
           if (conf.num_gen == 0) {
             A.SetLength(conf.fact[0]->getK()+1);
@@ -184,17 +184,17 @@ namespace LatMRGSeek {
               (conf.period[0] && (conf.fact[0]->get_type()==MRG) ?
                !conf.fact[0]->maxPeriod(A) :
                conf.fact[0]->maxPeriod(A[conf.fact[0]->getK()])));
-          return new MRGLattice<Int, Dbl>(conf.fact[0]->getM(), A, conf.proj->numProj(), conf.fact[0]->getK(), FULL);
+          return new MRGLattice<Int, Real>(conf.fact[0]->getM(), A, conf.proj->numProj(), conf.fact[0]->getK(), FULL);
         }
     };
   template<> NTL::vector<std::int64_t> MRGLatticeExhaust<std::int64_t, double>::A(0);
   template<> NTL::vector<NTL::ZZ> MRGLatticeExhaust<NTL::ZZ, double>::A(0);
   template<> NTL::vector<NTL::ZZ> MRGLatticeExhaust<NTL::ZZ, NTL::RR>::A(0);
 
-  template<typename Int, typename Dbl>
-    MRGLattice<Int, Dbl>* nextGeneratorPow2(ConfigSeek<Int, Dbl>& conf) {
+  template<typename Int, typename Real>
+    MRGLattice<Int, Real>* nextGeneratorPow2(ConfigSeek<Int, Real>& conf) {
       typedef NTL::vector<Int> IntVec;
-      // Setting up two vectors. MRGComponent and MRGLattice do not use the same
+      // Setting up two vectors. MRGPeriod and MRGLattice do not use the same
       // vector format
       IntVec A;
       A.SetLength(conf.fact[0]->getK()+1);
@@ -223,14 +223,14 @@ namespace LatMRGSeek {
         }
         delay++;
       } while ((A[conf.fact[0]->getK()] == 0) || (conf.period[0] && !conf.fact[0]->maxPeriod(A)));
-      MRGLattice<Int, Dbl>* lat = new MRGLattice<Int, Dbl>(conf.fact[0]->getM(), A, conf.proj->numProj(), conf.fact[0]->getK(), FULL);
+      MRGLattice<Int, Real>* lat = new MRGLattice<Int, Real>(conf.fact[0]->getM(), A, conf.proj->numProj(), conf.fact[0]->getK(), FULL);
       lat->setPower2(coeffs);
       return lat;
     }
 
-  template<typename Int, typename Dbl>
-    MWCLattice<Int, Dbl>* nextGenerator(ConfigSeek<Int, Dbl>& conf) {
-      // Setting up two vectors. MRGComponent and MRGLattice do not use the same
+  template<typename Int, typename Real>
+    MWCLattice<Int, Real>* nextGenerator(ConfigSeek<Int, Real>& conf) {
+      // Setting up two vectors. MRGPeriod and MRGLattice do not use the same
       // vector format
       NTL::vector<Int> A;
       A.SetLength(conf.fact[0]->getK()+1);
@@ -247,11 +247,11 @@ namespace LatMRGSeek {
         delay++;
         A[0] = -1;
       } while ((A[conf.fact[0]->getK()] == 0));
-      return new MWCLattice<Int, Dbl>(conf.fact[0]->m_MWCb, A, conf.fact[0]->getK(), conf.proj->numProj());
+      return new MWCLattice<Int, Real>(conf.fact[0]->m_MWCb, A, conf.fact[0]->getK(), conf.proj->numProj());
     }
 
-  template<typename Int, typename Dbl>
-    MWCLattice<Int, Dbl>* nextFullGenerator(ConfigSeek<Int, Dbl>& conf) {
+  template<typename Int, typename Real>
+    MWCLattice<Int, Real>* nextFullGenerator(ConfigSeek<Int, Real>& conf) {
       Int m(0);
       long exp = conf.fact[0]->getE()-1;
       // 63 bits at a time because NTL converts from SIGNED long
@@ -265,14 +265,14 @@ namespace LatMRGSeek {
       }
       if ((m&1) == 1) m+=1;
       Modulus<Int> mod(conf.fact[0]->getE(), m, true);
-      return new MWCLattice<Int, Dbl>(conf.b, mod.next());
+      return new MWCLattice<Int, Real>(conf.b, mod.next());
     }
 
   /*
    * Goin' full random for now
    * */
-  template<typename Int, typename Dbl>
-    MMRGLattice<Int, Dbl>* nextGenerator(ConfigSeek<Int, Dbl>& conf) {
+  template<typename Int, typename Real>
+    MMRGLattice<Int, Real>* nextGenerator(ConfigSeek<Int, Real>& conf) {
       NTL::matrix<Int> A;
       A.SetDims(conf.fact[0]->getK(), conf.fact[0]->getK());
       NTL::clear(A);
@@ -295,14 +295,14 @@ namespace LatMRGSeek {
       for (int i = 0; i<conf.fact[0]->getK(); i++)
         for (int j = 0; j<conf.fact[0]->getK(); j++)
           A[i][j] = A[i][j]%conf.fact[0]->getM();
-      return new MMRGLattice<Int, Dbl>(conf.fact[0]->getM(), A, conf.proj->numProj(), conf.fact[0]->getK());
+      return new MMRGLattice<Int, Real>(conf.fact[0]->getM(), A, conf.proj->numProj(), conf.fact[0]->getK());
     }
 
   /**
    * Sing there can be a great variety of combined lattices, this class helps
    * choose the correct constructor for such lattices.
    * */
-  template<typename Int, typename Dbl>
+  template<typename Int, typename Real>
     class ComboLatticeFinder {
       typedef NTL::vector<Int> IntVec;
 
@@ -311,14 +311,14 @@ namespace LatMRGSeek {
        * The only public and visible function in this class. Calls the correct
        * underlying function.
        * */
-      static ComboLattice<Int,Dbl>* getFunction(ConfigSeek<Int, Dbl>& conf) {
+      static ComboLattice<Int,Real>* getFunction(ConfigSeek<Int, Real>& conf) {
         return nextGenerator(conf);
       }
 
       private:
 
-      static ComboLattice<Int, Dbl>* nextGenerator(ConfigSeek<Int, Dbl>& conf) {
-        // Setting up two vectors. MRGComponent and MRGLattice do not use the same
+      static ComboLattice<Int, Real>* nextGenerator(ConfigSeek<Int, Real>& conf) {
+        // Setting up two vectors. MRGPeriod and MRGLattice do not use the same
         // vector format
         std::vector<std::string> compstr;
         compstr.resize(conf.num_comp);
@@ -350,16 +350,16 @@ namespace LatMRGSeek {
                       A[i+1] += Int(randInt(0,1)?-1:1) * tmp2;
                     }
                   }
-                  auto lat = MRGLattice<Int, Dbl>(conf.fact[k]->getM(), A, conf.proj->numProj(), conf.fact[k]->getK(), FULL);
+                  auto lat = MRGLattice<Int, Real>(conf.fact[k]->getM(), A, conf.proj->numProj(), conf.fact[k]->getK(), FULL);
                   lat.setPower2(coeffs);
                   compstr[k] = lat.toString();
                 } else if (conf.search_mode[k] == "af") {
                   A[i+1] = conf.coeff[k][i] * randInt(Int(0), NTL::SqrRoot(conf.fact[k]->getM()));
-                  auto lat = MRGLattice<Int, Dbl>(conf.fact[k]->getM(), A, conf.proj->numProj(), conf.fact[k]->getK(), FULL);
+                  auto lat = MRGLattice<Int, Real>(conf.fact[k]->getM(), A, conf.proj->numProj(), conf.fact[k]->getK(), FULL);
                   compstr[k] = lat.toString();
                 } else if (conf.search_mode[k] == "random") {
                   A[i+1] = randInt(Int(0), conf.coeff[k][i]);
-                  auto lat = MRGLattice<Int, Dbl>(conf.fact[k]->getM(), A, conf.proj->numProj(), conf.fact[k]->getK(), FULL);
+                  auto lat = MRGLattice<Int, Real>(conf.fact[k]->getM(), A, conf.proj->numProj(), conf.fact[k]->getK(), FULL);
                   compstr[k] = lat.toString();
                 }
               }
@@ -368,7 +368,7 @@ namespace LatMRGSeek {
             }
             if (conf.fact[k]->get_type() == MWC) {
               A[0] = -1;
-              auto lat = MWCLattice<Int, Dbl>(conf.fact[k]->m_MWCb, A, conf.fact[k]->getK(), conf.proj->numProj());
+              auto lat = MWCLattice<Int, Real>(conf.fact[k]->m_MWCb, A, conf.fact[k]->getK(), conf.proj->numProj());
               compstr[k] = lat.toString();
             }
             delay++;
@@ -382,8 +382,8 @@ namespace LatMRGSeek {
             conf.fact[k]->setA(A);
           }
         }
-        MRGLattice<Int, Dbl>* mrg_lat = getLatCombo<Int, Dbl>(conf.fact, conf.proj->numProj());
-        ComboLattice<Int, Dbl>* new_lat = new ComboLattice<Int, Dbl>(conf.fact, *mrg_lat);
+        MRGLattice<Int, Real>* mrg_lat = getLatCombo<Int, Real>(conf.fact, conf.proj->numProj());
+        ComboLattice<Int, Real>* new_lat = new ComboLattice<Int, Real>(conf.fact, *mrg_lat);
         delete mrg_lat;
         for (int i = 0; i < conf.num_comp; i++) new_lat->getCompString(i) = compstr[i];
         return new_lat;
@@ -393,14 +393,14 @@ namespace LatMRGSeek {
 
 template<typename Lat> struct SeekMain {
   typedef typename Lat::Int Int;
-  typedef typename Lat::Dbl Dbl;
+  typedef typename Lat::Real Real;
   typedef NTL::vector<Int> IntVec;
   typedef NTL::matrix<Int> IntMat;
 
-  ConfigSeek<Int, Dbl> conf;
+  ConfigSeek<Int, Real> conf;
   Lat* lat = 0;
 
-  SeekMain(ConfigSeek<Int, Dbl>& conf) { this->conf = conf;}
+  SeekMain(ConfigSeek<Int, Real>& conf) { this->conf = conf;}
 
   ~SeekMain() {
     if (lat != NULL) delete lat;
@@ -478,7 +478,7 @@ template<typename Lat> struct SeekMain {
     return per_80;
   }
 
-  int Seek (Lat* (*nextGenerator)(ConfigSeek<Int, Dbl>&) )
+  int Seek (Lat* (*nextGenerator)(ConfigSeek<Int, Real>&) )
   {
     if (!conf.gen_set) {
       std::cerr << "No generator set for in seek tag. Aborting.\n";

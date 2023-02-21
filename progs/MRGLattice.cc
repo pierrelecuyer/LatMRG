@@ -193,7 +193,7 @@ int readMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
   if (node && readGenPer(node, conf, i, filem1, filer, decompm1, decompr))
     std::cerr << "Non critical error in 'period' tag of 'mrg' tag.\n";
 
-  auto comp = new MRGComponent<typename Conf::Int>(basis, exponent, rest, order,
+  auto comp = new MRGPeriod<typename Conf::Int>(basis, exponent, rest, order,
       decompm1, filem1.c_str(), decompr, filer.c_str());
   comp->set_type(MRG);
 
@@ -261,7 +261,7 @@ int readMMRG(tinyxml2::XMLNode* current, Conf& conf, int i) {
   if (node && readGenPer(node, conf, i, filem1, filer, decompm1, decompr))
     std::cerr << "Non critical error in 'period' tag of 'mmrg' tag.\n";
 
-  auto comp = new MRGComponent<typename Conf::Int>(basis, exponent, rest, order,
+  auto comp = new MRGPeriod<typename Conf::Int>(basis, exponent, rest, order,
       decompm1, filem1.c_str(), decompr, filer.c_str());
   comp->setA(temp_mat);
   comp->set_type(MMRG);
@@ -348,7 +348,7 @@ int readMWC(tinyxml2::XMLNode* current, Conf& conf, int i) {
   if (mode == "seek") {
     m = 2;
   }
-  auto comp = new MRGComponent<typename Conf::Int>(m, order,
+  auto comp = new MRGPeriod<typename Conf::Int>(m, order,
       decompm1, filem1.c_str(), decompr, filer.c_str());
   comp->set_type(MWC);
   comp->m_MWCb = modulo;
@@ -768,7 +768,7 @@ void readTest(tinyxml2::XMLNode* current, Conf& conf) {
 //===== Main reading function
 //==============================================================================
 
-template<typename Int, typename Dbl>
+template<typename Int, typename Real>
 int readFile(const char* filename) {
   mode = "";
 
@@ -803,42 +803,42 @@ int readFile(const char* filename) {
       return prog.FindMK();
     } else if (!strcmp(current->Value(), "period")) {
       mode = "period";
-      MaxPeriod<Int, Dbl> prog;
+      MaxPeriod<Int, Real> prog;
       if (readPeriod(current, prog)) return 1;
       return prog.CheckPeriod();
     } else if (!strcmp(current->Value(), "seek")) {
       mode = "seek";
-      ConfigSeek<Int, Dbl> conf;
+      ConfigSeek<Int, Real> conf;
       readSeek(current, conf);
       if (conf.num_comp > 1) {
-        SeekMain<ComboLattice<Int, Dbl>> prog(conf);
-        return prog.Seek(LatMRGSeek::ComboLatticeFinder<Int, Dbl>::getFunction);
+        SeekMain<ComboLattice<Int, Real>> prog(conf);
+        return prog.Seek(LatMRGSeek::ComboLatticeFinder<Int, Real>::getFunction);
       } else if (conf.fact[0]->get_type() == MRG) {
-        SeekMain<MRGLattice<Int, Dbl>> prog(conf);
+        SeekMain<MRGLattice<Int, Real>> prog(conf);
         if (conf.search_mode[0] == "exhaust") {
-          return prog.Seek(LatMRGSeek::MRGLatticeExhaust<Int, Dbl>::nextGenerator);
+          return prog.Seek(LatMRGSeek::MRGLatticeExhaust<Int, Real>::nextGenerator);
         } else if (conf.search_mode[0] == "pow2") {
           return prog.Seek(LatMRGSeek::nextGeneratorPow2);
         }
         return prog.Seek(LatMRGSeek::nextGenerator);
       } else if (conf.fact[0]->get_type() == LCG) {
-        SeekMain<MRGLattice<Int, Dbl>> prog(conf);
+        SeekMain<MRGLattice<Int, Real>> prog(conf);
         if (conf.search_mode[0] == "exhaust") {
-          return prog.Seek(LatMRGSeek::MRGLatticeExhaust<Int, Dbl>::nextGenerator);
+          return prog.Seek(LatMRGSeek::MRGLatticeExhaust<Int, Real>::nextGenerator);
         }
         return prog.Seek(LatMRGSeek::nextGenerator);
       } else if (conf.fact[0]->get_type() == MWC) {
-        SeekMain<MWCLattice<Int, Dbl>> prog(conf);
+        SeekMain<MWCLattice<Int, Real>> prog(conf);
         return prog.Seek(LatMRGSeek::nextGenerator);
       } else if (conf.fact[0]->get_type() == MMRG) {
-        SeekMain<MMRGLattice<Int, Dbl>> prog(conf);
+        SeekMain<MMRGLattice<Int, Real>> prog(conf);
         return prog.Seek(LatMRGSeek::nextGenerator);
       }
       std::cerr << "Seek exited prematurely.\n";
       return 1;
     } else if (!strcmp(current->Value(), "lattest")) {
       mode = "lattest";
-      LatTest<Int, Dbl> prog;
+      LatTest<Int, Real> prog;
       readTest(current, prog.conf);
       return prog.TestLat();
     }

@@ -14,7 +14,7 @@ bool use_dual = true;
 #ifdef LATMRG_SEEK
 bool best = true;
 int num_gen = 0;
-Dbl currentMerit = Dbl(0);
+Real currentMerit = Real(0);
 std::string construction = "RANDOM";
 #endif
 // Projection
@@ -25,12 +25,12 @@ int max_gen = 10;
 // MWC Specific parameters
 Int b; // modulo of MWC recurence
 
-// MRGComponent stores the stuff we might want to know, such as the modulo
+// MRGPeriod stores the stuff we might want to know, such as the modulo
 // the order and even the coefficients
 int num_comp = 1;
 std::vector<std::string> search_mode;
 std::vector<bool> period;
-std::vector<MRGComponent<Int>*> fact;
+std::vector<MRGPeriod<Int>*> fact;
 // This is used to store the coefficients of a MRG and the information on how to
 // search for coefficients of a generator. This can have multiple different formats.
 std::vector<IntVec> coeff;

@@ -18,10 +18,10 @@ using namespace LatMRG;
 //  latconfig.setJ(latconfig.J);
 //  for (int i = 0; i < latconfig.J; i++) {
 //    latconfig.genType[i] = MMRG; //PW_TODO moche
-//    latconfig.comp[i] = new MRGComponent<MScal>(m, mixmax.getMatrix(), k);
+//    latconfig.comp[i] = new MRGPeriod<MScal>(m, mixmax.getMatrix(), k);
 //  }
 //
-//  //latconfig.comp[0] = new MRGComponent (m, A, k);
+//  //latconfig.comp[0] = new MRGPeriod (m, A, k);
 //  //latconfig.genType[0] = MMRG;
 //
 //  latconfig.d = 1;
@@ -133,7 +133,7 @@ int main ()
       Projections proj(2, size, max_coords);
       conf.proj = &proj;
 
-      MMRGLattice<Int, Dbl> mixmax(Configs[i].m, matrix.getMatrix(), Configs[i].k+2, Configs[i].k);
+      MMRGLattice<Int, Real> mixmax(Configs[i].m, matrix.getMatrix(), Configs[i].k+2, Configs[i].k);
       mixmax.setLac(LatticeTester::Lacunary<Int>(Lac, size));
       auto FoM = test(mixmax, conf);
       FoM.computeMerit("min");
@@ -157,7 +157,7 @@ int main ()
       Projections proj(1, size, max_coords);
       conf.proj = &proj;
 
-      MMRGLattice<Int, Dbl> mixmax(Configs[i].m, matrix.getMatrix(), Configs[i].k+6, Configs[i].k);
+      MMRGLattice<Int, Real> mixmax(Configs[i].m, matrix.getMatrix(), Configs[i].k+6, Configs[i].k);
       mixmax.setLac(LatticeTester::Lacunary<Int>(Lac, size));
       auto FoM = test(mixmax, conf);
       FoM.computeMerit("min");
@@ -183,7 +183,7 @@ int main ()
       Projections proj(1, size, max_coords);
       conf.proj = &proj;
 
-      MMRGLattice<Int, Dbl> mixmax(Configs[i].m, matrix.getMatrix(), Configs[i].k+7, Configs[i].k);
+      MMRGLattice<Int, Real> mixmax(Configs[i].m, matrix.getMatrix(), Configs[i].k+7, Configs[i].k);
       mixmax.setLac(LatticeTester::Lacunary<Int>(Lac, size));
       auto FoM = test(mixmax, conf);
       FoM.computeMerit("min");

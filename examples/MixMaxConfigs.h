@@ -13,7 +13,7 @@
 typedef NTL::ZZ Int;
 typedef NTL::vector<NTL::ZZ> IntVec;
 typedef NTL::matrix<NTL::ZZ> IntMat;
-typedef double Dbl;
+typedef double Real;
 
 struct MixMaxConfig {
   Int m, d, c;

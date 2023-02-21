@@ -18,7 +18,7 @@
 #include <string>
 #include <iostream>
 
-#include "latmrg/Const.h"
+#include "latmrg/EnumTypes.h"
 
 
 using namespace std;

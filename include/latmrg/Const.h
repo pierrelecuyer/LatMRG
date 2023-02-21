@@ -16,7 +16,7 @@
 // limitations under the License.
 
 /**
- * \file latmrg/Const.h
+ * \file latmrg/EnumTypes.h
  *
  * This module contains global constants used in LatMRG.
  *
@@ -26,7 +26,7 @@
 #define LATMRG__CONST_H
 #include <string>
 
-#include "latticetester/Const.h"
+#include "latticetester/EnumTypes.h"
 
 namespace LatMRG {
 

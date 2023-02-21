@@ -1,12 +1,12 @@
 #ifndef LATMRG_MWCLATTICE_H
 #define LATMRG_MWCLATTICE_H
 
-#include "latticetester/Const.h"
+#include "latticetester/EnumTypes.h"
 #include "latticetester/Lacunary.h"
-#include "latticetester/IntLattice.h"
+#include "latticetester/IntLatticeExt.h"
 
-#include "latmrg/Const.h"
-#include "latmrg/MRGComponent.h"
+#include "latmrg/EnumTypes.h"
+#include "latmrg/MRGPeriod.h"
 #include "latmrg/MRGLattice.h"
 
 #include <string>
@@ -15,7 +15,7 @@
  * Small functions to give the modulo and the coefficient of the LCG generator
  * equivalent to a MWC generator with modulo b and coefficients e.
  * */
-namespace MWCEquiv{
+namespace MWCEquiv {
   /**
    * Returns the modulo for an MWC with coefficients in `e` and
    * modulo `b`.
@@ -67,8 +67,8 @@ namespace LatMRG {
    * This class simply implements a constructor and and the functions to compute
    * the LCG equivalent to the MRG.
    */
-  template<typename Int, typename Dbl>
-    class MWCLattice: public MRGLattice<Int, Dbl> {
+  template<typename Int, typename Real>
+    class MWCLattice: public MRGLattice<Int, Real> {
       public:
         typedef NTL::vector<Int> IntVec;
         typedef NTL::matrix<Int> IntMat;
@@ -94,13 +94,13 @@ namespace LatMRG {
          * Copy constructor. The maximal dimension of the created basis is set
          * equal to <tt>Lat</tt>’s current dimension.
          */
-        MWCLattice (const MWCLattice<Int, Dbl> & Lat);
+        MWCLattice (const MWCLattice<Int, Real> & Lat);
 
         /**
          * Assigns `Lat` to this object. The maximal dimension of this basis is
          * set equal to <tt>Lat</tt>’s current dimension.
          */
-        MWCLattice<Int, Dbl> & operator= (const MWCLattice<Int, Dbl> & Lat);
+        MWCLattice<Int, Real> & operator= (const MWCLattice<Int, Real> & Lat);
 
         /**
          * Destructor.
@@ -163,7 +163,7 @@ namespace LatMRG {
          * \todo finish this
          * */
         static int fullPeriod(const Int& b, const IntVec& e) {
-          if(MWCLattice<Int, Dbl>::validate(b, e)) return 1;
+          if(MWCLattice<Int, Real>::validate(b, e)) return 1;
           return 0;
         }
 
@@ -191,9 +191,9 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    MWCLattice<Int, Dbl>::MWCLattice(const Int & b, const IntVec & e, int k, int maxDim):
-      MRGLattice<Int, Dbl>(MWCEquiv::LCGMod(b, e), MWCEquiv::LCGCoeff(b,e), maxDim, 1, FULL)
+  template<typename Int, typename Real>
+    MWCLattice<Int, Real>::MWCLattice(const Int & b, const IntVec & e, int k, int maxDim):
+      MRGLattice<Int, Real>(MWCEquiv::LCGMod(b, e), MWCEquiv::LCGCoeff(b,e), maxDim, 1, FULL)
   {
     m_MWCmod = b;
     m_MWCorder = k;
@@ -204,9 +204,9 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    MWCLattice<Int, Dbl>::MWCLattice(const Int & b, const Int & m, int maxDim):
-      MRGLattice<Int, Dbl>(m, NTL::InvMod(b, m), maxDim, FULL)
+  template<typename Int, typename Real>
+    MWCLattice<Int, Real>::MWCLattice(const Int & b, const Int & m, int maxDim):
+      MRGLattice<Int, Real>(m, NTL::InvMod(b, m), maxDim, FULL)
   {
     m_MWCmod = Int(b);
     // This is not needed in reality, but this tries to compute the coefficients
@@ -228,9 +228,9 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    MWCLattice<Int, Dbl>::MWCLattice(const MWCLattice<Int, Dbl> &lat):
-      MRGLattice<Int, Dbl> (lat)
+  template<typename Int, typename Real>
+    MWCLattice<Int, Real>::MWCLattice(const MWCLattice<Int, Real> &lat):
+      MRGLattice<Int, Real> (lat)
   {
     m_MWCmod = Int(lat.getMWCmod());
     m_MWCorder = lat.getMWCorder();
@@ -242,12 +242,12 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    MWCLattice<Int, Dbl> & MWCLattice<Int, Dbl>::operator= (const MWCLattice<Int, Dbl> & lat)
+  template<typename Int, typename Real>
+    MWCLattice<Int, Real> & MWCLattice<Int, Real>::operator= (const MWCLattice<Int, Real> & lat)
     {
       if (this == &lat)
         return *this;
-      (MRGLattice<Int, Dbl>) *this = (MRGLattice<Int, Dbl>)lat;
+      (MRGLattice<Int, Real>) *this = (MRGLattice<Int, Real>)lat;
       m_MWCmod = lat.getMWCmod();
       m_MWCorder = lat.getMWCorder();
       m_eCoef.SetLength(m_MWCorder+1);
@@ -258,8 +258,8 @@ namespace LatMRG {
 
   //============================================================================
 
-  template<typename Int, typename Dbl>
-    MWCLattice<Int, Dbl>::~MWCLattice ()
+  template<typename Int, typename Real>
+    MWCLattice<Int, Real>::~MWCLattice ()
     {
       kill();
     }
@@ -267,17 +267,17 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    void MWCLattice<Int, Dbl>::kill()
+  template<typename Int, typename Real>
+    void MWCLattice<Int, Real>::kill()
     {
-      MRGLattice<Int, Dbl>::kill();
+      MRGLattice<Int, Real>::kill();
       m_eCoef.kill();
     }
 
   //============================================================================
 
-  template<typename Int, typename Dbl>
-    std::string MWCLattice<Int, Dbl>::toStringCoef () const
+  template<typename Int, typename Real>
+    std::string MWCLattice<Int, Real>::toStringCoef () const
     {
       std::ostringstream out;
       out << "LCG coefficient: ";
@@ -293,8 +293,8 @@ namespace LatMRG {
 
   //============================================================================
 
-  template<typename Int, typename Dbl>
-    std::string MWCLattice<Int, Dbl>::toString () const
+  template<typename Int, typename Real>
+    std::string MWCLattice<Int, Real>::toString () const
     {
       std::ostringstream out;
       for (int i = 0; i <= this->m_MWCorder; i++) {

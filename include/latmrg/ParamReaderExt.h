@@ -13,12 +13,12 @@
 
 #include "NTL/ZZ.h"
 
-#include "latticetester/Const.h"
+#include "latticetester/EnumTypes.h"
 #include "latticetester/ParamReader.h"
 #include "latticetester/Util.h"
 
-#include "latmrg/Const.h"
-#include "latmrg/MRGComponent.h"
+#include "latmrg/EnumTypes.h"
+#include "latmrg/MRGPeriod.h"
 
 
 namespace LatMRG {
@@ -29,8 +29,8 @@ namespace LatMRG {
    * comments and discarded.
    *
    */
-  template <typename Int, typename Dbl>
-    class ParamReaderExt: public LatticeTester::ParamReader<Int, Int, Dbl> {
+  template <typename Int, typename Real>
+    class ParamReaderExt: public LatticeTester::ParamReader<Int, Int, Real> {
       private:
         typedef NTL::vector<Int> IntVec;
         typedef NTL::matrix<Int> IntMat;
@@ -114,7 +114,7 @@ namespace LatMRG {
          * \f$j\f$-th component. On exiting this method, the line number is
          * reset to `ln` + \f$J\f$.
          */
-        void readOrbit (int J, MRGComponent<Int> **comp, unsigned int & ln);
+        void readOrbit (int J, MRGPeriod<Int> **comp, unsigned int & ln);
 
         /**
          * In the case where `lat = PRIMEPOWER`, checks that the modulus
@@ -216,8 +216,8 @@ namespace LatMRG {
         void init() {}
     };
 
-  template <typename Int, typename Dbl>
-    ParamReaderExt<Int, Dbl>::ParamReaderExt()
+  template <typename Int, typename Real>
+    ParamReaderExt<Int, Real>::ParamReaderExt()
     {
       m_fileName.reserve(MAX_WORD_SIZE);
     }
@@ -225,17 +225,17 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template <typename Int, typename Dbl>
-    ParamReaderExt<Int, Dbl>::ParamReaderExt(std::string fileName):
-      LatticeTester::ParamReader<Int, Int, Dbl>(fileName)
+  template <typename Int, typename Real>
+    ParamReaderExt<Int, Real>::ParamReaderExt(std::string fileName):
+      LatticeTester::ParamReader<Int, Int, Real>(fileName)
   {}
 
 
 
   //===========================================================================
 
-  template <typename Int, typename Dbl>
-    ParamReaderExt<Int, Dbl>::~ParamReaderExt()
+  template <typename Int, typename Real>
+    ParamReaderExt<Int, Real>::~ParamReaderExt()
     {
       for (int i = 0; i < (int) m_lines.size(); i++)
         m_lines[i].clear();
@@ -244,8 +244,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template <typename Int, typename Dbl>
-    void ParamReaderExt<Int, Dbl>::readGenType(GenType& field, unsigned int ln, unsigned int pos)
+  template <typename Int, typename Real>
+    void ParamReaderExt<Int, Real>::readGenType(GenType& field, unsigned int ln, unsigned int pos)
     {
       std::string val;
       this->getToken(val, ln, pos);
@@ -270,8 +270,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template <typename Int, typename Dbl>
-    void ParamReaderExt<Int, Dbl>::readLacunaryType(LacunaryType& lacunaryType, unsigned int ln, unsigned int pos)
+  template <typename Int, typename Real>
+    void ParamReaderExt<Int, Real>::readLacunaryType(LacunaryType& lacunaryType, unsigned int ln, unsigned int pos)
     {
       std::string val;
       this->getToken(val, ln, pos);
@@ -289,8 +289,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template <typename Int, typename Dbl>
-    void ParamReaderExt<Int, Dbl>::readMMat(IntMat & fields, unsigned int & ln, unsigned int pos,
+  template <typename Int, typename Real>
+    void ParamReaderExt<Int, Real>::readMMat(IntMat & fields, unsigned int & ln, unsigned int pos,
         unsigned int numPos)
     {
       for (unsigned int i = pos; i < numPos; i++){
@@ -306,8 +306,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template <typename Int, typename Dbl>
-    void ParamReaderExt<Int, Dbl>::readInterval (IntVec & B, IntVec & C, unsigned int & ln, int k)
+  template <typename Int, typename Real>
+    void ParamReaderExt<Int, Real>::readInterval (IntVec & B, IntVec & C, unsigned int & ln, int k)
     {
       std::int64_t m1, m2, m3;
       for (int i = 0; i < k; i++) {
@@ -320,8 +320,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template <typename Int, typename Dbl>
-    void ParamReaderExt<Int, Dbl>::readCalcType (LatticeTester::CalcType & field, unsigned int ln, unsigned int pos)
+  template <typename Int, typename Real>
+    void ParamReaderExt<Int, Real>::readCalcType (LatticeTester::CalcType & field, unsigned int ln, unsigned int pos)
     {
       std::string val;
       this->getToken(val, ln, pos);
@@ -341,8 +341,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template <typename Int, typename Dbl>
-    void ParamReaderExt<Int, Dbl>::readDecompType (DecompType & field, unsigned int line,
+  template <typename Int, typename Real>
+    void ParamReaderExt<Int, Real>::readDecompType (DecompType & field, unsigned int line,
         unsigned int pos)
     {
       std::string val;
@@ -363,8 +363,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template <typename Int, typename Dbl>
-    void ParamReaderExt<Int, Dbl>::readLatticeType(LatticeType& field, unsigned int ln, unsigned int pos)
+  template <typename Int, typename Real>
+    void ParamReaderExt<Int, Real>::readLatticeType(LatticeType& field, unsigned int ln, unsigned int pos)
     {
       std::string val;
       this->getToken(val, ln, pos);
@@ -384,8 +384,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template <typename Int, typename Dbl>
-    void ParamReaderExt<Int, Dbl>::readOrbit (int J, MRGComponent<Int> **comp, unsigned int & ln)
+  template <typename Int, typename Real>
+    void ParamReaderExt<Int, Real>::readOrbit (int J, MRGPeriod<Int> **comp, unsigned int & ln)
     {
       for (int j = 0; j < J; j++) {
         unsigned int k = comp[j]->getK();
@@ -397,8 +397,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template <typename Int, typename Dbl>
-    void ParamReaderExt<Int, Dbl>::readImplemCond(ImplemCond& field, unsigned int ln, unsigned int pos)
+  template <typename Int, typename Real>
+    void ParamReaderExt<Int, Real>::readImplemCond(ImplemCond& field, unsigned int ln, unsigned int pos)
     {
       std::string val;
       this->getToken(val, ln, pos);
@@ -419,8 +419,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template <typename Int, typename Dbl>
-    void ParamReaderExt<Int, Dbl>::readSearchMethod(SearchMethod& field, unsigned int ln, unsigned int pos)
+  template <typename Int, typename Real>
+    void ParamReaderExt<Int, Real>::readSearchMethod(SearchMethod& field, unsigned int ln, unsigned int pos)
     {
       std::string val;
       this->getToken(val, ln, pos);
@@ -435,8 +435,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template <typename Int, typename Dbl>
-    void ParamReaderExt<Int, Dbl>::readLacunary(int ordre, int fromDim, int toDim,
+  template <typename Int, typename Real>
+    void ParamReaderExt<Int, Real>::readLacunary(int ordre, int fromDim, int toDim,
         unsigned int & ln, bool & lacunary, int & lacGroupSize, Int & lacSpacing,
         IntVec & Lac, GenType genType)
     {
@@ -486,8 +486,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template <typename Int, typename Dbl>
-    void ParamReaderExt<Int, Dbl>::readMMRGLacunary(int ordre, int fromDim, int toDim,
+  template <typename Int, typename Real>
+    void ParamReaderExt<Int, Real>::readMMRGLacunary(int ordre, int fromDim, int toDim,
         unsigned int & ln, bool & lacunary, LacunaryType & lacunaryType, int & numberLacIndices,
         IntVec & Lac, GenType genType)
     {
@@ -535,8 +535,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template <typename Int, typename Dbl>
-    bool ParamReaderExt<Int, Dbl>::checkBound (const Int & m, const IntVec & A, int k)
+  template <typename Int, typename Real>
+    bool ParamReaderExt<Int, Real>::checkBound (const Int & m, const IntVec & A, int k)
     {
       for (int i = 0; i < k; i++) {
         assert (A[i] < m);
@@ -547,8 +547,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template <typename Int, typename Dbl>
-    bool ParamReaderExt<Int, Dbl>::checkBound (const Int & m, const IntMat & A, int k)
+  template <typename Int, typename Real>
+    bool ParamReaderExt<Int, Real>::checkBound (const Int & m, const IntMat & A, int k)
     {
       for (int i = 0; i < k; i++) {
         for (int j = 0; j < k; j++) {
@@ -562,8 +562,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template <typename Int, typename Dbl>
-    bool ParamReaderExt<Int, Dbl>::checkPrimePower(LatticeType lat, long m2, long m3, int k)
+  template <typename Int, typename Real>
+    bool ParamReaderExt<Int, Real>::checkPrimePower(LatticeType lat, long m2, long m3, int k)
     {
       if (lat != PRIMEPOWER)
         return true;

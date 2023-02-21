@@ -1,10 +1,10 @@
 typedef typename Lat::Int Int;
 typedef typename Lat::IntVec IntVec;
-typedef typename Lat::Dbl Dbl;
+typedef typename Lat::Real Real;
 Projections* proj(conf.proj);
 
-LatticeTester::Normalizer<Dbl>* norma = lattice.getNormalizer(conf.normaType, 0, conf.use_dual);
-std::vector<Dbl> results;
+LatticeTester::Normalizer<Real>* norma = lattice.getNormalizer(conf.normaType, 0, conf.use_dual);
+std::vector<Real> results;
 std::vector<IntVec> vectors;
 lattice.buildBasis(proj->minDim());
 for (int i = proj->minDim(); i <= proj->maxDim(); i++){
@@ -33,7 +33,7 @@ for (int i = proj->minDim(); i <= proj->maxDim(); i++){
   else if (conf.reduction == LatticeTester::NOPRERED)
     Reductions::reduceMink(lattice);
   // Computing the merit of the lattice
-  Dbl tmp;
+  Real tmp;
   if (conf.criterion == LatticeTester::LENGTH) tmp = Merit::meritL(lattice);
   if (conf.criterion == LatticeTester::SPECTRAL) tmp = Merit::meritS(lattice, norma);
   if (conf.criterion == LatticeTester::BEYER) tmp = Merit::meritB(lattice);
@@ -63,7 +63,7 @@ for (int i = 2; i <= proj->numProj(); i++) {
   lattice.buildBasis(proj->projDim()[i-1]+1);
   while(!proj->end(1)) {
     // Building the projection
-    LatticeTester::IntLattice<Int, Int, Dbl, Dbl> proj_lat(lattice.getModulo(), lattice.getOrder(), i, true);
+    LatticeTester::IntLatticeExt<Int, Int, Real, Real> proj_lat(lattice.getModulo(), lattice.getOrder(), i, true);
     LatticeTester::Coordinates iter(proj->next());
 #ifdef LATMRG_LAT
     // if (timer.timeOver(conf.timeLimit)) {
@@ -78,7 +78,7 @@ for (int i = 2; i <= proj->numProj(); i++) {
     // }
 #endif
     lattice.buildProjection(&proj_lat, iter);
-    norma->setLogDensity(Dbl(-i*log(lattice.getModulo())
+    norma->setLogDensity(Real(-i*log(lattice.getModulo())
           +log(abs(NTL::determinant(proj_lat.getBasis())))));
     if (conf.use_dual) proj_lat.dualize();
     // Reduction
@@ -92,7 +92,7 @@ for (int i = 2; i <= proj->numProj(); i++) {
       Reductions::reduceMink(proj_lat);
 
     // Figure of merit
-    Dbl tmp;
+    Real tmp;
     if (conf.criterion == LatticeTester::LENGTH) tmp = Merit::meritL(proj_lat);
     else if (conf.criterion == LatticeTester::SPECTRAL) tmp = Merit::meritS(proj_lat, norma);
     else if (conf.criterion == LatticeTester::BEYER) tmp = Merit::meritB(proj_lat);

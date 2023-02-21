@@ -4,7 +4,7 @@
 extern std::ostream* out;
 
 namespace LatMRG {
-  template<typename Integ, typename Dbl> struct MaxPeriod {
+  template<typename Integ, typename Real> struct MaxPeriod {
     typedef Integ Int;
     GenType type = MRG;
     Int m_m, m_b, m_r;
@@ -21,7 +21,7 @@ namespace LatMRG {
 
     int CheckPeriod()
     {
-      MRGComponent<Int> mrg (m_m, m_k, decompm1, filem1.c_str(), decompr,
+      MRGPeriod<Int> mrg (m_m, m_k, decompm1, filem1.c_str(), decompr,
           filer.c_str());
 
       *out << "Period: A MRG Full Period Checker\n";

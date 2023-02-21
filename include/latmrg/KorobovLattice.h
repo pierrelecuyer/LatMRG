@@ -1,8 +1,8 @@
 #ifndef LATMRG_KOROBOVLATTICE_H
 #define LATMRG_KOROBOVLATTICE_H
 
-#include "latticetester/Const.h"
-#include "latticetester/IntLattice.h"
+#include "latticetester/EnumTypes.h"
+#include "latticetester/IntLatticeExt.h"
 
 
 namespace LatMRG {
@@ -20,8 +20,8 @@ namespace LatMRG {
    * \c MRGLattice
    *
    */
-  template<typename Int, typename Dbl>
-    class KorobovLattice: public LatticeTester::IntLattice<Int, Int, Dbl, Dbl> {
+  template<typename Int, typename Real>
+    class KorobovLattice: public LatticeTester::IntLatticeExt<Int, Int, Real, Real> {
       private:
         typedef NTL::matrix<Int> IntMat;
       public:
@@ -98,10 +98,10 @@ namespace LatMRG {
         void init();
     }; // End class declaration
 
-  template<typename Int, typename Dbl>
-    KorobovLattice<Int, Dbl>::KorobovLattice (const Int & n, const Int & a,
+  template<typename Int, typename Real>
+    KorobovLattice<Int, Real>::KorobovLattice (const Int & n, const Int & a,
         int maxDim, LatticeTester::NormType norm) :
-      LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::IntLattice(n, 0, maxDim, norm)
+      LatticeTester::IntLatticeExt<Int, Int, Real, Real>::IntLatticeExt(n, 0, maxDim, norm)
   {
     m_a = a;
     m_shift = 0;
@@ -111,10 +111,10 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    KorobovLattice<Int, Dbl>::KorobovLattice (const Int & n, const Int & a,
+  template<typename Int, typename Real>
+    KorobovLattice<Int, Real>::KorobovLattice (const Int & n, const Int & a,
         int maxDim, int t, LatticeTester::NormType norm) :
-      LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::IntLattice(n, 0, maxDim, norm)
+      LatticeTester::IntLatticeExt<Int, Int, Real, Real>::IntLatticeExt(n, 0, maxDim, norm)
   {
     m_a = a;
     m_shift = t;
@@ -124,17 +124,17 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    KorobovLattice<Int, Dbl>::~KorobovLattice()
+  template<typename Int, typename Real>
+    KorobovLattice<Int, Real>::~KorobovLattice()
     {
     }
 
 
   //=========================================================================
 
-  template<typename Int, typename Dbl>
-    KorobovLattice<Int, Dbl>::KorobovLattice (const KorobovLattice & lat):
-      LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::IntLattice(lat.m_modulo, 0, lat.getDim (), lat.getNorm ())
+  template<typename Int, typename Real>
+    KorobovLattice<Int, Real>::KorobovLattice (const KorobovLattice & lat):
+      LatticeTester::IntLatticeExt<Int, Int, Real, Real>::IntLatticeExt(lat.m_modulo, 0, lat.getDim (), lat.getNorm ())
   {
     m_a = lat.m_a;
     m_shift = lat.m_shift;
@@ -143,8 +143,8 @@ namespace LatMRG {
 
   //=========================================================================
 
-  template<typename Int, typename Dbl>
-    KorobovLattice<Int, Dbl> & KorobovLattice<Int, Dbl>::operator=
+  template<typename Int, typename Real>
+    KorobovLattice<Int, Real> & KorobovLattice<Int, Real>::operator=
     (const KorobovLattice & lat)
     {
       if (this == &lat)
@@ -160,8 +160,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    void KorobovLattice<Int, Dbl>::init()
+  template<typename Int, typename Real>
+    void KorobovLattice<Int, Real>::init()
     {
       //Erwan   IntLatticeBasis::init();
       //   double temp;
@@ -175,8 +175,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    std::string KorobovLattice<Int, Dbl>::toStringCoef () const
+  template<typename Int, typename Real>
+    std::string KorobovLattice<Int, Real>::toStringCoef () const
     {
       std::ostringstream out;
       out << m_a;
@@ -186,8 +186,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    void KorobovLattice<Int, Dbl>::buildBasis(int d)
+  template<typename Int, typename Real>
+    void KorobovLattice<Int, Real>::buildBasis(int d)
     {
       //assert(d <= getMaxDim());
       this->setDim(d);
@@ -223,8 +223,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    void KorobovLattice<Int, Dbl>::incDimSlow()
+  template<typename Int, typename Real>
+    void KorobovLattice<Int, Real>::incDimSlow()
     {
       // Temporaire: très lent. Reprogrammer.
       int d = this->getDim();
@@ -236,12 +236,12 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    void KorobovLattice<Int, Dbl>::incDim()
+  template<typename Int, typename Real>
+    void KorobovLattice<Int, Real>::incDim()
     {
       Int tmp1, tmp2, tmp3;
       NTL::vector<Int> vectmp1;// working variables
-      LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::incDim(); //Increment the dimenson of the lattice by 1
+      LatticeTester::IntLatticeExt<Int, Int, Real, Real>::incDim(); //Increment the dimenson of the lattice by 1
       const int dim = this->getDim(); //New dimension
 
       vectmp1.resize(dim);

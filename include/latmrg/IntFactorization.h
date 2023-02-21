@@ -9,7 +9,7 @@
 #include <sstream>
 #include <cassert>
 
-#include "latticetester/Const.h"
+#include "latticetester/EnumTypes.h"
 #include "latticetester/IntFactor.h"
 #include "latticetester/Util.h"
 

@@ -12,7 +12,7 @@
 
 #include "latticetester/NormaBestLat.h"
 #include "latticetester/Random.h"
-#include "latticetester/Const.h"
+#include "latticetester/EnumTypes.h"
 #include "latticetester/Reducer.h"
 #include "latticetester/Util.h"
 
@@ -23,19 +23,19 @@
 #include "latmrg/ParamReaderExt.h"
 #include "latmrg/Projections.h"
 #include "latmrg/FigureOfMerit.h"
-#include "latmrg/Const.h"
+#include "latmrg/EnumTypes.h"
 #include "latmrg/Projections.h"
 #include "latmrg/Test.h"
 
 #ifndef MRGLATTICE_MAIN_EXEC
 typedef NTL::ZZ Int;
-typedef double Dbl;
+typedef double Real;
 typedef NTL::vector<Int> IntVec;
 typedef NTL::matrix<Int> IntMat;
-typedef NTL::vector<Dbl> DblVec;
+typedef NTL::vector<Real> RealVec;
 #endif
 
-using LatticeTester::IntLattice;
+using LatticeTester::IntLatticeExt;
 using LatticeTester::Normalizer;
 using namespace LatMRG;
 using namespace LatticeTester::Random;
@@ -59,7 +59,7 @@ std::string types = "ZD";
  * be compiled on demand. To do so, simply `#define LATMRG_TEST` before
  * including this header.
  * */
-template<typename Integ, typename Dbl> struct ConfigSeek {
+template<typename Integ, typename Real> struct ConfigSeek {
 #include "Config.h"
 };
 /**
@@ -67,7 +67,7 @@ template<typename Integ, typename Dbl> struct ConfigSeek {
  * it populates a `FigureOfMerit` objects and returns it.
  * */
 template<typename Lat>
-FigureOfMerit<Lat> test_seek(Lat & lattice, ConfigSeek<typename Lat::Int, typename Lat::Dbl>& conf) {
+FigureOfMerit<Lat> test_seek(Lat & lattice, ConfigSeek<typename Lat::Int, typename Lat::Real>& conf) {
 #include "Test.h"
 }
 #undef LATMRG_SEEK
@@ -80,7 +80,7 @@ FigureOfMerit<Lat> test_seek(Lat & lattice, ConfigSeek<typename Lat::Int, typena
  * be compiled on demand. To do so, simply `#define LATMRG_TEST` before
  * including this header.
  * */
-template<typename Integ, typename Dbl> struct ConfigLat {
+template<typename Integ, typename Real> struct ConfigLat {
 #include "Config.h"
 };
 /**
@@ -88,7 +88,7 @@ template<typename Integ, typename Dbl> struct ConfigLat {
  * it populates a `FigureOfMerit` objects and returns it.
  * */
 template<typename Lat>
-FigureOfMerit<Lat> test_lat(Lat & lattice, ConfigLat<typename Lat::Int, typename Lat::Dbl>& conf) {
+FigureOfMerit<Lat> test_lat(Lat & lattice, ConfigLat<typename Lat::Int, typename Lat::Real>& conf) {
 #include "Test.h"
 }
 #undef LATMRG_LAT

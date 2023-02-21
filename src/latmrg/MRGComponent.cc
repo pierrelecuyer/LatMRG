@@ -1,6 +1,6 @@
-#include "latmrg/MRGComponent.h"
+#include "latmrg/MRGPeriod.h"
 
 namespace LatMRG {
-  template class MRGComponent<std::int64_t>;
-  template class MRGComponent<NTL::ZZ>;
+  template class MRGPeriod<std::int64_t>;
+  template class MRGPeriod<NTL::ZZ>;
 }

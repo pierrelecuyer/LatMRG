@@ -16,7 +16,7 @@ namespace LatMRG {
    * */
   template<typename Lat>
     class FigureOfMerit {
-      typedef typename Lat::Float Dbl;
+      typedef typename Lat::Float Real;
       typedef typename Lat::Integ Int;
 
       private:
@@ -40,7 +40,7 @@ namespace LatMRG {
        * The merit for each test in the same sequence as the projections in
        * `m_projSet`.
        * */
-      std::vector<Dbl> m_merits;
+      std::vector<Real> m_merits;
 
       /**
        * The shortest vectors for each projection in the same sequence as in
@@ -51,7 +51,7 @@ namespace LatMRG {
       /**
        * The merit of the lattice.
        * */
-      Dbl m_merit;
+      Real m_merit;
 
       /**
        * Indice of the best or worst value in `m_merits`.
@@ -107,7 +107,7 @@ namespace LatMRG {
       /**
        * Sets `m_merits` to `merits` and `m_vectors` to `vectors`.
        * */
-      void addMerit(std::vector<Dbl>& merits, std::vector<typename Lat::IntVec>& vectors) {
+      void addMerit(std::vector<Real>& merits, std::vector<typename Lat::IntVec>& vectors) {
         m_merits = merits;
         m_vectors = vectors;
       }
@@ -142,7 +142,7 @@ namespace LatMRG {
       /**
        * Returns `m_merit`.
        * */
-      Dbl getMerit(){
+      Real getMerit(){
         return m_merit;
       }
 
@@ -175,7 +175,7 @@ namespace LatMRG {
           if (!(m_projSet.projDim()[i] >= i+1)) continue;
           LatticeTester::Coordinates worst;
           int index = j;
-          Dbl merit = Dbl(1);
+          Real merit = Real(1);
           while (!m_projSet.end(1)) {
             ++m_projSet;
             if (merit > m_merits[j]) {
@@ -260,14 +260,14 @@ namespace LatMRG {
    * */
   template<typename Lat>
     class MeritList{
-      typedef typename Lat::Float Dbl;
+      typedef typename Lat::Float Real;
       public:
       /**
        * Creates a `MeritList` that will hold at most `maxLength` `FigureOfMerit`.
        * */
       MeritList(unsigned long maxLength, bool best){
         m_max = maxLength;
-        m_merit = best?Dbl(0):Dbl(1);
+        m_merit = best?Real(0):Real(1);
         m_best = best;
       }
 
@@ -289,7 +289,7 @@ namespace LatMRG {
 
       std::list<FigureOfMerit<Lat>>& getList() {return m_tests;}
 
-      Dbl getMerit(){
+      Real getMerit(){
         return m_merit;
       }
 
@@ -308,7 +308,7 @@ namespace LatMRG {
       /**
        * The minimum merit stored in this object.
        * */
-      Dbl m_merit;
+      Real m_merit;
 
       /**
        * Indicates wether or not this object keeps best or worst lattices.

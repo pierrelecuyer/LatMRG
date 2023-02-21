@@ -1,9 +1,9 @@
 #ifndef LATMRG_MMRGLATTICE_H
 #define LATMRG_MMRGLATTICE_H
 
-#include "latticetester/IntLattice.h"
+#include "latticetester/IntLatticeExt.h"
 
-#include "latmrg/Const.h"
+#include "latmrg/EnumTypes.h"
 #include "latmrg/PolyPE.h"
 
 namespace LatMRG {
@@ -23,10 +23,10 @@ namespace LatMRG {
    * \f]
    */
   template<typename Integ, typename Float>
-    class MMRGLattice: public LatticeTester::IntLattice<Integ, Integ, Float, Float> {
+    class MMRGLattice: public LatticeTester::IntLatticeExt<Integ, Integ, Float, Float> {
       public:
         typedef Integ Int;
-        typedef Float Dbl;
+        typedef Float Real;
         typedef NTL::vector<Int> IntVec;
         typedef NTL::matrix<Int> IntMat;
 
@@ -56,7 +56,7 @@ namespace LatMRG {
          * Copy constructor. The maximal dimension of the created basis is set
          * equal to <tt>Lat</tt>’s current dimension.
          */
-        MMRGLattice (const MMRGLattice<Int, Dbl> & Lat);
+        MMRGLattice (const MMRGLattice<Int, Real> & Lat);
 
         /**
          * Destructor.
@@ -72,7 +72,7 @@ namespace LatMRG {
          * Assigns `Lat` to this object. The maximal dimension of this basis is
          * set equal to <tt>Lat</tt>’s current dimension.
          */
-        MMRGLattice<Int, Dbl> & operator= (const MMRGLattice<Int, Dbl> & Lat);
+        MMRGLattice<Int, Real> & operator= (const MMRGLattice<Int, Real> & Lat);
 
         /**
          * Returns the \f$j\f$-th lacunary index.
@@ -222,10 +222,10 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    MMRGLattice<Int, Dbl>::MMRGLattice(const Int & m, const IntMat & A, int maxDim,
+  template<typename Int, typename Real>
+    MMRGLattice<Int, Real>::MMRGLattice(const Int & m, const IntMat & A, int maxDim,
         int r, LatticeTester::NormType norm, LatticeType lat):
-      LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::IntLattice(m, r, maxDim, true, norm)
+      LatticeTester::IntLatticeExt<Int, Int, Real, Real>::IntLatticeExt(m, r, maxDim, true, norm)
   {
     m_A = A;
     m_latType = lat;
@@ -237,11 +237,11 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    MMRGLattice<Int, Dbl>::MMRGLattice(const Int & m, const IntMat & A, int maxDim,
+  template<typename Int, typename Real>
+    MMRGLattice<Int, Real>::MMRGLattice(const Int & m, const IntMat & A, int maxDim,
         int r, LacunaryType & lacunaryType, IntVec & lac,
         LatticeTester::NormType norm, LatticeType lat):
-      LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::IntLattice (m, r, maxDim, true, norm)
+      LatticeTester::IntLatticeExt<Int, Int, Real, Real>::IntLatticeExt (m, r, maxDim, true, norm)
       //m_lac(lac, r)
       //PW_TODO r ou maxDim?
   {
@@ -258,9 +258,9 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    MMRGLattice<Int, Dbl>::MMRGLattice(const MMRGLattice & lat):
-      LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::IntLattice (lat.m_modulo, lat.m_order,
+  template<typename Int, typename Real>
+    MMRGLattice<Int, Real>::MMRGLattice(const MMRGLattice & lat):
+      LatticeTester::IntLatticeExt<Int, Int, Real, Real>::IntLatticeExt (lat.m_modulo, lat.m_order,
           lat.getDim(), true, lat.getNorm ()), m_lac(lat.m_lac)
   {
     m_A = lat.m_A;
@@ -296,16 +296,16 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    MMRGLattice<Int, Dbl>::~MMRGLattice ()
+  template<typename Int, typename Real>
+    MMRGLattice<Int, Real>::~MMRGLattice ()
     {
       kill();
     }
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    void MMRGLattice<Int, Dbl>::kill()
+  template<typename Int, typename Real>
+    void MMRGLattice<Int, Real>::kill()
     {
       if (0 != m_ip)
         delete[] m_ip;
@@ -318,9 +318,9 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    MMRGLattice<Int, Dbl> & MMRGLattice<Int, Dbl>::operator=
-    (const MMRGLattice<Int, Dbl> & lat)
+  template<typename Int, typename Real>
+    MMRGLattice<Int, Real> & MMRGLattice<Int, Real>::operator=
+    (const MMRGLattice<Int, Real> & lat)
     {
       if (this == &lat)
         return *this;
@@ -337,8 +337,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    void MMRGLattice<Int, Dbl>::init()
+  template<typename Int, typename Real>
+    void MMRGLattice<Int, Real>::init()
     {
       //kill(); //PW_TODO : wzf ? M-A : Indeed wzf...?
       // This should not be needed
@@ -365,8 +365,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    Int & MMRGLattice<Int, Dbl>::getLac (int j)
+  template<typename Int, typename Real>
+    Int & MMRGLattice<Int, Real>::getLac (int j)
     {
       if (isLacunary() && j <= m_lac.getSize() && j > 0)
         return m_lac.getLac(j);
@@ -376,8 +376,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    void MMRGLattice<Int, Dbl>::setLac(const LatticeTester::Lacunary<Int> & lac)
+  template<typename Int, typename Real>
+    void MMRGLattice<Int, Real>::setLac(const LatticeTester::Lacunary<Int> & lac)
     {
       m_lac = lac;
       m_lacunaryFlag = true;
@@ -389,8 +389,8 @@ namespace LatMRG {
 
   //PW_TODO merdasse à tester
 
-  template<typename Int, typename Dbl>
-    std::string MMRGLattice<Int, Dbl>::toString () const
+  template<typename Int, typename Real>
+    std::string MMRGLattice<Int, Real>::toString () const
     {
       std::ostringstream out;
       out << "A = " << m_A << "\n";
@@ -401,8 +401,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    void MMRGLattice<Int, Dbl>::buildBasis (int d)
+  template<typename Int, typename Real>
+    void MMRGLattice<Int, Real>::buildBasis (int d)
     {
       if (m_lacunaryFlag)
         buildLacunaryBasis(d);
@@ -412,8 +412,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    void MMRGLattice<Int, Dbl>::buildNonLacunaryBasis (int dimension)
+  template<typename Int, typename Real>
+    void MMRGLattice<Int, Real>::buildNonLacunaryBasis (int dimension)
     // a basis is built in dimension d
     {
       this->setDim(1);
@@ -472,8 +472,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    void MMRGLattice<Int, Dbl>::getSubLine(IntVec & vec, IntMat& B, int lign, int jMin,
+  template<typename Int, typename Real>
+    void MMRGLattice<Int, Real>::getSubLine(IntVec & vec, IntMat& B, int lign, int jMin,
         int jMax)
     {
       // both jMin and jMax are included
@@ -484,8 +484,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    void MMRGLattice<Int, Dbl>::buildLacunaryBasis (int dimension)
+  template<typename Int, typename Real>
+    void MMRGLattice<Int, Real>::buildLacunaryBasis (int dimension)
     {
       int sizeA = this->getOrder();
       this->m_vecNorm.resize(dimension);
@@ -594,8 +594,8 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    void MMRGLattice<Int, Dbl>::incDim()
+  template<typename Int, typename Real>
+    void MMRGLattice<Int, Real>::incDim()
     {
       if (m_lacunaryFlag)
         incrementDimLacunaryBasis(m_numberLacIndices);
@@ -605,12 +605,12 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    void MMRGLattice<Int, Dbl>::incrementDimNonLacunaryBasis()
+  template<typename Int, typename Real>
+    void MMRGLattice<Int, Real>::incrementDimNonLacunaryBasis()
     // X_n = A X_{n-1} mod m. We have: dimension >= order.
     {
       IntMat tempdual(this->m_dualbasis);
-      LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::incDim();
+      LatticeTester::IntLatticeExt<Int, Int, Real, Real>::incDim();
       int newDimension = this->getDim();
       int sizeA = this->getOrder();
 
@@ -733,10 +733,10 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    void MMRGLattice<Int, Dbl>::incrementDimLacunaryBasis(int Imax)
+  template<typename Int, typename Real>
+    void MMRGLattice<Int, Real>::incrementDimLacunaryBasis(int Imax)
     {
-      LatticeTester::IntLattice<Int, Int, Dbl, Dbl>::incDim();
+      LatticeTester::IntLatticeExt<Int, Int, Real, Real>::incDim();
       const int dim = this->getDim (); // new dimension (dim++)
 
       //PW_TODO

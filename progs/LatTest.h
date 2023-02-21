@@ -4,10 +4,10 @@
 extern std::ostream* out;
 extern bool print_time;
 
-template<typename Int, typename Dbl> struct LatTest {
+template<typename Int, typename Real> struct LatTest {
   typedef NTL::vector<Int> IntVec;
 
-  ConfigLat<Int, Dbl> conf;
+  ConfigLat<Int, Real> conf;
 
   Chrono timer;
   std::vector<bool> full_period;
@@ -112,14 +112,14 @@ template<typename Int, typename Dbl> struct LatTest {
         conf.fact[i]->setA(conf.coeff[i]);
       }
       // Combined generators case
-      MeritList<ComboLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
-      MRGLattice<Int, Dbl>* mrg = getLatCombo<Int, Dbl>(conf.fact, conf.proj->numProj());
-      ComboLattice<Int, Dbl> combolat(conf.fact, *mrg);
+      MeritList<ComboLattice<Int, Real>> bestLattice(conf.max_gen, true);
+      MRGLattice<Int, Real>* mrg = getLatCombo<Int, Real>(conf.fact, conf.proj->numProj());
+      ComboLattice<Int, Real> combolat(conf.fact, *mrg);
       bestLattice.add(test_lat(combolat, conf));
       printResults(bestLattice);
     } else if (conf.fact[0]->get_type() == MRG || conf.fact[0]->get_type() == LCG) {
       full_period.resize(1);
-      MeritList<MRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
+      MeritList<MRGLattice<Int, Real>> bestLattice(conf.max_gen, true);
       IntVec temp(conf.fact[0]->getK()+1);
       temp[0] = Int(0);
       for (int i = 1; i < conf.fact[0]->getK()+1; i++) temp[i] = conf.coeff[0][i-1];
@@ -128,21 +128,21 @@ template<typename Int, typename Dbl> struct LatTest {
       } else if (conf.period[0]) {
         full_period[0] = conf.fact[0]->maxPeriod(conf.coeff[0][0]);
       }
-      MRGLattice<Int, Dbl> mrglat(conf.fact[0]->getM(), temp, conf.proj->numProj(), conf.fact[0]->getK(), FULL, conf.norm);
+      MRGLattice<Int, Real> mrglat(conf.fact[0]->getM(), temp, conf.proj->numProj(), conf.fact[0]->getK(), FULL, conf.norm);
       bestLattice.add(test_lat(mrglat, conf));
       printResults(bestLattice);
     } else if (conf.fact[0]->get_type() == MWC) {
       full_period.resize(1);
-      MeritList<MWCLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
-      MWCLattice<Int, Dbl> mwclat(conf.fact[0]->m_MWCb, conf.fact[0]->getM(), conf.proj->numProj());
+      MeritList<MWCLattice<Int, Real>> bestLattice(conf.max_gen, true);
+      MWCLattice<Int, Real> mwclat(conf.fact[0]->m_MWCb, conf.fact[0]->getM(), conf.proj->numProj());
       if (conf.period[0]) full_period[0] = conf.fact[0]->maxPeriod(mwclat.getCoef());
       bestLattice.add(test_lat(mwclat, conf));
       printResults(bestLattice);
     } else if (conf.fact[0]->get_type() == MMRG) {
       full_period.resize(1);
       if (conf.period[0]) full_period[0] = conf.fact[0]->maxPeriod(conf.fact[0]->getMatrix());
-      MeritList<MMRGLattice<Int, Dbl>> bestLattice(conf.max_gen, true);
-      MMRGLattice<Int, Dbl> mmrglat(conf.fact[0]->getM(), conf.fact[0]->getMatrix(), conf.proj->numProj(), conf.fact[0]->getK(), conf.norm);
+      MeritList<MMRGLattice<Int, Real>> bestLattice(conf.max_gen, true);
+      MMRGLattice<Int, Real> mmrglat(conf.fact[0]->getM(), conf.fact[0]->getMatrix(), conf.proj->numProj(), conf.fact[0]->getK(), conf.norm);
       bestLattice.add(test_lat(mmrglat, conf));
       printResults(bestLattice);
     }

@@ -1,12 +1,12 @@
 #ifndef LATMRG_AWCSWBLATTICE_H
 #define LATMRG_AWCSWBLATTICE_H
 
-#include "latticetester/Const.h"
+#include "latticetester/EnumTypes.h"
 #include "latticetester/Lacunary.h"
-#include "latticetester/IntLattice.h"
+#include "latticetester/IntLatticeExt.h"
 
-#include "latmrg/Const.h"
-#include "latmrg/MRGComponent.h"
+#include "latmrg/EnumTypes.h"
+#include "latmrg/MRGPeriod.h"
 #include "latmrg/MRGLattice.h"
 
 #include <string>
@@ -61,8 +61,8 @@ namespace LatMRG {
    * is of the form AWC, `mode = 1` is equivalent to AWC-c, `mode = 2` is SWB-I
    * and `mode = 3` is SWB-II.
    */
-  template<typename Int, typename Dbl>
-    class AWCSWBLattice: public MRGLattice<Int, Dbl> {
+  template<typename Int, typename Real>
+    class AWCSWBLattice: public MRGLattice<Int, Real> {
       private:
         typedef NTL::vector<Int> IntVec;
         typedef NTL::matrix<Int> IntMat;
@@ -79,13 +79,13 @@ namespace LatMRG {
          * Copy constructor. The maximal dimension of the created basis is set
          * equal to <tt>Lat</tt>’s current dimension.
          */
-        AWCSWBLattice (const AWCSWBLattice<Int, Dbl> & Lat);
+        AWCSWBLattice (const AWCSWBLattice<Int, Real> & Lat);
 
         /**
          * Assigns `Lat` to this object. The maximal dimension of this basis is
          * set equal to <tt>Lat</tt>’s current dimension.
          */
-        AWCSWBLattice<Int, Dbl> & operator= (const AWCSWBLattice<Int, Dbl> & Lat);
+        AWCSWBLattice<Int, Real> & operator= (const AWCSWBLattice<Int, Real> & Lat);
 
         /**
          * Destructor.
@@ -139,9 +139,9 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    AWCSWBLattice<Int, Dbl>::AWCSWBLattice(const Int & b, int r, int s, int mode):
-      MRGLattice<Int, Dbl>(LCGMod(b,r,s,mode), LCGCoeff(b,r,s,mode), 1, 1, FULL)
+  template<typename Int, typename Real>
+    AWCSWBLattice<Int, Real>::AWCSWBLattice(const Int & b, int r, int s, int mode):
+      MRGLattice<Int, Real>(LCGMod(b,r,s,mode), LCGCoeff(b,r,s,mode), 1, 1, FULL)
   {
     if (r > s) {
       m_subOrder = r;
@@ -156,9 +156,9 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    AWCSWBLattice<Int, Dbl>::AWCSWBLattice(const AWCSWBLattice<Int, Dbl> &lat):
-      MRGLattice<Int, Dbl> (lat)
+  template<typename Int, typename Real>
+    AWCSWBLattice<Int, Real>::AWCSWBLattice(const AWCSWBLattice<Int, Real> &lat):
+      MRGLattice<Int, Real> (lat)
   {
     m_bModulo = Int(lat.getAWCSWBmod());
     m_subOrder = lat.getAWCSWBorder();
@@ -169,12 +169,12 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    AWCSWBLattice<Int, Dbl> & AWCSWBLattice<Int, Dbl>::operator= (const AWCSWBLattice<Int, Dbl> & lat)
+  template<typename Int, typename Real>
+    AWCSWBLattice<Int, Real> & AWCSWBLattice<Int, Real>::operator= (const AWCSWBLattice<Int, Real> & lat)
     {
       if (this == &lat)
         return *this;
-      (MRGLattice<Int, Dbl>) *this = (MRGLattice<Int, Dbl>)lat;
+      (MRGLattice<Int, Real>) *this = (MRGLattice<Int, Real>)lat;
       m_bModulo = lat.getAWCSWBmod();
       m_subOrder = lat.getAWCSWBorder();
     m_s = lat.m_s;
@@ -184,8 +184,8 @@ namespace LatMRG {
 
   //============================================================================
 
-  template<typename Int, typename Dbl>
-    AWCSWBLattice<Int, Dbl>::~AWCSWBLattice ()
+  template<typename Int, typename Real>
+    AWCSWBLattice<Int, Real>::~AWCSWBLattice ()
     {
       kill();
     }
@@ -193,16 +193,16 @@ namespace LatMRG {
 
   //===========================================================================
 
-  template<typename Int, typename Dbl>
-    void AWCSWBLattice<Int, Dbl>::kill()
+  template<typename Int, typename Real>
+    void AWCSWBLattice<Int, Real>::kill()
     {
-      MRGLattice<Int, Dbl>::kill();
+      MRGLattice<Int, Real>::kill();
     }
 
   //============================================================================
 
-  template<typename Int, typename Dbl>
-    std::string AWCSWBLattice<Int, Dbl>::toStringCoef () const
+  template<typename Int, typename Real>
+    std::string AWCSWBLattice<Int, Real>::toStringCoef () const
     {
       std::ostringstream out;
       out << "LCG coefficient: ";
