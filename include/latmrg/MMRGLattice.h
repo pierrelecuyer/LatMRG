@@ -225,7 +225,7 @@ namespace LatMRG {
   template<typename Int, typename Real>
     MMRGLattice<Int, Real>::MMRGLattice(const Int & m, const IntMat & A, int maxDim,
         int r, LatticeTester::NormType norm, LatticeType lat):
-      LatticeTester::IntLatticeExt<Int, Int, Real, Real>::IntLatticeExt(m, r, maxDim, true, norm)
+      LatticeTester::IntLatticeExt<Int, Real>::IntLatticeExt(m, r, maxDim, true, norm)
   {
     m_A = A;
     m_latType = lat;
@@ -241,7 +241,7 @@ namespace LatMRG {
     MMRGLattice<Int, Real>::MMRGLattice(const Int & m, const IntMat & A, int maxDim,
         int r, LacunaryType & lacunaryType, IntVec & lac,
         LatticeTester::NormType norm, LatticeType lat):
-      LatticeTester::IntLatticeExt<Int, Int, Real, Real>::IntLatticeExt (m, r, maxDim, true, norm)
+      LatticeTester::IntLatticeExt<Int, Real>::IntLatticeExt (m, r, maxDim, true, norm)
       //m_lac(lac, r)
       //PW_TODO r ou maxDim?
   {
@@ -260,7 +260,7 @@ namespace LatMRG {
 
   template<typename Int, typename Real>
     MMRGLattice<Int, Real>::MMRGLattice(const MMRGLattice & lat):
-      LatticeTester::IntLatticeExt<Int, Int, Real, Real>::IntLatticeExt (lat.m_modulo, lat.m_order,
+      LatticeTester::IntLatticeExt<Int, Real>::IntLatticeExt (lat.m_modulo, lat.m_order,
           lat.getDim(), true, lat.getNorm ()), m_lac(lat.m_lac)
   {
     m_A = lat.m_A;
@@ -610,7 +610,7 @@ namespace LatMRG {
     // X_n = A X_{n-1} mod m. We have: dimension >= order.
     {
       IntMat tempdual(this->m_dualbasis);
-      LatticeTester::IntLatticeExt<Int, Int, Real, Real>::incDim();
+      LatticeTester::IntLatticeExt<Int, Real>::incDim();
       int newDimension = this->getDim();
       int sizeA = this->getOrder();
 
@@ -736,7 +736,7 @@ namespace LatMRG {
   template<typename Int, typename Real>
     void MMRGLattice<Int, Real>::incrementDimLacunaryBasis(int Imax)
     {
-      LatticeTester::IntLatticeExt<Int, Int, Real, Real>::incDim();
+      LatticeTester::IntLatticeExt<Int, Real>::incDim();
       const int dim = this->getDim (); // new dimension (dim++)
 
       //PW_TODO

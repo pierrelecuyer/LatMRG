@@ -36,6 +36,7 @@ namespace LatMRG {
       private:
         typedef NTL::vector<Int> IntVec;
         typedef NTL::matrix<Int> IntMat;
+
       public:
 
         /**
@@ -258,7 +259,7 @@ namespace LatMRG {
         IntVec m_a;
 
         /**
-         * The generator matrix \f$A\f$ of the recurrence for MMRG.
+         * The generator matrix \f$A\f$ of the recurrence for MMRG   ******  ???
          */
         IntMat m_A;
 

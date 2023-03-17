@@ -22,8 +22,8 @@
  *
  */
 
-#ifndef LATMRG__CONST_H
-#define LATMRG__CONST_H
+#ifndef LATMRG__ENUMTYPES_H
+#define LATMRG__ENUMTYPES_H
 #include <string>
 
 #include "latticetester/EnumTypes.h"

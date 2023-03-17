@@ -63,7 +63,7 @@ for (int i = 2; i <= proj->numProj(); i++) {
   lattice.buildBasis(proj->projDim()[i-1]+1);
   while(!proj->end(1)) {
     // Building the projection
-    LatticeTester::IntLatticeExt<Int, Int, Real, Real> proj_lat(lattice.getModulo(), lattice.getOrder(), i, true);
+    LatticeTester::IntLatticeExt<Int, Real> proj_lat(lattice.getModulo(), lattice.getOrder(), i, true);
     LatticeTester::Coordinates iter(proj->next());
 #ifdef LATMRG_LAT
     // if (timer.timeOver(conf.timeLimit)) {

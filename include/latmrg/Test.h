@@ -69,9 +69,9 @@ namespace LatMRG {
      * This performs a BKZ reduction and a shortest vector search.
      * */
     template<typename Int, typename Real>
-      void reduceFull(LatticeTester::IntLatticeExt<Int, Int, Real, Real>& lat, std::int64_t maxNodesBB = 100000000000) {
-        LatticeTester::Reducer<Int, Int, Real, Real> red(lat);
-        LatticeTester::Reducer<Int, Int, Real, Real>::maxNodesBB = maxNodesBB;
+      void reduceFull(LatticeTester::IntLatticeExt<Int, Real>& lat, std::int64_t maxNodesBB = 100000000000) {
+        LatticeTester::Reducer<Int, Real> red(lat);
+        LatticeTester::Reducer<Int, Real>::maxNodesBB = maxNodesBB;
         //red.redDieter(0);
         //red.redBKZ(0.999999, 10, LatticeTester::EXPONENT, lat.getDim());
         red.redLLLNTL(0.999999, LatticeTester::EXPONENT, lat.getDim());
@@ -95,8 +95,8 @@ namespace LatMRG {
      * This performs the BKZ reduction.
      * */
     template<typename Int, typename Real>
-      void reduceBKZ(LatticeTester::IntLatticeExt<Int, Int, Real, Real>& lat) {
-        LatticeTester::Reducer<Int, Int, Real, Real> red(lat);
+      void reduceBKZ(LatticeTester::IntLatticeExt<Int, Real>& lat) {
+        LatticeTester::Reducer<Int, Real> red(lat);
         red.redBKZ(0.999999, 10, LatticeTester::EXPONENT, lat.getDim());
       }
 
@@ -117,8 +117,8 @@ namespace LatMRG {
      * This performs the LLL reduction.
      * */
     template<typename Int, typename Real>
-      void reduceLLL(LatticeTester::IntLatticeExt<Int, Int, Real, Real>& lat) {
-        LatticeTester::Reducer<Int, Int, Real, Real> red(lat);
+      void reduceLLL(LatticeTester::IntLatticeExt<Int, Real>& lat) {
+        LatticeTester::Reducer<Int, Real> red(lat);
         red.redLLLNTL(0.999999, LatticeTester::EXPONENT, lat.getDim());
       }
 
@@ -140,8 +140,8 @@ namespace LatMRG {
      * reduced basis.
      * */
     template<typename Int, typename Real>
-      void reduceMink(LatticeTester::IntLatticeExt<Int, Int, Real, Real>& lat) {
-        LatticeTester::Reducer<Int, Int, Real, Real> red(lat);
+      void reduceMink(LatticeTester::IntLatticeExt<Int, Real>& lat) {
+        LatticeTester::Reducer<Int, Real> red(lat);
         red.redBKZ(0.999999, 10, LatticeTester::EXPONENT, lat.getDim());
         red.reductMinkowski(lat.getDim());
       }

@@ -21,7 +21,7 @@ namespace LatMRG {
    *
    */
   template<typename Int, typename Real>
-    class KorobovLattice: public LatticeTester::IntLatticeExt<Int, Int, Real, Real> {
+    class KorobovLattice: public LatticeTester::IntLatticeExt<Int, Real> {
       private:
         typedef NTL::matrix<Int> IntMat;
       public:
@@ -80,6 +80,7 @@ namespace LatMRG {
          * the fast `incDim` method above.
          */
         void incDimSlow();
+
       protected:
 
         /**
@@ -101,7 +102,7 @@ namespace LatMRG {
   template<typename Int, typename Real>
     KorobovLattice<Int, Real>::KorobovLattice (const Int & n, const Int & a,
         int maxDim, LatticeTester::NormType norm) :
-      LatticeTester::IntLatticeExt<Int, Int, Real, Real>::IntLatticeExt(n, 0, maxDim, norm)
+      LatticeTester::IntLatticeExt<Int, Real>::IntLatticeExt(n, 0, maxDim, norm)
   {
     m_a = a;
     m_shift = 0;
@@ -114,7 +115,7 @@ namespace LatMRG {
   template<typename Int, typename Real>
     KorobovLattice<Int, Real>::KorobovLattice (const Int & n, const Int & a,
         int maxDim, int t, LatticeTester::NormType norm) :
-      LatticeTester::IntLatticeExt<Int, Int, Real, Real>::IntLatticeExt(n, 0, maxDim, norm)
+      LatticeTester::IntLatticeExt<Int, Real>::IntLatticeExt(n, 0, maxDim, norm)
   {
     m_a = a;
     m_shift = t;
@@ -134,7 +135,8 @@ namespace LatMRG {
 
   template<typename Int, typename Real>
     KorobovLattice<Int, Real>::KorobovLattice (const KorobovLattice & lat):
-      LatticeTester::IntLatticeExt<Int, Int, Real, Real>::IntLatticeExt(lat.m_modulo, 0, lat.getDim (), lat.getNorm ())
+      LatticeTester::IntLatticeExt<Int, Real>::IntLatticeExt(
+    		  lat.m_modulo, 0, lat.getDim (), lat.getNorm ())
   {
     m_a = lat.m_a;
     m_shift = lat.m_shift;
@@ -163,7 +165,7 @@ namespace LatMRG {
   template<typename Int, typename Real>
     void KorobovLattice<Int, Real>::init()
     {
-      //Erwan   IntLatticeBasis::init();
+      //Erwan   IntLattice::init();
       //   double temp;
       //   conv (temp, m_m);
       //   m_lgVolDual2[1] = 2.0 * Lg(temp);
@@ -241,15 +243,15 @@ namespace LatMRG {
     {
       Int tmp1, tmp2, tmp3;
       NTL::vector<Int> vectmp1;// working variables
-      LatticeTester::IntLatticeExt<Int, Int, Real, Real>::incDim(); //Increment the dimenson of the lattice by 1
-      const int dim = this->getDim(); //New dimension
+      LatticeTester::IntLatticeExt<Int, Real>::incDim(); // Increments the dimenson by 1
+      const int dim = this->getDim();  // New dimension
 
       vectmp1.resize(dim);
       for (int i = 1; i < dim-1; i++) {
         NTL::conv (tmp2, this->m_basis (i, dim - 2));
         tmp1 = tmp2 * m_a;
         LatticeTester::Modulo (tmp1, this->m_modulo, tmp1);
-        this->m_basis (i, dim) = vectmp1(i) =  tmp1; //Erwan m_vSI (0, i) = tmp1;
+        this->m_basis (i, dim) = vectmp1(i) =  tmp1;    // Erwan m_vSI (0, i) = tmp1;
       }
 
       NTL::matrix_row<IntMat> row1(this->m_basis, dim - 2);

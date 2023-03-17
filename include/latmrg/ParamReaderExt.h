@@ -30,7 +30,7 @@ namespace LatMRG {
    *
    */
   template <typename Int, typename Real>
-    class ParamReaderExt: public LatticeTester::ParamReader<Int, Int, Real> {
+    class ParamReaderExt: public LatticeTester::ParamReader<Int, Real> {
       private:
         typedef NTL::vector<Int> IntVec;
         typedef NTL::matrix<Int> IntMat;
@@ -227,7 +227,7 @@ namespace LatMRG {
 
   template <typename Int, typename Real>
     ParamReaderExt<Int, Real>::ParamReaderExt(std::string fileName):
-      LatticeTester::ParamReader<Int, Int, Real>(fileName)
+      LatticeTester::ParamReader<Int, Real>(fileName)
   {}
 
 

@@ -11,8 +11,7 @@ namespace LatMRG {
   /**
    * This class keeps parameters closely associated with a modulus of
    * congruence. Using it, it will not be necessary to recalculate the square
-   * roots of large integers, which are used repeatedly in searches for good
-   * generators.
+   * roots of large integers, which are used repeatedly in searches for good generators.
    */
   template<typename Int>
     class Modulus {
@@ -117,7 +116,10 @@ namespace LatMRG {
          * Work variables.
          */
         Int Y, Eight, Four;
+
     }; // End class declaration
+
+  //===========================================================================
 
   template<typename Int>
     Modulus<Int>::Modulus()
@@ -209,7 +211,6 @@ namespace LatMRG {
         return (Y != 1);
       }
     }
-
 
   //===========================================================================
 

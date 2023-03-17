@@ -7,17 +7,18 @@ extern bool print_time;
 template<typename Int, typename Real> struct LatTest {
   typedef NTL::vector<Int> IntVec;
 
-  ConfigLat<Int, Real> conf;
+  ConfigLat<Int, Real> conf;  // This is defined in ExecCommon.h
+  // MeritList  is defined in FigureOfMerit.h.
 
   Chrono timer;
   std::vector<bool> full_period;
 
   /**
    * Prints the results of the program execution.
-   * */
+   */
   template<typename Lat>
     void printResults(MeritList<Lat>& bestLattice) {
-      *out << "LatTest: A program to test Random Number Generators\n";
+      *out << "LatTest: A program to test the lattice structure of a linear RNG.\n";
       *out << delim;
       *out << ((conf.num_comp>1)?"Combined generators":"Simple generator")
         << " configuration" << ((conf.num_comp>1)?"s":"") << "\n\n";
@@ -98,10 +99,10 @@ template<typename Int, typename Real> struct LatTest {
     // Generators are initiated with dim = conf.proj->numProj() because this is
     // the best way to make sure the normalizer construction will work while
     // being efficient in the execution. This is so that we will precompute all
-    // bounds we will use more than once, but do not instanciate the object with
+    // bounds we will use more than once, but do not instantiate the object with
     // a dimension so big it throws an error.
     if (conf.num_comp > 1) {
-      full_period.resize(conf.num_comp);
+      full_period.resize(conf.num_comp);   // Number of components.
       // Checking full period of components that require it
       for (int i = 0; i < conf.num_comp; i++) {
         IntVec temp(conf.fact[i]->getK()+1);
@@ -118,6 +119,7 @@ template<typename Int, typename Real> struct LatTest {
       bestLattice.add(test_lat(combolat, conf));
       printResults(bestLattice);
     } else if (conf.fact[0]->get_type() == MRG || conf.fact[0]->get_type() == LCG) {
+      // Single MRG component.
       full_period.resize(1);
       MeritList<MRGLattice<Int, Real>> bestLattice(conf.max_gen, true);
       IntVec temp(conf.fact[0]->getK()+1);

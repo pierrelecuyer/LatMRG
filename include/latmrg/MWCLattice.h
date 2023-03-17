@@ -12,14 +12,15 @@
 #include <string>
 
 /**
- * Small functions to give the modulo and the coefficient of the LCG generator
+ * Small functions that give the modulo and the coefficient of the LCG generator
  * equivalent to a MWC generator with modulo b and coefficients e.
  * */
 namespace MWCEquiv {
-  /**
+
+   /**
    * Returns the modulo for an MWC with coefficients in `e` and
    * modulo `b`.
-   * */
+   */
   template<typename Int>
     Int LCGMod(const Int& b, const NTL::vector<Int>& e){
       Int m(0);
@@ -29,7 +30,7 @@ namespace MWCEquiv {
       return m;
     }
 
-  //============================================================================
+  //==============================================================
 
   /**
    * Returns the coefficient for an MWC with coefficients in `e` and
@@ -45,6 +46,8 @@ namespace MWCEquiv {
       return coeff;
     }
 }
+
+//====================================================================
 
 namespace LatMRG {
 
@@ -309,7 +312,7 @@ namespace LatMRG {
     }
 
   //============================================================================
-  //The types combinations supported in the library
+  //The combinations of types supported in the library
 
   extern template class MWCLattice<std::int64_t, double>;
   extern template class MWCLattice<NTL::ZZ, double>;

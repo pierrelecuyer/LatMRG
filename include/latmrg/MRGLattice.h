@@ -25,11 +25,12 @@ namespace LatMRG {
    *   x_n = (a_1 x_{n-1} + \cdots+ a_k x_{n-k}) \mod m.
    * \f]
    */
-  template<typename Integ, typename Float>
-    class MRGLattice: public LatticeTester::IntLatticeExt<Integ, Integ, Float, Float> {
-      public:
-        typedef Float Real;
-        typedef Integ Int;
+  template<typename Int, typename Real>
+    class MRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
+
+    public:
+        // typedef Float Real;
+        // typedef Integ Int;
         typedef NTL::vector<Int> IntVec;
         typedef NTL::matrix<Int> IntMat;
 
@@ -43,7 +44,7 @@ namespace LatMRG {
          * `maxDim`. The norm to be used for the basis vectors is `norm`.
          */
         MRGLattice (const Int & m, const IntVec & a, int maxDim, int k,
-            LatticeType latt,
+            LatticeType lattype,
             LatticeTester::NormType norm = LatticeTester::L2NORM);
 
         /**
@@ -51,7 +52,7 @@ namespace LatMRG {
          * a single number.
          */
         MRGLattice (const Int & m, const Int & a, int maxDim,
-            LatticeType latt,
+            LatticeType lattype,
             LatticeTester::NormType norm = LatticeTester::L2NORM);
 
         /**
@@ -60,7 +61,7 @@ namespace LatMRG {
          * with `a[i]`=\f$a_i\f$ for compatibility with other classes.
          */
         MRGLattice (const Int & m, const IntVec & a, int maxDim, int k,
-            IntVec & lac, LatticeType latt,
+            IntVec & lac, LatticeType lattype,
             LatticeTester::NormType norm = LatticeTester::L2NORM);
 
         /**
@@ -86,7 +87,7 @@ namespace LatMRG {
         void kill();
 
         /**
-         * Builds the basis in dimension \f$d\f$.
+         * Builds the basis in \f$d\f$ dimensions.
          */
         virtual void buildBasis (int d);
 
@@ -160,7 +161,7 @@ namespace LatMRG {
          * initialized with the right dimension beforehand.
          * */
         void buildProjection(
-            LatticeTester::IntLatticeExt<Int, Int, Real, Real>* lattice,
+            LatticeTester::IntLatticeExt<Int, Real>* lattice,
             const LatticeTester::Coordinates& proj) override;
 
       protected:
@@ -251,16 +252,11 @@ namespace LatMRG {
          *
          * @{
          */
-        Int m_t4, m_t5, m_t6, m_t7, m_t8, m_e;
+        Int m_t1, m_t2, m_t3, m_t4, m_t5, m_t6, m_t7, m_t8, m_e;
         IntVec m_xi;
         /**
          * @}
          */
-
-        /**
-         * Working Variables used in MRGLattice.h
-         */
-        Int m_t1, m_t2, m_t3;
 
         /**
          * Matrix that contains the vectors that can be used to generate the
@@ -282,7 +278,7 @@ namespace LatMRG {
 
       private:
         /**
-         * Indicates this generator is built using coefficients that are power
+         * Indicates if this generator is built using coefficients that are power
          * of 2 combinations.
          * */
         bool m_power2;
@@ -296,12 +292,13 @@ namespace LatMRG {
 
   //===========================================================================
 
-  /* Max order for lacunary case in this class; takes too much memory.
-     For order > ORDERMAX, use subclass MRGLatticeLac instead */
+  /* Max order for lacunary case in this class; otherwise, it takes too much memory.
+     For order > ORDERMAX, use subclass MRGLatticeLac instead       */
 #define ORDERMAX 100
 
   //===========================================================================
 
+  // This is only a tool for debugging...
   template<typename Int, typename Real>
     void MRGLattice<Int, Real>::trace (char *mess, int d)
     {
@@ -328,9 +325,10 @@ namespace LatMRG {
 
   //===========================================================================
 
+  // Copy constructor, makes a deep copy.
   template<typename Int, typename Real>
     MRGLattice<Int, Real>::MRGLattice(const MRGLattice<Int, Real> &lat):
-      LatticeTester::IntLatticeExt<Int, Int, Real, Real>::IntLatticeExt (
+      LatticeTester::IntLatticeExt<Int, Real>::IntLatticeExt (
           lat.m_modulo, lat.m_order, lat.getDim(), lat.withDual(), lat.getNorm ()),
       m_lac(lat.m_lac)
   {
@@ -394,7 +392,7 @@ namespace LatMRG {
   template<typename Int, typename Real>
     MRGLattice<Int, Real>::MRGLattice(const Int & m, const IntVec & a, int maxDim,
         int k, LatticeType lat, LatticeTester::NormType norm):
-      LatticeTester::IntLatticeExt<Int, Int, Real, Real>::IntLatticeExt(
+      LatticeTester::IntLatticeExt<Int, Real>::IntLatticeExt(
           m, k, maxDim, true, norm)
   {
     m_latType = lat;
@@ -411,7 +409,7 @@ namespace LatMRG {
   template<typename Int, typename Real>
     MRGLattice<Int, Real>::MRGLattice(const Int & m, const Int & a, int maxDim,
         LatticeType lat, LatticeTester::NormType norm):
-      LatticeTester::IntLatticeExt<Int, Int, Real, Real>::IntLatticeExt(
+      LatticeTester::IntLatticeExt<Int, Real>::IntLatticeExt(
           m, 1, maxDim, true, norm)
   {
     m_latType = lat;
@@ -426,7 +424,7 @@ namespace LatMRG {
   template<typename Int, typename Real>
     MRGLattice<Int, Real>::MRGLattice(const Int & m, const IntVec & a, int maxDim,
         int k, IntVec & I, LatticeType lat, LatticeTester::NormType norm):
-      LatticeTester::IntLatticeExt<Int, Int, Real, Real>::IntLatticeExt (
+      LatticeTester::IntLatticeExt<Int, Real>::IntLatticeExt (
           m, k, maxDim, true, norm), m_lac(I, maxDim), m_ip(0)
   {
     std::cout << 4 << "\n";
@@ -617,7 +615,7 @@ namespace LatMRG {
   template<typename Int, typename Real>
     void MRGLattice<Int, Real>::incDimBasis()
     {
-      LatticeTester::IntLatticeExt<Int, Int, Real, Real>::incDim();
+      LatticeTester::IntLatticeExt<Int, Real>::incDim();
 
       const int dim = this->getDim();
       this->m_vSI.resize(dim, dim);
@@ -747,7 +745,7 @@ namespace LatMRG {
 
   template<typename Int, typename Real>
     void MRGLattice<Int, Real>::buildProjection (
-        LatticeTester::IntLatticeExt<Int, Int, Real, Real>* lattice,
+        LatticeTester::IntLatticeExt<Int, Real>* lattice,
         const LatticeTester::Coordinates & proj)
     {
       // Ripping the vectors
@@ -779,7 +777,7 @@ namespace LatMRG {
     void MRGLattice<Int, Real>::incDimLaBasis(int IMax)
     {
 
-      LatticeTester::IntLatticeExt<Int, Int, Real, Real>::incDim();
+      LatticeTester::IntLatticeExt<Int, Real>::incDim();
       const int dim = this->getDim (); // new dimension (dim++)
 
       /*
@@ -849,17 +847,17 @@ namespace LatMRG {
   template<typename Int, typename Real>
     void MRGLattice<Int, Real>::initStates ()
     /*
-     * Initialise la matrice carrée Sta. La matrice Sta est d'ordre égal à
-     * l'ordre du générateur. Elle contient un système de générateurs pour le
-     * groupe d'états considérés.
+     * Initialise la matrice carrée Sta, dont l'ordre est égal à l'ordre k du générateur.
+     * Elle contient un système de générateurs pour le groupe d'états considérés.
      */
     {
       IntVec statmp;
-      statmp.resize(this->m_order); // Stocks variables
+      statmp.resize(this->m_order);    // To store some variables
       int maxDim = this->getDim();
       //clear (m_t2);
 
       if (m_latType == RECURRENT) {
+        // We want the lattice generated by the recurrent states.
         // check if a_k is relatively prime to m --> m_t1 = 1
         this->m_t1 = NTL::GCD (m_aCoef[this->m_order], this->m_modulo);
         this->m_t1 = abs(this->m_t1);
@@ -867,6 +865,7 @@ namespace LatMRG {
       }
 
       if (m_latType == FULL || m_latType == PRIMEPOWER || (this->m_t1 == this->m_t2)) {
+        // We want the full lattice that contains all the orbits.
         // m_sta is set to identity matrix
         for (int i = 0; i < this->m_order; i++) {
           for (int j = 0; j < this->m_order; j++) {
@@ -884,7 +883,8 @@ namespace LatMRG {
 
       } else {
         if (m_latType == ORBIT) {
-          LatticeTester::MyExit (1, "case ORBIT is not finished");
+          // We want the lattice generated by a single orbit.
+          LatticeTester::MyExit (1, "The case ORBIT is not fully implemented yet...");
 
           IntVec InSta;
           InSta.SetLength (this->m_order);
@@ -901,7 +901,8 @@ namespace LatMRG {
 
         } else if (m_latType == RECURRENT) {
           PolyPE<Int>::setM (this->m_modulo);
-          /* Je crois que la version sunos devait fonctionner correctement.
+          /* From Richard:
+           * Je crois que la version sunos devait fonctionner correctement.
            * Je crois qu'Ajmal a créé des bugs dans la version mcs, qui se sont
            * propagés à mcs2, xds98, ..., c++. Je n'ai pas réussi à trouver
            * l'erreur: les résultats de plusieurs exemples dans sunos ne
@@ -914,8 +915,7 @@ namespace LatMRG {
            * Voir la déf du m effectif comparé au vrai m dans LATIO.
            * Je soupçonne que cela pourrait être l'origine des erreurs.
            */
-
-          LatticeTester::MyExit (1, "case RECURRENT ne fonctionne pas");
+          LatticeTester::MyExit (1, "The case RECURRENT does yet work correctly, sorry.");
           printf("ESPION_RECURRENT\n");
           IntVec b;
           b.SetLength(this->m_order + 1);
@@ -979,7 +979,7 @@ namespace LatMRG {
 
         lemme2 (statmp);
 
-        // Calcul de lgVolDual2
+        // Calcul de lgVolDual2. No longer defined in IntLatticeExt.  Make a function  ******
         double x;
         if (m_ip[1]) {
           NTL::conv(x, this->m_modulo / m_sta[0][0]);
