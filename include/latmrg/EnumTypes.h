@@ -1,6 +1,6 @@
 // This file is part of LatMRG.
 //
-// Copyright (C) 2012-2023  The LatticeTester authors, under the supervision
+// Copyright (C) 2012-2023  The LatMRG authors, under the supervision
 // of Pierre L'Ecuyer at Universit� de Montr�al.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
