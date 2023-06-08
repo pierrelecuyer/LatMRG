@@ -10,16 +10,14 @@
 namespace LatMRG {
 
   /**
-   * This class is intended to store everything you might need after performing
-   * computations on a lattice. It is intended as a return type for functions
-   * actually performing the computations.
-   * */
-  template<typename Lat>
-    class FigureOfMerit {
-      typedef typename Lat::Float Real;
-      typedef typename Lat::Integ Int;
+   * This class implements the basic structures for computing and storing a general
+   * figure of merit defined as a minimum or maximum over a set of projections.
+   * It is intended as a return type for functions that actually perform the computations.
+   */
+template<typename Lat>
+class FigureOfMerit {
 
-      private:
+   private:
       /**
        * The lattice that has been tested.
        * */
@@ -32,7 +30,7 @@ namespace LatMRG {
       bool m_finished;
 
       /**
-       * The projections used in this object.
+       * The set of projections used in this object.
        * */
       Projections m_projSet;
 
@@ -46,19 +44,19 @@ namespace LatMRG {
        * The shortest vectors for each projection in the same sequence as in
        * `m_projSet`.
        * */
-      std::vector<typename Lat::IntVec> m_vectors;
+      std::vector<typename IntVec> m_vectors;
 
       /**
-       * The merit of the lattice.
+       * The merit of this lattice.
        * */
       Real m_merit;
 
       /**
-       * Indice of the best or worst value in `m_merits`.
+       * Index of the best or worst value in `m_merits`.
        * */
       long m_best_worst;
 
-      public:
+   public:
 
       FigureOfMerit() {
         m_finished = false;
@@ -69,8 +67,8 @@ namespace LatMRG {
        * This won't contain any merit value.
        * */
       FigureOfMerit(Lat& lattice, const Projections& proj):
-        m_lattice(lattice), m_projSet(proj) {
-          m_finished = false;
+         m_lattice(lattice), m_projSet(proj) {
+            m_finished = false;
         }
 
       /**
@@ -253,14 +251,14 @@ namespace LatMRG {
 
     };
 
+
   /**
    * This class stores a certain number of `FigureOfMerit` objects.
    * New elements are only added if the list is not full or if they have a better
    * merit than what is on the list.
    * */
-  template<typename Lat>
-    class MeritList{
-      typedef typename Lat::Float Real;
+template<typename Lat>
+class MeritList{
       public:
       /**
        * Creates a `MeritList` that will hold at most `maxLength` `FigureOfMerit`.

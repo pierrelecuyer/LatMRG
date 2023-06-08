@@ -2,6 +2,8 @@
  * This file contains implementations and configurations for tests.
  * The main functions of this file are only defined when certain preprocessing
  * macros exist.
+ *
+ *
  * */
 #ifndef LATMRG_TEST_H
 #define LATMRG_TEST_H

@@ -109,6 +109,7 @@ namespace LatMRG {
        * seconds), otherwise returns `false`.
        */
       bool timeOver (double limit);
+
     private:
 
       /// Microseconds

@@ -87,6 +87,7 @@ namespace LatMRG {
          * Returns this object as a string.
          */
         std::string toString () const;
+
       private:
 
         /**

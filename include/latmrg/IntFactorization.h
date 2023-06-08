@@ -16,11 +16,10 @@
 namespace LatMRG {
 
   /**
-   * The class `IntFactorization` implements the decomposition of integers in
-   * factors, preferably prime (see class <tt>IntFactor</tt>). It contains
-   * functions to factorize an integer in prime factors, to sort and print the
-   * list of its factors. `IntFactorization`
-   * Integers are factorized by calling the MIRACL software
+   * This class can factorize large integers, ideally into prime factors
+   * (see class <tt>IntFactor</tt>).  It can also sort and print the
+   * list of its factors.
+   * The integers are factorized by calling the MIRACL software
    * \cite iSCO03a, which uses many different methods in succession to
    * effect the factorization.
    *
@@ -157,6 +156,7 @@ namespace LatMRG {
          * same format as described in method `read` above.
          */
         std::string toString () const;
+
       private:
 
         /**
@@ -189,7 +189,7 @@ namespace LatMRG {
          * increasing order. Returns `true` if the factor of `f1` is smaller
          * than the factor of `f2`; otherwise returns `false`.
          */
-        class CompFactor {
+        class CompareFactors {
           public:
             bool operator() (const LatticeTester::IntFactor<Int> & f1,
                 const LatticeTester::IntFactor<Int> & f2) {
@@ -200,10 +200,13 @@ namespace LatMRG {
          * Sorts the list of factors in increasing order, the smallest factor
          * first.
          */
-        void sort () { CompFactor comp; m_factorList.sort (comp); }
-    }; // End class IntFactorization
+        void sort () { CompareFactors comp;  m_factorList.sort (comp); }
 
-  //IMPLEMENTATIONS
+}; // End class IntFactorization
+
+// ==============================================================================
+
+// IMPLEMENTATION
 
   template<typename Int>
     IntFactorization<Int>::IntFactorization (const char *name):
