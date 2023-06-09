@@ -19,7 +19,7 @@ namespace MWCEquiv {
 
    /**
    * Returns the modulo for an MWC with coefficients in `e` and
-   * modulo `b`.
+   * modulo `b`.  Returns m = sum_i e_i b^i.
    */
   template<typename Int>
     Int LCGMod(const Int& b, const NTL::vector<Int>& e){
@@ -33,8 +33,8 @@ namespace MWCEquiv {
   //==============================================================
 
   /**
-   * Returns the coefficient for an MWC with coefficients in `e` and
-   * modulo `b`.
+   * Returns the coefficient `a` of the equivalent LCG for a MWC with
+   * coefficients in `e` and modulo `b`.
    * */
   template<typename Int>
     NTL::vector<Int> LCGCoeff(const Int& b, const NTL::vector<Int>& e){

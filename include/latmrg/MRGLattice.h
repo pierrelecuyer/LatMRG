@@ -278,13 +278,13 @@ namespace LatMRG {
 
       private:
         /**
-         * Indicates if this generator is built using coefficients that are power
-         * of 2 combinations.
+         * Indicates if this generator is built using coefficients that are
+         * a sum or difference of a small number of powers of 2.
          * */
         bool m_power2;
 
         /**
-         * The powers of 2 used if this generator has power of 2 coefficients.
+         * The powers of 2 used if this generator uses power of 2 coefficients.
          * */
         std::vector<IntVec> m_pow2_exp;
 
@@ -293,7 +293,10 @@ namespace LatMRG {
   //===========================================================================
 
   /* Max order for lacunary case in this class; otherwise, it takes too much memory.
-     For order > ORDERMAX, use subclass MRGLatticeLac instead       */
+     For order > ORDERMAX, use subclass MRGLatticeLac instead.
+     This means that we can have short lacunary indices, supported here,
+     and also long lacunary indices (e.g., for multiple streams), supported in
+     MRGLatticeLac.      */
 #define ORDERMAX 100
 
   //===========================================================================
@@ -1119,9 +1122,9 @@ namespace LatMRG {
       }
     }
 
-  extern template class MRGLattice<std::int64_t, double>;
-  extern template class MRGLattice<NTL::ZZ, double>;
-  extern template class MRGLattice<NTL::ZZ, NTL::RR>;
+  template class MRGLattice<std::int64_t, double>;
+  template class MRGLattice<NTL::ZZ, double>;
+  template class MRGLattice<NTL::ZZ, NTL::RR>;
 
 } // End namespace LatMRG
 #endif

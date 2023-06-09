@@ -6,21 +6,29 @@
 #include "latticetester/Coordinates.h"
 
 namespace LatMRG {
+
   /**
-   * A projection class that does exactly what we need when generating
-   * projections when testing a generator.
+   * This class permits one to generate the set of projections that we need
+   * to examine when computing a figure of merit.
+   * After initializing the `Projections` object, the desired successive projections are generated
+   * and returned iteratively by calling `next()`.
    *
-   * This is initialized containing nothing and can iteratively return
-   * projections by calling `next()`. This first goes a through a list of
-   * sequential projections and then gives a list of projections with non
-   * sequential indices.
+   * In the current implementation, this first goes a through a list of
+   * projections over sequential coordinates starting at 0, and then
+   * through a list of projections over non-successive coordinates.
+   *
+   * NOTE: This order is too much of a special case, too rigid and probably not optimal!
+   * In practice, it may be more efficient to look at the pairs, triples, etc., in this order.
+   * One should have more flexibility for the choice of ordering!
+   * Also, the current design of this class is too complicated, not very elegant!
    *
    * When iterating through this object, it returns `LatticeTester::Coordinates`
    * objects. These contain coordinates starting from `0` to be used when
    * accessing elements in vectors. Take care, some of the functions in this
-   * objects take integers starting at 1 that are transformed by the object.
+   * object take integers starting at 1 that are transformed by the object.
    * */
   class Projections {
+
     private:
       /*
        * The number of dimension this has projections on. This can be misleading
