@@ -4,8 +4,7 @@
 extern std::ostream* out;
 
 namespace LatMRG {
-  template<typename Integ, typename Real> struct MaxPeriod {
-    typedef Integ Int;
+template<typename Int, typename Real> struct MaxPeriod {
     GenType type = MRG;
     Int m_m, m_b, m_r;
     int m_k, m_e;
