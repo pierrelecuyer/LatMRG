@@ -170,6 +170,9 @@ namespace LatMRG {
     LatticeTester::Modulo(m_A[2][1], modulus, m_A[2][1]);
   }
 
+  template class MixmaxMMRG<std::int64_t>;
+  template class MixmaxMMRG<NTL::ZZ>;
+
 } // end namespace LatMRG
 
 #endif
