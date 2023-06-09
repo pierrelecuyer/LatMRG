@@ -1,3 +1,20 @@
+// This file is part of LatMRG.
+//
+// Copyright (C) 2012-2023  The LatMRG authors, under the supervision
+// of Pierre L'Ecuyer at Universit� de Montr�al.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #ifndef LATMRG_PRIMES_H
 #define LATMRG_PRIMES_H
 
@@ -46,7 +63,7 @@ namespace LatMRG {
          * \f$2^e\f$. If `facto` is `true`, then \f$m-1\f$ is factorized in its
          * prime factors. The results are printed on stream `fout`.
          */
-        void find (int e, int s, bool facto, std::ostream & fout);
+        static void findPrime (int e, int s, bool facto, std::ostream & fout);
 
         /**
          * Finds \f$s\f$ prime integers \f$m<2^e\f$ that are closest to
@@ -56,7 +73,7 @@ namespace LatMRG {
          * \f$m-1\f$ is factorized in its prime factors. If \f$k=1\f$, \f$r\f$
          * is considered to be prime.
          */
-        void find (int k, int e, int s, bool safe, bool facto, std::ostream & fout);
+        static void findPrime (int k, int e, int s, bool safe, bool facto, std::ostream & fout);
 
         /**
          * Finds all integers \f$m\f$, in \f$2^e + c_1 \le m \le2^e + c_2\f$,
@@ -66,7 +83,7 @@ namespace LatMRG {
          * is factorized in prime factors. If \f$k=1\f$, \f$r\f$ is considered
          * to be prime.
          */
-        void find (int k, int e, long c1, long c2, bool safe, bool facto,
+        static void findPrime (int k, int e, long c1, long c2, bool safe, bool facto,
             std::ostream & fout);
 
         /**
@@ -91,7 +108,7 @@ namespace LatMRG {
          * This is the general purpose function used by this program. This
          * method searches for `s` prime integers between `S1` and `S2`.
          * */
-        void find (int k, int e, int s, const Int & S1, const Int & S2, bool safe,
+        void findPrime (int k, int e, int s, const Int & S1, const Int & S2, bool safe,
             bool facto, std::ostream & fout);
 
         Chrono timer;
@@ -122,7 +139,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    void Primes<Int>::find (int k, int e, int s, const Int & S1, const Int & S2,
+    void Primes<Int>::findPrime (int k, int e, int s, const Int & S1, const Int & S2,
         bool safe, bool facto, std::ostream & fout)
     {
       Int m;
@@ -189,7 +206,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    void Primes<Int>::find (int k, int e, int s, bool safe, bool facto,
+    void Primes<Int>::findPrime (int k, int e, int s, bool safe, bool facto,
         std::ostream & fout)
     {
       Int Sm1, Sm2;
@@ -197,7 +214,7 @@ namespace LatMRG {
       timer.init();
       Sm2 = (Int(1)<<e) - 1;
       Sm1 = 2;
-      find (k, e, s, Sm1, Sm2, safe, facto, fout);
+      findPrime (k, e, s, Sm1, Sm2, safe, facto, fout);
       if (print_time) writeFooter (fout);
     }
 
@@ -205,14 +222,14 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    void Primes<Int>::find (int e, int s, bool facto, std::ostream & fout)
+    void Primes<Int>::findPrime (int e, int s, bool facto, std::ostream & fout)
     {
       Int Sm1, Sm2;
       writeHeader (1, e, INT_MAX, INT_MAX, false, facto, fout);
       timer.init();
       Sm2 = (Int(1)<<e) - 1;
       Sm1 = 2;
-      find (1, e, s, Sm1, Sm2, false, facto, fout);
+      findPrime (1, e, s, Sm1, Sm2, false, facto, fout);
       if (print_time) writeFooter (fout);
     }
 
@@ -220,7 +237,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    void Primes<Int>::find (int k, int e, long c1, long c2, bool safe,
+    void Primes<Int>::findPrime (int k, int e, long c1, long c2, bool safe,
         bool facto, std::ostream & fout)
     {
       Int Sm1, Sm2;
@@ -228,7 +245,7 @@ namespace LatMRG {
       timer.init();
       Sm1 = (Int(1)<<e) + c1;
       Sm2 = (Int(1)<<e) + c2;
-      find (k, e, INT_MAX, Sm1, Sm2, safe, facto, fout);
+      findPrime (k, e, INT_MAX, Sm1, Sm2, safe, facto, fout);
       if (print_time) writeFooter (fout);
     }
 
