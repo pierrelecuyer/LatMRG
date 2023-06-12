@@ -1,7 +1,7 @@
 #ifndef LATMRG_SEEK_H
 #define LATMRG_SEEK_H
 
-// Number of generators to generate before testing time in nextGenerator
+// Number of generators to generate before testing elapsed time in nextGenerator
 #define DELAY 1000
 extern std::ostream* out;
 extern bool print_time;
@@ -15,11 +15,13 @@ namespace {
  * A namespace containing all the search functions.
  * */
 namespace LatMRGSeek {
+
   /**
-   * A small class to search for modulus for MWC generators.
-   * */
+   * For MWC: A small inner class to search for modulus values for MWC generators.
+   * It seems to me that this should be moved to either `MWCLattice` or `MWCPeriod`.   *******
+   */
   template<typename Int>
-    class Modulus {
+  class Modulus {
       public:
 
         /**
@@ -60,7 +62,7 @@ namespace LatMRGSeek {
 
       private:
 
-        static const long KTRIALS = 200;
+        static const long KTRIALS = 200;  //  The user must be allowed to select this constant!
 
         /**
          * Last valid modulus found (or 2^e).
@@ -88,6 +90,7 @@ namespace LatMRGSeek {
   // extern template class Modulus<NTL::ZZ>;
 
   /*
+   * Returns the next MRG to be considered in the search.
    * The goal is to create this overload and to use it to switch generators
    * without requiring the use of switch statements.
    * */
@@ -116,6 +119,7 @@ namespace LatMRGSeek {
     }
 
   /*
+   * Returns an MRG that satisfies the approximate factoring condition (?).
    * The goal is to create this overload and to use it to switch generators
    * without requiring the use of switch statements.
    * */
@@ -144,8 +148,8 @@ namespace LatMRGSeek {
     }
 
   /**
-   * Enuemrates all the possible generators for this generator. Needs to
-   * remember previous generator and last modified coordinate between calls.
+   * Enumerates all the possibilities for the type of MRG and and constrained that are considered.
+   * It must remember previous generator and last modified coordinate between calls.
    * */
   template<typename Int, typename Real>
     class MRGLatticeExhaust {
@@ -191,8 +195,10 @@ namespace LatMRGSeek {
   template<> NTL::vector<NTL::ZZ> MRGLatticeExhaust<NTL::ZZ, double>::A(0);
   template<> NTL::vector<NTL::ZZ> MRGLatticeExhaust<NTL::ZZ, NTL::RR>::A(0);
 
+
+  // Returns the next MRG in the search for the case where the modulus is a power of 2.
   template<typename Int, typename Real>
-    MRGLattice<Int, Real>* nextGeneratorPow2(ConfigSeek<Int, Real>& conf) {
+  MRGLattice<Int, Real>* nextGeneratorPow2(ConfigSeek<Int, Real>& conf) {
       typedef NTL::vector<Int> IntVec;
       // Setting up two vectors. MRGPeriod and MRGLattice do not use the same
       // vector format
@@ -228,8 +234,11 @@ namespace LatMRGSeek {
       return lat;
     }
 
+
+  // MWC case:  Returns the next MWC generator to be considered in the search.
+  // With randomly selected coefficients.
   template<typename Int, typename Real>
-    MWCLattice<Int, Real>* nextGenerator(ConfigSeek<Int, Real>& conf) {
+  MWCLattice<Int, Real>* nextGenerator(ConfigSeek<Int, Real>& conf) {
       // Setting up two vectors. MRGPeriod and MRGLattice do not use the same
       // vector format
       NTL::vector<Int> A;
@@ -250,8 +259,10 @@ namespace LatMRGSeek {
       return new MWCLattice<Int, Real>(conf.fact[0]->m_MWCb, A, conf.fact[0]->getK(), conf.proj->numProj());
     }
 
+
+  // MWC case: returns next MWC in the search, with randomly selected modulus.
   template<typename Int, typename Real>
-    MWCLattice<Int, Real>* nextFullGenerator(ConfigSeek<Int, Real>& conf) {
+  MWCLattice<Int, Real>* nextFullGenerator(ConfigSeek<Int, Real>& conf) {
       Int m(0);
       long exp = conf.fact[0]->getE()-1;
       // 63 bits at a time because NTL converts from SIGNED long
@@ -269,10 +280,10 @@ namespace LatMRGSeek {
     }
 
   /*
-   * Goin' full random for now
+   * MMRG case: returns next MMRG in the search, with coefficients selected at random.
    * */
   template<typename Int, typename Real>
-    MMRGLattice<Int, Real>* nextGenerator(ConfigSeek<Int, Real>& conf) {
+  MMRGLattice<Int, Real>* nextGenerator(ConfigSeek<Int, Real>& conf) {
       NTL::matrix<Int> A;
       A.SetDims(conf.fact[0]->getK(), conf.fact[0]->getK());
       NTL::clear(A);
@@ -299,14 +310,14 @@ namespace LatMRGSeek {
     }
 
   /**
-   * Sing there can be a great variety of combined lattices, this class helps
-   * choose the correct constructor for such lattices.
+   * Inner class that constructs the lattice for a combined generator.
+   * This class helps choose the correct constructor for this lattice.
    * */
   template<typename Int, typename Real>
     class ComboLatticeFinder {
       typedef NTL::vector<Int> IntVec;
 
-      public:
+    public:
       /**
        * The only public and visible function in this class. Calls the correct
        * underlying function.
@@ -315,8 +326,9 @@ namespace LatMRGSeek {
         return nextGenerator(conf);
       }
 
-      private:
+    private:
 
+      // Returns the next combined MRG generator to be considered in the search.
       static ComboLattice<Int, Real>* nextGenerator(ConfigSeek<Int, Real>& conf) {
         // Setting up two vectors. MRGPeriod and MRGLattice do not use the same
         // vector format
@@ -391,9 +403,12 @@ namespace LatMRGSeek {
     };
 }
 
+/** This struct contains the key ingredients for a search, with the parameters
+* mostly stored in `conf`.  The function `Seek` performs the search.
+* There are two functions to report the progress and print the results on the
+* standard output.
+*/
 template<typename Lat> struct SeekMain {
-  typedef typename Lat::Int Int;
-  typedef typename Lat::Real Real;
   typedef NTL::vector<Int> IntVec;
   typedef NTL::matrix<Int> IntMat;
 

@@ -120,7 +120,7 @@ template<typename Int, typename Real> struct LatTest {
       printResults(bestLattice);
     } else if (conf.fact[0]->get_type() == MRG || conf.fact[0]->get_type() == LCG) {
       // Single MRG component.
-      full_period.resize(1);
+      full_period.resize(1);  // This becomes a single boolean variable.
       MeritList<MRGLattice<Int, Real>> bestLattice(conf.max_gen, true);
       IntVec temp(conf.fact[0]->getK()+1);
       temp[0] = Int(0);
