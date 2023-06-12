@@ -1,13 +1,35 @@
+// This file is part of LatMRG.
+//
+// Copyright (C) 2012-2023  The LatMRG authors, under the supervision
+// of Pierre L'Ecuyer at Universit� de Montr�al.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #ifndef LATMRG_CHRONO_H
 #define LATMRG_CHRONO_H
 
 #include <string>
+#include <ctime>
+#include <cstdlib>
+#include <iostream>
+#include <iomanip>
+#include <sstream>
 
-/**
- * \file Chrono.h
- */
+using namespace std;
+
 
 #undef USE_ANSI_CLOCK
+
 namespace LatMRG {
 
   /**
@@ -56,6 +78,7 @@ namespace LatMRG {
    * t = timer.val (Chrono::MIN); // Here, t = 5.5 <br>
    * timer.write (Chrono::HMS); // Prints: 00:05:30.00 </tt>
    */
+
   class Chrono {
     public:
 
@@ -130,5 +153,201 @@ namespace LatMRG {
    */
   std::string toString (Chrono& timer);
 
+};
+
+//============================================================================
+// Implementation
+
+namespace {
+
+#ifdef HAVE_WINDOWS_H
+#include <windows.h>
+
+  HLANDLE currentProcess = NULL;
+
+  /*
+   * A helper function for converting FILETIME to a LONGLONG [safe from memory
+   * alignment point of view].
+   */
+  ULONGLONG fileTimeToInt64 (const FILETIME * time)
+  {
+    ULARGE_INTEGER _time;
+    _time.LowPart = time->dwLowDateTime;
+    _time.HighPart = time->dwHighDateTime;
+    return _time.QuadPart;
+  }
+#endif
+   
 }
+
+//===========================================================================
+//Alternative implementation of tick for different operating systems
+  
+#ifdef HAVE_WINDOWS_H
+
+void Chrono::tick () {
+    if (currentProcess == NULL)
+      currentProcess = GetCurrentProcess();
+    FILETIME creationTime, exitTime, kernelTime, userTime;
+    /* Strongly inspired from
+     * http://www.javaworld.com/javaworld/javaqa/2002-11/01-qa-1108-cpu.html */
+    GetProcessTimes (currentProcess, &creationTime, &exitTime,
+        &kernelTime, &userTime);
+    ULONGLONG rawTime = fileTimeToInt64 (&kernelTime) +
+      fileTimeToInt64 (&userTime);
+    /* We have to divide by 10000 to get milliseconds out of
+     * the computed time */
+    second = static_cast<unsigned long>(rawTime / 10000000);
+    microsec = static_cast<unsigned long>((rawTime % 10000000) / 10);
+}
+
+#elif defined(USE_ANSI_CLOCK)
+  
+// ANSI C timer
+void Chrono::tick () {
+    clock_t t;
+    double y;
+
+    t = clock ();
+    y = (static_cast<double> (t)) / CLOCKS_PER_SEC;
+    second = static_cast<unsigned long>(y);
+    microsec = static_cast<unsigned long>((y - second) * 1000000);
+}
+
+#else
+  // POSIX timer
+
+#include <sys/times.h>
+#include <unistd.h>
+
+void Chrono::tick () {
+    struct tms us;
+    long TICKS, z;
+
+    TICKS = sysconf(_SC_CLK_TCK);
+    if (TICKS == -1) {
+      cout << "Chrono.cc:   'sysconf(_SC_CLK_TCK)' failed\n";
+    }
+    z = times (&us);
+    if (z == -1) {
+      cout << "Chrono.cc:   timer times failed\n";
+    }
+    /* CPU time = user time + system time */
+    microsec = us.tms_utime + us.tms_stime;
+    second = microsec / TICKS;
+    microsec = (microsec % TICKS) * 1000000 / TICKS;
+}
+
+#endif
+
+
+//===========================================================================
+
+void Chrono::init () {
+     tick();
+}
+
+
+Chrono::Chrono() {
+    init();
+}
+
+//===========================================================================
+
+double Chrono::val (TimeFormat Unit) {
+     Chrono now;
+     now.tick();
+     double temps;                     // Time elapsed, in seconds
+     temps = (static_cast<double>(now.microsec) -
+         static_cast<double>(microsec)) / 1.E+6 +
+       static_cast<double>(now.second) -
+       static_cast<double>(second);
+
+     switch (Unit) {
+       case SEC:
+         return temps;
+       case MIN:
+         return temps * 1.666666667E-2;
+       case HOURS:
+         return temps * 2.777777778E-4;
+       case DAYS:
+         return temps * 1.157407407E-5;
+       case HMS:
+         cerr << "Chrono.val: HMS is a wrong arg for Time Unit";
+     }
+     return 0.0;
+}
+
+//===========================================================================
+
+void Chrono::write (TimeFormat Form) {
+     double temps;
+     if (Form != HMS)
+       temps = val (Form);
+     else
+       temps = 0.0;
+     switch (Form) {
+       case SEC:
+         cout << setw(10) << setprecision (2) << temps;
+         cout << " seconds";
+         break;
+       case MIN:
+         cout << setw(10) << setprecision (2) << temps;
+         cout << " minutes";
+         break;
+       case HOURS:
+         cout << setw(10) << setprecision (2) << temps;
+         cout << " hours";
+         break;
+       case DAYS:
+         cout << setw(10) << setprecision (2) << temps;
+         cout << " days";
+         break;
+       case HMS:
+         temps = val (SEC);
+         long heure = static_cast<long> (temps * 2.777777778E-4);
+         if (heure > 0)
+           temps -= static_cast<double> (heure) * 3600.0;
+         long minute = static_cast<long> (temps * 1.666666667E-2);
+         if (minute > 0)
+           temps -= static_cast<double> (minute) * 60.0;
+         long seconde = static_cast<long> (temps);
+         long centieme = static_cast<long>
+           (100.0 * (temps - static_cast<double> (seconde)));
+         cout << setw(2) << setfill('0') << right << heure << ":" ;
+         cout << setw(2) << setfill('0') << right << minute << ":" ;
+         cout << setw(2) << setfill('0') << right << seconde << "." ;
+         cout << setw(2) << setprecision(2) << centieme;
+         break;
+     }
+}
+
+//===========================================================================
+
+bool Chrono::timeOver (double limit) {
+     double temps = val (SEC);
+     if (temps >= limit)
+       return true;
+     else
+       return false;
+}
+
+//===========================================================================
+
+std::string Chrono::toString () {
+     double temps = val (SEC);
+     long heure = (long) (temps * 2.777777778E-4);
+     if (heure > 0)
+       temps -= heure * 3600.0;
+     long minute = (long) (temps * 1.666666667E-2);
+     if (minute > 0)
+       temps -= minute * 60.0;
+     long seconde = (long) temps;
+     long frac = (long) (100.0 * (temps - seconde));
+
+     std::ostringstream sortie;
+     sortie << heure << ":" << minute << ":" << seconde << "." << frac;
+     return sortie.str ();
+}
+
 #endif
