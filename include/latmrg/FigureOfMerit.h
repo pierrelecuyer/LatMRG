@@ -19,18 +19,20 @@ class FigureOfMerit {
 
    private:
       /**
-       * The lattice that has been tested.
+       * The lattice that is being tested.
        * */
       Lat m_lattice;
 
       /**
-       * `true` if this contains a merit value for all projections, `false`
-       * otherwise.
+       * `true` if this contains a merit value for all projections, `false` otherwise.
        * */
       bool m_finished;
 
       /**
        * The set of projections used in this object.
+       *
+       * I thing for this, we should use a CoordinateSets object for the projections,
+       * plus perhaps handle the projections over successive coordinates separately.   *********
        * */
       Projections m_projSet;
 
@@ -43,6 +45,8 @@ class FigureOfMerit {
       /**
        * The shortest vectors for each projection in the same sequence as in
        * `m_projSet`.
+       *
+       * Not sure if we should always keep this, because this brings much overhead!!!   *********
        * */
       std::vector<typename IntVec> m_vectors;
 
@@ -55,6 +59,8 @@ class FigureOfMerit {
        * Index of the best or worst value in `m_merits`.
        * */
       long m_best_worst;
+
+      // Some variables are missing.  For example, we need beta_1, we need a normalizer, etc.   *********
 
    public:
 

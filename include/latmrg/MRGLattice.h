@@ -215,7 +215,7 @@ namespace LatMRG {
         void buildLaBasis (int d);
 
         /**
-         * \name Used for the calculation of a combined MRG.
+         * \name Used for the calculation of the period of a combined MRG.
          *
          * @{
          */
@@ -298,32 +298,6 @@ namespace LatMRG {
      and also long lacunary indices (e.g., for multiple streams), supported in
      MRGLatticeLac.      */
 #define ORDERMAX 100
-
-  //===========================================================================
-
-  // This is only a tool for debugging...
-  template<typename Int, typename Real>
-    void MRGLattice<Int, Real>::trace (char *mess, int d)
-    {
-      std::cout << "---------------------------------------------------------------"
-        << "----" << std::endl;
-      std::cout << mess << std::endl;
-      this->setNegativeNorm();
-      this->setDualNegativeNorm();
-      this->updateVecNorm ();
-      this->updateDualVecNorm ();
-      this->write();
-      //m_w.write();
-      /*
-         for (int i = 0; i <= d; i++)
-         std::cout << " VSI " << i << "    " << m_vSI[i] << std::endl;
-         std::cout << std::endl;
-         for (int i = 0; i <= d; i++)
-         std::cout << " WSI " << i << "    " << m_wSI[i] << std::endl;
-         */
-      //checkDuality ();
-      d = -1;  // compiler warning
-    }
 
 
   //===========================================================================
@@ -694,9 +668,9 @@ namespace LatMRG {
       LatticeTester::Invert(m_aCoef, b, this->m_order);
 
       // b is the characteristic polynomial
-      PolyPE<Int>::setM (this->m_modulo);
-      PolyPE<Int>::setF(b);
-      PolyPE<Int> pol;
+      PrimitivePoly<Int>::setM (this->m_modulo);
+      PrimitivePoly<Int>::setF(b);
+      PrimitivePoly<Int> pol;
       int ord = 0;
 
       // Construction d'un systeme generateur modulo m.
@@ -903,7 +877,7 @@ namespace LatMRG {
           InSta.kill();
 
         } else if (m_latType == RECURRENT) {
-          PolyPE<Int>::setM (this->m_modulo);
+          PrimitivePoly<Int>::setM (this->m_modulo);
           /* From Richard:
            * Je crois que la version sunos devait fonctionner correctement.
            * Je crois qu'Ajmal a créé des bugs dans la version mcs, qui se sont
@@ -923,10 +897,10 @@ namespace LatMRG {
           IntVec b;
           b.SetLength(this->m_order + 1);
           LatticeTester::CopyVect (b, m_aCoef, this->m_order);
-          PolyPE<Int>::reverse (b, this->m_order, 2);
+          PrimitivePoly<Int>::reverse (b, this->m_order, 2);
           // b is the characteristic polynomial
-          PolyPE<Int>::setF(b);
-          PolyPE<Int> pol;
+          PrimitivePoly<Int>::setF(b);
+          PrimitivePoly<Int> pol;
 
           // Must have 2^m_e > m^k to be sure to reach a recurrent state
           m_e = 3 + (int) (this->m_order * 0.5 * this->m_lgm2);
@@ -1120,6 +1094,23 @@ namespace LatMRG {
           }
         }
       }
+    }
+
+  //===========================================================================
+
+  // This is only a tool for debugging...
+  template<typename Int, typename Real>
+    void MRGLattice<Int, Real>::trace (char *message, int d)
+    {
+      std::cout << "---------------------------------------------------------------"
+        << "----" << std::endl;
+      std::cout << message << std::endl;
+      this->setNegativeNorm();
+      this->setDualNegativeNorm();
+      this->updateVecNorm ();
+      this->updateDualVecNorm ();
+      this->write();
+      d = -1;  // compiler warning
     }
 
   template class MRGLattice<std::int64_t, double>;

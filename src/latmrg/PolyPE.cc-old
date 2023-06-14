@@ -1,6 +1,6 @@
-#include "latmrg/PolyPE.h"
+#include "latmrg/PrimitivePoly.h"
 
 namespace LatMRG {
-  template class PolyPE<std::int64_t>;
-  template class PolyPE<NTL::ZZ>;
+  template class PrimitivePoly<std::int64_t>;
+  template class PrimitivePoly<NTL::ZZ>;
 }

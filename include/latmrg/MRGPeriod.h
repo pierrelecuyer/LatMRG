@@ -2,10 +2,10 @@
 #define	LATMRG_MRGCOMPONENT_H
 
 #include "latmrg/EnumTypes.h"
-#include "latmrg/PolyPE.h"
+#include "latmrg/PrimitivePoly.h"
 #include "latmrg/IntFactorization.h"
 #include "latmrg/Modulus.h"
-#include "latmrg/IntPrimitivity.h"
+#include "latmrg/PrimitiveInt.h"
 
 #include <NTL/mat_poly_ZZ.h>
 
@@ -135,7 +135,7 @@ namespace LatMRG {
          * Returns `true` if coefficients \f$A\f$ give a MRG with maximal
          * period; returns `false` otherwise. This method supposes that
          * condition 1 is `true` and tests only conditions 2 and 3. See method
-         * `isPrimitive` of class `PolyPE` on page (FIXME: page#) of this
+         * `isPrimitive` of class `PrimitivePoly` on page (FIXME: page#) of this
          * guide.
          */
         bool maxPeriod23 (const IntVec & A);
@@ -366,7 +366,7 @@ namespace LatMRG {
     void MRGPeriod<Int>::init (const Int & m0, int k0, DecompType decom1,
         const char *filem1, DecompType decor, const char *filer)
     {
-      PolyPE<Int>::setM(m0);
+      PrimitivePoly<Int>::setM(m0);
       module.init(m0);
       m_k = k0;
       m_a.resize(m_k);
@@ -511,12 +511,12 @@ namespace LatMRG {
   template<typename Int>
     bool MRGPeriod<Int>::maxPeriod (const IntVec & a0)
     {
-      PolyPE<Int>::setM(getM());
+      PrimitivePoly<Int>::setM(getM());
       m_a = a0;
-      PolyPE<Int>::reverse (m_a, m_k, 2);
-      PolyPE<Int>::setF(m_a);
-      PolyPE<Int> pol;
-      IntPrimitivity<Int> privfm(ifm1, getM(), 1);
+      PrimitivePoly<Int>::reverse (m_a, m_k, 2);
+      PrimitivePoly<Int>::setF(m_a);
+      PrimitivePoly<Int> pol;
+      PrimitiveInt<Int> privfm(ifm1, getM(), 1);
       return pol.isPrimitive(privfm, ifr);
     }
 
@@ -541,7 +541,7 @@ namespace LatMRG {
     {
       // Conerting everything to NTL::ZZ to ease the characteristic polynomial
       // computation
-      PolyPE<NTL::ZZ>::setM(NTL::ZZ(getM()));
+      PrimitivePoly<NTL::ZZ>::setM(NTL::ZZ(getM()));
       NTL::ZZX poly;
       NTL::matrix<NTL::ZZ> mat(m_k, m_k);
       for (int i = 0; i<m_k; i++) {
@@ -553,9 +553,9 @@ namespace LatMRG {
       NTL::CharPoly(poly, mat);
       // Copying the polynomial to a vector
       NTL::vector<NTL::ZZ> vec(NTL::VectorCopy(poly, m_k+1));
-      PolyPE<NTL::ZZ>::setF(vec);
-      PolyPE<NTL::ZZ> pol;
-      IntPrimitivity<NTL::ZZ> privfm(ifm2, NTL::ZZ(getM()), 1);
+      PrimitivePoly<NTL::ZZ>::setF(vec);
+      PrimitivePoly<NTL::ZZ> pol;
+      PrimitiveInt<NTL::ZZ> privfm(ifm2, NTL::ZZ(getM()), 1);
       return pol.isPrimitive(privfm, ifr2);
     }
 
@@ -565,11 +565,11 @@ namespace LatMRG {
   template<typename Int>
     bool MRGPeriod<Int>::maxPeriod23 (const IntVec & a0)
     {
-      PolyPE<Int>::setM(getM());
+      PrimitivePoly<Int>::setM(getM());
       m_a = a0;
-      PolyPE<Int>::reverse (m_a, m_k, 2);
-      PolyPE<Int>::setF(m_a);
-      PolyPE<Int> pol;
+      PrimitivePoly<Int>::reverse (m_a, m_k, 2);
+      PrimitivePoly<Int>::setF(m_a);
+      PrimitivePoly<Int> pol;
       // La condition 1 a déjà été vérifiée dans SeekMain
       return pol.isPrimitive(ifr);
     }

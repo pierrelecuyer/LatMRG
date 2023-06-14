@@ -314,9 +314,9 @@ namespace LatMRG {
   //============================================================================
   //The combinations of types supported in the library
 
-  extern template class MWCLattice<std::int64_t, double>;
-  extern template class MWCLattice<NTL::ZZ, double>;
-  extern template class MWCLattice<NTL::ZZ, NTL::RR>;
+  template class MWCLattice<std::int64_t, double>;
+  template class MWCLattice<NTL::ZZ, double>;
+  template class MWCLattice<NTL::ZZ, NTL::RR>;
 
 } // End namespace LatMRG
 #endif

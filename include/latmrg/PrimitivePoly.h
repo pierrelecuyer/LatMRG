@@ -1,5 +1,5 @@
-#ifndef LATMRG_POLY_H
-#define LATMRG_POLY_H
+#ifndef LATMRG_PRIMITIVEPOLY_H
+#define LATMRG_PRIMITIVEPOLY_H
 
 #include <sstream>
 #include <iostream>
@@ -19,7 +19,7 @@
 #include "latticetester/Util.h"
 #include "latticetester/IntFactor.h"
 
-#include "latmrg/IntPrimitivity.h"
+#include "latmrg/PrimitiveInt.h"
 
 namespace LatMRG {
   template<typename Int>
@@ -51,7 +51,7 @@ namespace LatMRG {
   /**
    * This class implements polynomials \f$P(x)\f$ in \f$\mathbb Z_m[X]\f$
    * defined as
-   * \anchor REF__PolyPE_eq_poly1
+   * \anchor REF__PrimitivePoly_eq_poly1
    * \f[
    *   P(x) = c_0 + c_1x^1 + c_2 x^2 + \cdots+ c_nx^n \tag{eq.poly1}
    * \f]
@@ -60,18 +60,18 @@ namespace LatMRG {
    * done modulo \f$m\f$ and modulo a polynomial \f$f(x)\f$ of degree \f$k\f$.
    * Thus all polynomials will be reduced modulo \f$f(x)\f$. In LatMRG, the
    * modulus polynomial \f$f(x)\f$ is usually written in the form
-   * \anchor REF__PolyPE_eq_poly2
+   * \anchor REF__PrimitivePoly_eq_poly2
    * \f[
    *   f(x) = x^k - a_1x^{k-1} - \cdots- a_{k-1} x - a_k, \tag{eq.poly2}
    * \f]
    * and is associated with the recurrence
-   * \anchor REF__PolyPE_eq_rec2
+   * \anchor REF__PrimitivePoly_eq_rec2
    * \f[
    *   x_n = (a_1x_{n-1} + a_2x_{n-2} + \cdots+ a_k x_{n-k}) \bmod m. \tag{eq.rec2}
    * \f]
    * The two functions `setM` and `setF` *must* be called to initialize the
    * modulus \f$m\f$ and the modulus polynomial \f$f(x)\f$ before doing any
-   * arithmetic operations on `PolyPE` objects, otherwise the results are
+   * arithmetic operations on `PrimitivePoly` objects, otherwise the results are
    * unpredictable.
    *
    * Type `Int` is used to represent polynomial coefficients. It may be
@@ -84,14 +84,14 @@ namespace LatMRG {
    *
    */
   template<typename Int>
-    class PolyPE : public ModInt<Int>::PolE {
+    class PrimitivePoly : public ModInt<Int>::PolE {
       private:
         typedef NTL::vector<Int> IntVec;
       public:
 
         /**
          * Initializes the modulus \f$m\f$ for this class. This must be called before
-         * doing any operations on `PolyPE` objects, otherwise the results are
+         * doing any operations on `PrimitivePoly` objects, otherwise the results are
          * unpredictable.
          */
         static void setM (const Int & m);
@@ -106,7 +106,7 @@ namespace LatMRG {
          * \cdots+ c_kx^k\f$ of degree \f$k\f$ for this class from the
          * coefficients \f$c_i = \f$<tt>C[i]</tt> of vector `C` of dimension
          * \f$k + 1\f$. This function must be called before doing any
-         * arithmetic operations on `PolyPE` objects, otherwise the results are
+         * arithmetic operations on `PrimitivePoly` objects, otherwise the results are
          * unpredictable.
          */
         static void setF (const typename ModInt<Int>::IntVecP & C);
@@ -138,7 +138,7 @@ namespace LatMRG {
         /**
          * Minimal constructor: this object is set to the **0** polynomial.
          */
-        PolyPE ();
+        PrimitivePoly ();
         const typename ModInt<Int>::PolX & getVal () { return rep(*this); }
         void setVal (long j);
 
@@ -167,8 +167,8 @@ namespace LatMRG {
         /**
          * Returns `true` if the modulus \f$f(x)\f$ is a primitive polynomial
          * modulo \f$m\f$. For this to be true, assuming that \f$f(x)\f$ has
-         * the form {@link REF__PolyPE_eq_poly2 (eq.poly2)} above, the three
-         * following conditions must be satisfied: \anchor REF__PolyPE_isprimi
+         * the form {@link REF__PrimitivePoly_eq_poly2 (eq.poly2)} above, the three
+         * following conditions must be satisfied: \anchor REF__PrimitivePoly_isprimi
          * <dl> <dt>None</dt>
          * <dd>
          * \f$[(-1)^{k+1} a_k]^{(m-1)/q} \bmod m \neq1\f$ for each prime
@@ -189,7 +189,7 @@ namespace LatMRG {
          * primitive root of \f$m\f$. Condition 3 is automatically satisfied
          * when \f$r\f$ is prime.
          */
-        bool isPrimitive (const IntPrimitivity<Int> & fm, const IntFactorization<Int> & fr);
+        bool isPrimitive (const PrimitiveInt<Int> & fm, const IntFactorization<Int> & fr);
 
         /**
          * Given the factorization of \f$r\f$, this method returns `true` if
@@ -222,16 +222,16 @@ namespace LatMRG {
     };
 
   template<typename Int>
-    Int PolyPE<Int>::m_m;
+    Int PrimitivePoly<Int>::m_m;
   template<typename Int>
-    long PolyPE<Int>::m_k;
+    long PrimitivePoly<Int>::m_k;
   template<typename Int>
-    typename ModInt<Int>::PolX PolyPE<Int>::m_x;
+    typename ModInt<Int>::PolX PrimitivePoly<Int>::m_x;
 
 
 
   /*=========================================================================*/
-  //PolyPE::PolyPE (const IntVec & C, long n)
+  //PrimitivePoly::PrimitivePoly (const IntVec & C, long n)
   //{
   //   init (C, n);
   //}
@@ -240,14 +240,14 @@ namespace LatMRG {
   /*=========================================================================*/
 
   template<typename Int>
-    PolyPE<Int>::PolyPE ()
+    PrimitivePoly<Int>::PrimitivePoly ()
     {}
 
 
   /*=========================================================================*/
 
   template<typename Int>
-    void PolyPE<Int>::setM (const Int & m)
+    void PrimitivePoly<Int>::setM (const Int & m)
     {
       ModInt<Int>::IntP::init (m);
       m_m = m;
@@ -257,7 +257,7 @@ namespace LatMRG {
   /*=========================================================================*/
 
   template<typename Int>
-    void PolyPE<Int>::setF (const typename ModInt<Int>::IntVecP & c)
+    void PrimitivePoly<Int>::setF (const typename ModInt<Int>::IntVecP & c)
     {
       m_k = c.length () - 1;
       typename ModInt<Int>::PolX f;
@@ -274,7 +274,7 @@ namespace LatMRG {
   /*=========================================================================*/
 
   template<typename Int>
-    void PolyPE<Int>::setF (const IntVec & V)
+    void PrimitivePoly<Int>::setF (const IntVec & V)
     {
       typename ModInt<Int>::IntVecP vP;
       conv (vP, V);
@@ -285,7 +285,7 @@ namespace LatMRG {
   /*=========================================================================*/
 
   template<typename Int>
-    void PolyPE<Int>::setVal (long j)
+    void PrimitivePoly<Int>::setVal (long j)
     {
       typename ModInt<Int>::IntP coeff;
       conv (coeff, 1);
@@ -299,7 +299,7 @@ namespace LatMRG {
   /*=========================================================================*/
 
   template<typename Int>
-    void PolyPE<Int>::setVal (const IntVec & C)
+    void PrimitivePoly<Int>::setVal (const IntVec & C)
     {
       std::ostringstream out;
       out << "[";
@@ -315,11 +315,11 @@ namespace LatMRG {
   /*=========================================================================*/
 
   template<typename Int>
-    void PolyPE<Int>::powerMod (const Int & j)
+    void PrimitivePoly<Int>::powerMod (const Int & j)
     {
       std::string str = "[0 1]";
       std::istringstream in (str);
-      PolyPE<Int> A;
+      PrimitivePoly<Int> A;
       in >> A;
       power (*this, A, j);
     }
@@ -328,7 +328,7 @@ namespace LatMRG {
   /*=========================================================================*/
 
   template<typename Int>
-    void PolyPE<Int>::setVal (std::string & str)
+    void PrimitivePoly<Int>::setVal (std::string & str)
     {
       std::istringstream in (str);
       in >> *this;
@@ -338,12 +338,12 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    std::string PolyPE<Int>::toString ()const
+    std::string PrimitivePoly<Int>::toString ()const
     {
       std::ostringstream sortie;
 
       typename ModInt<Int>::PolX pX = ModInt<Int>::PolE::modulus ().val ();
-      sortie << "m = " << PolyPE<Int>::m_m << std::endl;
+      sortie << "m = " << PrimitivePoly<Int>::m_m << std::endl;
       sortie << "k = " << getK () << std::endl;
       sortie << "f = " << getF () << std::endl;
       sortie << "v = " << *this << std::endl;
@@ -355,7 +355,7 @@ namespace LatMRG {
   /*=========================================================================*/
 
   template<typename Int>
-    void PolyPE<Int>::toVector (IntVec & C)
+    void PrimitivePoly<Int>::toVector (IntVec & C)
     {
       // C = rep(*this);
 
@@ -370,11 +370,12 @@ namespace LatMRG {
 
   /*=========================================================================*/
 #if 0
-  bool PolyPE<Int>::isIrreducible ()
+  bool PrimitivePoly<Int>::isIrreducible ()
   {
     // Méthode de crandall-Pomerance. La vitesse de cette méthode est
     // pratiquement identique à celle de NTL::DetIrredTest, mais plus
     // lente que NTL::IterIrredTest, spécialement pour grand k.
+	// Therefore, we use the latter method.
     PolE g;
     PolX d;
     std::string str = "[0 1]";
@@ -393,7 +394,7 @@ namespace LatMRG {
   /*=========================================================================*/
 
   template<typename Int>
-    bool PolyPE<Int>::isPrimitive (const IntFactorization<Int> & r)
+    bool PrimitivePoly<Int>::isPrimitive (const IntFactorization<Int> & r)
     {
       if (1 == getK())
         return true;
@@ -443,7 +444,7 @@ namespace LatMRG {
   /*=========================================================================*/
 
   template<typename Int>
-    bool PolyPE<Int>::isPrimitive (const IntPrimitivity<Int> & fm,
+    bool PrimitivePoly<Int>::isPrimitive (const PrimitiveInt<Int> & fm,
         const IntFactorization<Int> & fr)
     {
       Int a0;
@@ -461,7 +462,7 @@ namespace LatMRG {
   /*=========================================================================*/
 
   template<typename Int>
-    void PolyPE<Int>::reverse (IntVec & C, long n, int kind)
+    void PrimitivePoly<Int>::reverse (IntVec & C, long n, int kind)
     {
       long i;
       Int temp;
@@ -479,8 +480,8 @@ namespace LatMRG {
       }
     }
 
-  extern template class PolyPE<std::int64_t>;
-  extern template class PolyPE<NTL::ZZ>;
+  template class PrimitivePoly<std::int64_t>;
+  template class PrimitivePoly<NTL::ZZ>;
 
 }
 #endif

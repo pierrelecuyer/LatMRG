@@ -22,7 +22,7 @@ var hierarchy =
         [ "LatMRG::MWCLattice< Int, Dbl >", "class_lat_m_r_g_1_1_m_w_c_lattice.html", null ]
       ] ]
     ] ],
-    [ "LatMRG::IntPrimitivity< Int >", "class_lat_m_r_g_1_1_int_primitivity.html", null ],
+    [ "LatMRG::PrimitiveInt< Int >", "class_lat_m_r_g_1_1_int_primitivity.html", null ],
     [ "tinyxml2::MemPoolT< ITEM_SIZE >::Item", "uniontinyxml2_1_1_mem_pool_t_1_1_item.html", null ],
     [ "tinyxml2::MemPool", "classtinyxml2_1_1_mem_pool.html", [
       [ "tinyxml2::MemPoolT< sizeof(tinyxml2::XMLAttribute) >", "classtinyxml2_1_1_mem_pool_t.html", null ],
@@ -42,7 +42,7 @@ var hierarchy =
       [ "LatMRG::ParamReaderExt< Int, Dbl >", "class_lat_m_r_g_1_1_param_reader_ext.html", null ]
     ] ],
     [ "PolE", null, [
-      [ "LatMRG::PolyPE< Int >", "class_lat_m_r_g_1_1_poly_p_e.html", null ]
+      [ "LatMRG::PrimitivePoly< Int >", "class_lat_m_r_g_1_1_poly_p_e.html", null ]
     ] ],
     [ "LatMRG::Primes< Int >", "class_lat_m_r_g_1_1_primes.html", null ],
     [ "LatMRG::Projections", "class_lat_m_r_g_1_1_projections.html", null ],

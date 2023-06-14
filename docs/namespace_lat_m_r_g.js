@@ -5,7 +5,7 @@ var namespace_lat_m_r_g =
     [ "ComboLattice", "class_lat_m_r_g_1_1_combo_lattice.html", "class_lat_m_r_g_1_1_combo_lattice" ],
     [ "FigureOfMerit", "class_lat_m_r_g_1_1_figure_of_merit.html", "class_lat_m_r_g_1_1_figure_of_merit" ],
     [ "IntFactorization", "class_lat_m_r_g_1_1_int_factorization.html", "class_lat_m_r_g_1_1_int_factorization" ],
-    [ "IntPrimitivity", "class_lat_m_r_g_1_1_int_primitivity.html", "class_lat_m_r_g_1_1_int_primitivity" ],
+    [ "PrimitiveInt", "class_lat_m_r_g_1_1_int_primitivity.html", "class_lat_m_r_g_1_1_int_primitivity" ],
     [ "KorobovLattice", "class_lat_m_r_g_1_1_korobov_lattice.html", "class_lat_m_r_g_1_1_korobov_lattice" ],
     [ "MeritList", "class_lat_m_r_g_1_1_merit_list.html", "class_lat_m_r_g_1_1_merit_list" ],
     [ "MixmaxMMRG", "class_lat_m_r_g_1_1_mixmax_m_m_r_g.html", "class_lat_m_r_g_1_1_mixmax_m_m_r_g" ],
@@ -18,7 +18,7 @@ var namespace_lat_m_r_g =
     [ "MRGLattice", "class_lat_m_r_g_1_1_m_r_g_lattice.html", "class_lat_m_r_g_1_1_m_r_g_lattice" ],
     [ "MWCLattice", "class_lat_m_r_g_1_1_m_w_c_lattice.html", "class_lat_m_r_g_1_1_m_w_c_lattice" ],
     [ "ParamReaderExt", "class_lat_m_r_g_1_1_param_reader_ext.html", "class_lat_m_r_g_1_1_param_reader_ext" ],
-    [ "PolyPE", "class_lat_m_r_g_1_1_poly_p_e.html", "class_lat_m_r_g_1_1_poly_p_e" ],
+    [ "PrimitivePoly", "class_lat_m_r_g_1_1_poly_p_e.html", "class_lat_m_r_g_1_1_poly_p_e" ],
     [ "Primes", "class_lat_m_r_g_1_1_primes.html", "class_lat_m_r_g_1_1_primes" ],
     [ "Projections", "class_lat_m_r_g_1_1_projections.html", "class_lat_m_r_g_1_1_projections" ]
 ];

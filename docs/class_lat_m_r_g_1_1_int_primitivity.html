@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>LatMRG Guide: LatMRG::IntPrimitivity&lt; Int &gt; Class Template Reference</title>
+<title>LatMRG Guide: LatMRG::PrimitiveInt&lt; Int &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -93,20 +93,20 @@ $(document).ready(function(){initNavTree('class_lat_m_r_g_1_1_int_primitivity.ht
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="class_lat_m_r_g_1_1_int_primitivity-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">LatMRG::IntPrimitivity&lt; Int &gt; Class Template Reference</div>  </div>
+<div class="title">LatMRG::PrimitiveInt&lt; Int &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
 <p>This class deals with primitive roots and primitive elements modulo an integer.  
  <a href="class_lat_m_r_g_1_1_int_primitivity.html#details">More...</a></p>
 
-<p><code>#include &lt;latmrg/IntPrimitivity.h&gt;</code></p>
+<p><code>#include &lt;latmrg/PrimitiveInt.h&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a052b2cf875fc202c6c72f767bcb666e1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html#a052b2cf875fc202c6c72f767bcb666e1">IntPrimitivity</a> ()</td></tr>
+<tr class="memitem:a052b2cf875fc202c6c72f767bcb666e1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html#a052b2cf875fc202c6c72f767bcb666e1">PrimitiveInt</a> ()</td></tr>
 <tr class="separator:a052b2cf875fc202c6c72f767bcb666e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8111312eb77de3a5ea909551973039f6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html#a8111312eb77de3a5ea909551973039f6">IntPrimitivity</a> (const <a class="el" href="class_lat_m_r_g_1_1_int_factorization.html">IntFactorization</a>&lt; Int &gt; &amp;<a class="el" href="background_8dox.html#a302170441629196c428bdf58033a21e9">f</a>, const Int &amp;p, long e=1)</td></tr>
+<tr class="memitem:a8111312eb77de3a5ea909551973039f6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html#a8111312eb77de3a5ea909551973039f6">PrimitiveInt</a> (const <a class="el" href="class_lat_m_r_g_1_1_int_factorization.html">IntFactorization</a>&lt; Int &gt; &amp;<a class="el" href="background_8dox.html#a302170441629196c428bdf58033a21e9">f</a>, const Int &amp;p, long e=1)</td></tr>
 <tr class="memdesc:a8111312eb77de3a5ea909551973039f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor fixing the modulus of congruence as \(m = p^e\).  <a href="#a8111312eb77de3a5ea909551973039f6">More...</a><br /></td></tr>
 <tr class="separator:a8111312eb77de3a5ea909551973039f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb2b570f177fd5cccad60fceb047e005"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html#adb2b570f177fd5cccad60fceb047e005">getE</a> ()</td></tr>
@@ -156,7 +156,7 @@ Private Attributes</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename Int&gt;<br />
-class LatMRG::IntPrimitivity&lt; Int &gt;</h3>
+class LatMRG::PrimitiveInt&lt; Int &gt;</h3>
 
 <p>This class deals with primitive roots and primitive elements modulo an integer. </p>
 <p>Let \(a\), \(e\) and \(p\) be integers, with \(p\) a prime number. Assume also that \(a\) and \(m=p^e\) are relatively prime. The smallest positive integer \(\lambda(m)\) for which \(a^{\lambda}= 1 \ \mod\ m \) is called the order of \(a\) modulo \(m\). Any \(a\) which has the maximum possible order for a given \(m\) is called a <em>primitive root</em> modulo \(m\). For the following important cases, the value of the order for given \(m\) is <b>[rKNU98a]</b> : </p><p class="formulaDsp">
@@ -175,7 +175,7 @@ template&lt;typename Int &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">typedef NTL::vector&lt;Int&gt; <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::IntPrimitivity</a>&lt; Int &gt;::<a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html#aced8c154b0f168f51b831e38f1db1c5b">IntVec</a></td>
+          <td class="memname">typedef NTL::vector&lt;Int&gt; <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::PrimitiveInt</a>&lt; Int &gt;::<a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html#aced8c154b0f168f51b831e38f1db1c5b">IntVec</a></td>
         </tr>
       </table>
   </td>
@@ -189,7 +189,7 @@ template&lt;typename Int &gt; </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a052b2cf875fc202c6c72f767bcb666e1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a052b2cf875fc202c6c72f767bcb666e1">&#9670;&nbsp;</a></span>IntPrimitivity() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a052b2cf875fc202c6c72f767bcb666e1">&#9670;&nbsp;</a></span>PrimitiveInt() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -197,7 +197,7 @@ template&lt;typename Int &gt; </div>
 template&lt;typename Int &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::IntPrimitivity</a>&lt; Int &gt;::<a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">IntPrimitivity</a> </td>
+          <td class="memname"><a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::PrimitiveInt</a>&lt; Int &gt;::<a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">PrimitiveInt</a> </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -208,7 +208,7 @@ template&lt;typename Int &gt; </div>
 </div>
 </div>
 <a id="a8111312eb77de3a5ea909551973039f6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8111312eb77de3a5ea909551973039f6">&#9670;&nbsp;</a></span>IntPrimitivity() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8111312eb77de3a5ea909551973039f6">&#9670;&nbsp;</a></span>PrimitiveInt() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -216,7 +216,7 @@ template&lt;typename Int &gt; </div>
 template&lt;typename Int &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::IntPrimitivity</a>&lt; Int &gt;::<a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">IntPrimitivity</a> </td>
+          <td class="memname"><a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::PrimitiveInt</a>&lt; Int &gt;::<a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">PrimitiveInt</a> </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="class_lat_m_r_g_1_1_int_factorization.html">IntFactorization</a>&lt; Int &gt; &amp;&#160;</td>
           <td class="paramname"><em>f</em>, </td>
@@ -259,7 +259,7 @@ template&lt;typename Int &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">long <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::IntPrimitivity</a>&lt; Int &gt;::getE </td>
+          <td class="memname">long <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::PrimitiveInt</a>&lt; Int &gt;::getE </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -288,7 +288,7 @@ template&lt;typename Int &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="class_lat_m_r_g_1_1_int_factorization.html">IntFactorization</a>&lt;Int&gt; <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::IntPrimitivity</a>&lt; Int &gt;::getF </td>
+          <td class="memname"><a class="el" href="class_lat_m_r_g_1_1_int_factorization.html">IntFactorization</a>&lt;Int&gt; <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::PrimitiveInt</a>&lt; Int &gt;::getF </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -317,7 +317,7 @@ template&lt;typename Int &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">Int <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::IntPrimitivity</a>&lt; Int &gt;::getP </td>
+          <td class="memname">Int <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::PrimitiveInt</a>&lt; Int &gt;::getP </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -343,7 +343,7 @@ template&lt;typename Int &gt; </div>
 template&lt;typename Int &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::IntPrimitivity</a>&lt; Int &gt;::isPrimitiveElement </td>
+          <td class="memname">bool <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::PrimitiveInt</a>&lt; Int &gt;::isPrimitiveElement </td>
           <td>(</td>
           <td class="paramtype">const Int &amp;&#160;</td>
           <td class="paramname"><em>a</em></td><td>)</td>
@@ -366,7 +366,7 @@ template&lt;typename Int &gt; </div>
 template&lt;typename Int &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::IntPrimitivity</a>&lt; Int &gt;::isPrimitiveElement </td>
+          <td class="memname">bool <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::PrimitiveInt</a>&lt; Int &gt;::isPrimitiveElement </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html#aced8c154b0f168f51b831e38f1db1c5b">IntVec</a> &amp;&#160;</td>
           <td class="paramname"><em>V</em>, </td>
@@ -402,7 +402,7 @@ template&lt;typename Int &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::IntPrimitivity</a>&lt; Int &gt;::setF </td>
+          <td class="memname">void <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::PrimitiveInt</a>&lt; Int &gt;::setF </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="class_lat_m_r_g_1_1_int_factorization.html">IntFactorization</a>&lt; Int &gt; &amp;&#160;</td>
           <td class="paramname"><em>f</em></td><td>)</td>
@@ -429,7 +429,7 @@ template&lt;typename Int &gt; </div>
 template&lt;typename Int &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::IntPrimitivity</a>&lt; Int &gt;::setpe </td>
+          <td class="memname">void <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::PrimitiveInt</a>&lt; Int &gt;::setpe </td>
           <td>(</td>
           <td class="paramtype">const Int &amp;&#160;</td>
           <td class="paramname"><em>p</em>, </td>
@@ -461,7 +461,7 @@ template&lt;typename Int &gt; </div>
 template&lt;typename Int &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::string <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::IntPrimitivity</a>&lt; Int &gt;::toString </td>
+          <td class="memname">std::string <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::PrimitiveInt</a>&lt; Int &gt;::toString </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -486,7 +486,7 @@ template&lt;typename Int &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">long <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::IntPrimitivity</a>&lt; Int &gt;::m_e</td>
+          <td class="memname">long <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::PrimitiveInt</a>&lt; Int &gt;::m_e</td>
         </tr>
       </table>
   </td>
@@ -512,7 +512,7 @@ template&lt;typename Int &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="class_lat_m_r_g_1_1_int_factorization.html">IntFactorization</a>&lt;Int&gt; <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::IntPrimitivity</a>&lt; Int &gt;::m_f</td>
+          <td class="memname"><a class="el" href="class_lat_m_r_g_1_1_int_factorization.html">IntFactorization</a>&lt;Int&gt; <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::PrimitiveInt</a>&lt; Int &gt;::m_f</td>
         </tr>
       </table>
   </td>
@@ -538,7 +538,7 @@ template&lt;typename Int &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">Int <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::IntPrimitivity</a>&lt; Int &gt;::m_m</td>
+          <td class="memname">Int <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::PrimitiveInt</a>&lt; Int &gt;::m_m</td>
         </tr>
       </table>
   </td>
@@ -564,7 +564,7 @@ template&lt;typename Int &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">Int <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::IntPrimitivity</a>&lt; Int &gt;::m_p</td>
+          <td class="memname">Int <a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">LatMRG::PrimitiveInt</a>&lt; Int &gt;::m_p</td>
         </tr>
       </table>
   </td>
@@ -579,14 +579,14 @@ template&lt;typename Int &gt; </div>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>include/latmrg/<a class="el" href="_int_primitivity_8h.html">IntPrimitivity.h</a></li>
+<li>include/latmrg/<a class="el" href="_int_primitivity_8h.html">PrimitiveInt.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="namespace_lat_m_r_g.html">LatMRG</a></li><li class="navelem"><a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">IntPrimitivity</a></li>
+    <li class="navelem"><a class="el" href="namespace_lat_m_r_g.html">LatMRG</a></li><li class="navelem"><a class="el" href="class_lat_m_r_g_1_1_int_primitivity.html">PrimitiveInt</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>

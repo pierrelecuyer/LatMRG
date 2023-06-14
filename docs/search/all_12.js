@@ -26,7 +26,7 @@ var searchData=
   ['reset',['Reset',['../classtinyxml2_1_1_str_pair.html#a80c1b3bd99bf62ae85c94a29ce537125',1,'tinyxml2::StrPair']]],
   ['resetdim',['resetDim',['../class_lat_m_r_g_1_1_projections.html#a0d57096ca265489376c78b02c607b517',1,'LatMRG::Projections']]],
   ['results_2edox',['results.dox',['../results_8dox.html',1,'']]],
-  ['reverse',['reverse',['../class_lat_m_r_g_1_1_poly_p_e.html#a27b998434144c47a1022e3a35d6def55',1,'LatMRG::PolyPE']]],
+  ['reverse',['reverse',['../class_lat_m_r_g_1_1_poly_p_e.html#a27b998434144c47a1022e3a35d6def55',1,'LatMRG::PrimitivePoly']]],
   ['rho',['rho',['../class_lat_m_r_g_1_1_m_r_g_component.html#a9f6201d54f33a427ef0dd1408114f0bf',1,'LatMRG::MRGComponent']]],
   ['rootelement',['RootElement',['../classtinyxml2_1_1_x_m_l_document.html#ad2b70320d3c2a071c2f36928edff3e1c',1,'tinyxml2::XMLDocument::RootElement()'],['../classtinyxml2_1_1_x_m_l_document.html#a2be8ef9d6346bdef34311f91529afae4',1,'tinyxml2::XMLDocument::RootElement() const']]]
 ];

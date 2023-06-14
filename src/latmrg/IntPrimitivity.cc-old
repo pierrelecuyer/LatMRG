@@ -1,7 +1,7 @@
-#include "latmrg/IntPrimitivity.h"
+#include "latmrg/PrimitiveInt.h"
 
 namespace LatMRG {
-  template class IntPrimitivity<std::int64_t>;
-  template class IntPrimitivity<NTL::ZZ>;
+  template class PrimitiveInt<std::int64_t>;
+  template class PrimitiveInt<NTL::ZZ>;
 }
 
