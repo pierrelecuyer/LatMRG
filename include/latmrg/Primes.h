@@ -109,7 +109,7 @@ namespace LatMRG {
          * method searches for `s` prime integers between `S1` and `S2`.
          * */
         void findPrime (int k, int e, int s, const Int & S1, const Int & S2, bool safe,
-            bool facto, std::ostream & fout);
+            bool facto, std::ostream & fout, const long KTRIALS = 200);
 
         Chrono timer;
 
@@ -140,7 +140,7 @@ namespace LatMRG {
 
   template<typename Int>
     void Primes<Int>::findPrime (int k, int e, int s, const Int & S1, const Int & S2,
-        bool safe, bool facto, std::ostream & fout)
+        bool safe, bool facto, std::ostream & fout, const long KTRIALS)
     {
       Int m;
       if (NTL::IsOdd (S2))
@@ -148,7 +148,6 @@ namespace LatMRG {
       else
         m = S2 - Int(1);
       int i = 0;
-      const long KTRIALS = 200;
 
       while (i < s && m >= S1) {
         LatticeTester::PrimeType status = LatticeTester::IntFactor<Int>::isPrime (m, KTRIALS);
