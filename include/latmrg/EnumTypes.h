@@ -122,7 +122,7 @@ namespace LatMRG {
    * Indicates the type of lacunary projection used for MMRG:
    * - NONE: no lacunary projection
    * - SUBVECTOR: only the selected coordinates of each new random vector are kept
-   * - ARBITRARY: only the selected indices are kept.
+   * - ARBITRARYINDICES: only the selected indices are kept.
    */
   enum LacunaryType {NONE, SUBVECTOR, ARBITRARYINDICES };
 
