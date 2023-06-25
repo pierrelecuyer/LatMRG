@@ -1,8 +1,8 @@
 var class_lat_m_r_g_1_1_int_primitivity =
 [
     [ "IntVec", "class_lat_m_r_g_1_1_int_primitivity.html#aced8c154b0f168f51b831e38f1db1c5b", null ],
-    [ "IntPrimitivity", "class_lat_m_r_g_1_1_int_primitivity.html#a052b2cf875fc202c6c72f767bcb666e1", null ],
-    [ "IntPrimitivity", "class_lat_m_r_g_1_1_int_primitivity.html#a8111312eb77de3a5ea909551973039f6", null ],
+    [ "PrimitiveInt", "class_lat_m_r_g_1_1_int_primitivity.html#a052b2cf875fc202c6c72f767bcb666e1", null ],
+    [ "PrimitiveInt", "class_lat_m_r_g_1_1_int_primitivity.html#a8111312eb77de3a5ea909551973039f6", null ],
     [ "getE", "class_lat_m_r_g_1_1_int_primitivity.html#adb2b570f177fd5cccad60fceb047e005", null ],
     [ "getF", "class_lat_m_r_g_1_1_int_primitivity.html#aea8d862990d95472d2816458af82713e", null ],
     [ "getP", "class_lat_m_r_g_1_1_int_primitivity.html#ad24ba02dfc78e8d1711ddc4ba4652c22", null ],

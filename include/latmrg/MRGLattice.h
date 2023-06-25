@@ -114,28 +114,21 @@ namespace LatMRG {
         virtual void setLac (const LatticeTester::Lacunary<Int> & lat);
 
         /**
-         * \name Sets and gets the values of <tt>m_rho</tt> and <tt>m_lossRho</tt>.
-         *
-         * @{
-         */
-        Int getRho() const { return m_rho; }
-        Int getLossRho() const { return m_lossRho; }
-        void setRho (const Int & val) { m_rho = val; }
-        void setLossRho (const Int & val) { m_lossRho = val; }
-        /*
-         * @}
-         */
-
-        /**
          * Returns a non-mutable copy of the multipliers (coefficients) of the
          * MRG.
          */
-        const IntVec & getCoef() const { return m_aCoef; }
+        const IntVec & getCoeff() const { return m_aCoeff; }
+        
+        /**
+         * Sets new values for the multipliers (coefficients) of the
+         * MRG.
+         */
+        setCoeff(const IntVec & coeff) { m_aCoeff = coeff; }
 
         /**
          * Returns the vector of multipliers \f$A\f$ as a string.
          */
-        virtual std::string toStringCoef() const;
+        virtual std::string toStringCoeff() const;
 
         /**
          * Returns the vector of multipliers \f$A\f$ as a string.
@@ -215,20 +208,9 @@ namespace LatMRG {
         void buildLaBasis (int d);
 
         /**
-         * \name Used for the calculation of a combined MRG.
-         *
-         * @{
-         */
-        Int m_lossRho;
-        Int m_rho;
-        /**
-         * @}
-         */
-
-        /**
          * The coefficients of the recurrence.
          */
-        IntVec m_aCoef;
+        IntVec m_aCoeff;
 
         /**
          * Indicates which lattice or sublattice is analyzed.
@@ -278,13 +260,13 @@ namespace LatMRG {
 
       private:
         /**
-         * Indicates if this generator is built using coefficients that are power
-         * of 2 combinations.
+         * Indicates if this generator is built using coefficients that are
+         * a sum or difference of a small number of powers of 2.
          * */
         bool m_power2;
 
         /**
-         * The powers of 2 used if this generator has power of 2 coefficients.
+         * The powers of 2 used if this generator uses power of 2 coefficients.
          * */
         std::vector<IntVec> m_pow2_exp;
 
@@ -293,7 +275,10 @@ namespace LatMRG {
   //===========================================================================
 
   /* Max order for lacunary case in this class; otherwise, it takes too much memory.
-     For order > ORDERMAX, use subclass MRGLatticeLac instead       */
+     For order > ORDERMAX, use subclass MRGLatticeLac instead.
+     This means that we can have short lacunary indices, supported here,
+     and also long lacunary indices (e.g., for multiple streams), supported in
+     MRGLatticeLac.      */
 #define ORDERMAX 100
 
   //===========================================================================
@@ -332,14 +317,12 @@ namespace LatMRG {
           lat.m_modulo, lat.m_order, lat.getDim(), lat.withDual(), lat.getNorm ()),
       m_lac(lat.m_lac)
   {
-    m_lossRho = lat.m_lossRho;
-    m_rho = lat.m_rho;
     m_latType = lat.m_latType;
     m_lacunaryFlag = lat.m_lacunaryFlag;
     init();
 
     for (int i = 0; i < this->m_order; i++)
-      m_aCoef[i] = lat.m_aCoef[i];
+      m_aCoeff[i] = lat.m_aCoeff[i];
 
     m_power2 = lat.m_power2;
     if (m_power2) {
@@ -359,13 +342,11 @@ namespace LatMRG {
       if (this == &lat)
         return *this;
       kill();
-      m_lossRho = lat.m_lossRho;
-      m_rho = lat.m_rho;
       m_latType = lat.m_latType;
       m_lacunaryFlag = lat.m_lacunaryFlag;
 
       for (int i = 0; i < this->m_order; i++)
-        m_aCoef[i] = lat.m_aCoef[i];
+        m_aCoeff[i] = lat.m_aCoeff[i];
       this->m_dim = lat.m_dim;
       this->copyBasis(lat);
       this->m_order = lat.m_order;
@@ -401,7 +382,7 @@ namespace LatMRG {
     init();
 
     for (int i = 0; i < this->m_order; i++)
-      m_aCoef[i] = a[i+1];
+      m_aCoeff[i] = a[i+1];
   }
 
   //============================================================================
@@ -416,7 +397,7 @@ namespace LatMRG {
     m_lacunaryFlag = false;
     m_ip = 0;
     init();
-    m_aCoef[0] = a;
+    m_aCoeff[0] = a;
   }
 
   //===========================================================================
@@ -433,7 +414,7 @@ namespace LatMRG {
     init();
 
     for (int i = 0; i < this->m_order; i++)
-      m_aCoef[i] = a[i+1];
+      m_aCoeff[i] = a[i+1];
   }
 
   //===========================================================================
@@ -442,7 +423,7 @@ namespace LatMRG {
     void MRGLattice<Int, Real>::init()
     {
       m_xi.SetLength(this->m_order);
-      m_aCoef.SetLength(this->m_order);
+      m_aCoeff.SetLength(this->m_order);
       if (this->m_order > ORDERMAX) {
         m_ip = new bool[1];
         m_sta.SetDims(1, 1);
@@ -475,7 +456,7 @@ namespace LatMRG {
         delete[] m_ip;
       m_ip = 0;
       m_xi.kill();
-      m_aCoef.kill();
+      m_aCoeff.kill();
       m_sta.kill();
     }
 
@@ -501,12 +482,12 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int, typename Real>
-    std::string MRGLattice<Int, Real>::toStringCoef () const
+    std::string MRGLattice<Int, Real>::toStringCoeff () const
     {
       std::ostringstream out;
       //out << "[ ";
       for (int i = 0; i < this->m_order; i++)
-        out << m_aCoef[i] << "  ";
+        out << m_aCoeff[i] << "  ";
       //out << "]";
       return out.str ();
     }
@@ -518,10 +499,10 @@ namespace LatMRG {
     {
       std::ostringstream out;
       for (int i = 0; i < this->m_order; i++) {
-        out << "a_" << i+1 << " = " << m_aCoef[i];
-        if(m_power2 && m_aCoef[i] != 0) {
+        out << "a_" << i+1 << " = " << m_aCoeff[i];
+        if(m_power2 && m_aCoeff[i] != 0) {
           out << " = ";
-          Int tmp = m_aCoef[i];
+          Int tmp = m_aCoeff[i];
           for (int j = 0; j < m_pow2_exp[i].length(); j++) {
             Int tmp2, tmp3 = m_pow2_exp[i][j];
             NTL::power2(tmp2, tmp3);
@@ -627,7 +608,7 @@ namespace LatMRG {
         NTL::clear (this->m_vSI[0][i]);
         for (int j = 0; j < this->m_order; j++) {
           NTL::conv (this->m_t1, this->m_basis[i][dim - j - 2]);
-          this->m_t1 = this->m_t1 * m_aCoef[j];
+          this->m_t1 = this->m_t1 * m_aCoeff[j];
           this->m_vSI[0][i] = this->m_vSI[0][i] + this->m_t1;
         }
         LatticeTester::Modulo (this->m_vSI[0][i], this->m_modulo, this->m_vSI[0][i]);
@@ -688,7 +669,7 @@ namespace LatMRG {
 
       IntVec b;
       b.SetLength(this->m_order+1);
-      LatticeTester::Invert(m_aCoef, b, this->m_order);
+      LatticeTester::Invert(m_aCoeff, b, this->m_order);
 
       // b is the characteristic polynomial
       PolyPE<Int>::setM (this->m_modulo);
@@ -859,7 +840,7 @@ namespace LatMRG {
       if (m_latType == RECURRENT) {
         // We want the lattice generated by the recurrent states.
         // check if a_k is relatively prime to m --> m_t1 = 1
-        this->m_t1 = NTL::GCD (m_aCoef[this->m_order], this->m_modulo);
+        this->m_t1 = NTL::GCD (m_aCoeff[this->m_order], this->m_modulo);
         this->m_t1 = abs(this->m_t1);
         NTL::set (this->m_t2);
       }
@@ -890,7 +871,7 @@ namespace LatMRG {
           InSta.SetLength (this->m_order);
           NTL::clear (statmp[this->m_order-1]);
           for (int i = 0; i < this->m_order; i++) {
-            InSta[0] = m_aCoef[i] * InSta[this->m_order - i - 1];
+            InSta[0] = m_aCoeff[i] * InSta[this->m_order - i - 1];
             statmp[this->m_order-1] += InSta[0];
           }
 
@@ -919,7 +900,7 @@ namespace LatMRG {
           printf("ESPION_RECURRENT\n");
           IntVec b;
           b.SetLength(this->m_order + 1);
-          LatticeTester::CopyVect (b, m_aCoef, this->m_order);
+          LatticeTester::CopyVect (b, m_aCoeff, this->m_order);
           PolyPE<Int>::reverse (b, this->m_order, 2);
           // b is the characteristic polynomial
           PolyPE<Int>::setF(b);
@@ -941,12 +922,12 @@ namespace LatMRG {
               // ********* ATTENTION: MulMod (a, b, c, d) est très différent
               // pour les types long et ZZ (voir ZZ.txt). C'est pourquoi on
               // utilise MulMod (a, b, c) même s'il est plus lent. *********
-              m_xi[this->m_order - j - 1] = NTL::MulMod (m_xi[this->m_order], m_aCoef[j],
+              m_xi[this->m_order - j - 1] = NTL::MulMod (m_xi[this->m_order], m_aCoeff[j],
                   this->m_modulo);
               m_xi[this->m_order - j] += m_xi[this->m_order - j - 1];
             }
             // Coeff. constant.
-            m_xi[0] = NTL::MulMod (m_xi[this->m_order], m_aCoef[this->m_order], this->m_modulo);
+            m_xi[0] = NTL::MulMod (m_xi[this->m_order], m_aCoeff[this->m_order], this->m_modulo);
             statmp[i] = m_xi[this->m_order - 1];
           }
         }
@@ -965,7 +946,7 @@ namespace LatMRG {
             statmp[j] = m_sta[j + 1][0];
           NTL::clear (statmp[this->m_order-1]);
           for (int i = 0; i < this->m_order; i++) {
-            this->m_t1 = m_aCoef[i] * m_sta[this->m_order - i + 1][0];
+            this->m_t1 = m_aCoeff[i] * m_sta[this->m_order - i + 1][0];
             statmp[this->m_order-1] += this->m_t1;
           }
           LatticeTester::Modulo(statmp[this->m_order-1], this->m_modulo,
@@ -1119,9 +1100,9 @@ namespace LatMRG {
       }
     }
 
-  extern template class MRGLattice<std::int64_t, double>;
-  extern template class MRGLattice<NTL::ZZ, double>;
-  extern template class MRGLattice<NTL::ZZ, NTL::RR>;
+  template class MRGLattice<std::int64_t, double>;
+  template class MRGLattice<NTL::ZZ, double>;
+  template class MRGLattice<NTL::ZZ, NTL::RR>;
 
 } // End namespace LatMRG
 #endif

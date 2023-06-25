@@ -1,5 +1,5 @@
-#ifndef LATMRG_INTPRIMITIVITY_H
-#define LATMRG_INTPRIMITIVITY_H
+#ifndef LATMRG_PRIMITIVEINT_H
+#define LATMRG_PRIMITIVEINT_H
 
 #include "latticetester/ntlwrap.h"
 
@@ -30,19 +30,19 @@ namespace LatMRG {
    * \f}
    */
   template<typename Int>
-    class IntPrimitivity {
+    class PrimitiveInt {
       private:
         typedef NTL::vector<Int> IntVec;
       public:
 
-        IntPrimitivity ();
+        PrimitiveInt ();
 
         /**
          * Constructor fixing the modulus of congruence as \f$m = p^e\f$. The
          * argument \f$f\f$ must contain the prime factor decomposition of
          * \f$p-1\f$ and its inverse factors.
          */
-        IntPrimitivity (const IntFactorization<Int> & f, const Int & p, long e = 1);
+        PrimitiveInt (const IntFactorization<Int> & f, const Int & p, long e = 1);
 
         /**
          * Returns `true` if \f$a\f$ is a primitive element modulo \f$p^e\f$.
@@ -87,6 +87,7 @@ namespace LatMRG {
          * Returns this object as a string.
          */
         std::string toString () const;
+
       private:
 
         /**
@@ -111,7 +112,7 @@ namespace LatMRG {
     };
 
   template<typename Int>
-    IntPrimitivity<Int>::IntPrimitivity () : m_e(1)
+    PrimitiveInt<Int>::PrimitiveInt () : m_e(1)
   {
     m_p = 0;
     m_m = 0;
@@ -121,7 +122,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    void IntPrimitivity<Int>::setpe (const Int & p, long e)
+    void PrimitiveInt<Int>::setpe (const Int & p, long e)
     {
       m_p = p;
       m_e = e;
@@ -131,7 +132,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    IntPrimitivity<Int>::IntPrimitivity (const IntFactorization<Int> & f,
+    PrimitiveInt<Int>::PrimitiveInt (const IntFactorization<Int> & f,
         const Int & p, long e) : m_f(f)
   {
     setpe(p, e);
@@ -140,7 +141,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    std::string IntPrimitivity<Int>::toString () const
+    std::string PrimitiveInt<Int>::toString () const
     {
       std::ostringstream out;
       out << "p = " << m_p << std::endl;
@@ -153,10 +154,10 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    bool IntPrimitivity<Int>::isPrimitiveElement (const Int & a) const
+    bool PrimitiveInt<Int>::isPrimitiveElement (const Int & a) const
     {
       if (0 == m_p)
-        throw std::range_error("IntPrimitivity::isPrimitiveElement:   p = 0");
+        throw std::range_error("PrimitiveInt::isPrimitiveElement:   p = 0");
       if (0 == a)
         return false;
 
@@ -180,7 +181,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    bool IntPrimitivity<Int>::isPrimitiveElement (const IntVec & V, int k) const
+    bool PrimitiveInt<Int>::isPrimitiveElement (const IntVec & V, int k) const
     {
       Int a;
       if (k & 1)
@@ -190,8 +191,8 @@ namespace LatMRG {
       return isPrimitiveElement (a);
     }
 
-  extern template class IntPrimitivity<std::int64_t>;
-  extern template class IntPrimitivity<NTL::ZZ>;
+  template class PrimitiveInt<std::int64_t>;
+  template class PrimitiveInt<NTL::ZZ>;
 
 }
 #endif

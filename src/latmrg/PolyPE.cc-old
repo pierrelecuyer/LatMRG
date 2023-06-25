@@ -1,0 +1,6 @@
+#include "latmrg/PrimitivePoly.h"
+
+namespace LatMRG {
+  template class PrimitivePoly<std::int64_t>;
+  template class PrimitivePoly<NTL::ZZ>;
+}

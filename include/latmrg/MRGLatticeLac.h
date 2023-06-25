@@ -26,7 +26,7 @@ public:
    /**
     * Constructor with modulus of congruence \f$m\f$, order of the recurrence
     * \f$k\f$, multipliers \f$A\f$, maximal dimension `maxDim`, and lattice type
-    * `latt`. Vector and matrix indices vary from 1 to `maxDim`. The length of
+    * `lattype`. Vector and matrix indices vary from 1 to `maxDim`. The length of
     * the basis vectors is computed with `norm`. The bases are built using the
     * *lacunary indices* `lac`.
     */

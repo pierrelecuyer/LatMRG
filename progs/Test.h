@@ -1,3 +1,5 @@
+//  This bunch of code is "included" in ExecCommon.h, for either a seek or a lattice test.
+//
 typedef typename Lat::Int Int;
 typedef typename Lat::IntVec IntVec;
 typedef typename Lat::Real Real;
@@ -56,7 +58,7 @@ for (int i = proj->minDim(); i <= proj->maxDim(); i++){
 // std::cout << "Seq time " << timer.val(LatMRG::Chrono::SEC) << "\n";
 #endif
 
-// Testing projections if there are anyo
+// Testing projections if there are any.
 // This is done separately because sequential testing is much more efficient
 for (int i = 2; i <= proj->numProj(); i++) {
   proj->resetDim(i);

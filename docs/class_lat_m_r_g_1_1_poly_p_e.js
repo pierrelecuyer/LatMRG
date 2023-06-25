@@ -1,7 +1,7 @@
 var class_lat_m_r_g_1_1_poly_p_e =
 [
     [ "IntVec", "class_lat_m_r_g_1_1_poly_p_e.html#adebbfffd14e5b93dff5d513b85dce5ce", null ],
-    [ "PolyPE", "class_lat_m_r_g_1_1_poly_p_e.html#a7a5c9e82ff08a212ce7fb74c69ea938d", null ],
+    [ "PrimitivePoly", "class_lat_m_r_g_1_1_poly_p_e.html#a7a5c9e82ff08a212ce7fb74c69ea938d", null ],
     [ "getF", "class_lat_m_r_g_1_1_poly_p_e.html#afef8c362349300b039ab585de9d02111", null ],
     [ "getK", "class_lat_m_r_g_1_1_poly_p_e.html#a4a085d267f6a46c2b5a6c54b9cd47bb1", null ],
     [ "getM", "class_lat_m_r_g_1_1_poly_p_e.html#acc43e9689addc1f84afae2287746d0ad", null ],

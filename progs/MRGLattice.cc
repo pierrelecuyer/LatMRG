@@ -562,7 +562,7 @@ int tryTest(tinyxml2::XMLNode* current, Conf& conf) {
 }
 
 //==============================================================================
-//===== Different uses reding functions
+//===== Different uses reading functions
 //==============================================================================
 
 template<typename Conf>
@@ -809,11 +809,13 @@ int readFile(const char* filename) {
     } else if (!strcmp(current->Value(), "seek")) {
       mode = "seek";
       ConfigSeek<Int, Real> conf;
-      readSeek(current, conf);
+      readSeek(current, conf);  // Reads a seek config.
       if (conf.num_comp > 1) {
+    	// We will search for combined generators.
         SeekMain<ComboLattice<Int, Real>> prog(conf);
         return prog.Seek(LatMRGSeek::ComboLatticeFinder<Int, Real>::getFunction);
       } else if (conf.fact[0]->get_type() == MRG) {
+    	// We search for a single-component MRG.
         SeekMain<MRGLattice<Int, Real>> prog(conf);
         if (conf.search_mode[0] == "exhaust") {
           return prog.Seek(LatMRGSeek::MRGLatticeExhaust<Int, Real>::nextGenerator);
