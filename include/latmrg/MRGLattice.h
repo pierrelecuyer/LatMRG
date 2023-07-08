@@ -29,8 +29,7 @@ namespace LatMRG {
     class MRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
 
     public:
-        // typedef Float Real;
-        // typedef Integ Int;
+
         typedef NTL::vector<Int> IntVec;
         typedef NTL::matrix<Int> IntMat;
 

@@ -32,8 +32,9 @@ typedef NTL::vector<Int> IntVec;
 typedef NTL::matrix<Int> IntMat;
 
 /**
- * This struct stores all the information required for a seek operation.
+ * This `struct` stores all the information required for a seek operation.
  * The information is organized in the same way as in a XML file for a seek.
+ * The variables names also correspond to the tag names.
  */
 template<typename Int, typename Real> struct ConfigSeek {
 
@@ -41,7 +42,8 @@ template<typename Int, typename Real> struct ConfigSeek {
     long numComp;      // Number of components.  If > 1, we have a combined generator.
 
     // List of configurations for the `numComp` components. They can be MRG or MWC.
-    // When numComp=1, this list has size 1.
+    // The size of this list must be equal to numComp.
+    // Each entry is a configuration for one component.
     vector<ConfigSeekComponent<Int>*> genComponents;
 
     bool leapBlocks;  // True iff we use lacunary indices with blocks at large leaps.
@@ -49,24 +51,10 @@ template<typename Int, typename Real> struct ConfigSeek {
     Int blockSize;    // The block size s when leapBlocks = true.
 
     LatticeType latticeType; // The type of lattice that is constructed (see EnumTypes).
-    IntVect initState;  // The initial state, in case `latticeType = orbit`.
+    // IntVect initState;  // The initial state, in case `latticeType = orbit`.
+                           // The `orbit` case is currently not implemented. ***
 
-    MeritType meritType;  // The type of FOM that is used.
-    long meritd;   // value of d in the FOM.
-    vector<long> meritDims;
-    bool maximize = true;  // true iff we maximize the FOM.
-    double beta1 = 0.0;   // Lower bound on the FOM.  Default is 0.
-    double beta2 = 1.0;   // Upper bound on the FOM.  Default is 1.
-    bool fomInDual = true; // True iff the FOM is based on the dual lattice.
-    NormType norm = L2Norm;  // The norm used to measure the vector lengths, Default is `L2Norm`.
-    NormaType normalizer = BestLat;  // Type of normalization that is used.
-
-    PreReductionType prered;  // Type of pre-reduction of the basis.
-    double delta = 0.999999;  // For LLL and BKZ.
-    blockSizeBKZ = 10;        // Block size for BKZ.
-	BBDecompType decompBB;    // Type of decomposition for the BB algorithm (Cholesky or triangular)
-	ProjConstructType projConstruct;  // Method to construct the projections (LLL or triangular).
-    long maxnodesBB = 1 << 8; // Max number of nodes to be examined by the BB.
+    ConfigMerit configFOM;  // The configuration for the FOM and its computation.
 
     SearchMethod searchMethod; // The method of search for the seek (exhaustive or random).
     long numRegions = 1;      // Number of regions for the search.
@@ -78,14 +66,21 @@ template<typename Int, typename Real> struct ConfigSeek {
     OutputType outType;       // Type of output.
     long verboseLevel = 1;    // Level of verbosity in the output.  Integer from 0 to 3.
     string resFile;           // If present, the results will be printed in file `resFile.res`.
-    string texFile;           // If present, the results will be printed in Latex in file `texFile.tex`.
+    // string texFile;           // If present, the results will be printed in Latex in file `texFile.tex`.
     string genFile;           // If present, the results will be printed .gen format in file `genFile.gen`.
     bool showTimes = true;    // If true, prints CPU times for various operations.
 };
 
 
+
 /**
- * This stores the information required for a seek for a MRG component.
+ * Abstract structure to store the information required for a component in a seek.
+ */
+template<typename Int, typename Real> abstract struct ConfigSeekComponent;
+
+
+/**
+ * This `struct` stores the information required for a seek for a MRG component.
  */
 template<typename Int, typename Real> struct ConfigSeekMRG : ConfigSeekComponent {
     Int modulus;   // The modulus m = b^e + r
@@ -100,10 +95,10 @@ template<typename Int, typename Real> struct ConfigSeekMRG : ConfigSeekComponent
     vector<long> maxPowerTwo;  // Values of p_i (max power of 2)
     vector<vector<pair<long,long>>> equalCoeffs;  // List of pairs of coefficients that must be equal
     bool permaxPrime;  // When true, m must be prime and we retain only max-period MRGs (default = false)
-    DecompType howFactorh;  // Indicates how to factorize h=(m-1)/2
-    IntVect factorsh;  // The factors of h, repeated according to multiplicity, when known
+    DecompType howFactorh; // Indicates how to factorize h=(m-1)/2
+    IntVect factorsh;      // The factors of h, repeated according to multiplicity, when known
     DecompType howFactor;  // Indicates how to factorize r=(m^k-1)/(m-1)
-    IntVect factorsr;  // The factors of r, repeated according to multiplicity, when known
+    IntVect factorsr;      // The factors of r, repeated according to multiplicity, when known
     bool permaxPow2;   // True iff m is a power of 2, b=2, r=0, k=1, and we want max period for the LCG
                        // Default is false
 };
@@ -132,43 +127,27 @@ template<typename Int, typename Real> struct ConfigSeekGenFile : ConfigSeekCompo
 };
 
 
-OLD:
+/**
+ * This stores the information on the FOM that is used and how it is computed.
+ */
+template<typename Int, typename Real> struct ConfigMerit {
+    MeritType meritType;  // The type of FOM that is used.
+    long meritd;   // value of d in the FOM.
+    vector<long> meritDims;
+    bool maximize = true;  // true iff we maximize the FOM.
+    double lowbound = 0.0;   // Lower bound on the FOM.  Default is 0.
+    double highbound = 1.0;   // Upper bound on the FOM.  Default is 1.
+    bool fomInDual = true; // True iff the FOM is based on the dual lattice.
+    NormType norm = L2Norm;  // The norm used to measure the vector lengths, Default is `L2Norm`.
+    NormaType normalizer = BestLat;  // Type of normalization that is used.
+
+    PreReductionType prered;  // Type of pre-reduction of the basis.
+    double delta = 0.999999;  // For LLL and BKZ.
+    blockSizeBKZ = 10;        // Block size for BKZ.
+	BBDecompType decompBB;    // Type of decomposition for the BB algorithm (Cholesky or triangular)
+	ProjConstructType projConstruct;  // Method to construct the projections (LLL or triangular).
+    long maxnodesBB = 1 << 8; // Max number of nodes to be examined by the BB.
+    };
 
 
-// Type of figure of merit
-LatticeTester::NormaType normaType = LatticeTester::NONE;
-LatticeTester::CriterionType criterion = LatticeTester::SPECTRAL;
-LatticeTester::PreReductionType reduction = LatticeTester::FULL;
-LatticeTester::NormType norm = LatticeTester::L2NORM;
-
-
-
-bool use_dual = true;    // Must be clearly defined!
-#ifdef LATMRG_SEEK
-bool best = true;
-int num_gen = 0;
-Real currentMerit = Real(0);
-std::string construction = "RANDOM";
-#endif
-// Projection
-Projections* proj;
-
-
-
-// MRGPeriod stores the stuff we might want to know, such as the modulo
-// the order and even the coefficients
-int num_comp = 1;
-std::vector<std::string> search_mode;
-std::vector<bool> period;
-std::vector<MRGPeriod<Int>*> fact;
-// This is used to store the coefficients of a MRG and the information on how to
-// search for coefficients of a generator. This can have multiple different formats.
-std::vector<IntVec> coeff;
-
-bool gen_set = false;
-bool test_set = false;
-bool proj_set = false;
-
-// Program variables
-double timeLimit = 600;
 

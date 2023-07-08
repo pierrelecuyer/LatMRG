@@ -146,7 +146,7 @@ namespace LatMRG {
         const Int getM() const { return module.m; }
 
         /**
-         * Returns the value of the modulus \f$m\f$ of the recurrence.
+         * Returns the value of the order \f$k\f$ of the recurrence.
          */
         int getK() const { return m_k; }
 
@@ -176,7 +176,7 @@ namespace LatMRG {
         std::string toString ();
 
         /**
-         * Sets the type of this component.
+         * Sets the type of this generator component.
          * */
         void set_type(GenType type) {m_type = type;}
 
