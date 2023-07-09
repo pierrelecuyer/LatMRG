@@ -29,10 +29,11 @@ namespace LatMRG {
    *    p^{e-1}(p - 1), \qquad p > 2.
    * \f}
    */
-  template<typename Int>
-    class PrimitiveInt {
+  template<typename Int>  class PrimitiveInt {
+
       private:
         typedef NTL::vector<Int> IntVec;
+
       public:
 
         PrimitiveInt ();

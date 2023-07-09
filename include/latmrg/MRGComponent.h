@@ -31,8 +31,8 @@ namespace LatMRG {
    * If it is used to check the period of another generator, the multipliers
    * stored might change.
    */
-  template<typename Int>
-    class MRGPeriod {
+template<typename Int> class MRGComponent {
+
       private:
         typedef NTL::vector<Int> IntVec;
         typedef NTL::matrix<Int> IntMat;
@@ -51,14 +51,14 @@ namespace LatMRG {
          * \f$r\f$ is assumed to be prime. Similar considerations apply to
          * `decom1` and `filem1` with respect to \f$m-1\f$.
          */
-        MRGPeriod (const Int & m, int k, DecompType decom1,
+        MRGComponent (const Int & m, int k, DecompType decom1,
             const char *filem1, DecompType decor,
             const char *filer);
 
         /**
          * Same as the other constructors with `m=b^e+r`.
          * */
-        MRGPeriod (Int b, int e, Int r, int k, DecompType decom1,
+        MRGComponent (Int b, int e, Int r, int k, DecompType decom1,
             const char *filem1, DecompType decor,
             const char *filer);
 
@@ -66,24 +66,24 @@ namespace LatMRG {
          * Constructor similar to the above, except that the modulus of
          * congruence \f$m\f$ is inside the object `modul`.
          */
-        MRGPeriod (Modulus<Int> & modul, int k, DecompType decom1,
+        MRGComponent (Modulus<Int> & modul, int k, DecompType decom1,
             const char *filem1, DecompType decor,
             const char *filer);
 
         /**
          * Destructor.
          */
-        ~MRGPeriod();
+        ~MRGComponent();
 
         /**
          * Copy constructor;
          */
-        MRGPeriod (const MRGPeriod<Int> & comp);
+        MRGComponent (const MRGComponent<Int> & comp);
 
         /**
          * Assignment operator.
          */
-        MRGPeriod<Int> & operator= (const MRGPeriod<Int> & comp);
+        MRGComponent<Int> & operator= (const MRGComponent<Int> & comp);
 
         /**
          * Sets the multipliers of the recurrence to \f$A\f$.
@@ -315,7 +315,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    MRGPeriod<Int>::MRGPeriod (const MRGPeriod<Int> & lat) :
+    MRGComponent<Int>::MRGComponent (const MRGComponent<Int> & lat) :
       ifm1(lat.ifm1), ifr(lat.ifr), m_k(lat.m_k)
   {
     module = lat.module;
@@ -339,8 +339,8 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    MRGPeriod<Int> & MRGPeriod<Int>::operator=
-    (const MRGPeriod<Int> & lat)
+    MRGComponent<Int> & MRGComponent<Int>::operator=
+    (const MRGComponent<Int> & lat)
     {
       if (this != &lat) {
         m_k = lat.m_k;
@@ -363,7 +363,7 @@ namespace LatMRG {
   //============================================================================
 
   template<typename Int>
-    void MRGPeriod<Int>::init (const Int & m0, int k0, DecompType decom1,
+    void MRGComponent<Int>::init (const Int & m0, int k0, DecompType decom1,
         const char *filem1, DecompType decor, const char *filer)
     {
       PrimitivePoly<Int>::setM(m0);
@@ -432,7 +432,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    MRGPeriod<Int>::MRGPeriod (const Int & m, int k, DecompType decom1,
+    MRGComponent<Int>::MRGComponent (const Int & m, int k, DecompType decom1,
         const char *filem1, DecompType decor, const char *filer)
     {
       m_b = m;
@@ -444,7 +444,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    MRGPeriod<Int>::MRGPeriod (Int b, int e, Int r, int k, DecompType decom1,
+    MRGComponent<Int>::MRGComponent (Int b, int e, Int r, int k, DecompType decom1,
         const char *filem1, DecompType decor, const char *filer)
     {
       Int m = NTL::power(b,e) + r;
@@ -457,7 +457,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    MRGPeriod<Int>::MRGPeriod (Modulus<Int> & modu, int k,
+    MRGComponent<Int>::MRGComponent (Modulus<Int> & modu, int k,
         DecompType decom1, const char *filem1, DecompType decor,
         const char *filer)
     {
@@ -479,7 +479,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    MRGPeriod<Int>::~MRGPeriod()
+    MRGComponent<Int>::~MRGComponent()
     {
       //a.kill();
       //orbitSeed.kill();
@@ -489,7 +489,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    void MRGPeriod<Int>::setA (const IntVec & b)
+    void MRGComponent<Int>::setA (const IntVec & b)
     {
       m_a.SetLength(b.length());
       m_a = b;
@@ -499,7 +499,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    void MRGPeriod<Int>::setA (const IntMat & b)
+    void MRGComponent<Int>::setA (const IntMat & b)
     {
       m_A.SetDims(b.NumRows(), b.NumCols());
       m_A = b;
@@ -509,7 +509,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    bool MRGPeriod<Int>::maxPeriod (const IntVec & a0)
+    bool MRGComponent<Int>::maxPeriod (const IntVec & a0)
     {
       PrimitivePoly<Int>::setM(getM());
       m_a = a0;
@@ -523,7 +523,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    bool MRGPeriod<Int>::maxPeriod (const Int& a0)
+    bool MRGComponent<Int>::maxPeriod (const Int& a0)
     {
       auto list = factor.getFactorList();
       for (auto iter = list.begin(); iter != list.end(); iter++) {
@@ -537,7 +537,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    bool MRGPeriod<Int>::maxPeriod (const IntMat & a0)
+    bool MRGComponent<Int>::maxPeriod (const IntMat & a0)
     {
       // Conerting everything to NTL::ZZ to ease the characteristic polynomial
       // computation
@@ -563,7 +563,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    bool MRGPeriod<Int>::maxPeriod23 (const IntVec & a0)
+    bool MRGComponent<Int>::maxPeriod23 (const IntVec & a0)
     {
       PrimitivePoly<Int>::setM(getM());
       m_a = a0;
@@ -578,10 +578,10 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    std::string MRGPeriod<Int>::toString ()
+    std::string MRGComponent<Int>::toString ()
     {
       std::ostringstream os;
-      os << "MRGPeriod:";
+      os << "MRGComponent:";
       Int mm = getM();
       os << "\n   m = " << mm << " = " << m_b << "^" << m_e << " + " << m_r;
       os << "\n   k = " << m_k;
@@ -593,8 +593,8 @@ namespace LatMRG {
       return str;
     }
 
-  extern template class MRGPeriod<std::int64_t>;
-  extern template class MRGPeriod<NTL::ZZ>;
+  extern template class MRGComponent<std::int64_t>;
+  extern template class MRGComponent<NTL::ZZ>;
 
 } // End namespace LatMRG
 #endif

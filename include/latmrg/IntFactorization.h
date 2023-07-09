@@ -16,7 +16,7 @@
 namespace LatMRG {
 
   /**
-   * This class can factorize large integers, ideally into prime factors
+   * This class can factor large integers, ideally into prime factors
    * (see class <tt>IntFactor</tt>).  It can also sort and print the
    * list of its factors.
    * The integers are factorized by calling the MIRACL software
@@ -127,7 +127,7 @@ namespace LatMRG {
         /**
          * Returns a non-mutable list of the factors.
          */
-        const std::list<LatticeTester::IntFactor<Int>> & getFactorList () const
+        const std::list<LatticeTester::PrimeFactor<Int>> & getFactorList () const
         { return m_factorList; }
 
         /**
@@ -172,7 +172,7 @@ namespace LatMRG {
         /**
          * The list of the "prime" factors in the decomposition of `number`.
          */
-        std::list<LatticeTester::IntFactor<Int>> m_factorList;
+        std::list<LatticeTester::PrimeFactor<Int>> m_factorList;
 
         /**
          * Given the list of prime factors \f$p\f$ of `number`, `invFactorList`
@@ -191,8 +191,8 @@ namespace LatMRG {
          */
         class CompareFactors {
           public:
-            bool operator() (const LatticeTester::IntFactor<Int> & f1,
-                const LatticeTester::IntFactor<Int> & f2) {
+            bool operator() (const LatticeTester::PrimeFactor<Int> & f1,
+                const LatticeTester::PrimeFactor<Int> & f2) {
               return f1.getFactor() < f2.getFactor(); }
         };
 
@@ -349,8 +349,8 @@ namespace LatMRG {
       sort ();
       int j = 1;
 
-      typename std::list<LatticeTester::IntFactor<Int>>::iterator it = m_factorList.begin ();
-      typename std::list<LatticeTester::IntFactor<Int>>::iterator it2 = m_factorList.begin ();
+      typename std::list<LatticeTester::PrimeFactor<Int>>::iterator it = m_factorList.begin ();
+      typename std::list<LatticeTester::PrimeFactor<Int>>::iterator it2 = m_factorList.begin ();
       if (it2 != m_factorList.end ())
         ++it2;
       while (it2 != m_factorList.end ()) {
@@ -371,7 +371,7 @@ namespace LatMRG {
   template<typename Int>
     std::string IntFactorization<Int>::toString () const
     {
-      typename std::list<LatticeTester::IntFactor<Int>>::const_iterator it =
+      typename std::list<LatticeTester::PrimeFactor<Int>>::const_iterator it =
         m_factorList.begin ();
       std::ostringstream out;
       out << m_number << ":\n";
@@ -458,7 +458,7 @@ namespace LatMRG {
       Int temp;
       temp = 1;
 
-      typename std::list<LatticeTester::IntFactor<Int>>::const_iterator it =
+      typename std::list<LatticeTester::PrimeFactor<Int>>::const_iterator it =
         m_factorList.begin ();
 
       while (it != m_factorList.end ()) {

@@ -6,7 +6,7 @@
 #include "latticetester/IntLatticeExt.h"
 
 #include "latmrg/EnumTypes.h"
-#include "latmrg/MRGPeriod.h"
+#include "latmrg/MRGComponent.h"
 
 #include <string>
 
@@ -139,7 +139,7 @@ namespace LatMRG {
          * component. When there is only one component, it is unused as the
          * parameters are the same as above.
          */
-        //std::vector<MRGPeriod<Int> *> comp;
+        //std::vector<MRGComponent<Int> *> comp;
 
         /**
          * Sets `m_power2` to true and sets `m_pow2_exp to `coeffs`.

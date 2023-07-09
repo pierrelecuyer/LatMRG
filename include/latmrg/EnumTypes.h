@@ -81,7 +81,7 @@ namespace LatMRG {
    * <tt>DECOMP_PRIME</tt>: means that \f$r\f$ is prime. No factorization will
    * be done.
    * <tt>NO_DECOMP</tt>: The program will not need a decomposition. Used when not
-   * checking full generator period.
+   * checking the period.
    */
   enum DecompType { DECOMP, DECOMP_WRITE, DECOMP_READ, DECOMP_PRIME, NO_DECOMP };
 

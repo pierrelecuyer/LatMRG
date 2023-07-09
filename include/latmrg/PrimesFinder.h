@@ -15,8 +15,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef LATMRG_PRIMES_H
-#define LATMRG_PRIMES_H
+#ifndef LATMRG_PrimesFinder_H
+#define LATMRG_PrimesFinder_H
 
 #include <iostream>
 #include <fstream>
@@ -44,19 +44,19 @@ namespace LatMRG {
    * to do everything this class does with efficient deterministic tests for integers < 2^64
    * see https://math.stackexchange.com/questions/2481148/primality-testing-for-64-bit-numbers
    */
-  template<typename Int>
-    class Primes {
+template<typename Int> static class PrimesFinder {
+
       public:
 
         /**
          * Constructor.
          */
-        Primes();
+        PrimesFinder();
 
         /**
          * Destructor.
          */
-        ~Primes();
+        ~PrimesFinder();
 
         /**
          * Finds \f$s\f$ prime integers \f$m<2^e\f$ that are closest to
@@ -89,7 +89,7 @@ namespace LatMRG {
         /**
          * Used by the main executable to compare the examples.
          * */
-        bool print_time = true;
+        // bool print_time = true;
 
       private:
 
@@ -111,7 +111,7 @@ namespace LatMRG {
         void findPrime (int k, int e, int s, const Int & S1, const Int & S2, bool safe,
             bool facto, std::ostream & fout, const long KTRIALS = 200);
 
-        Chrono timer;
+        // Chrono timer;
 
 
         void nextM (Int & m) {
@@ -124,7 +124,7 @@ namespace LatMRG {
   //============================================================================
 
   template<typename Int>
-    Primes<Int>::Primes ()
+    PrimesFinder<Int>::PrimesFinder ()
     {
       timer.init();
     }
@@ -132,14 +132,14 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    Primes<Int>::~Primes ()
+    PrimesFinder<Int>::~PrimesFinder ()
     {
     }
 
   //===========================================================================
 
   template<typename Int>
-    void Primes<Int>::findPrime (int k, int e, int s, const Int & S1, const Int & S2,
+    void PrimesFinder<Int>::findPrime (int k, int e, int s, const Int & S1, const Int & S2,
         bool safe, bool facto, std::ostream & fout, const long KTRIALS)
     {
       Int m;
@@ -205,7 +205,7 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    void Primes<Int>::findPrime (int k, int e, int s, bool safe, bool facto,
+    void PrimesFinder<Int>::findPrime (int k, int e, int s, bool safe, bool facto,
         std::ostream & fout)
     {
       Int Sm1, Sm2;
@@ -214,14 +214,14 @@ namespace LatMRG {
       Sm2 = (Int(1)<<e) - 1;
       Sm1 = 2;
       findPrime (k, e, s, Sm1, Sm2, safe, facto, fout);
-      if (print_time) writeFooter (fout);
+      writeFooter (fout);
     }
 
 
   //===========================================================================
 
   template<typename Int>
-    void Primes<Int>::findPrime (int e, int s, bool facto, std::ostream & fout)
+    void PrimesFinder<Int>::findPrime (int e, int s, bool facto, std::ostream & fout)
     {
       Int Sm1, Sm2;
       writeHeader (1, e, INT_MAX, INT_MAX, false, facto, fout);
@@ -229,14 +229,14 @@ namespace LatMRG {
       Sm2 = (Int(1)<<e) - 1;
       Sm1 = 2;
       findPrime (1, e, s, Sm1, Sm2, false, facto, fout);
-      if (print_time) writeFooter (fout);
+      writeFooter (fout);
     }
 
 
   //===========================================================================
 
   template<typename Int>
-    void Primes<Int>::findPrime (int k, int e, long c1, long c2, bool safe,
+    void PrimesFinder<Int>::findPrime (int k, int e, long c1, long c2, bool safe,
         bool facto, std::ostream & fout)
     {
       Int Sm1, Sm2;
@@ -245,14 +245,14 @@ namespace LatMRG {
       Sm1 = (Int(1)<<e) + c1;
       Sm2 = (Int(1)<<e) + c2;
       findPrime (k, e, INT_MAX, Sm1, Sm2, safe, facto, fout);
-      if (print_time) writeFooter (fout);
+      writeFooter (fout);
     }
 
 
   //===========================================================================
 
   template<typename Int>
-    void Primes<Int>::writeHeader (int k, int e, long c1, long c2, bool safe,
+    void PrimesFinder<Int>::writeHeader (int k, int e, long c1, long c2, bool safe,
         bool facto, std::ostream & fout)
     {
       fout << "-----------------------------------------------------" << std::endl;
@@ -273,14 +273,13 @@ namespace LatMRG {
       fout << "\nProgram values:\n";
       fout << "safe = " << std::boolalpha << safe << "\n";
       fout << "facto = " << facto << "\n\n";
-
     }
 
 
   //===========================================================================
 
   template<typename Int>
-    void Primes<Int>::writeFooter (std::ostream & fout)
+    void PrimesFinder<Int>::writeFooter (std::ostream & fout)
     {
       fout << "\nCPU time: ";
       fout << timer.toString () << std::endl;

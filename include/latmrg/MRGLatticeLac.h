@@ -9,7 +9,7 @@
 #include "latmrg/Lacunary.h"
 #include "latmrg/Const.h"
 #include "latmrg/MRGLattice.h"
-#include "latmrg/MRGPeriod.h"
+// #include "latmrg/MRGComponent.h"
 #include <string>
 
 namespace LatMRG {
