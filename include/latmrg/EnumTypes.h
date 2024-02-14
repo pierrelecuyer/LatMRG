@@ -114,7 +114,7 @@ namespace LatMRG {
   enum SearchMethod { EXHAUST, RANDOM };
 
   /**
-   * Indicates the type of lacunary projection used for MMRG:
+   * Indicates the type of lacunary projection used in `MMRGLattice`:
    * - NONE: no lacunary projection
    * - SUBVECTOR: only the selected coordinates of each new random vector are kept
    * - ARBITRARYINDICES: only the selected indices are kept.

@@ -14,18 +14,29 @@
 namespace LatMRG {
 
   /**
-   * This class implements lattice basis built from multiple recursive linear
-   * congruential generators (MRGs). One must first call the constructor with a
-   * given congruence modulus \f$m\f$, order \f$k\f$ for the
-   * recurrence, and maximal dimension for the basis. One must then build the
-   * lattice basis associated to a vector of multipliers for a given dimension.
-   * Each MRG is defined by a vector of multipliers \f$A\f$, where \f$A[i-1]\f$
-   * represents \f$a_i\f$. This MRG satisfies the recurrence
+   * This subclass of `IntLatticeExt` constructs the lattices associated with
+   * a multiple recursive linear congruential generators (MRG), which follows
+   * the recurrence
    * \f[
-   *   x_n = (a_1 x_{n-1} + \cdots+ a_k x_{n-k}) \mod m.
+   *   x_n = (a_1 x_{n-1} + \cdots+ a_k x_{n-k}) \mod m
    * \f]
+   * where \f$m\f$ is the modulus, \f$k\f$  is the order, and  \f$a_1,\dots,a_k\f$
+   * are the coefficients of the recurrence, also called the multipliers.
+   * These coefficients are given in a vector `aa` where \f$a_j\f$ is in `aa[j-1]`.
+   * The modulus \f$m\f$ and the order \f$k\f$ must be given to the constructor,
+   * together with the maximal dimension `maxDim` for which the basis may be constructed.
+   * We can then use the same `MRGLattice` objects for several different vectors
+   * of coefficients by using the `setCoeff` and `buildBasis` or `buildDualBasis`
+   * functions repeatedly. This is useful in particular when searching for good
+   * vectors of multipliers for given values of \f$m\f$ and \f$k\f$.
+   *
+   * QUESTIONS / NOTES:
+   * We want a construction in which aa is not given. See Rank1Lattice.
+   * Must add the withDual and withPrimal variables.
+   * Maybe comment out the "orbit" code, which is incomplete.
    */
-  template<typename Int, typename Real>
+
+template<typename Int, typename Real>
     class MRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
 
     public:
@@ -36,13 +47,16 @@ namespace LatMRG {
         /**
          * Constructor with modulus of congruence \f$m\f$, order of the
          * recurrence \f$k\f$, multipliers \f$a\f$, maximal dimension `MaxDim`,
-         * and lattice type `Latt`. `a` has to be a vector of k+1 components
-         * with `a[i]`=\f$a_i\f$ for compatibility with other classes. Vectors
+         * and lattice type `Latt`. `aa` has to be a vector of k+1 components
+         * with `aa[i]`=\f$a_i\f$ for compatibility with other classes. Vectors
          * and (square) matrices of the basis have maximal dimension `maxDim`,
          * and the indices of vectors and matrices vary from dimension 1 to
          * `maxDim`. The norm to be used for the basis vectors is `norm`.
+         *
+         * The `LatticeType` parameter is defined in `EnumTypes`, it can be:
+         * FULL, RECURRENT, ORBIT, PRIMEPOWER
          */
-        MRGLattice (const Int & m, const IntVec & a, int maxDim, int k,
+        MRGLattice (const Int & m, const IntVec & aa, int maxDim, int k,
             LatticeType lattype,
             LatticeTester::NormType norm = LatticeTester::L2NORM);
 
@@ -55,8 +69,10 @@ namespace LatMRG {
             LatticeTester::NormType norm = LatticeTester::L2NORM);
 
         /**
+         * PUT IN SUBCLASS.
+         *
          * As in the constructor above but the basis is built for the lacunary
-         * indices `lac`. `a` has to be a vector of k+1 components
+         * indices `lac`.  `a` has to be a vector of k+1 components
          * with `a[i]`=\f$a_i\f$ for compatibility with other classes.
          */
         MRGLattice (const Int & m, const IntVec & a, int maxDim, int k,
@@ -97,8 +113,7 @@ namespace LatMRG {
         virtual void incDim();
 
         /**
-         * Returns `true` for the case of lacunary indices, returns `false` for
-         * non-lacunary indices.
+         * Returns `true` if we are using lacunary indices, and `false` otherwise.
          */
         bool isLacunary() const { return m_lacunaryFlag; }
 
@@ -151,10 +166,19 @@ namespace LatMRG {
          * This differs from the original implementation in `IntLatticeExt` because
          * it does not compute a dual lattice basis. `lattice` has to be
          * initialized with the right dimension beforehand.
+         *
+         * FROM PIERRE:  Right now, this method constructs a basis for the projection
+         * via LLL, and also for its $m$-dual by computing the $m$-dual basis. Not good.
          * */
         void buildProjection(
             LatticeTester::IntLatticeExt<Int, Real>* lattice,
             const LatticeTester::Coordinates& proj) override;
+
+        /**
+         * FROM PIERRE: We also want functions that directly build the m-dual basis of a
+         * projection.
+         */
+
 
       protected:
 
@@ -739,7 +763,7 @@ namespace LatMRG {
         i++;
       }
 
-      // Construction the basis for the projection
+      // Construct the basis for the projection, via LLL.
       LatticeTester::BasisConstruction<Int> constr;
       constr.LLLConstruction(temp);
       constr.DualConstruction(temp, temp2, this->m_modulo);

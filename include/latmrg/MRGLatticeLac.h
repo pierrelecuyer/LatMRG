@@ -15,9 +15,9 @@
 namespace LatMRG {
 
 /**
- * This class implements lattice bases built from multiple recursive linear
- * congruential generators (see class <tt>MRGLattice</tt>) using *lacunary
- * indices*.
+ * This class constructs and handles lattice bases built from MRGs as in <tt>MRGLattice</tt>,
+ * but using using arbitrary lacunary indices.
+ * that are regularly spaced by packets of the same size.
  *
  */
 class MRGLatticeLac:  public MRGLattice {

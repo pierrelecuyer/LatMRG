@@ -13,11 +13,16 @@ namespace LatMRG {
    * After initializing the `Projections` object, the desired successive projections are generated
    * and returned iteratively by calling `next()`.
    *
+   * FROM PIERRE: Unclear why we need this class.  It seems that `CoordinateSets` is
+   * doing the same thing already.  What is the difference?
+   * Also, the design is not very natural, not clearly explained, and can lead to errors.
+   *
+   *
    * In the current implementation, this first goes a through a list of
    * projections over sequential coordinates starting at 0, and then
    * through a list of projections over non-successive coordinates.
    *
-   * NOTE: This order is too much of a special case, too rigid and probably not optimal!
+   * FROM PIERRE: This order is too much of a special case, too rigid and probably not optimal!
    * In practice, it may be more efficient to look at the pairs, triples, etc., in this order.
    * One should have more flexibility for the choice of ordering!
    * Also, the current design of this class is too complicated, not very elegant!
@@ -76,6 +81,8 @@ namespace LatMRG {
        * non sequential projections in dimensions 2 through `dimProj`.
        * Projections in dimension `i` use `i` indices in the range
        * `[0, projDim[i-1]]` with at least one of them at least `minDim-1`.
+       *
+       * FROM PIERRE: It seems that `projDim` contains the values of t_1, t_2, ... t_d.
        * */
       Projections(int dimProj, int minDim, std::vector<int>& projDim);
 

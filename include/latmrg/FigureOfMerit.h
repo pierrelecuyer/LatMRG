@@ -31,7 +31,7 @@ class FigureOfMerit {
       /**
        * The set of projections used in this object.
        *
-       * I thing for this, we should use a CoordinateSets object for the projections,
+       * FROM PIERRE: I thing for this, we should use a CoordinateSets object for the projections,
        * plus perhaps handle the projections over successive coordinates separately.   *********
        * */
       Projections m_projSet;
