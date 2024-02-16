@@ -56,7 +56,7 @@ public:
      * more flexibility in the dimension when doing so.
      * The internal vectors and matrices will be created with `maxDim` dimensions.
 
-     * ****  indices in vectors and matrices vary from dimension 1 to `maxDim`. *****  CHANGE THIS?
+     * ****  indices in vectors and matrices vary from dimension 1 to `maxDim`. *****  CHANGE THIS !!!
      */
     MRGLattice(const Int &m, const IntVec &aa, int64_t maxDim, int64_t k = 1,
             bool withPrimal = false, bool withDual = false,
@@ -127,7 +127,7 @@ public:
      * in `dim` dimensions, as explained in the LatMRG guide.
      * This `dim` must not exceed `maxDim`.
      */
-    void buildDualBasis(int64_t dim);
+    virtual void buildDualBasis(int64_t dim);
 
     /**
      * Increases the current dimension of the primal basis by 1 and updates the basis.
@@ -135,7 +135,7 @@ public:
      * If `withDual`, it also increases the m-dual basis and makes it the m-dual of the primal basis.
      * The new increased dimension must not exceed `maxDim`.
      */
-    void incDimBasis();
+    virtual void incDimBasis();
 
     /**
      * Increases the current dimension of only the m-dual basis by 1.
@@ -143,7 +143,7 @@ public:
      * The new increased dimension must not exceed `maxDim`.
      * This function uses the direct method given in the LatMRG guide.
      */
-    void incDimDualBasis();
+    virtual void incDimDualBasis();
 
     /**
      * This function computes a basis for the projection of this lattice over the
@@ -159,7 +159,7 @@ public:
      * basis for the primal and the corresponding lower-triangular m-dual basis.
      * This function does not require that a basis for the whole lattice was constructed before.
      */
-    void buildProjection(IntLattice<Int, Real> *projLattice,
+    virtual void buildProjection(IntLattice<Int, Real> *projLattice,
             const Coordinates &proj, double delta = 0.99) override;
 
     /**
@@ -202,12 +202,7 @@ protected:
     /**
      * For debugging purposes.
      */
-    void trace(char *msg, int64_t d);
-
-    /**
-     * Increments the basis by 1 in case of non-lacunary indices.
-     */
-    virtual void incDimBasis();
+    //void trace(char *msg, int64_t d);
 
     /**
      * The coefficients of the recurrence.
@@ -220,22 +215,20 @@ protected:
     LatticeType m_latType;
 
     /**
-     * Matrix that contains the vectors that can be used to generate the
-     * basis for an arbitrary dimension. This matrix is of order k and if
-     * we want to build the full lattice, this matrix is the identity
-     * matrix. **Marc-Antoine** This matrix is different in some way that I
-     * don't quite understand if we use lacunary indices.
+     * A k x k matrix that contains a set of initial states for the MRG that can be used
+     * to construct an initial lattice basis. This is typically the identity matrix.
      */
-    IntMat m_sta;
+    IntMat m_initStates;
 
     /**
      * When the flag `m_ip[i]` is `true`, the \f$i\f$-th diagonal
-     * element of matrix `m_sta` is non-zero (modulo \f$m\f$) and
+     * element of matrix `m_initStates` is non-zero (modulo \f$m\f$) and
      * divides \f$m\f$. Otherwise (when `m_ip[i]` is
-     * `false`), the \f$i\f$-th line of matrix `m_sta` is
+     * `false`), the \f$i\f$-th line of matrix `m_initStates` is
      * identically 0.
+     *                           NEEDED ???   ******
      */
-    bool *m_ip;
+    //bool *m_ip;
 
 private:
 
@@ -257,47 +250,40 @@ private:
 //===========================================================================
 
 template<typename Int, typename Real>
-MRGLattice<Int, Real>::MRGLattice(const Int &m, const IntVec &a, int64_t maxDim,
-        int64_t k, LatticeType lat, LatticeTester::NormType norm) :
-        LatticeTester::IntLatticeExt<Int, Real>::IntLatticeExt(m, k, maxDim,
-                true, norm) {
-    m_latType = lat;
-    m_lacunaryFlag = false;
-    m_ip = 0;
+MRGLattice<Int, Real>::MRGLattice(const Int &m, const IntVec &aa, int64_t maxDim,
+        int64_t k, bool withPrimal, bool withDual,
+        LatticeType latType, LatticeTester::NormType norm) :
+        LatticeTester::IntLatticeExt<Int, Real>::IntLatticeExt(m, maxDim, withPrimal, withDual, norm) {
+    this->m_order = k;
     init();
-
-    for (int64_t i = 0; i < this->m_order; i++)
-        m_aCoeff[i] = a[i + 1];
+    for (int64_t i = 0; i < k; i++)
+        m_aCoeff[i] = aa[i];
 }
 
 //============================================================================
 
 template<typename Int, typename Real>
 MRGLattice<Int, Real>::MRGLattice(const Int &m, const Int &a, int64_t maxDim,
-        LatticeType lat, LatticeTester::NormType norm) :
-        LatticeTester::IntLatticeExt<Int, Real>::IntLatticeExt(m, 1, maxDim,
-                true, norm) {
-    m_latType = lat;
-    m_lacunaryFlag = false;
-    m_ip = 0;
+        bool withPrimal, bool withDual, LatticeType latType, LatticeTester::NormType norm) :
+        LatticeTester::IntLatticeExt<Int, Real>::IntLatticeExt(m, maxDim, withPrimal, withDual,
+               norm) {
+    this->m_order = 1;
+    m_latType = latType;
+    // m_ip = 0;
     init();
     m_aCoeff[0] = a;
 }
 
-//===========================================================================
+//============================================================================
 
 template<typename Int, typename Real>
-MRGLattice<Int, Real>::MRGLattice(const Int &m, const IntVec &a, int64_t maxDim,
-        int64_t k, IntVec &I, LatticeType lat, LatticeTester::NormType norm) :
-        LatticeTester::IntLatticeExt<Int, Real>::IntLatticeExt(m, k, maxDim,
-                true, norm), m_lac(I, maxDim), m_ip(0) {
-    std::cout << 4 << "\n";
-    m_latType = lat;
-    m_lacunaryFlag = true;
+MRGLattice<Int, Real>::MRGLattice(const Int &m, int64_t maxDim, int64_t k,
+        bool withPrimal, bool withDual, LatticeType latType, LatticeTester::NormType norm) :
+        LatticeTester::IntLatticeExt<Int, Real>::IntLatticeExt(m, maxDim, withPrimal, withDual,
+               norm) {
+    this->m_order = k;
+    m_latType = latType;
     init();
-
-    for (int64_t i = 0; i < this->m_order; i++)
-        m_aCoeff[i] = a[i + 1];
 }
 
 //===========================================================================
@@ -306,19 +292,15 @@ MRGLattice<Int, Real>::MRGLattice(const Int &m, const IntVec &a, int64_t maxDim,
 template<typename Int, typename Real>
 MRGLattice<Int, Real>::MRGLattice(const MRGLattice<Int, Real> &lat) :
         LatticeTester::IntLatticeExt<Int, Real>::IntLatticeExt(lat.m_modulo,
-                lat.m_order, lat.getDim(), lat.withDual(), lat.getNorm()), m_lac(
-                lat.m_lac) {
+                lat.getMaxDim(), lat.withPrimal(), lat.withDual(), lat.getNorm())) {
     m_latType = lat.m_latType;
-    m_lacunaryFlag = lat.m_lacunaryFlag;
     init();
-
     for (int64_t i = 0; i < this->m_order; i++)
         m_aCoeff[i] = lat.m_aCoeff[i];
-
     m_power2 = lat.m_power2;
     if (m_power2) {
         m_pow2_exp.resize(lat.m_pow2_exp.size());
-        for (unsigned int64_t i = 0; i < lat.m_pow2_exp.size(); i++) {
+        for (uint64_t i = 0; i < lat.m_pow2_exp.size(); i++) {
             m_pow2_exp[i].resize(lat.m_pow2_exp[i].length());
             for (int64_t j = 0; j < lat.m_pow2_exp[i].length(); j++)
                 m_pow2_exp[i][j] = lat.m_pow2_exp[i][j];
@@ -335,15 +317,13 @@ MRGLattice<Int, Real>& MRGLattice<Int, Real>::operator=(
         return *this;
     kill();
     m_latType = lat.m_latType;
-    m_lacunaryFlag = lat.m_lacunaryFlag;
-
     for (int64_t i = 0; i < this->m_order; i++)
         m_aCoeff[i] = lat.m_aCoeff[i];
+    this->m_maxDim = lat.m_maxDim;
     this->m_dim = lat.m_dim;
     this->copyBasis(lat);
     this->m_order = lat.m_order;
-    this->m_ip = lat.m_ip;
-
+    // this->m_ip = lat.m_ip;
     m_power2 = lat.m_power2;
     if (m_power2) {
         m_pow2_exp.resize(lat.m_pow2_exp.size());
@@ -353,33 +333,26 @@ MRGLattice<Int, Real>& MRGLattice<Int, Real>::operator=(
                 m_pow2_exp[i][j] = lat.m_pow2_exp[i][j];
         }
     }
-    //m_shift = lat.m_shift;
     return *this;
-    //MyExit (1, " MRGLattice::operator= n'est pas terminé   " );
-    //copy (lat);
-    //return *this;
 }
 
 //===========================================================================
 
+// CHECK THIS !!!
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::init() {
-    m_xi.SetLength(this->m_order);
+    m_xi.SetLength(this->m_order);   // ???
     m_aCoeff.SetLength(this->m_order);
-    if (this->m_order > ORDERMAX) {
-        m_ip = new bool[1];
-        m_sta.SetDims(1, 1);
-    } else {
-        m_ip = new bool[this->m_order];
-        m_sta.SetDims(this->m_order, this->m_order);
-    }
-    int64_t rmax = std::max(this->m_order, this->getDim());
-    this->m_wSI.SetDims(rmax, this->getDim());
-
+    m_initStates.SetDims(this->m_order, this->m_order);
     m_power2 = false;
-    if (m_latType == ORBIT)
-        initOrbit();
+    // if (m_latType == ORBIT) initOrbit();
 }
+
+
+
+// THE REST REMAINS TO BE ARRANGED !!!!!    *******************
+
+
 
 //===========================================================================
 
@@ -397,24 +370,7 @@ void MRGLattice<Int, Real>::kill() {
     m_ip = 0;
     m_xi.kill();
     m_aCoeff.kill();
-    m_sta.kill();
-}
-
-//===========================================================================
-
-template<typename Int, typename Real>
-Int& MRGLattice<Int, Real>::getLac(int64_t j) {
-    if (isLacunary() && j <= m_lac.getSize() && j > 0)
-        return m_lac.getLac(j);
-    throw std::out_of_range("MRGLattice::getLac");
-}
-
-//===========================================================================
-
-template<typename Int, typename Real>
-void MRGLattice<Int, Real>::setLac(const LatticeTester::Lacunary<Int> &lac) {
-    m_lac = lac;
-    m_lacunaryFlag = true;
+    m_initStates.kill();
 }
 
 //===========================================================================
@@ -505,18 +461,6 @@ void MRGLattice<Int, Real>::buildBasis(int64_t d) {
 //===========================================================================
 
 template<typename Int, typename Real>
-void MRGLattice<Int, Real>::incDim() {
-    if (m_lacunaryFlag) {
-        incDimLaBasis(this->getDim());
-    } else {
-        incDimBasis();
-    }
-    //   write (1);
-}
-
-//===========================================================================
-
-template<typename Int, typename Real>
 void MRGLattice<Int, Real>::incDimBasis() {
     LatticeTester::IntLatticeExt<Int, Real>::incDim();
 
@@ -548,29 +492,8 @@ void MRGLattice<Int, Real>::incDimBasis() {
     }
     this->m_dualbasis[dim - 1][dim - 1] = 1;
 
-    /*
-     * This old version used the dual to compute the next vector in the dual
-     * even when it was not needed. This caused problems because we could not
-     * increase the lattice dimension after performing computations on the
-     * dual because this would not add the correct column to the dual.
-     * */
-    // for (int64_t j = 0; j < dim-1; j++) {
-    //   NTL::clear (this->m_t1);
-    //   for (int64_t i = 0; i < dim-1; i++) {
-    //     this->m_t2 = this->m_dualbasis[i][j];
-    //     this->m_t2 *= this->m_vSI[0][i];
-    //     this->m_t1 -= this->m_t2;
-    //   }
-    //   LatticeTester::Quotient (this->m_t1, this->m_modulo, this->m_t1);
-    //   this->m_dualbasis[dim-1][j] = this->m_t1;
-    // }
     this->setNegativeNorm();
     this->setDualNegativeNorm();
-    /*
-     if (!checkDuality ())
-     MyExit (1, "BUG");
-     */
-    // trace("=================================APRES incDimBasis", -10);
 }
 
 //===========================================================================
@@ -621,13 +544,13 @@ void MRGLattice<Int, Real>::initStates() {
     if (m_latType == FULL || m_latType == PRIMEPOWER
             || (this->m_t1 == this->m_t2)) {
         // We want the full lattice that contains all the orbits.
-        // m_sta is set to identity matrix
+        // m_initStates is set to identity matrix
         for (int64_t i = 0; i < this->m_order; i++) {
             for (int64_t j = 0; j < this->m_order; j++) {
                 if (i != j)
-                    NTL::clear(m_sta[i][j]);
+                    NTL::clear(m_initStates[i][j]);
                 else
-                    NTL::set(m_sta[i][j]);
+                    NTL::set(m_initStates[i][j]);
             }
             m_ip[i] = true;
         }
