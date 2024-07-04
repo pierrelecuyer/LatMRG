@@ -14,7 +14,7 @@
 #include "latmrg/MWCLattice.h"
 #include "latmrg/MMRGLattice.h"
 #include "latmrg/ComboLattice.h"
-#include "latmrg/Chrono.h"
+//#include "latmrg/Chrono.h"
 #include "latmrg/ParamReaderExt.h"
 #include "latmrg/Projections.h"
 #include "latmrg/FigureOfMerit.h"

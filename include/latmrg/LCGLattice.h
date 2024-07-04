@@ -8,17 +8,10 @@
 namespace LatMRG {
 
   /**
-   * This class implements lattice bases built from a Korobov lattice rule. For
-   * a given \f$a\f$, a Korobov lattice basis is formed as follows:
-   * \f[
-   * \mathbf{b_1} = (1, a, a^2, …, a^{d-1}),\quad
-   * \mathbf{b_2} = (0, n, 0, …, 0),\quad…,\quad
-   * \mathbf{b_d} = (0, …, 0, n).
-   * \f]
+   * This class handles lattices that are produced by linear congruential generators (LCGs).
+   * Those lattices are also handled by `LatticeTester::Rank1Lattice`.
    *
-   * \remark **Pierre:** Reprogrammer \c incDim de façon efficace comme dans
-   * \c MRGLattice
-   *
+   * Note:  Everything is in Rank1Lattice except the shifted generating vector, which we can add easily.
    */
 template<typename Int, typename Real>
     class LCGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
@@ -27,14 +20,14 @@ template<typename Int, typename Real>
       public:
 
         /**
-         * Constructs a Korobov lattice with \f$n\f$ points, maximal dimension
-         * `maxDim` using the norm `norm`.
+         * Constructs the lattice for an LCG with modulus `m` and multiplier `a`,
+         * up to `maxDim` dimensions, using the norm `norm`.
          */
         LCGLattice (const Int & n, const Int & a, int maxDim,
             LatticeTester::NormType norm = LatticeTester::L2NORM);
 
         /**
-         * Constructor. Same as above, except the lattice is formed as follow:
+         * Same as above, except the lattice is formed as follow:
          * \f[
          * \mathbf{b_1} = (a^t, a^{t+1}, a^{t+2}, …, a^{t+d-1}),\qquad
          * \mathbf{b_2} = (0, n, 0, …, 0),\qquad…,\qquad
@@ -89,7 +82,7 @@ template<typename Int, typename Real>
         Int m_a;
 
         /**
-         * The shift applied to the lattice rule.
+         * The shift applied to the generating vector.
          */
         int m_shift;
 
@@ -97,6 +90,7 @@ template<typename Int, typename Real>
          * Initialization.
          */
         void init();
+
     }; // End class declaration
 
   template<typename Int, typename Real>
@@ -146,9 +140,8 @@ template<typename Int, typename Real>
   //=========================================================================
 
   template<typename Int, typename Real>
-    LCGLattice<Int, Real> & LCGLattice<Int, Real>::operator=
-    (const LCGLattice & lat)
-    {
+  LCGLattice<Int, Real> & LCGLattice<Int, Real>::operator=
+    (const LCGLattice & lat)   {
       if (this == &lat)
         return *this;
       this->m_dim = lat.m_dim;

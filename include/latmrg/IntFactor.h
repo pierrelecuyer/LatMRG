@@ -15,49 +15,49 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef LATMRG_PRIMEFACTOR_H
-#define LATMRG_PRIMEFACTOR_H
+#ifndef LATMRG_INTFACTOR_H
+#define LATMRG_INTFACTOR_H
 
 #include <string>
 #include <iomanip>
 #include <cstdint>
 #include <sstream>
-
-#include "latticetester/EnumTypes.h"
-
 #include <NTL/ZZ.h>
+
+// #include "latticetester/EnumTypes.h"
 
 namespace LatMRG {
 
   /**
-   * The objects of this class are the "prime" factors in the decomposition of
-   * a positive integer.
-   * The class also contains very simple functions to determine whether a number is prime,
-   * probably prime or composite. These methods can be used externally to test
-   * the primality of an integer, or to test if this factor is prime.
-   *
-   * Note: We must have better methods somewhere else!!!
+   * An object of this class represents a factor in the decomposition of a positive integer.
+   * It is usually a prime factor, but not always.
+   * The class also contains very basic functions to test whether an integer is prime,
+   * probably prime, or composite.
    */
 
 static constexpr uint64_t NB_PRIMES = 6543;
 const std::array<uint64_t, NB_PRIMES> PRIMES_ARRAY = {{
- #include "../data/primes.dat"
-}};
+        #include "../data/primes.dat"}};
 
 template<typename Int> class IntFactor {
 
   public:
 
-        /**
-         * Constructor for a factor \f$x\f$ of multiplicity `mult` that has a 
-         * PrimeType `stat`
-         */
-        IntFactor (const Int & x, int64_t mult = 1,
-            PrimeType stat = UNKNOWN):
-          m_factor (x), m_multiplicity (mult), m_status (stat) {   }
+    /**
+     * Indicates whether an integer is prime, probably prime, composite, or its
+     * status is unknown (or we do not care).
+     */
+    enum PrimeType { PRIME, PROB_PRIME, COMPOSITE, UNKNOWN };
 
         /**
-         * Returns the numeric value of this factor.
+         * Constructs a factor \f$x\f$ of multiplicity `mult` with given `PrimeType status`.
+         */
+        IntFactor (const Int & x, int64_t mult = 1,
+            PrimeType status = UNKNOWN):
+          m_factor (x), m_multiplicity (mult), m_status (status) {   }
+
+        /**
+         * Returns the numerical value of this factor.
          */
         Int getFactor () const { return m_factor; }
 
@@ -67,46 +67,50 @@ template<typename Int> class IntFactor {
         void setFactor (const Int & x) { m_factor = x; }
 
         /**
-         * Returns the multiplicity of this object.
+         * Returns the multiplicity of this factor.
          */
         int64_t getMultiplicity () const { return m_multiplicity; }
 
         /**
-         * Sets the multiplicity of this object to \f$m\f$.
+         * Sets the multiplicity of this factor to \f$m\f$.
          */
         void setMultiplicity (int64_t m) { m_multiplicity = m; }
 
         /**
-         * Returns the PrimeType of this object.
+         * Returns the `PrimeType` of this factor.
          */
         PrimeType getStatus () const { return m_status; }
 
         /**
-         * Sets the PrimeType of this object to \f$s\f$.
+         * Sets the `PrimeType` of this factor to \f$s\f$.
          */
         void setStatus (PrimeType s) { m_status = s; }
 
         /**
-         * Tests whether \f$y\f$ is prime. First tests whether \f$y\f$ is
+         * Tests whether \f$y\f$ is prime or not. First tests whether \f$y\f$ is
          * divisible by all small primes \f$p\f$ (\f$p < 2^{16}\f$) that are
-         * kept in file `prime.dat`. Then applies the Miller-Rabin probability
-         * test with \f$k\f$ trials.
+         * kept in file `prime.dat`. If no factor is found, the Miller-Rabin probability
+         * test from NTL is applied with \f$k\f$ trials.
          */
         static PrimeType isPrime (const Int & y, std::int64_t k);
 
         /**
-         * Tests whether this factor is prime. Similar to `isPrime` above.
+         * Same as `isPrime (y, k)` with the current object in place of `y`.
          */
-        LatticeTester::PrimeType isPrime (std::int64_t k);
+        PrimeType isPrime (std::int64_t k);
 
         /**
-         * Transforms status `stat` in an easily readable string and returns
-         * it.
+         * Applies the Miller-Rabin probability test to \f$y\f$ with \f$k\f$ trials.
          */
-        static std::string toString (LatticeTester::PrimeType stat);
+        static PrimeType isProbPrime (const Int & y, std::int64_t k);
 
         /**
-         * Returns this object as a string.
+         * Transforms the status `status` to a string and returns it.
+         */
+        static std::string toString (PrimeType status);
+
+        /**
+         * Returns a string that represents this object.
          */
         std::string toString () const;
 
@@ -115,7 +119,7 @@ template<typename Int> class IntFactor {
     private:
 
         /**
-         * The factor.
+         * This factor as an `Int`.
          */
         Int m_factor;
 
@@ -125,15 +129,9 @@ template<typename Int> class IntFactor {
         int64_t m_multiplicity;
 
         /**
-         * The status of this factor, i.e. whether it is prime, composite, ...
+         * The status of this factor.
          */
-        LatticeTester::PrimeType m_status;
-
-        /**
-         * Applies the Miller-Rabin probability test with \f$k\f$ trials to
-         * \f$y\f$.
-         */
-        static LatticeTester::PrimeType isProbPrime (const Int & y, std::int64_t k);
+        PrimeType m_status;
 
     };    // class IntFactor
 
@@ -141,10 +139,8 @@ template<typename Int> class IntFactor {
 
 
   template<typename Int>
-    std::string IntFactor<Int>::toString () const
-    {
+    std::string IntFactor<Int>::toString () const   {
       char c;
-
       switch (m_status) {
         case PRIME:
           c = 'P';
@@ -159,10 +155,8 @@ template<typename Int> class IntFactor {
           c = 'U';
           break;
       }
-
       std::ostringstream sortie;
-      sortie << m_factor << std::setw(10) << m_multiplicity << std::setw(10) 
-        << c;
+      sortie << m_factor << std::setw(10) << m_multiplicity << std::setw(10)  << c;
       return sortie.str ();
     }
 
@@ -171,16 +165,14 @@ template<typename Int> class IntFactor {
 
   template<typename Int>
     inline
-    std::string IntFactor<Int>::toString (PrimeType stat)
-    {
-      return toStringPrime (stat);
+    std::string IntFactor<Int>::toString (PrimeType status)  {
+      return toStringPrime (status);
     }
 
   //===========================================================================
 
   template<typename Int>
-    PrimeType IntFactor<Int>::isPrime (const Int & y, std::int64_t k)
-    {
+    PrimeType IntFactor<Int>::isPrime (const Int & y, std::int64_t k)   {
       // NbPrem has to be instantiated if we use NTL types
       Int NbPrem;
       NbPrem = 2;
@@ -197,16 +189,14 @@ template<typename Int> class IntFactor {
       }
       if (y <= LIM)
         return PRIME;
-
-      /* A is divisible by none of the prime numbers smaller than 2^16. */
+      // This y is divisible by none of the prime numbers smaller than 2^16.
       return isProbPrime (y, k);
     }
 
   //===========================================================================
 
   template<typename Int>
-    PrimeType IntFactor<Int>::isPrime (std::int64_t k)
-    {
+    PrimeType IntFactor<Int>::isPrime (std::int64_t k)    {
       return isPrime (m_factor, k);
     }
 
@@ -214,27 +204,25 @@ template<typename Int> class IntFactor {
   //===========================================================================
 
   template<typename Int>
-    PrimeType IntFactor<Int>::isProbPrime (const Int & y, std::int64_t k)
-    {
-      PrimeType stat;
+    PrimeType IntFactor<Int>::isProbPrime (const Int & y, std::int64_t k)   {
+      PrimeType status;
       std::int64_t res = NTL::ProbPrime (y, k);
-
       switch (res) {
         case 0:
-          stat = COMPOSITE;
+          status = COMPOSITE;
           break;
         case 1:
-          stat = PROB_PRIME;
+          status = PROB_PRIME;
           break;
         default:
-          stat = UNKNOWN;
+          status = UNKNOWN;
       }
-      return stat;
+      return status;
     }
 
 template class IntFactor<NTL::ZZ>;
 template class IntFactor<std::int64_t>;
 
-}     // namespace LatticeTester
+} // namespace LatMRG
 
 #endif
