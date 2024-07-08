@@ -109,9 +109,16 @@ public:
     void seta(const Int &a);
 
     /**
-     * Sets `m_power2` to true and sets `m_pow2_exp to `coeffs`.  ******  ????
+     * After calling this function, each nonzero coefficient of the recurrence for this MRG
+     * will be a sum of a small number of powers of 2, usually no more than one or two.
+     * The powers of 2 that are used for the nonzero coefficients are given in the vector `coeffs`.
+     * The vector `coeffs[i]` contains the powers of 2 for the coefficient $a_i$ ???   Check...    ********
+     *
+     * ****   It seems to me that this should be external to this class.
+     *        It is only one way to put constraints on the coefficients a_j.   *****
+     *
      */
-    void setPower2(std::vector<IntVec> &coeffs);
+    void setPower2Coeff(std::vector<IntVec> &coeffs);
 
     /**
      * Builds a basis in `dim` dimensions. This `dim` must not exceed `maxDim`.
@@ -182,7 +189,7 @@ public:
 protected:
 
     /**
-     * Initializes a square matrix of order \f$k\f$. This initial matrix
+     * Initializes a square matrix of order \f$k\f$ that
      * contains a system of generators for the given group of states.
      */
     void initStates();
@@ -239,7 +246,7 @@ private:
     bool m_power2;
 
     /**
-     * The powers of 2 used if this generator uses power of 2 coefficients.
+     * The powers of 2 used if `m_power2` is true.
      */
     std::vector<IntVec> m_pow2_exp;
 
@@ -451,7 +458,6 @@ void MRGLattice<Int, Real>::buildBasis(int64_t d) {
             }
         }
     }
-
     if (d > this->m_order) {
         for (i = this->m_order; i < d; i++)
             incDimBasis();
@@ -566,8 +572,10 @@ void MRGLattice<Int, Real>::initStates() {
 
 //============================================================================
 
+// Each nonzero coefficient of the recurrence for this MRG will be
+// the sum of a small number of powers of 2.
 template<typename Int, typename Real>
-void MRGLattice<Int, Real>::setPower2(std::vector<IntVec> &coeffs) {
+void MRGLattice<Int, Real>::setPower2Coeff (std::vector<IntVec> &coeffs) {
     this->m_power2 = true;
     this->m_pow2_exp.resize(this->m_order);
     for (int64_t i = 0; i < this->m_order; i++) {
