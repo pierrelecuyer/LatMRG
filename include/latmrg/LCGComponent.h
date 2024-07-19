@@ -1,29 +1,26 @@
-#ifndef	LATMRG_MRGCOMPONENT_H
-#define	LATMRG_MRGCOMPONENT_H
+#ifndef	LATMRG_LCGCOMPONENT_H
+#define	LATMRG_LCGCOMPONENT_H
 
 #include "latmrg/EnumTypes.h"
 #include "latmrg/PrimitivePoly.h"
 #include "latmrg/IntFactorization.h"
-// #include "latmrg/Modulus.h"
+#include "latmrg/Modulus.h"
 #include "latmrg/PrimitiveInt.h"
-#include <NTL/mat_poly_ZZ.h>
 #include <string>
 
 namespace LatMRG {
 
 /**
- * This class represents an MRG recurrence or order \f$k\f$ modulo \f$m\f$, of the form
+ * This class represents an LCG recurrence modulo \f$m\f$, of the form
  * \f[
- *   x_n = (a_1 x_{n-1} + \cdots+ a_k x_{n-k}) \mbox{ mod } m.
+ *   x_n = (a x_{n-1} + c) \mbox{ mod } m.
  * \f]
  * It offers primarily tools to verify if the recurrence has full period or not.
- * It stores the parameters and other information such as the factorizations of
- * \f$m-1\f$ and of \f$r = (m^k-1)/(m-1)\f$, which are needed to check the full period
- * conditions.  It does not look at the lattice structure at all.
- * One can easily use a single object of this class for several values of the
- * coefficients \f$a_1,\dots,a_k\f$.
+ * It stores the parameters and other information such as the factorization of
+ * \f$m-1\f$, which is needed to check the full period conditions.
+ * It does not look at the lattice structure at all.
  */
-template<typename Int> class MRGComponent {
+template<typename Int> class LCGComponent {
 
 private:
     typedef NTL::vector<Int> IntVec;
@@ -43,36 +40,36 @@ public:
      * \f$r\f$ is assumed to be prime. Similar considerations apply to
      * `decom1` and `filem1` with respect to \f$m-1\f$.
      */
-    MRGComponent(const Int &m, int k, DecompType decom1, const char *filem1,
+    LCGComponent(const Int &m, int k, DecompType decom1, const char *filem1,
             DecompType decor, const char *filer);
 
     /**
      * Same as the other constructors with `m=b^e+r`.
      * */
-    MRGComponent(Int b, int e, Int r, int k, DecompType decom1,
+    LCGComponent(Int b, int e, Int r, int k, DecompType decom1,
             const char *filem1, DecompType decor, const char *filer);
 
     /**
      * Constructor similar to the above, except that the modulus of
      * congruence \f$m\f$ is inside the object `modul`.
      */
-    MRGComponent(Modulus<Int> &modul, int k, DecompType decom1,
+    LCGComponent(Modulus<Int> &modul, int k, DecompType decom1,
             const char *filem1, DecompType decor, const char *filer);
 
     /**
      * Destructor.
      */
-    ~MRGComponent();
+    ~LCGComponent();
 
     /**
      * Copy constructor;
      */
-    MRGComponent(const MRGComponent<Int> &comp);
+    LCGComponent(const MRGComponent<Int> &comp);
 
     /**
      * Assignment operator.
      */
-    MRGComponent<Int>& operator=(const MRGComponent<Int> &comp);
+    LCGComponent<Int>& operator=(const MRGComponent<Int> &comp);
 
     /**
      * Sets the multipliers of the recurrence to \f$A\f$.
@@ -89,7 +86,7 @@ public:
     /**
      * Gets the matrix multipliers of the recurrence.
      * */
-    IntMat getA() const {
+    IntMat getMatrix() const {
         return m_A;
     }
 
@@ -99,14 +96,28 @@ public:
     void setA(const IntMat &A);
 
     /**
-     * Returns `true` if coefficients \f$aa\f$ give a MRG with maximal
+     * Returns `true` if coefficients \f$A\f$ give a MRG with maximal
      * period; returns `false` otherwise. Note that when calling this class
      * it is necessary that `a[i] = a_i`.
      */
-    bool maxPeriod(const IntVec &aa);
+    bool maxPeriod(const IntVec &A);
 
     /**
-     * Returns `true` if coefficients in matrix \f$A\f$ give a MMRG with maximal
+     * LCG  ****
+     * Returns `true` if \f$a\f$ makes for a full period LCG with non-zero
+     * carry; returns `false` otherwise.
+     *
+     * This checks the 2 following conditions :
+     * - If \f$q\f$ is prime and divides \f$m\f$, it must divide \f$a-1\f$.
+     * - If 4 divides \f$m\f$, it must divide \f$a-1\f$.
+     *
+     * The user must choose the carry himself. Any carry relatively prime to
+     * \f$m\f$ will give full period.
+     */
+    bool maxPeriod(const Int &a);
+
+    /**
+     * Returns `true` if coefficients in \f$A\f$ give a MMRG with maximal
      * period; returns `false` otherwise.
      */
     bool maxPeriod(const IntMat &A);
@@ -249,7 +260,7 @@ private:
     int m_k;
 
     /**
-     * The multipliers \f$a_i\f$ of the recurrence, \f$i = 1, ..., k\f$.
+     * The multipliers \f$a_i\f$ of the recurrence, \f$i = 1, …, k\f$.
      */
     IntVec m_a;
 
@@ -311,7 +322,7 @@ private:
 //===========================================================================
 
 template<typename Int>
-MRGComponent<Int>::MRGComponent(const MRGComponent<Int> &lat) :
+LCGComponent<Int>::LCGComponent(const LCGComponent<Int> &lat) :
         ifm1(lat.ifm1), ifr(lat.ifr), m_k(lat.m_k) {
     module = lat.module;
     nj = lat.nj;
@@ -334,7 +345,7 @@ MRGComponent<Int>::MRGComponent(const MRGComponent<Int> &lat) :
 //===========================================================================
 
 template<typename Int>
-MRGComponent<Int>& MRGComponent<Int>::operator=(const MRGComponent<Int> &lat) {
+LCGComponent<Int>& LCGComponent<Int>::operator=(const LCGComponent<Int> &lat) {
     if (this != &lat) {
         m_k = lat.m_k;
         module = lat.module;
@@ -356,7 +367,7 @@ MRGComponent<Int>& MRGComponent<Int>::operator=(const MRGComponent<Int> &lat) {
 //============================================================================
 
 template<typename Int>
-void MRGComponent<Int>::init(const Int &m0, int k0, DecompType decom1,
+void LCGComponent<Int>::init(const Int &m0, int k0, DecompType decom1,
         const char *filem1, DecompType decor, const char *filer) {
     PrimitivePoly<Int>::setM(m0);
     module.init(m0);
@@ -424,7 +435,7 @@ void MRGComponent<Int>::init(const Int &m0, int k0, DecompType decom1,
 //===========================================================================
 
 template<typename Int>
-MRGComponent<Int>::MRGComponent(const Int &m, int k, DecompType decom1,
+LCGComponent<Int>::LCGComponent(const Int &m, int k, DecompType decom1,
         const char *filem1, DecompType decor, const char *filer) {
     m_b = m;
     m_e = 1;
@@ -435,7 +446,7 @@ MRGComponent<Int>::MRGComponent(const Int &m, int k, DecompType decom1,
 //===========================================================================
 
 template<typename Int>
-MRGComponent<Int>::MRGComponent(Int b, int e, Int r, int k, DecompType decom1,
+LCGComponent<Int>::LCGComponent(Int b, int e, Int r, int k, DecompType decom1,
         const char *filem1, DecompType decor, const char *filer) {
     Int m = NTL::power(b, e) + r;
     m_b = b;
@@ -447,7 +458,7 @@ MRGComponent<Int>::MRGComponent(Int b, int e, Int r, int k, DecompType decom1,
 //===========================================================================
 
 template<typename Int>
-MRGComponent<Int>::MRGComponent(Modulus<Int> &modu, int k, DecompType decom1,
+LCGComponent<Int>::LCGComponent(Modulus<Int> &modu, int k, DecompType decom1,
         const char *filem1, DecompType decor, const char *filer) {
     init(modu.m, k, decom1, filem1, decor, filer);
 
@@ -465,7 +476,7 @@ MRGComponent<Int>::MRGComponent(Modulus<Int> &modu, int k, DecompType decom1,
 //===========================================================================
 
 template<typename Int>
-MRGComponent<Int>::~MRGComponent() {
+LCGComponent<Int>::~LCGComponent() {
     //a.kill();
     //orbitSeed.kill();
 }
@@ -473,23 +484,25 @@ MRGComponent<Int>::~MRGComponent() {
 //===========================================================================
 
 template<typename Int>
-void MRGComponent<Int>::setaa(const IntVec &aa) {
-    m_a.SetLength(aa.length());
-    m_a = aa;
+void LCGComponent<Int>::setA(const IntVec &b) {
+    m_a.SetLength(b.length());
+    m_a = b;
+    //  LatticeTester::CopyVect(b, a, k);
 }
 
 //===========================================================================
 
 template<typename Int>
-void MRGComponent<Int>::setA(const IntMat &A) {
-    m_A.SetDims(A.NumRows(), A.NumCols());
-    m_A = A;
+void LCGComponent<Int>::setA(const IntMat &b) {
+    m_A.SetDims(b.NumRows(), b.NumCols());
+    m_A = b;
+    //  LatticeTester::CopyVect(b, a, k);
 }
 
 //===========================================================================
 
 template<typename Int>
-bool MRGComponent<Int>::maxPeriod(const IntVec &a0) {
+bool LCGComponent<Int>::maxPeriod(const IntVec &a0) {
     PrimitivePoly<Int>::setM(getM());
     m_a = a0;
     PrimitivePoly<Int>::reverse(m_a, m_k, 2);
@@ -502,7 +515,7 @@ bool MRGComponent<Int>::maxPeriod(const IntVec &a0) {
 //===========================================================================
 
 template<typename Int>
-bool MRGComponent<Int>::maxPeriod(const Int &a0) {
+bool LCGComponent<Int>::maxPeriod(const Int &a0) {
     auto list = factor.getFactorList();
     for (auto iter = list.begin(); iter != list.end(); iter++) {
         if ((a0 - Int(1)) % (*iter).getFactor() != 0)
@@ -517,8 +530,8 @@ bool MRGComponent<Int>::maxPeriod(const Int &a0) {
 //===========================================================================
 
 template<typename Int>
-bool MRGComponent<Int>::maxPeriod(const IntMat &a0) {
-    // Converting everything to NTL::ZZ to ease the characteristic polynomial
+bool LCGComponent<Int>::maxPeriod(const IntMat &a0) {
+    // Conerting everything to NTL::ZZ to ease the characteristic polynomial
     // computation
     PrimitivePoly<NTL::ZZ>::setM(NTL::ZZ(getM()));
     NTL::ZZX poly;
@@ -541,7 +554,7 @@ bool MRGComponent<Int>::maxPeriod(const IntMat &a0) {
 //===========================================================================
 
 template<typename Int>
-bool MRGComponent<Int>::maxPeriod23(const IntVec &a0) {
+bool LCGComponent<Int>::maxPeriod23(const IntVec &a0) {
     PrimitivePoly<Int>::setM(getM());
     m_a = a0;
     PrimitivePoly<Int>::reverse(m_a, m_k, 2);
@@ -554,9 +567,9 @@ bool MRGComponent<Int>::maxPeriod23(const IntVec &a0) {
 //===========================================================================
 
 template<typename Int>
-std::string MRGComponent<Int>::toString() {
+std::string LCGComponent<Int>::toString() {
     std::ostringstream os;
-    os << "MRGComponent:";
+    os << "LCGComponent:";
     Int mm = getM();
     os << "\n   m = " << mm << " = " << m_b << "^" << m_e << " + " << m_r;
     os << "\n   k = " << m_k;
@@ -568,8 +581,8 @@ std::string MRGComponent<Int>::toString() {
     return str;
 }
 
-extern template class MRGComponent<std::int64_t> ;
-extern template class MRGComponent<NTL::ZZ> ;
+extern template class LCGComponent<std::int64_t> ;
+extern template class LCGComponent<NTL::ZZ> ;
 
 } // End namespace LatMRG
 #endif

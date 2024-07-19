@@ -9,9 +9,14 @@
 namespace LatMRG {
 
   /**
-   * This class keeps parameters closely associated with a modulus of
-   * congruence. Using it, it will not be necessary to recalculate the square
-   * roots of large integers, which are used repeatedly in searches for good generators.
+   * This class offers a few tools to work with a modulus `m`.
+   * It keeps the value of `m` as an `Int` and its square root.
+   * It can also verify the max period conditions and compute the reduced modulus
+   * for the lattice structure over a single cycle, when `m` is a power of a prime.
+   * In the latter case, the modulus must be initialized as \f$m =b^e + c\f$.
+   *
+   * I am not sure if we should keep this class.  It seems that what it contains should
+   * be move to where it is used.    ********
    */
   template<typename Int>
     class Modulus {
@@ -54,9 +59,10 @@ namespace LatMRG {
         void reduceM (const Int & a);
 
         /**
-         * Assumes that \f$m\f$ is a power of a prime \f$p=b\f$, the order \f$k
-         * = 1\f$, and the recurrence is homogeneous. Returns `true` iff the
-         * maximal period conditions are satisfied.
+         * Assumes that \f$m\f$ is a power of a prime \f$p=b\f$ and that we have
+         * a multiplicative LCG (\f$k = 1\f$).
+         * Returns `true` iff the maximal period conditions are satisfied for this `a`.
+         * For `b=2`, this holds iff `a mod 8 = 3` or `5`.
          */
         bool perMaxPowPrime (const Int & a);
 
@@ -66,7 +72,7 @@ namespace LatMRG {
         Int m;
 
         /**
-         * Reduced value of the modulus. Computed by `reduceM`.
+         * Reduced value of the modulus, in case m is a power of a prime. Computed by `reduceM`.
          */
         Int mRed;
 
@@ -115,7 +121,9 @@ namespace LatMRG {
         /**
          * Work variables.
          */
-        Int Y, Eight, Four;
+        Int Y;  // b as an Int.
+        Int Eight(8);
+        Int Four(4);
 
     }; // End class declaration
 
@@ -138,9 +146,8 @@ namespace LatMRG {
   //===========================================================================
 
   template<typename Int>
-    Modulus<Int>::Modulus (long m1, long m2, long m3)
-    {
-      init(m1, m2, m3);
+    Modulus<Int>::Modulus (long b, long e, long c)   {
+      init(b, e, c);
     }
 
 
@@ -163,50 +170,45 @@ namespace LatMRG {
       c = 0;
       mRac = (Int) NTL::SqrRoot (m);
       mRacNeg = -mRac;
-      Eight = 8;
-      Four = 4;
     }
 
 
   //===========================================================================
 
   template<typename Int>
-    void Modulus<Int>::init (long m1, long m2, long m3)
-    {
-      assert (m1 > 1);
-      m = m1;
-      if (m2 <= 0) {
+    void Modulus<Int>::init (long b, long e, long c)   {
+      assert (b > 1);
+      m = b;
+      if (e <= 0) {
         init (m);
         return;
       }
-
-      m = NTL::power (m, m2) + m3;
+      m = NTL::power (m, e) + c;
       init (m);
-      b = m1;
-      e = m2;
-      c = m3;
+      this->b = b;
+      this->e = e;
+      this->c = c;
       threeF = true;
       bm1 = b - 1;
       NTL::conv (Y, b);
-      b2 = Y*Y;
+      b2 = Y * Y;
     }
 
 
   //===========================================================================
 
   template<typename Int>
-    bool Modulus<Int>::perMaxPowPrime (const Int & A)
-    {
+    bool Modulus<Int>::perMaxPowPrime (const Int & a)   {
       if (!threeF || c != 0) {
         LatticeTester::MyExit(1, "perMaxPowPrime:   m must be a power of a prime");
         return false;
       }
-
       if (b == 2) {
-        LatticeTester::Modulo (A, Eight, Y);
+        // LatticeTester::Modulo (a, Eight, Y);
+        Y = a % Eight;
         return (Y == 5) || (Y == 3);
       } else {
-        Y = A % b2;
+        Y = a % b2;
         Y = NTL::PowerMod (Y, bm1, b2);
         return (Y != 1);
       }
@@ -219,7 +221,6 @@ namespace LatMRG {
     {
       if (!threeF || c != 0)
         return;
-
       Int Y2, Y3, Y4;
 
       // We now assume that m is a power of a prime b
