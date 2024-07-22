@@ -1,4 +1,5 @@
 build/
+buildPlace/
 lib/
 obj/
 bin/
@@ -10,9 +11,12 @@ data/*
 *.o
 *.res
 *.log
+*.pyc
+__pycache__
+version*
+doc/html
 !.gitignore
 !.gitmodules
-waf
 makefile_
 NOTES
 
