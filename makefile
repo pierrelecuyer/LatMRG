@@ -6,7 +6,8 @@ CFLAGS = -std=c++17 -Wall -O2
 DEBUG_FLAGS = -std=c++17 -g -Wall -O2
 
 # The header files of the LatMRG library and the LatticeTester library
-INCLUDES = -I./include -I./latticetester/include
+INCLUDES = -I./include
+# INCLUDES = -I./include -I./latticetester/include
 
 #Definition to compile with yafu on if it is included
 ifeq ($(wildcard data/yafu),)
@@ -17,9 +18,10 @@ endif
 
 # Library path. This assumes NTL is in /usr/local/lib (its default path).
 STAT_LIBS_PATH = -Wl,-Bstatic -L$(LIB_DIR)
-STAT_LIBS = -llatmrg -llatticetester
+# STAT_LIBS = -llatmrg -llatticetester
+STAT_LIBS = -llatmrg
 DYN_LIBS_PATH = -Wl,-Bdynamic -L/usr/local/lib
-DYN_LIBS = -lntl -lgmp -ltinyxml2
+DYN_LIBS = -lntl -lgmp -ltinyxml2 -llatticetester
 
 # A few directories we need to be aware of
 SRC_DIR = ./src
@@ -27,7 +29,7 @@ OBJ_DIR = ./obj
 LIB_DIR = ./lib
 BIN_DIR = ./bin
 INC_DIR = ./include
-PRO_DIR = ./progs
+# PRO_DIR = ./progs
 
 EX_DIR = ./examples
 EX_BUILD = ./bin/examples
@@ -46,9 +48,9 @@ DYN_OBJS = $(SRCS:$(SRC_DIR)/%.cc=$(OBJ_DIR)/%.so)
 PROGS_O = $(PROGS_CC:$(PRO_DIR)/%.cc=$(PRO_DIR)/%.o)
 EX_O = $(EX_CC:%.cc=%.o)
 
-LATTEST_DEP = $(wildcard latticetester/progs/*.cc) \
-	      $(wildcard latticetester/src/*.cc) \
-	      $(wildcard latticetester/include/latticetester/*.h)
+# LATTEST_DEP = $(wildcard latticetester/progs/*.cc) \
+#	      $(wildcard latticetester/src/*.cc) \
+#	      $(wildcard latticetester/include/latticetester/*.h)
 
 
 # A separator to segment the information printed on screen
@@ -240,24 +242,24 @@ config_latticetester:
 	  else\
 	    NTL_PREFIX='--ntl '$$NTL_PREFIX;\
 	  fi;\
-	  cd latticetester;\
-	  ./waf configure $$NTL_PREFIX
+#	  cd latticetester;\
+#	  ./waf configure $$NTL_PREFIX
 
 $(LIB_DIR)/liblatticetester.a:$(LATTEST_DEP) | message_lib $(LIB_DIR)
 	$(SEP)
 	@echo 'Building/Updating LatticeTester with waf'
 	@echo
-	cd latticetester; ./waf build
+#	cd latticetester; ./waf build
 	@echo 'LatticeTester build/update finished'
 	@echo
-	cp latticetester/build/src/liblatticetester.a $(LIB_DIR)
+#	cp latticetester/build/src/liblatticetester.a $(LIB_DIR)
 	@echo
 
 clean_lattice:
 	$(SEP)
 	@echo 'Cleaning LatticeTester'
 	@echo
-	cd latticetester; ./waf clean
+#	cd latticetester; ./waf clean
 	@echo
 
 #===============================================================================

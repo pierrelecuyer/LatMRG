@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['timeformat',['TimeFormat',['../class_lat_m_r_g_1_1_chrono.html#aeb39423e55e377aac6b2aa7a2006108a',1,'LatMRG::Chrono']]]
+  ['searchmethod_1268',['SearchMethod',['../namespace_lat_m_r_g.html#a1fd35b5cabbc11ccb440e722240ca3e8',1,'LatMRG']]]
 ];

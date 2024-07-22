@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['writeboolfalse',['writeBoolFalse',['../classtinyxml2_1_1_x_m_l_util.html#ab642d65697daba2f49a1f0d83411ffa5',1,'tinyxml2::XMLUtil']]],
-  ['writebooltrue',['writeBoolTrue',['../classtinyxml2_1_1_x_m_l_util.html#a5d173d121ea58f69d875f75cb108ef83',1,'tinyxml2::XMLUtil']]]
+  ['y_1249',['Y',['../class_lat_m_r_g_1_1_modulus.html#aee077c9114a516e030c2cffd0a60cc6e',1,'LatMRG::Modulus']]]
 ];

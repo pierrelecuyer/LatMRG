@@ -1,26 +1,33 @@
+/*
+ @licstart  The following is the entire license notice for the JavaScript code in this file.
+
+ The MIT License (MIT)
+
+ Copyright (C) 1997-2020 by Dimitri van Heesch
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+ and associated documentation files (the "Software"), to deal in the Software without restriction,
+ including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all copies or
+ substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+ BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+ @licend  The above is the entire license notice for the JavaScript code in this file
+*/
 var NAVTREE =
 [
   [ "LatMRG Guide", "index.html", [
     [ "Overview", "index.html#overview", [
       [ "Content Outline", "index.html#latmrg_guide_out", null ],
       [ "Presentation of LatMRG", "index.html#presentation", null ]
-    ] ],
-    [ "Theory on Lattices", "lattice_back.html", [
-      [ "Lattices on the Integers", "lattice_back.html#lattices_def", [
-        [ "Definitions", "lattice_back.html#lattices_def_def", null ]
-      ] ],
-      [ "Measures of Uniformity", "lattice_back.html#sec_merit", [
-        [ "Shortest Nonzero Lattice Vector and Spectral Test", "lattice_back.html#sec_merit_short", [
-          [ "The Spectral Test", "lattice_back.html#sec_merit_spectral", null ]
-        ] ],
-        [ "Lattice Reduction Algorithms", "lattice_back.html#sec_latred", [
-          [ "Pairwise reduction", "lattice_back.html#sec_latred_dieter", null ],
-          [ "Lenstra-Lenstra-Lovasz reduction", "lattice_back.html#sec_latred_lll", null ],
-          [ "Block Korkine-Zolotarev Reduction", "lattice_back.html#sec_latred_bkz", null ],
-          [ "A Quick Note on Precision", "lattice_back.html#sec_latred_precision", null ]
-        ] ],
-        [ "Shortest Vector Computation", "lattice_back.html#sec_svp", null ]
-      ] ]
     ] ],
     [ "Theory of Random Numbers", "background.html", [
       [ "Linear Congruential Engines", "background.html#back_gen", [
@@ -84,11 +91,12 @@ var NAVTREE =
     ] ],
     [ "Todo List", "todo.html", null ],
     [ "Bibliography", "citelist.html", null ],
-    [ "Namespaces", null, [
-      [ "Namespace List", "namespaces.html", "namespaces" ],
+    [ "Namespaces", "namespaces.html", [
+      [ "Namespace List", "namespaces.html", "namespaces_dup" ],
       [ "Namespace Members", "namespacemembers.html", [
         [ "All", "namespacemembers.html", null ],
         [ "Functions", "namespacemembers_func.html", null ],
+        [ "Variables", "namespacemembers_vars.html", null ],
         [ "Enumerations", "namespacemembers_enum.html", null ],
         [ "Enumerator", "namespacemembers_eval.html", null ]
       ] ]
@@ -107,8 +115,8 @@ var NAVTREE =
         [ "Related Functions", "functions_rela.html", null ]
       ] ]
     ] ],
-    [ "Files", null, [
-      [ "File List", "files.html", "files" ],
+    [ "Files", "files.html", [
+      [ "File List", "files.html", "files_dup" ],
       [ "File Members", "globals.html", [
         [ "All", "globals.html", null ],
         [ "Functions", "globals_func.html", null ],
@@ -121,12 +129,11 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"_a_w_c_s_w_b_lattice_8cc.html",
-"class_lat_m_r_g_1_1_int_primitivity.html#a052b2cf875fc202c6c72f767bcb666e1",
-"class_lat_m_r_g_1_1_modulus.html#adafc6998c59f307c80101b3ac581d517",
-"classtinyxml2_1_1_x_m_l_document.html#a13a35ff680994da3fc2d2b2e62a33f8d",
-"classtinyxml2_1_1_x_m_l_printer.html#a1cc16a9362df4332012cb13cff6441b3",
-"tinyxml2_8h.html#ae81f14093bb46006bfba7bbb874f2ad7"
+"_a_w_c_s_w_b_lattice_8h.html",
+"class_lat_m_r_g_1_1_m_m_r_g_lattice.html#a31215546f58d221eafd59f5b9461473c",
+"classtinyxml2_1_1_mem_pool_t.html#a5fa4fee934a3df2b9e74282244d78390",
+"classtinyxml2_1_1_x_m_l_element.html#ae143997e90064ba82326b29a9930ea8f",
+"functions_func_g.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

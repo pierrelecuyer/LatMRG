@@ -9,7 +9,7 @@
 #define LATMRG_TEST_H
 
 #include "latticetester/IntLatticeExt.h"
-#include "latticetester/Reducer.h"
+#include "latticetester/ReducerBB.h"
 
 #include "latmrg/FigureOfMerit.h"
 #include "latmrg/EnumTypes.h"

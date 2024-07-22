@@ -3,22 +3,18 @@ var dir_8be9fa745236e63deff07f5f1b560ea6 =
     [ "AWCSWBLattice.h", "_a_w_c_s_w_b_lattice_8h.html", [
       [ "AWCSWBLattice", "class_lat_m_r_g_1_1_a_w_c_s_w_b_lattice.html", "class_lat_m_r_g_1_1_a_w_c_s_w_b_lattice" ]
     ] ],
-    [ "Chrono.h", "_chrono_8h.html", "_chrono_8h" ],
     [ "ComboLattice.h", "_combo_lattice_8h.html", "_combo_lattice_8h" ],
-    [ "Const.h", "_const_8h.html", "_const_8h" ],
-    [ "FigureOfMerit.h", "_figure_of_merit_8h.html", [
-      [ "FigureOfMerit", "class_lat_m_r_g_1_1_figure_of_merit.html", "class_lat_m_r_g_1_1_figure_of_merit" ],
-      [ "MeritList", "class_lat_m_r_g_1_1_merit_list.html", "class_lat_m_r_g_1_1_merit_list" ]
-    ] ],
+    [ "EnumTypes.h", "_enum_types_8h.html", "_enum_types_8h" ],
+    [ "IntFactor.h", "_int_factor_8h.html", "_int_factor_8h" ],
     [ "IntFactorization.h", "_int_factorization_8h.html", [
-      [ "CompFactor", "class_lat_m_r_g_1_1_int_factorization_1_1_comp_factor.html", "class_lat_m_r_g_1_1_int_factorization_1_1_comp_factor" ],
+      [ "CompareFactors", "class_lat_m_r_g_1_1_int_factorization_1_1_compare_factors.html", "class_lat_m_r_g_1_1_int_factorization_1_1_compare_factors" ],
       [ "IntFactorization", "class_lat_m_r_g_1_1_int_factorization.html", "class_lat_m_r_g_1_1_int_factorization" ]
     ] ],
-    [ "PrimitiveInt.h", "_int_primitivity_8h.html", [
-      [ "PrimitiveInt", "class_lat_m_r_g_1_1_int_primitivity.html", "class_lat_m_r_g_1_1_int_primitivity" ]
+    [ "LCGComponent.h", "_l_c_g_component_8h.html", [
+      [ "LCGComponent", "class_lat_m_r_g_1_1_l_c_g_component.html", "class_lat_m_r_g_1_1_l_c_g_component" ]
     ] ],
-    [ "KorobovLattice.h", "_korobov_lattice_8h.html", [
-      [ "KorobovLattice", "class_lat_m_r_g_1_1_korobov_lattice.html", "class_lat_m_r_g_1_1_korobov_lattice" ]
+    [ "LCGLattice.h", "_l_c_g_lattice_8h.html", [
+      [ "LCGLattice", "class_lat_m_r_g_1_1_l_c_g_lattice.html", "class_lat_m_r_g_1_1_l_c_g_lattice" ]
     ] ],
     [ "MixmaxMMRG.h", "_mixmax_m_m_r_g_8h.html", [
       [ "MixmaxMMRG", "class_lat_m_r_g_1_1_mixmax_m_m_r_g.html", "class_lat_m_r_g_1_1_mixmax_m_m_r_g" ]
@@ -30,22 +26,19 @@ var dir_8be9fa745236e63deff07f5f1b560ea6 =
     [ "MRGComponent.h", "_m_r_g_component_8h.html", [
       [ "MRGComponent", "class_lat_m_r_g_1_1_m_r_g_component.html", "class_lat_m_r_g_1_1_m_r_g_component" ]
     ] ],
-    [ "MRGLattice.h", "_m_r_g_lattice_8h.html", "_m_r_g_lattice_8h" ],
+    [ "MRGLatticeLac.h", "_m_r_g_lattice_lac_8h.html", "_m_r_g_lattice_lac_8h" ],
     [ "MWCLattice.h", "_m_w_c_lattice_8h.html", "_m_w_c_lattice_8h" ],
-    [ "ParamReaderExt.h", "_param_reader_ext_8h.html", [
-      [ "ParamReaderExt", "class_lat_m_r_g_1_1_param_reader_ext.html", "class_lat_m_r_g_1_1_param_reader_ext" ]
+    [ "PrimesFinder.h", "_primes_finder_8h.html", [
+      [ "PrimesFinder", "class_lat_m_r_g_1_1_primes_finder.html", "class_lat_m_r_g_1_1_primes_finder" ]
     ] ],
-    [ "PrimitivePoly.h", "_poly_p_e_8h.html", [
+    [ "PrimitiveInt.h", "_primitive_int_8h.html", [
+      [ "PrimitiveInt", "class_lat_m_r_g_1_1_primitive_int.html", "class_lat_m_r_g_1_1_primitive_int" ]
+    ] ],
+    [ "PrimitivePoly.h", "_primitive_poly_8h.html", [
       [ "ModInt", "class_lat_m_r_g_1_1_mod_int.html", "class_lat_m_r_g_1_1_mod_int" ],
       [ "ModInt< NTL::ZZ >", "class_lat_m_r_g_1_1_mod_int_3_01_n_t_l_1_1_z_z_01_4.html", "class_lat_m_r_g_1_1_mod_int_3_01_n_t_l_1_1_z_z_01_4" ],
       [ "ModInt< std::int64_t >", "class_lat_m_r_g_1_1_mod_int_3_01std_1_1int64__t_01_4.html", "class_lat_m_r_g_1_1_mod_int_3_01std_1_1int64__t_01_4" ],
-      [ "PrimitivePoly", "class_lat_m_r_g_1_1_poly_p_e.html", "class_lat_m_r_g_1_1_poly_p_e" ]
-    ] ],
-    [ "Primes.h", "_primes_8h.html", [
-      [ "Primes", "class_lat_m_r_g_1_1_primes.html", "class_lat_m_r_g_1_1_primes" ]
-    ] ],
-    [ "Projections.h", "_projections_8h.html", [
-      [ "Projections", "class_lat_m_r_g_1_1_projections.html", "class_lat_m_r_g_1_1_projections" ]
+      [ "PrimitivePoly", "class_lat_m_r_g_1_1_primitive_poly.html", "class_lat_m_r_g_1_1_primitive_poly" ]
     ] ],
     [ "Test.h", "_test_8h.html", "_test_8h" ]
 ];

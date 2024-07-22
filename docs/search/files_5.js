@@ -1,8 +1,6 @@
 var searchData=
 [
-  ['intfactorization_2ecc',['IntFactorization.cc',['../_int_factorization_8cc.html',1,'']]],
-  ['intfactorization_2eh',['IntFactorization.h',['../_int_factorization_8h.html',1,'']]],
-  ['PrimitiveInt_2ecc',['PrimitiveInt.cc',['../_int_primitivity_8cc.html',1,'']]],
-  ['PrimitiveInt_2eh',['PrimitiveInt.h',['../_int_primitivity_8h.html',1,'']]],
-  ['intro_2edox',['intro.dox',['../intro_8dox.html',1,'']]]
+  ['latmain_2edox_720',['LatMain.dox',['../_lat_main_8dox.html',1,'']]],
+  ['lcgcomponent_2eh_721',['LCGComponent.h',['../_l_c_g_component_8h.html',1,'']]],
+  ['lcglattice_2eh_722',['LCGLattice.h',['../_l_c_g_lattice_8h.html',1,'']]]
 ];

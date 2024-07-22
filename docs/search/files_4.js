@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['figureofmerit_2ecc',['FigureOfMerit.cc',['../_figure_of_merit_8cc.html',1,'']]],
-  ['figureofmerit_2eh',['FigureOfMerit.h',['../_figure_of_merit_8h.html',1,'']]]
+  ['intfactor_2eh_718',['IntFactor.h',['../_int_factor_8h.html',1,'']]],
+  ['intfactorization_2eh_719',['IntFactorization.h',['../_int_factorization_8h.html',1,'']]]
 ];

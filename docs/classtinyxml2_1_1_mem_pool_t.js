@@ -2,7 +2,6 @@ var classtinyxml2_1_1_mem_pool_t =
 [
     [ "Block", "structtinyxml2_1_1_mem_pool_t_1_1_block.html", "structtinyxml2_1_1_mem_pool_t_1_1_block" ],
     [ "Item", "uniontinyxml2_1_1_mem_pool_t_1_1_item.html", "uniontinyxml2_1_1_mem_pool_t_1_1_item" ],
-    [ "ITEMS_PER_BLOCK", "classtinyxml2_1_1_mem_pool_t.html#a04cf45156e6f913f93972869ff8a1d94ab72c1e16d6626854c41feb19e60c54d1", null ],
     [ "MemPoolT", "classtinyxml2_1_1_mem_pool_t.html#ac8fa6dbb403f009cf9c8a33c6f2803b3", null ],
     [ "~MemPoolT", "classtinyxml2_1_1_mem_pool_t.html#a5fa4fee934a3df2b9e74282244d78390", null ],
     [ "MemPoolT", "classtinyxml2_1_1_mem_pool_t.html#afa8770a0645d28bd849e7e5aefb326ed", null ],

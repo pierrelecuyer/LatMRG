@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['searchmethod',['SearchMethod',['../namespace_lat_m_r_g.html#a1fd35b5cabbc11ccb440e722240ca3e8',1,'LatMRG']]]
+  ['primetype_1267',['PrimeType',['../class_lat_m_r_g_1_1_int_factor.html#a772771f96542950eb69f77ee0bdf7ede',1,'LatMRG::IntFactor']]]
 ];

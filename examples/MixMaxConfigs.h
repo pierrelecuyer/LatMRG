@@ -2,8 +2,7 @@
 #define LATMRG_MIXMAXCONFIGS_H
 
 #include "NTL/ZZ.h"
-
-#include "latticetester/ntlwrap.h"
+// #include "latticetester/ntlwrap.h"
 
 /**
  * This is a header file containing constants and definitions for the MixMax
