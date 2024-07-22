@@ -13,7 +13,6 @@ data/*
 *.log
 *.pyc
 __pycache__
-version*
 doc/html
 !.gitignore
 !.gitmodules
