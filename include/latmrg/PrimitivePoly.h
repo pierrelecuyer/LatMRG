@@ -206,15 +206,16 @@ public:
    ModInt<Int>::PolE::init(f);
    return f; 
  }
- 
- 
+
+
   static typename ModInt<Int>::PolX& powerMod(const Int &j, const IntVec & C, const Int & m) {
-   fj = ModInt<Int>::PolX;
-   std::string str = "[0 1]";
-   std::istringstream in(str);
-   PrimitivePoly<Int> A;
-   in >> A;
-   power(getF(C, m), A, j);
+    fj = ModInt<Int>::PolX;
+    std::string str = "[0 1]";
+    std::istringstream in(str);
+    PrimitivePoly<Int> A;
+    in >> A;
+    power(fj, A, j);
+    return fj;
   }
   
 
