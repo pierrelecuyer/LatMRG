@@ -167,7 +167,7 @@ public:
    //  if (!isIrreducible())      // slow
    //  if (0 == DetIrredTest(Q))   // medium slow
    if (0 == IterIrredTest(Q))   // fastest
-   return false;
+      return false;
 
    // ---- Test Condition 2
    Int r0;
@@ -218,4 +218,9 @@ public:
   }
   
 
+
+template class PrimitivePoly<std::int64_t> ;
+template class PrimitivePoly<NTL::ZZ> ;
+
+}
 #endif
