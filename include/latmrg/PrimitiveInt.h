@@ -30,7 +30,7 @@ namespace LatMRG {
   };
 
 
-  //=========================================================================== CW
+  //===========================================================================
 
   template<typename Int>
     bool PrimitiveInt<Int>::isPrimitiveElement (const Int & a, const IntFactorization<Int> & f, const Int & p, long e)  {
