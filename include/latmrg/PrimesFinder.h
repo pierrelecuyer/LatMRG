@@ -25,8 +25,8 @@
 #include <ctime>
 
 #include "latticetester/Util.h"
+#include "latticetester/Chrono.h"
 #include "latmrg/IntFactor.h"
-#include "latmrg/Chrono.h"
 #include "latmrg/IntFactorization.h"
 
 namespace LatMRG {

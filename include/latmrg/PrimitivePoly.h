@@ -17,6 +17,7 @@
 #include "NTL/lzz_pXFactoring.h"
 
 #include "latticetester/Util.h"
+#include "latmrg/EnumTypes.h"
 #include "latmrg/IntFactor.h"
 #include "latmrg/PrimitiveInt.h"
 
@@ -107,58 +108,56 @@ public:
  * <tt>ZZ_pE</tt> which is implemented with the big integer type <tt>NTL::ZZ_p</tt>.
  *
  */
- 
-  /**
-   * Returns `true` if the polynomial \f$f(x)\f$ with coefficients in C is a primitive polynomial
-   * modulo \f$m\f$. The factorizations of
-   * \f$m-1\f$ and \f$r\f$ must be in `fm` and `fr` respectively.
-   */
-  template<typename Int>
-  static bool isPrimitive (const IntVec & C, const Int & m, const PrimitiveInt<Int> & fm, const IntFactorization<Int> & fr);
 
-  /**
-   * This method returns `true` iff the primitivity conditions 2 and 3 given in Knuth (to be added in the guide)
-   * are satisfied by the modulus \f$f(x)\f$. It does not check condition 1, assuming it to be `true`.
-   */
-  template<typename Int>
-  static bool isPrimitive (const IntVec & C, const Int & m, const IntFactorization<Int> & r);
- 
-  /**
-   * Returns the modulus polynomial \f$f(x)\f$ for given coefficients 'C' and modulus 'm'.
-   */
-  static typename ModInt<Int>::PolX& getF (const IntVec & C, const Int & m);
- 
-  /**
-   * Returns the polynomial to \f$x^j \mod f(x) (\bmod m)\f$ where \f$f(x)\f$ is given according to the 
-   * coeffcients 'C' and modulus 'm'
-   */
-  static typename ModInt<Int>::PolX& powerMod(const Int &j, const IntVec & C, const Int & m);
+/**
+ * Returns `true` if the polynomial \f$f(x)\f$ with coefficients in C is a primitive polynomial
+ * modulo \f$m\f$. The factorizations of
+ * \f$m-1\f$ and \f$r\f$ must be in `fm` and `fr` respectively.
+ */
+template<typename Int>
+static bool isPrimitive(const IntVec &C, const Int &m, const IntFactorization<Int> &fm,
+      const IntFactorization<Int> &fr);
 
-}
+/**
+ * This method returns `true` iff the primitivity conditions 2 and 3 given in Knuth (to be added in the guide)
+ * are satisfied by the modulus \f$f(x)\f$. It does not check condition 1, assuming it to be `true`.
+ */
+template<typename Int>
+static bool isPrimitive(const IntVec &C, const Int &m, const IntFactorization<Int> &fr);
 
-  //===========================================================================
+/**
+ * Returns the modulus polynomial \f$f(x)\f$ for given coefficients 'C' and modulus 'm'.
+ */
+static typename ModInt<Int>::PolX& getF(const IntVec &C, const Int &m);
 
-  template<typename Int>
- static bool isPrimitive (const IntVec & C, const Int & m, const PrimitiveInt<Int> & fm, const IntFactorization<Int> & fr) {
+/**
+ * Returns the polynomial to \f$x^j \mod f(x) (\bmod m)\f$ where \f$f(x)\f$ is given according to the
+ * coeffcients 'C' and modulus 'm'
+ */
+static typename ModInt<Int>::PolX& powerMod(const Int &j, const IntVec &C, const Int &m);
+
+//===========================================================================
+// Implementation
+
+template<typename Int>
+static bool isPrimitive(const IntVec &C, const Int &m, const IntFactorization<Int> &fm,
+      const IntFactorization<Int> &fr) {
    Int a0;
    static int64_t k;
-   k = cP.length() - 1;
+   k = C.length() - 1;
    // rep is the NTL::ZZ equivalent of the NTL::ZZ_p element.
    a0 = -rep(ConstTerm(getF(C, m)));
    if ((k & 2) == 0) a0 = -a0;
-   if (!fm.isPrimitiveElement(a0)) {
-      return false;
-   }
+   if (!isPrimitiveElement(a0, fm, m)) return false;
    return isPrimitive(C, m, fr);
- }
- 
- 
- template<typename Int>
- static bool isPrimitive (const IntVec & C, const Int & m, const IntFactorization<Int> & r) {
+}
+
+template<typename Int>
+static bool isPrimitive(const IntVec &C, const Int &m, const IntFactorization<Int> &fr) {
    typename ModInt<Int>::PolX f;
-   f = getF(C, m);   
+   f = getF(C, m);
    static int64_t k;
-   k = cP.length() - 1;
+   k = C.length() - 1;
 
    if (1 == k) return true;
    // Is f irreducible ?
@@ -167,11 +166,11 @@ public:
    //  if (!isIrreducible())      // slow
    //  if (0 == DetIrredTest(Q))   // medium slow
    if (0 == IterIrredTest(Q))   // fastest
-      return false;
+   return false;
 
    // ---- Test Condition 2
    Int r0;
-   r0 = r.getNumber();
+   r0 = fr.getNumber();
    Q = PowerXMod(r0, f);
    if (0 != deg(Q)) return false;
    Int T1;
@@ -181,20 +180,29 @@ public:
    if (rep(ConstTerm(Q)) != T1) return false;
 
    // ---- Test Condition 3
-   if (r.getStatus() == LatticeTester::PRIME) return true;
-   std::vector<Int> invFactorList = r.getInvFactorList();
-   //   assert (!invFactorList.empty ());
+   if (fr.getStatus() == LatticeTester::PRIME) return true;
+   std::vector<Int> invFactorList = fr.getInvFactorList();
+   assert(!invFactorList.empty());
    typename std::vector<Int>::const_iterator it = invFactorList.begin();
-
    while (it != invFactorList.end()) {
       Q = PowerXMod(*it, f);
       if (0 == deg(Q)) return false;
       ++it;
    }
    return true;
- }
- 
- static typename ModInt<Int>::PolX& getF (const IntVec & C, const Int & m) {
+}
+
+// &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&   ACHTUNG!  &&&&&&&&&
+
+// Here two new objects f and cP are created inside this function and are
+// never destroyed. So more and more objects are created and never recycled.
+// This could lead to a memory leak!
+// If ther are destroyed automatically on exit, then the f that is returned
+// longer exists.  So there is a problem both ways.
+
+// I think at least the f should rather be passed and returned as a parameter of the function.
+//                                                                           ************
+static typename ModInt<Int>::PolX& getF(const IntVec &C, const Int &m) {
    static int64_t k;
    typename ModInt<Int>::IntVecP cP;
    conv(cP, C);
@@ -204,21 +212,18 @@ public:
       SetCoeff(f, i, cP[i]);
    f.normalize();
    ModInt<Int>::PolE::init(f);
-   return f; 
- }
+   return f;
+}
 
+// Same:  The result should rather be returned in one of the arguments.   ************
+static typename ModInt<Int>::PolX& powerMod(const Int &j, const IntVec &C, const Int &m) {
+   ModInt<Int>::PolX fj;
+   power(fj, getF(C, m), j);
+   return fj;                         // Same: This is too dangerous!   *******
+}
 
-  static typename ModInt<Int>::PolX& powerMod(const Int &j, const IntVec & C, const Int & m) {
-    fj = ModInt<Int>::PolX;
-    power(fj, getF(C, m), j);
-    return fj;
-  }
-  
-  
-
-
-template class PrimitivePoly<std::int64_t> ;
-template class PrimitivePoly<NTL::ZZ> ;
+// template class PrimitivePoly<std::int64_t> ;
+// template class PrimitivePoly<NTL::ZZ> ;
 
 }
 #endif

@@ -24,9 +24,18 @@
 #include <sstream>
 #include <NTL/ZZ.h>
 
-// #include "latticetester/EnumTypes.h"
+#include "latticetester/EnumTypes.h"
+#include "latmrg/EnumTypes.h"
 
 namespace LatMRG {
+
+
+static constexpr uint64_t NB_PRIMES = 6543;
+const std::array<uint64_t, NB_PRIMES> PRIMES_ARRAY = {
+#include "../data/primes.dat"
+};
+
+
 
 /**
  * An object of this class represents a factor in the decomposition of a positive integer.
@@ -34,23 +43,9 @@ namespace LatMRG {
  * The class also contains very basic functions to test whether an integer is prime,
  * probably prime, or composite.
  */
-
-static constexpr uint64_t NB_PRIMES = 6543;
-const std::array<uint64_t, NB_PRIMES> PRIMES_ARRAY = {
-#include "../data/primes.dat"
-};
-
 template<typename Int> class IntFactor {
 
 public:
-
-    /**
-     * Indicates whether an integer is prime, probably prime, composite, or its
-     * status is unknown (or we do not care).
-     */
-    enum PrimeType {
-        PRIME, PROB_PRIME, COMPOSITE, UNKNOWN
-    };
 
     /**
      * Constructs a factor \f$x\f$ of multiplicity `mult` with given `PrimeType status`.
@@ -179,7 +174,7 @@ std::string IntFactor<Int>::toString() const {
 
 template<typename Int>
 inline std::string IntFactor<Int>::toString(PrimeType status) {
-    return toStringPrime(status);
+    return toStringPrimeType(status);
 }
 
 //===========================================================================
@@ -189,7 +184,7 @@ PrimeType IntFactor<Int>::isPrime(const Int &y, std::int64_t k) {
     // NbPrem has to be instantiated if we use NTL types
     Int NbPrem (2);
     // NbPrem = 2;
-    NTL::ZZ LIM = 4295098369;  // This is a bit more than 2^{32}.
+    NTL::ZZ LIM = NTL::conv<NTL::ZZ> (4295098369);  // A bit more than 2^{32}.
     // LIM = NTL::conv<NTL::ZZ> ("4295098369");
     Int ys = NTL::SqrRoot(y);
     uint64_t i = 1;
