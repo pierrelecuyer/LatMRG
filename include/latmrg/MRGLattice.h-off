@@ -460,7 +460,7 @@ MRGLattice<Int, Real>& MRGLattice<Int, Real>::operator=(const MRGLattice<Int, Re
       for (int64_t i = 0; i < dim; i++) {
          NTL::clear(this->m_vSI[0][i]);
          for (int64_t j = 0; j < this->m_order; j++) {
-            NTL::conv(this->m_t1, this->m_basis[i][dim - j - 2]);
+            NTL::conv(this->m_t1, this->m_basis[i][dim - j - 1]);
             this->m_t1 = this->m_t1 * m_aCoeff[j];
             this->m_vSI[0][i] = this->m_vSI[0][i] + this->m_t1;
          }
