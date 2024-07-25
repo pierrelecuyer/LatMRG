@@ -119,7 +119,7 @@ static bool isPrimitive(const IntVec &C, const Int &m, const IntFactorization<In
       const IntFactorization<Int> &fr);
 
 // I think that if we choose to make the following public because they willbe used elsewhere,
-//  then the functions should have more significant names!                          **********
+//  then the functions should have more significant names!                          ***************************
 
 
 /**
