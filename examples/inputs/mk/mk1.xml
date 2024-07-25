@@ -1,7 +1,7 @@
 <mk>
-  <power x="31" y="5"/>
-  <k x="3"/>
-  <safe x="true"/>
+	<power x="31" y="5" />
+	<k x="3" />
+	<safe x="true" />
 </mk>
-<out/>
-<print_time x="false"/>
+<out />
+<print_time x="false" />

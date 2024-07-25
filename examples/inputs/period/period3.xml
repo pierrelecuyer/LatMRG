@@ -1,6 +1,6 @@
 <period>
-  <type x="LCG"/>
-  <modulo basis="2" exponent="16"/>
-  <mult x="13"/>
+	<type x="LCG" />
+	<modulo basis="2" exponent="16" />
+	<mult x="13" />
 </period>
-<out/>
+<out />

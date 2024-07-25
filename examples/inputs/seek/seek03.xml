@@ -1,23 +1,23 @@
-<!--Testing search for MMRG. Currently not really usefull-->
+<!--Testing search for MMRG. Currently not really usefull -->
 <seek>
-  <gen>
-    <mmrg>
-      <modulo basis="2" exponent="31" rest="-1"/>
-      <order k="8"/>
-      <period check="true"/>
-    </mmrg>
-  </gen>
-  <spectral>
-    <reduction x="FULL"/>
-    <norma x="BESTLAT"/>
-    <dual x="true"/>
-  </spectral>
-  <proj>
-    <min x="8"/>
-    <num x="1"/>
-    <dim x="34"/>
-  </proj>
-  <time x="10"/>
-  <num_gen x="5"/>
+	<gen>
+		<mmrg>
+			<modulo basis="2" exponent="31" rest="-1" />
+			<order k="8" />
+			<period check="true" />
+		</mmrg>
+	</gen>
+	<spectral>
+		<reduction x="FULL" />
+		<norma x="BESTLAT" />
+		<dual x="true" />
+	</spectral>
+	<proj>
+		<min x="8" />
+		<num x="1" />
+		<dim x="34" />
+	</proj>
+	<time x="10" />
+	<num_gen x="5" />
 </seek>
-<out/>
+<out />

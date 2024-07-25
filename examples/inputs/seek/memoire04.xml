@@ -1,23 +1,23 @@
-<!--(5)-->
+<!--(5) -->
 <seek>
-  <gen>
-    <mrg>
-      <modulo basis="2" exponent="8" rest="-5"/>
-      <order x="8"/>
-      <method random="m 0 m m m m 0 m"/>
-      <period check="true"/>
-    </mrg>
-  </gen>
-  <spectral>
-    <reduction method="FULL"/>
-    <norma x="BESTLAT"/>
-    <dual x="true"/>
-  </spectral>
-  <proj>
-    <min x="9"/>
-    <num x="1"/>
-    <dim x="34"/>
-  </proj>
-  <time x="60"/>
-  <num_gen x="5"/>
+	<gen>
+		<mrg>
+			<modulo basis="2" exponent="8" rest="-5" />
+			<order x="8" />
+			<method random="m 0 m m m m 0 m" />
+			<period check="true" />
+		</mrg>
+	</gen>
+	<spectral>
+		<reduction method="FULL" />
+		<norma x="BESTLAT" />
+		<dual x="true" />
+	</spectral>
+	<proj>
+		<min x="9" />
+		<num x="1" />
+		<dim x="34" />
+	</proj>
+	<time x="60" />
+	<num_gen x="5" />
 </seek>

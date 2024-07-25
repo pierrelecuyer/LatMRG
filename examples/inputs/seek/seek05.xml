@@ -1,37 +1,37 @@
-<!--A search for 32bits combined MRG using parameters from mrg32k3a-->
+<!--A search for 32bits combined MRG using parameters from mrg32k3a -->
 <seek>
-  <gen>
-    <numcomp x="2"/>
-    <mrg>
-      <modulo basis="2" exponent="32" rest="-209"/>
-      <order x="3"/>
-      <method random="0 m m"/>
-      <period check="true">
-        <m1 x="DECOMP_WRITE" file="examples/inputs/seek/memoire01m1.fact"/>
-        <r x="DECOMP_WRITE" file="examples/inputs/seek/memoire01r.fact"/>
-      </period>
-    </mrg>
-    <mrg>
-      <modulo basis="2" exponent="32" rest="-22853"/>
-      <order x="3"/>
-      <method random="m 0 m"/>
-      <period check="true">
-        <m1 x="DECOMP_WRITE" file="examples/inputs/seek/memoire01m1.fact"/>
-        <r x="DECOMP_WRITE" file="examples/inputs/seek/memoire01r.fact"/>
-      </period>
-    </mrg>
-  </gen>
-  <spectral>
-    <reduction method="FULL"/>
-    <norma x="BESTLAT"/>
-    <dual x="true"/>
-  </spectral>
-  <proj>
-    <min x="3"/>
-    <num x="1"/>
-    <dim x="34"/>
-  </proj>
-  <time x="60"/>
-  <num_gen x="5"/>
+	<gen>
+		<numcomp x="2" />
+		<mrg>
+			<modulo basis="2" exponent="32" rest="-209" />
+			<order x="3" />
+			<method random="0 m m" />
+			<period check="true">
+				<m1 x="DECOMP_WRITE" file="examples/inputs/seek/memoire01m1.fact" />
+				<r x="DECOMP_WRITE" file="examples/inputs/seek/memoire01r.fact" />
+			</period>
+		</mrg>
+		<mrg>
+			<modulo basis="2" exponent="32" rest="-22853" />
+			<order x="3" />
+			<method random="m 0 m" />
+			<period check="true">
+				<m1 x="DECOMP_WRITE" file="examples/inputs/seek/memoire01m1.fact" />
+				<r x="DECOMP_WRITE" file="examples/inputs/seek/memoire01r.fact" />
+			</period>
+		</mrg>
+	</gen>
+	<spectral>
+		<reduction method="FULL" />
+		<norma x="BESTLAT" />
+		<dual x="true" />
+	</spectral>
+	<proj>
+		<min x="3" />
+		<num x="1" />
+		<dim x="34" />
+	</proj>
+	<time x="60" />
+	<num_gen x="5" />
 </seek>
-<out/>
+<out />

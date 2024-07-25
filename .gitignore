@@ -21,3 +21,4 @@ NOTES
 # The next few lines are files that are local working files
 MixMaxSearch*
 results/*
+examples/inputs/*

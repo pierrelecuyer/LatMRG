@@ -1,23 +1,23 @@
-<!--A 64bits LCG with a carry, but non power of 2 modulo-->
+<!--A 64bits LCG with a carry, but non power of 2 modulo -->
 <seek>
-  <gen>
-    <lcg>
-      <modulo basis="2" exponent="64" rest="-59"/>
-      <order k="1"/>
-      <method random="m"/>
-      <period x="true"/>
-    </lcg>
-  </gen>
-  <spectral>
-    <reduction x="FULL"/>
-    <norma x="BESTLAT"/>
-    <dual x="true"/>
-  </spectral>
-  <proj>
-    <min x="2"/>
-    <num x="1"/>
-    <dim x="35"/>
-  </proj>
-  <time x="60"/>
+	<gen>
+		<lcg>
+			<modulo basis="2" exponent="64" rest="-59" />
+			<order k="1" />
+			<method random="m" />
+			<period x="true" />
+		</lcg>
+	</gen>
+	<spectral>
+		<reduction x="FULL" />
+		<norma x="BESTLAT" />
+		<dual x="true" />
+	</spectral>
+	<proj>
+		<min x="2" />
+		<num x="1" />
+		<dim x="35" />
+	</proj>
+	<time x="60" />
 </seek>
-<out/>
+<out />

@@ -1,20 +1,20 @@
 <seek>
-  <gen>
-    <mrg>
-      <modulo basis="2" exponent="64" rest="-59"/>
-      <order k="1"/>
-      <method random="m"/>
-      <period x="true"/>
-    </mrg>
-  </gen>
-  <spectral>
-    <reduction x="FULL"/>
-    <norma x="BESTLAT"/>
-    <dual x="true"/>
-  </spectral>
-  <proj>
-    <min x="5"/>
-    <num x="4"/>
-    <dim x="40 40 20 10"/>
-  </proj>
+	<gen>
+		<mrg>
+			<modulo basis="2" exponent="64" rest="-59" />
+			<order k="1" />
+			<method random="m" />
+			<period x="true" />
+		</mrg>
+	</gen>
+	<spectral>
+		<reduction x="FULL" />
+		<norma x="BESTLAT" />
+		<dual x="true" />
+	</spectral>
+	<proj>
+		<min x="5" />
+		<num x="4" />
+		<dim x="40 40 20 10" />
+	</proj>
 </seek>

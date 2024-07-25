@@ -1,6 +1,6 @@
 <mk>
-  <power x="16" y="5"/>
-  <k x="1"/>
-  <safe x="false"/>
-  <factor x="false"/>
+	<power x="16" y="5" />
+	<k x="1" />
+	<safe x="false" />
+	<factor x="false" />
 </mk>

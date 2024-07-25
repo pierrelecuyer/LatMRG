@@ -59,8 +59,8 @@ public:
      * congruence \f$m\f$ is inside the object `modul`.
      *               Should we keep this?      ************  ???
      */
-    MRGComponent(Modulus<Int> &modul, int k, DecompType decom1,
-            const char *filem1, DecompType decor, const char *filer);
+//    MRGComponent(Modulus<Int> &modul, int k, DecompType decom1,
+//            const char *filem1, DecompType decor, const char *filer);
 
     /**
      * Destructor.
@@ -78,8 +78,8 @@ public:
     MRGComponent& operator=(const MRGComponent<Int> &comp);
 
     /**
-     * Sets the vector of multipliers to `aa`. The order of the lattice is set equal to
-     * the length of this vector.  `aa[j-1]` must contain \f$a_j\f$.
+     * Sets the vector of multipliers to `aa`, with `aa[j]` containing \f$a_j\f$.
+     * The order of the MRG is set equal to the length of this vector, plus 1.
      */
     void setaa(const IntVec &aa);
 
@@ -91,21 +91,21 @@ public:
     }
 
     /**
-     * Gets the matrix multipliers of the recurrence.    ******  ??
+     * Returns the matrix multiplier for this MRG so it can be viewed as a MMRG.
+     *                                                                      ******  ??
      * */
     IntMat getA() const {
-        return m_A;
+        return m_A;     // Must be constructed!
     }
 
     /**
-     * Sets the matrix of the recurrence to \f$A\f$.    *******  ??
+     * Sets the matrix of the recurrence to \f$A\f$.      NOT HERE! *******  ??
      * */
-    void setA(const IntMat &A);
+    // void setA(const IntMat &A);
 
     /**
      * Returns `true` if coefficients \f$aa\f$ give a MRG with maximal
-     * period; returns `false` otherwise. Note that when calling this class
-     * it is necessary that `a[i] = a_i`.     Really?     ************
+     * period; returns `false` otherwise.
      */
     bool maxPeriod(const IntVec &aa);
 
@@ -113,92 +113,87 @@ public:
      * Returns `true` if coefficients in matrix \f$A\f$ give a MMRG with maximal
      * period; returns `false` otherwise.    Move to MMCG  ????   ***********
      */
-    bool maxPeriod(const IntMat &A);
+    // bool maxPeriod(const IntMat &A);
 
     /**
-     * Returns `true` if coefficients \f$aa\f$ give a MRG with maximal
-     * period; returns `false` otherwise. This method supposes that
-     * condition 1 is `true` and tests only conditions 2 and 3. See method
-     * `isPrimitive` of class `PrimitivePoly` on page (FIXME: page#) of the guide.
-     *                                                      *******   Clarify
+     * Assumes that the maximal-period condition (1) holds and checks only for
+     * conditions 2 and 3. Returns `true` iff these two conditions hold for the
+     * vector of coefficients \f$aa\f$.
      */
     bool maxPeriod23(const IntVec &aa);
 
     /**
      * Returns the value of the modulus \f$m\f$ of the recurrence.
      */
-    const Int getM() const {
-        return module.m;
+    const Int getModulus() const {
+        return m_m;
     }
 
     /**
      * Returns the value of the order \f$k\f$ of the recurrence.
      */
-    int getK() const {
+    int getOrder() const {
         return m_k;
     }
 
     /**
-     * Returns the value of `b` with `b^e+r = m`.
+     * Returns the value of `b` for which `b^e+r = m`, when available.
      */
-    Int& getB() {
+    Int& getb() {
         return m_b;
     }
 
     /**
-     * Returns the value of `e` with `b^e+r = m`.
+     * Returns the value of `e` for which `b^e+r = m`, when available.
      */
-    int& getE() {
+    int& gete() {
         return m_e;
     }
 
     /**
-     * Returns the value of `c` with `b^e+c = m`.
+     * Returns the value of `c` for which `b^e+c = m`, when available.
      */
     Int& getc() {
         return m_c;
     }
 
     /**
-     * Returns const reference to orbitSeed.
+     * Returns a const reference to `orbitSeed`, when available.
      * */
     IntVec& getOrbitSeed() {
         return orbitSeed;
     }
 
     /**
-     * Returns this object as a string.
+     * Returns a descriptor of this object as a string.
      */
     std::string toString();
 
     /**
      * Sets the type of this generator component.    ??????
      *            No underscore.  *****************
-     * */
     void set_type(GenType type) {
         m_type = type;
     }
-
-    /**
      * Gets the type of this component.
-     * */
+     *
     GenType get_type() {
         return m_type;
     }
 
     /**
      * The modulo of the MWC generator if we study one. This is because the
-     * we check MWC period with module.m as the modulo of the equivalent
-     * LCG.
+     * we check MWC period with module.m as the modulo of the equivalentn LCG.
      * */
-    Int m_MWCb;    // Does no belong here!     ************
+    // Int m_MWCb;    // Does no belong here!     ************
 
-    void setPower2(std::vector<IntVec> &coeffs);
+    //    Does not belong here, I think.
+    // void setPower2(std::vector<IntVec> &coeffs);
 
 private:
 
     /**
-     * Does the same as the constructor above with similar arguments.
+     * Implements what does the constructor above, with the same arguments.
      */
     void init(const Int &m, int k, DecompType decom1, const char *filem1,
             DecompType decor, const char *filer);
@@ -207,7 +202,7 @@ private:
      * The type of generator this stores. Should be MRG, MMRG or MWC. The
      * default value is LCG.
      * */
-    GenType m_type = LCG;
+    // GenType m_type = LCG;   // This should not be here, but should depend on the subclass, it seems.
 
     /**
      * The prime factor decomposition of \f$m-1\f$.
@@ -216,9 +211,9 @@ private:
 
     /**
      * The prime factor decomposition of \f$m\f$.
-     * Used to compute the full period of a LCG with a carry.
+     * Used to compute the full period of a LCG with a carry.   // Not here!    *******
      */
-    IntFactorization<Int> factor;
+    // IntFactorization<Int> factor;
 
     /**
      * The prime factor decomposition of \f$m-1\f$.
@@ -244,9 +239,14 @@ private:
     IntFactorization<NTL::ZZ> ifr2;
 
     /**
-     * The modulus \f$m\f$ of the recurrence.
+     * The modulus \f$m\f$ of the recurrence, as a  `Modulus` object.
      */
-    Modulus<Int> module;
+    // Modulus<Int> modulus;    //  Want this ????
+
+    /**
+     * The modulus \f$m\f$ of this MRG.
+     */
+    int m_m;
 
     /**
      * The order \f$k\f$ of the recurrence.
@@ -261,7 +261,7 @@ private:
     /**
      * The generator matrix \f$A\f$ of the recurrence for MMRG   ******  ???
      */
-    IntMat m_A;
+    IntMat m_A;    // Want it here?
 
     /**
      * Basis `b` with `b^e+r = m`.
@@ -302,11 +302,12 @@ private:
      * is the inverse of \f$m/m_j\f$ modulo \f$m_j\f$. This value is
      * calculated by `MRGLatticeFactory` and stored here for simplicity.
      */
-    Int nj;
+    Int nj;     // Not sure if we need this here.   ***************
 
     /**
-     * Contains the starting state of the component for the case when the
+     * Contains the initial state of the cycle we want to analyze when the
      * lattice type is `ORBIT`. It is made of \f$k\f$ numbers.
+     *                            *********   But this class does not look at lattices!
      */
     IntVec orbitSeed;
 
@@ -318,7 +319,7 @@ private:
 template<typename Int>
 MRGComponent<Int>::MRGComponent(const MRGComponent<Int> &lat) :
         ifm1(lat.ifm1), ifr(lat.ifr), m_k(lat.m_k) {
-    module = lat.module;
+    m_m = lat.m_m;
     nj = lat.nj;
     rho = lat.rho;
     //   a.kill();
@@ -328,12 +329,12 @@ MRGComponent<Int>::MRGComponent(const MRGComponent<Int> &lat) :
     orbitSeed.resize(m_k);
     orbitSeed = lat.orbitSeed;
 
-    m_type = lat.m_type;
-    if (m_type == MWC)
-        m_MWCb = lat.m_MWCb;
+    // m_type = lat.m_type;
+    //if (m_type == MWC)
+    //    m_MWCb = lat.m_MWCb;
     m_b = lat.m_b;
     m_e = lat.m_e;
-    m_r = lat.m_r;
+    m_c = lat.m_c;
 }
 
 //===========================================================================
@@ -342,19 +343,19 @@ template<typename Int>
 MRGComponent<Int>& MRGComponent<Int>::operator=(const MRGComponent<Int> &lat) {
     if (this != &lat) {
         m_k = lat.m_k;
-        module = lat.module;
+        m_m = lat.m_m;
         nj = lat.nj;
         rho = lat.rho;
         //    a.kill();
         m_a.resize(m_k);
-        LatticeTester::CopyVect(m_a, lat.m_a, m_k);
+        m_a = lat.m_a;
         //     orbitSeed.kill();
         orbitSeed.resize(m_k);
-        LatticeTester::CopyVect(orbitSeed, lat.orbitSeed, m_k);
+        orbitSeed = lat.orbitSeed;
         //      ifm1 = lat.ifm1;
         //      ifr = lat.ifr;
     }
-    m_type = lat.m_type;
+    // m_type = lat.m_type;
     return *this;
 }
 
@@ -363,22 +364,21 @@ MRGComponent<Int>& MRGComponent<Int>::operator=(const MRGComponent<Int> &lat) {
 template<typename Int>
 void MRGComponent<Int>::init(const Int &m0, int k0, DecompType decom1,
         const char *filem1, DecompType decor, const char *filer) {
-    PrimitivePoly<Int>::setM(m0);
-    module.init(m0);
+    PrimitivePoly<Int>::setM(m0);  // This one is no longer an object !!!   ******************
+    // module.init(m0);
+    m_m = m0;
     m_k = k0;
     m_a.resize(m_k);
     orbitSeed.resize(m_k);
 
     Int m1;
-    m1 = getM() - 1;
+    m1 = getModulus() - 1;
     ifm1.setNumber(m1);
     ifm2.setNumber(NTL::ZZ(m1));
-
     if (m_k == 1) {
-        factor.setNumber(getM());
+        factor.setNumber(getModulus());
         factor.factorize();
     }
-
     if (decom1 != NO_DECOMP) {
         if (decom1 == DECOMP_READ)
             ifm1.read(filem1);
@@ -397,7 +397,6 @@ void MRGComponent<Int>::init(const Int &m0, int k0, DecompType decom1,
         ifm1.calcInvFactors();
         ifm2.calcInvFactors();
     }
-
     Int r;
     r = (NTL::power(m0, m_k) - 1) / (m0 - 1);
     ifr.setNumber(r);
@@ -433,24 +432,25 @@ MRGComponent<Int>::MRGComponent(const Int &m, int k, DecompType decom1,
         const char *filem1, DecompType decor, const char *filer) {
     m_b = m;
     m_e = 1;
-    m_r = Int(0);
+    m_c = Int(0);
     init(m, k, decom1, filem1, decor, filer);
 }
 
 //===========================================================================
 
 template<typename Int>
-MRGComponent<Int>::MRGComponent(Int b, int e, Int r, int k, DecompType decom1,
+MRGComponent<Int>::MRGComponent(Int b, int e, Int c, int k, DecompType decom1,
         const char *filem1, DecompType decor, const char *filer) {
-    Int m = NTL::power(b, e) + r;
+    Int m = NTL::power(b, e) + c;
     m_b = b;
     m_e = e;
-    m_r = r;
+    m_c = c;
     init(m, k, decom1, filem1, decor, filer);
 }
 
 //===========================================================================
 
+/**
 template<typename Int>
 MRGComponent<Int>::MRGComponent(Modulus<Int> &modu, int k, DecompType decom1,
         const char *filem1, DecompType decor, const char *filer) {
@@ -466,6 +466,7 @@ MRGComponent<Int>::MRGComponent(Modulus<Int> &modu, int k, DecompType decom1,
     }
     module = modu;
 }
+*/
 
 //===========================================================================
 
@@ -485,18 +486,23 @@ void MRGComponent<Int>::setaa(const IntVec &aa) {
 
 //===========================================================================
 
+/*
 template<typename Int>
 void MRGComponent<Int>::setA(const IntMat &A) {
     m_A.SetDims(A.NumRows(), A.NumCols());
     m_A = A;
 }
+*/
 
 //===========================================================================
+
+//  This one must be rewritten!       ****************
+//  Maybe just replaced by a single call to `isPrimitive`, and that's all!
 
 template<typename Int>
 bool MRGComponent<Int>::maxPeriod(const IntVec &aa) {
     PrimitivePoly<Int>::setM(getM());
-    m_a = aa;
+    m_a = aa;      // The m_a is changed and this is not said in the doc!  ****
     PrimitivePoly<Int>::reverse(m_a, m_k, 2);
     PrimitivePoly<Int>::setF(m_a);
     PrimitivePoly<Int> pol;
@@ -507,6 +513,7 @@ bool MRGComponent<Int>::maxPeriod(const IntVec &aa) {
 //===========================================================================
 
 //  This one is for an LCG, does not belong here.     ************
+/*
 template<typename Int>
 bool MRGComponent<Int>::maxPeriod(const Int &a) {
     auto list = factor.getFactorList();
@@ -519,10 +526,14 @@ bool MRGComponent<Int>::maxPeriod(const Int &a) {
 
     return true;
 }
+*/
 
 //===========================================================================
 
 // This is for a matrix LCG, does not belong here.   *************
+
+/*
+
 template<typename Int>
 bool MRGComponent<Int>::maxPeriod(const IntMat &a0) {
     // Converting everything to NTL::ZZ to ease the characteristic polynomial
@@ -544,8 +555,11 @@ bool MRGComponent<Int>::maxPeriod(const IntMat &a0) {
     PrimitiveInt < NTL::ZZ > privfm(ifm2, NTL::ZZ(getM()), 1);
     return pol.isPrimitive(privfm, ifr2);
 }
+*/
 
 //===========================================================================
+
+// Must be rewritten!
 
 template<typename Int>
 bool MRGComponent<Int>::maxPeriod23(const IntVec &a0) {

@@ -118,10 +118,6 @@ template<typename Int>
 static bool isPrimitive(const IntVec &C, const Int &m, const IntFactorization<Int> &fm,
       const IntFactorization<Int> &fr);
 
-// I think that if we choose to make the following public because they willbe used elsewhere,
-//  then the functions should have more significant names!                          ***************************
-
-
 /**
  * This method returns `true` iff the primitivity conditions 2 and 3 given in Knuth (to be added in the guide)
  * are satisfied by the modulus \f$f(x)\f$. It does not check condition 1, assuming it to be `true`.

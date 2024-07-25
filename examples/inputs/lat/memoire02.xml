@@ -1,21 +1,21 @@
-<!--(3)-->
+<!--(3) -->
 <lattest>
-  <gen>
-    <mrg>
-      <modulo basis="2" exponent="16" rest="-15"/>
-      <order x="4"/>
-      <coeff x="32907 0 0 17770"/>
-    </mrg>
-  </gen>
-  <spectral>
-    <reduction method="FULL"/>
-    <norma lizer="BESTLAT"/>
-    <dual bool="true"/>
-  </spectral>
-  <proj>
-    <min x="5"/>
-    <num x="3"/>
-    <dim x="45 50 50"/>
-  </proj>
-  <detail x="1"/>
+	<gen>
+		<mrg>
+			<modulo basis="2" exponent="16" rest="-15" />
+			<order x="4" />
+			<coeff x="32907 0 0 17770" />
+		</mrg>
+	</gen>
+	<spectral>
+		<reduction method="FULL" />
+		<norma lizer="BESTLAT" />
+		<dual bool="true" />
+	</spectral>
+	<proj>
+		<min x="5" />
+		<num x="3" />
+		<dim x="45 50 50" />
+	</proj>
+	<detail x="1" />
 </lattest>

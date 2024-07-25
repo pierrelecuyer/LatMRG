@@ -1,26 +1,26 @@
-<!--mrg31k3p random number generator-->
+<!--mrg31k3p random number generator -->
 <lattest>
-  <gen>
-    <numcomp x="2"/>
-    <mrg>
-      <modulo basis="2" exponent="31" rest="-1"/>
-      <order x="3"/>
-      <coeff x="0 4194304 129"/>
-    </mrg>
-    <mrg>
-      <modulo basis="2" exponent="31" rest="-21069"/>
-      <order x="3"/>
-      <coeff x="32768 0 32769"/>
-    </mrg>
-  </gen>
-  <spectral>
-    <norma x="BESTLAT"/>
-    <reduction x="FULL"/>
-    <dual x="true"/>
-  </spectral>
-  <proj>
-    <min x="4"/>
-    <num x="5"/>
-    <dim x="45 50 50 50 25"/>
-  </proj>
+	<gen>
+		<numcomp x="2" />
+		<mrg>
+			<modulo basis="2" exponent="31" rest="-1" />
+			<order x="3" />
+			<coeff x="0 4194304 129" />
+		</mrg>
+		<mrg>
+			<modulo basis="2" exponent="31" rest="-21069" />
+			<order x="3" />
+			<coeff x="32768 0 32769" />
+		</mrg>
+	</gen>
+	<spectral>
+		<norma x="BESTLAT" />
+		<reduction x="FULL" />
+		<dual x="true" />
+	</spectral>
+	<proj>
+		<min x="4" />
+		<num x="5" />
+		<dim x="45 50 50 50 25" />
+	</proj>
 </lattest>

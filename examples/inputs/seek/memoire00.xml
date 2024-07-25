@@ -1,22 +1,22 @@
-<!--(1)-->
+<!--(1) -->
 <seek>
-  <gen>
-    <lcg>
-      <modulo basis="2" exponent="16"/>
-      <method exhaust="1"/>
-      <period check="true"/>
-    </lcg>
-  </gen>
-  <spectral>
-    <reduction method="FULL"/>
-    <norma x="BESTLAT"/>
-    <dual x="true"/>
-  </spectral>
-  <proj>
-    <min x="2"/>
-    <num x="1"/>
-    <dim x="35"/>
-  </proj>
-  <time x="3600"/>
-  <num_gen x="5"/>
+	<gen>
+		<lcg>
+			<modulo basis="2" exponent="16" />
+			<method exhaust="1" />
+			<period check="true" />
+		</lcg>
+	</gen>
+	<spectral>
+		<reduction method="FULL" />
+		<norma x="BESTLAT" />
+		<dual x="true" />
+	</spectral>
+	<proj>
+		<min x="2" />
+		<num x="1" />
+		<dim x="35" />
+	</proj>
+	<time x="3600" />
+	<num_gen x="5" />
 </seek>
