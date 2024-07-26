@@ -1,12 +1,12 @@
 /**
  * This example tests the functions that deal with integer factorization, primality testing,
  * finding certain types of prime numbers, and testing for the primitivity of an integer
- * modulo m or the primitivity of a polynomial f(x) modulo m.
+ * modulo m or of a polynomial modulo another polynomial f(x).
  **/
 
 // The code to define the Int and Real types.  Here we must recompile to change it.
-//#define TYPES_CODE  LD     // Int = int64_t, Real = double
-#define TYPES_CODE  ZD     // Int = ZZ, Real = double
+#define TYPES_CODE  LD     // Int = int64_t, Real = double
+//#define TYPES_CODE  ZD     // Int = ZZ, Real = double
 
 #include <iostream>
 #include <cstdint>
@@ -24,16 +24,20 @@
 using namespace LatMRG;
 
 Int m(101);      // Modulus m = 101
-Int a(33);       // An LCG multiplier
+Int a(34);       // An LCG multiplier
+bool isP;
 
 
 
 int main() {
    std::cout << "Types: " << strFlexTypes << "\n";
    std::cout << "TestPrimitivity \n\n";
-
+   IntFactorization<Int> f(m-1);
+   f.factorize();
+   f.calcInvFactors();
+   isP = isPrimitiveElement(a, f, m);
    std::cout
-         << "We see that the dual of the projection differs from the projection of the dual! \n\n";
+         << a << " is a primitive element mod " << m <<"? " << isP << "\n\n";
    return 0;
 }
 
