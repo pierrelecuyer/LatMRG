@@ -416,7 +416,8 @@ void IntFactorization<Int>::factorize() {
       while (getline (in, line)) {
         S = line;
         NTL::conv(z, S.c_str ());
-        addFactor (z, 1, PRIME);
+        if (z!=0)
+           addFactor (z, 1, PRIME);
       }
       
       makeUnique();
