@@ -5,22 +5,23 @@
 #include "latticetester/Lacunary.h"
 #include "latticetester/IntLatticeExt.h"
 #include "latticetester/Types.h"
-#include "latticetester/Const.h"
-#include "latmrg/Lacunary.h"
-#include "latmrg/Const.h"
-#include "latmrg/MRGLattice.h"
+// #include "latticetester/Const.h"
+#include "latticetester/Lacunary.h"
+#include "latticetester/MRGLattice.h"
 // #include "latmrg/MRGComponent.h"
 #include <string>
 
 namespace LatMRG {
 
 /**
- * This class constructs and handles lattice bases built from MRGs as in <tt>MRGLattice</tt>,
- * but using using arbitrary lacunary indices.
- * that are regularly spaced by packets of the same size.
+ * This subclass of `MRGLattice` constructs and handles lattice bases built from MRGs as in <tt>MRGLattice</tt>,
+ * but using using arbitrary lacunary indices that are regularly spaced by packets of the same size.
+ *
+ * Perhaps the new functions offered here could be integrated into MRGLattice,
+ * to reduce the number of classes.  ???            ************
  *
  */
-class MRGLatticeLac:  public MRGLattice {
+class MRGLatticeLac: public MRGLattice {
 public:
 
    /**
@@ -103,17 +104,18 @@ protected:
 
     //===========================================================================
 
-    /* Max order for lacunary case in this class; otherwise, it takes too much memory.
+    /** Max order for lacunary case in this class; otherwise, it takes too much memory.
      For order > ORDERMAX, use subclass MRGLatticeLac instead.
      This means that we can have short lacunary indices, supported here,
-     and also long lacunary indices (e.g., for multiple streams), supported in
-     MRGLatticeLac.      */
+     and also long lacunary indices (e.g., for multiple streams), supported in MRGLatticeLac.  ******* ???
+     */
     #define ORDERMAX 100
 
 };
 
-
 //===========================================================================
+// Implementation:
+
 
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildLaBasis(int64_t d) {
@@ -130,7 +132,7 @@ void MRGLattice<Int, Real>::buildLaBasis(int64_t d) {
     b.SetLength(this->m_order + 1);
     LatticeTester::Invert(m_aCoeff, b, this->m_order);
 
-    // b is the characteristic polynomial
+    // b is the characteristic polynomial of the MRG.
     PolyPE < Int > ::setM(this->m_modulo);
     PolyPE < Int > ::setF(b);
     PolyPE<Int> pol;

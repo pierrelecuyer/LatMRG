@@ -5,8 +5,8 @@
  **/
 
 // The code to define the Int and Real types.  Here we must recompile to change it.
-#define TYPES_CODE  LD     // Int = int64_t, Real = double
-//#define TYPES_CODE  ZD     // Int = ZZ, Real = double
+//#define TYPES_CODE  LD     // Int = int64_t, Real = double
+#define TYPES_CODE  ZD     // Int = ZZ, Real = double
 
 #include <iostream>
 #include <cstdint>
