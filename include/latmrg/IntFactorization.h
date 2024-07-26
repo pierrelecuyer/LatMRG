@@ -1,5 +1,6 @@
 #ifndef LATMRG_INTFACTORIZATION_H
 #define LATMRG_INTFACTORIZATION_H
+#define USE_YAFU
 
 #include <vector>
 #include <list>
@@ -377,18 +378,27 @@ std::string IntFactorization<Int>::toString() const {
 template<typename Int>
 void IntFactorization<Int>::factorize() {
 #ifdef USE_YAFU
-      std::string S("./data/yafu \"factor(");
+      //std::string S("./data/yafu \"factor(");
+      std::string S("./data/yafu -s ");
       std::ostringstream num;
       num << m_number;
-      S += num.str() + ")\"";
-
+      //S += num.str() + ")\"";
+      
+      S += num.str();
+      
       // Choose a temporary name for the file
+      
       const char *filename = "temp938573291";
 
       S += " > ";
       S += filename;
+
       // factorize and set output to filename
-      std::system (S.c_str ());
+      int systemRet = system(S.c_str ());
+      if(systemRet == -1){
+         std::cout << "An error occured while running YAFU! Exiing! \n\n";
+         exit(1);
+      }
       // Now read the result file and extract the prime factors from the
       // lines PRIME FACTOR xxx
       std::ifstream in (filename);
@@ -397,9 +407,23 @@ void IntFactorization<Int>::factorize() {
         std::cerr << "Error:   cannot open file   filename\n";
         exit(8);
       }
+      
       std::string line;
-      std::string::size_type pos;
+      //std::string::size_type pos;
       Int z;
+      
+      
+      while (getline (in, line)) {
+        S = line;
+        NTL::conv(z, S.c_str ());
+        if (z!=0)
+           addFactor (z, 1, PRIME);
+      }
+      
+      makeUnique();
+      remove (filename);
+      
+      /*
       do {
         getline (in, line, '\n');
         pos = line.find ("factors found");
@@ -413,12 +437,13 @@ void IntFactorization<Int>::factorize() {
           addFactor (z, 1, PRIME);
         }
       }
-
+      
       unique ();
       remove (filename);
       remove("session.log");
       remove("factor.log");
       remove("siqs.dat");
+      */
 #else
    std::cout << "IntFactorization: Yafu is not installed in ./data.\n"
          "For more information on how to fix this problem, look at the\n"
@@ -465,8 +490,8 @@ void IntFactorization<Int>::calcInvFactors() {
    }
 }
 
-extern template class IntFactorization<std::int64_t> ;
-extern template class IntFactorization<NTL::ZZ> ;
+template class IntFactorization<std::int64_t> ;
+template class IntFactorization<NTL::ZZ> ;
 
 }
 #endif

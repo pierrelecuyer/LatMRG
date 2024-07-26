@@ -5,9 +5,6 @@ top = '.'
 out = 'build'
 
 from waflib import Utils
-from shutil import copyfile
-import os
-import stat
 
 import imp
 #import sys
@@ -27,8 +24,6 @@ def options(ctx):
     ctx.add_option('--latticetester', action='store', help='prefix under which latticetester is installed')
 
 def configure(ctx):
-    print('→ prefix is ' + ctx.options.prefix)
-    ctx.env.prefix = ctx.options.prefix
     build_platform = Utils.unversioned_sys_platform()
     ctx.msg("Build platform", build_platform)
 
@@ -103,7 +98,7 @@ def configure(ctx):
     #     ctx.setenv('debug', env)
     #     ctx.env.append_unique('CXXFLAGS', ['-g'])
     #     ctx.define('DEBUG', 1)
-    
+
 
 def distclean(ctx):
 
@@ -112,15 +107,6 @@ def distclean(ctx):
         verfile.delete()
     from waflib import Scripting
     Scripting.distclean(ctx)
-    
-
-def post(ctx):
-    if ctx.cmd == 'install': 
-        if not os.path.exists(ctx.env.prefix + '/bin/examples/data'):
-           os.makedirs(ctx.env.prefix + '/bin/examples/data')
-        copyfile('data/factorm', ctx.env.prefix + '/bin/examples/data/yafu')
-        st = os.stat(ctx.env.prefix + '/bin/examples/data/yafu')
-        os.chmod(ctx.env.prefix + '/bin/examples/data/yafu', st.st_mode | stat.S_IEXEC)
 
 
 def build(ctx):
@@ -145,11 +131,7 @@ def build(ctx):
         if ctx.env.BUILD_DOCS:
             ctx.recurse('doc') 
 
-    ctx.recurse('data')   
-    
-    ctx.add_post_fun(post)
-   
-    
+    ctx.recurse('data')    
 
     # ctx.recurse('analysis') # probably broken, not used in the current version
 
