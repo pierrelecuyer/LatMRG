@@ -1,7 +1,7 @@
 /**
  * This example tests the functions that deal with integer factorization, primality testing,
  * finding certain types of prime numbers, and testing for the primitivity of an integer
- * modulo m or of a polynomial modulo another polynomial f(x).
+ * modulo m or the primitivity of a polynomial f(x) modulo m.
  **/
 
 // The code to define the Int and Real types.  Here we must recompile to change it.

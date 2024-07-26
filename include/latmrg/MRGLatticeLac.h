@@ -58,7 +58,7 @@ public:
    virtual ~MRGLatticeLac();
 
    /**
-    * Builds the basis of the MRG recurrence in \f$d\f$ dimensions using
+    * Builds the basis of the MRG recurrence in \f$d\f$ dimensions, not using
     * the lacunary indices.
     */
    void buildBasis (int d);
@@ -133,8 +133,8 @@ void MRGLattice<Int, Real>::buildLaBasis(int64_t d) {
     LatticeTester::Invert(m_aCoeff, b, this->m_order);
 
     // b is the characteristic polynomial of the MRG.
-    PolyPE < Int > ::setM(this->m_modulo);
-    PolyPE < Int > ::setF(b);
+    PolyPE < Int > ::setModulus(this->m_modulo);
+    PolyPE < Int > ::setPoly(b);
     PolyPE<Int> pol;
     int64_t ord = 0;
 
@@ -159,6 +159,8 @@ void MRGLattice<Int, Real>::buildLaBasis(int64_t d) {
         }
     }
 
+    //  From here we can use BasisConstruction.  *********
+
     /* On veut s'assurer que la base m_v soit triangulaire (pour satisfaire
      * les conditions de l'article \cite{rLEC94e} [sec. 3, conditions sur
      * V_i >= i]) et de plein rang (on remplace les lignes = 0 par lignes
@@ -177,6 +179,7 @@ void MRGLattice<Int, Real>::buildLaBasis(int64_t d) {
     this->setNegativeNorm();
     this->setDualNegativeNorm();
 
+    //  This approach could be slow!  *****
     for (int64_t i = 2; i <= d; i++)
         incDimLaBasis(IMax);
 
