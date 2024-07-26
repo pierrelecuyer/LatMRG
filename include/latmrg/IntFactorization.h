@@ -394,8 +394,11 @@ void IntFactorization<Int>::factorize() {
       S += filename;
 
       // factorize and set output to filename
-      std::system (S.c_str ());
-      
+      int systemRet = system(S.c_str ());
+      if(systemRet == -1){
+         std::cout << "An error occured while running YAFU! Exiing! \n\n";
+         exit(1);
+      }
       // Now read the result file and extract the prime factors from the
       // lines PRIME FACTOR xxx
       std::ifstream in (filename);
