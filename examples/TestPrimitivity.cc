@@ -23,21 +23,23 @@
 
 using namespace LatMRG;
 
-Int m(101);      // Modulus m = 101
-Int a(34);       // An LCG multiplier
+Int m(2147483647);   // Modulus m = 101
+Int a(16807);       // An LCG multiplier
 bool isP;
-
 
 
 int main() {
    std::cout << "Types: " << strFlexTypes << "\n";
-   std::cout << "TestPrimitivity \n\n";
+   std::cout << "TestPrimitivity modulo m = " << m << "\n\n";
    IntFactorization<Int> f(m-1);
    f.factorize();
+   std::cout << f.toString();
    f.calcInvFactors();
    isP = isPrimitiveElement(a, f, m);
-   std::cout
-         << a << " is a primitive element mod " << m <<"? " << isP << "\n\n";
+   std::cout  << a << " is a primitive element mod " << m <<"? " << isP << "\n";
+   a = 123456;
+   isP = isPrimitiveElement(a, f, m);
+   std::cout  << a << " is a primitive element mod " << m <<"? " << isP << "\n";
    return 0;
 }
 
