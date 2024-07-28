@@ -355,7 +355,7 @@ template<typename Int>
 std::string IntFactorization<Int>::toString() const {
    typename std::list<IntFactor<Int>>::const_iterator it = m_factorList.begin();
    std::ostringstream out;
-   out << m_number << ":\n";
+   out << "Factorization of " << m_number << ":\n";
    //   out << "its factors:\n";
    while (it != m_factorList.end()) {
       out << (*it).toString() << std::endl;
@@ -378,12 +378,10 @@ std::string IntFactorization<Int>::toString() const {
 template<typename Int>
 void IntFactorization<Int>::factorize() {
 #ifdef USE_YAFU
-      //std::string S("./data/yafu \"factor(");
-      std::string S("./data/yafu -s ");
+      // std::string S("./data/yafu -s ");
+      std::string S("yafu -s ");
       std::ostringstream num;
       num << m_number;
-      //S += num.str() + ")\"";
-      
       S += num.str();
       
       // Choose a temporary name for the file
@@ -396,7 +394,7 @@ void IntFactorization<Int>::factorize() {
       // factorize and set output to filename
       int systemRet = system(S.c_str ());
       if(systemRet == -1){
-         std::cout << "An error occured while running YAFU! Exiing! \n\n";
+         std::cout << "An error occurred while running YAFU! Exiting! \n\n";
          exit(1);
       }
       // Now read the result file and extract the prime factors from the
@@ -407,12 +405,9 @@ void IntFactorization<Int>::factorize() {
         std::cerr << "Error:   cannot open file   filename\n";
         exit(8);
       }
-      
       std::string line;
       //std::string::size_type pos;
       Int z;
-      
-      
       while (getline (in, line)) {
         S = line;
         //Check if yafu output line is 'this is a prime number'
@@ -422,7 +417,6 @@ void IntFactorization<Int>::factorize() {
               addFactor (z, 1, PRIME);
         }
       }
-      
       makeUnique();
       remove (filename);
       
@@ -448,9 +442,9 @@ void IntFactorization<Int>::factorize() {
       remove("siqs.dat");
       */
 #else
-   std::cout << "IntFactorization: Yafu is not installed in ./data.\n"
-         "For more information on how to fix this problem, look at the\n"
-         "installation documentation.\n";
+   std::cout << "IntFactorization: Yafu is not installed or not accessible.\n";
+//         "For more information on how to fix this problem, look at the \n"
+//         "installation documentation.\n";
    std::cout << "Exiting the program to avoid undefined behavior.";
    exit(1);
 #endif
