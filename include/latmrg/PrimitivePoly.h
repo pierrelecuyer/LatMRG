@@ -128,7 +128,7 @@ static bool isPrimitive23(const IntVec &C, const Int &m, const IntFactorization<
  */
 template<typename Int>
 // static void getPoly(const IntVec &C, const Int &m, ModInt<Int>::PolX f);   //  This one needs to be fixed.....  **********
-static void getPoly(const IntVec &C, const Int &m, NTL::ZZ_pX f);
+static void getPoly(const IntVec &C, const Int &m, typename ModInt<Int>::PolX f);
 
 /**
  * ****  This function does two different things !!!
@@ -148,23 +148,35 @@ static bool isPrimitive(const IntVec &C, const Int &m, const IntFactorization<In
    Int a0;
    static int64_t k;
    typename ModInt<Int>::PolX f;
+   
+   
    getPoly(C, m, f);
+   
    k = C.length() - 1;
+   
    // rep is the NTL::ZZ equivalent of the NTL::ZZ_p element.
-   a0 = -rep(ConstTerm(f));
+   
+   a0 = -rep(ConstTerm(f));      
+   
    if ((k & 2) == 0) a0 = -a0;
    if (!isPrimitiveElement(a0, fm, m)) return false;
    return isPrimitive23(C, m, fr);
+   
+   
+   return true;
+   
 }
 
 template<typename Int>
 static bool isPrimitive23 (const IntVec &C, const Int &m, const IntFactorization<Int> &fr) {
+   
    typename ModInt<Int>::PolX f;
    getPoly(C, m, f);
    static int64_t k;
    k = C.length() - 1;
    if (1 == k) return true;
-
+   
+   
    // First test for irreducibility, which is faster.
    //  if (!isIrreducible())      // slow
    //  if (0 == DetIrredTest(Q))   // medium slow
@@ -174,15 +186,17 @@ static bool isPrimitive23 (const IntVec &C, const Int &m, const IntFactorization
    // Test Condition 2
    Int r0;
    r0 = fr.getNumber();
+   
+   //typename ModInt<Int>::PolX Q;
    typename ModInt<Int>::PolX Q;
    Q = PowerXMod(r0, f);
    if (0 != deg(Q)) return false;
    Int T1;
-   T1 = rep(ConstTerm(f));
+   NTL::conv(T1, rep(ConstTerm(f)));
    if ((k & 1) == 1) T1 = -T1;
    if (T1 < 0) T1 += m;
    if (rep(ConstTerm(Q)) != T1) return false;
-
+   
    // Test Condition 3
    if (fr.getStatus() == LatticeTester::PRIME) return true;
    std::vector<Int> invFactorList = fr.getInvFactorList();
@@ -193,6 +207,7 @@ static bool isPrimitive23 (const IntVec &C, const Int &m, const IntFactorization
       if (0 == deg(Q)) return false;
       ++it;
    }
+   
    return true;
 }
 
@@ -201,14 +216,21 @@ static bool isPrimitive23 (const IntVec &C, const Int &m, const IntFactorization
 
 template<typename Int>
 // static void getPoly(const IntVec &C, const Int &m, ModInt<Int>::PolX f) {   // Fix this!!!   *******
-static void getPoly(const IntVec &C, const Int &m, NTL::ZZ_pX f) {
-   static int64_t k;
-   typename ModInt<Int>::IntVecP cP;
+static void getPoly(const IntVec &C, const Int &m, typename ModInt<Int>::PolX f) {
+   
+   ModInt<Int>::IntP::init(m);   
+   
+   typename ModInt<Int>::IntVecP cP;   
    conv(cP, C);
-   for (int64_t i = 0; i < cP.length(); i++)
-      SetCoeff(f, i, cP[i]);
+   
+   for (int64_t i = 0; i < cP.length(); i++) {
+      SetCoeff(f, i+1, cP[i]);
+   }
+   
    f.normalize();
+   
    ModInt<Int>::PolE::init(f);
+   
 }
 
 // Remove this!
