@@ -145,6 +145,7 @@ static void getPoly(const IntVec &C, const Int &m, typename ModInt<Int>::PolX f)
 template<typename Int>
 static bool isPrimitive(const IntVec &C, const Int &m, const IntFactorization<Int> &fm,
       const IntFactorization<Int> &fr) {
+   
    Int a0;
    static int64_t k;
    typename ModInt<Int>::PolX f;
@@ -220,7 +221,7 @@ static void getPoly(const IntVec &C, const Int &m, typename ModInt<Int>::PolX f)
    
    ModInt<Int>::IntP::init(m);   
    
-   typename ModInt<Int>::IntVecP cP;   
+   typename ModInt<Int>::IntVecP cP;     
    conv(cP, C);
    
    for (int64_t i = 0; i < cP.length(); i++) {
@@ -228,8 +229,9 @@ static void getPoly(const IntVec &C, const Int &m, typename ModInt<Int>::PolX f)
    }
    
    f.normalize();
-   
    ModInt<Int>::PolE::init(f);
+   
+   
    
 }
 
