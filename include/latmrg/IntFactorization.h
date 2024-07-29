@@ -410,9 +410,12 @@ void IntFactorization<Int>::factorize() {
       Int z;
       while (getline (in, line)) {
         S = line;
-        NTL::conv(z, S.c_str ());
-        if (z!=0)
-           addFactor (z, 1, PRIME);
+        //Check if yafu output line is 'this is a prime number'
+        if (S.substr(0,1) != "t") {
+           NTL::conv(z, S.c_str ());
+           if (z!=0)
+              addFactor (z, 1, PRIME);
+        }
       }
       makeUnique();
       remove (filename);
