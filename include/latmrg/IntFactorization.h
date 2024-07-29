@@ -20,8 +20,9 @@ namespace LatMRG {
  * Represents the factorization of an arbitrary positive integer, usually into prime factors,
  * but not always.  The factors are `IntFactor` objects.
  * There are also functions to sort and print the list of factors.
- * The factorization is performed by the `MIRACL` software \cite iSCO03a,
- * which uses different methods in succession to perform the factorization.
+ * The factorization is performed by the `yafu` executable program, which must be installed
+ * in a directory that belongs to the `PATH` for the function to work.
+ * This program is in `latmrg/data/yafu` in the git distribution.
  *
  * Recall that for any natural integer \f$n\f$, there is a unique decomposition in
  * prime factors of the form
@@ -287,7 +288,7 @@ template<typename Int>
 void IntFactorization<Int>::read(const char *name) {
    std::ifstream in(name);
    if (!(in.is_open())) {
-      std::string str("IntFactorization::read:   Unable to open input file  ");
+      std::string str("IntFactorization::read: Unable to open input file  ");
       str += name;
       throw std::invalid_argument(str);
    }
@@ -322,7 +323,6 @@ void IntFactorization<Int>::read(const char *name) {
       addFactor(x, k, status);
       ++vsize;
    }
-
    // makeUnique ();
    assert(checkProduct());
    m_invFactorList.reserve(vsize);
@@ -356,7 +356,6 @@ std::string IntFactorization<Int>::toString() const {
    typename std::list<IntFactor<Int>>::const_iterator it = m_factorList.begin();
    std::ostringstream out;
    out << "Factorization of " << m_number << ":\n";
-   //   out << "its factors:\n";
    while (it != m_factorList.end()) {
       out << (*it).toString() << std::endl;
       ++it;
@@ -378,70 +377,43 @@ std::string IntFactorization<Int>::toString() const {
 template<typename Int>
 void IntFactorization<Int>::factorize() {
 #ifdef USE_YAFU
-      // std::string S("./data/yafu -s ");
-      std::string S("yafu -s ");
-      std::ostringstream num;
-      num << m_number;
-      S += num.str();
-      
-      // Choose a temporary name for the file
-      
-      const char *filename = "temp938573291";
+   // std::string S("./data/yafu -s ");
+   std::string S("yafu -s ");
+   std::ostringstream num;
+   num << m_number;
+   S += num.str();
 
-      S += " > ";
-      S += filename;
+   // Choose a temporary name for the file
+   const char *filename = "temp938573291";
+   S += " > ";
+   S += filename;
 
-      // factorize and set output to filename
-      int systemRet = system(S.c_str ());
-      if(systemRet == -1){
-         std::cout << "An error occurred while running YAFU! Exiting! \n\n";
-         exit(1);
-      }
-      // Now read the result file and extract the prime factors from the
-      // lines PRIME FACTOR xxx
-      std::ifstream in (filename);
+   // factorize and set output to filename
+   int systemRet = system(S.c_str());
+   if (systemRet == -1) {
+      std::cout << "An error occurred while running YAFU! Exiting! \n\n";
+      exit(1);
+   }
+   // Now read the result file and extract the prime factors from the
+   // lines PRIME FACTOR xxx
+   std::ifstream in(filename);
 
-      if (!(in.is_open())) {
-        std::cerr << "Error:   cannot open file   filename\n";
-        exit(8);
-      }
-      std::string line;
-      //std::string::size_type pos;
-      Int z;
-      while (getline (in, line)) {
-        S = line;
-        NTL::conv(z, S.c_str ());
-        if (z!=0)
-           addFactor (z, 1, PRIME);
-      }
-      makeUnique();
-      remove (filename);
-      
-      /*
-      do {
-        getline (in, line, '\n');
-        pos = line.find ("factors found");
-      } while (pos == std::string::npos);
-      while (getline (in, line, '\n')) {
-        pos = line.find ("=");
-        if (pos != std::string::npos) {
-          // Found a prime factor
-          S = line.substr (pos + 2);
-          NTL::conv(z, S.c_str ());
-          addFactor (z, 1, PRIME);
-        }
-      }
-      
-      unique ();
-      remove (filename);
-      remove("session.log");
-      remove("factor.log");
-      remove("siqs.dat");
-      */
+   if (!(in.is_open())) {
+      std::cerr << "Error:   cannot open file   filename\n";
+      exit(8);
+   }
+   std::string line;
+   //std::string::size_type pos;
+   Int z;
+   while (getline(in, line)) {
+      S = line;
+      NTL::conv(z, S.c_str());
+      if (z != 0) addFactor(z, 1, PRIME);
+   }
+   makeUnique();
+   remove(filename);
 #else
    std::cout << "IntFactorization: Yafu is not installed or not accessible.\n";
-//         "For more information on how to fix this problem, look at the \n"
-//         "installation documentation.\n";
    std::cout << "Exiting the program to avoid undefined behavior.";
    exit(1);
 #endif
@@ -471,7 +443,6 @@ bool IntFactorization<Int>::checkProduct() const {
 template<typename Int>
 void IntFactorization<Int>::calcInvFactors() {
    //   sort ();
-   // unsigned
    uint64_t j = 0;
    for (auto it = m_factorList.rbegin(); it != m_factorList.rend(); it++) {
       if (it->getFactor() == Int(1)) continue;
