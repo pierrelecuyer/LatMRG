@@ -397,21 +397,24 @@ void IntFactorization<Int>::factorize() {
    // Now read the result file and extract the prime factors from the
    // lines PRIME FACTOR xxx
    std::ifstream in(filename);
-
-   if (!(in.is_open())) {
-      std::cerr << "Error:   cannot open file   filename\n";
-      exit(8);
-   }
-   std::string line;
-   //std::string::size_type pos;
-   Int z;
-   while (getline(in, line)) {
-      S = line;
-      NTL::conv(z, S.c_str());
-      if (z != 0) addFactor(z, 1, PRIME);
-   }
-   makeUnique();
-   remove(filename);
+      if (!(in.is_open())) {
+        std::cerr << "Error:   cannot open file   filename\n";
+        exit(8);
+      }
+      std::string line;
+      //std::string::size_type pos;
+      Int z;
+      while (getline (in, line)) {
+        S = line;
+        //Check if yafu output line is 'this is a prime number'
+        if (S.substr(0,1) != "t") {
+           NTL::conv(z, S.c_str ());
+           if (z!=0)
+              addFactor (z, 1, PRIME);
+        }
+      }
+      makeUnique();
+      remove (filename);
 #else
    std::cout << "IntFactorization: Yafu is not installed or not accessible.\n";
    std::cout << "Exiting the program to avoid undefined behavior.";
