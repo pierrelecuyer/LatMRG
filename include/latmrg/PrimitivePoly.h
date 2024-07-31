@@ -194,7 +194,7 @@ static bool isPrimitive23 (const IntVec &C, const Int &m, const IntFactorization
    if (0 != deg(Q)) return false;
    Int T1;
    NTL::conv(T1, rep(ConstTerm(f)));
-   if ((k & 2) == 1) T1 = -T1;
+   if ((k & 1) == 1) T1 = -T1;
    if (T1 < 0) T1 += m;
    if (rep(ConstTerm(Q)) != T1) return false;
    
