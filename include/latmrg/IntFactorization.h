@@ -104,7 +104,9 @@ public:
 
    /**
     * Tries to find all the prime factors of this integer.
-    * The current implementation uses Yafu and works only if Yafu is installed.
+    * It stores all its factors. If the number is a prime number then
+    * there is only one factor. The current implementation uses Yafu and 
+    * works only if Yafu is installed.
     */
    void factorize();
 
