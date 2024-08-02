@@ -104,7 +104,9 @@ public:
 
    /**
     * Tries to find all the prime factors of this integer.
-    * The current implementation uses Yafu and works only if Yafu is installed.
+    * It stores all its factors. If the number is a prime number then
+    * there is only one factor. The current implementation uses Yafu and 
+    * works only if Yafu is installed.
     */
    void factorize();
 
@@ -406,7 +408,15 @@ void IntFactorization<Int>::factorize() {
       Int z;
       while (getline (in, line)) {
         S = line;
-        //Check if yafu output line is 'this is a prime number'
+        /** 
+         * If the integer to be factorized is not a prime number then
+         * the yafu output contains one of its factors per line. 
+         * If it is a prime number then the first line of the output contains the  
+         * number itself and the second line is 'this is a prime number'.
+         * This text output would cause the program to crash if we tried to add it as a factor.
+         * Therefore, the program avoids to add the factor if the first character
+         * in the line of the output is 't'.
+        **/
         if (S.substr(0,1) != "t") {
            NTL::conv(z, S.c_str ());
            if (z!=0)
