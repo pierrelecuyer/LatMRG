@@ -54,50 +54,45 @@ public:
 };
 
 /**
- * This class deals with polynomials \f$P(x)\f$ in \f$\mathbb Z_m[X]\f$
- * defined as
+ * This file provides static functions to test the primitivity of polynomials
+ * with coefficients in \f$\mathbb Z_m\f$.  This is done by checking the
+ * conditions proposed by Alanen and Knuth \cite mALA64a, and restated in
+ * \cite sLEC23s and in the LatMRG user's guide.
+ * The polynomial arithmetic is done using NTL.  A polynomial
  * \anchor REF__PrimitivePoly_eq_poly1
  * \f[
- *   P(x) = c_0 + c_1x^1 + c_2 x^2 + \cdots + c_n x^n \tag{eq.poly1}
+ *   f(z) = c_0 + c_1 z^1 + \cdots + c_{k-1} z^{k-1} + c_k z^k    \tag{eq.poly1}
  * \f]
- * with degree \f$n\f$ and integer coefficients \f$c_i\f$ in
- * \f$\mathbb Z_m\f$. The arithmetic operations on these polynomials are
- * done modulo \f$m\f$ and modulo a polynomial \f$f(x)\f$ of degree \f$k\f$.
- * Thus all polynomials will be reduced modulo \f$f(x)\f$. In LatMRG, the
- * modulus polynomial \f$f(x)\f$ is usually written in the form
+ * of degree \f$k\f$ and integer coefficients \f$c_j \in \mathbb Z_m\f$
+ * is represented in NTL by the vector \f$(c_0,c_1,\dots,c_k)\f$ of its coefficients,
+ * which is directly accessible.
+ * The characteristic polynomial of an MRG, usually written as
  * \anchor REF__PrimitivePoly_eq_poly2
  * \f[
- *   f(x) = x^k - a_1x^{k-1} - \cdots- a_{k-1} x - a_k, \tag{eq.poly2}
+ *   P(z) = z^k - a_1 z^{k-1} - \cdots- a_{k-1} z - a_k,   \tag{eq.poly2}
  * \f]
- * and is associated with the recurrence
- * \anchor REF__PrimitivePoly_eq_rec2
- * \f[
- *   x_n = (a_1 x_{n-1} + a_2 x_{n-2} + \cdots+ a_k x_{n-k}) \bmod m. \tag{eq.rec2}
- * \f]
- * The two functions `setM` and `setF` *must* be called to initialize the
- * modulus \f$m\f$ and the modulus polynomial \f$f(x)\f$ before doing any
- * arithmetic operations on `PrimitivePoly` objects.
+ * must be put in the form {@link REF__PrimitivePoly_eq_poly1 (eq.poly1)} to use NTL.
+ * It has \f$c_k=1, $c_{k-1}= -a_1\f, \cdots, c_1 = -a_{k-1}, c_0 = - a_k\f$.
  *
- * We recall that the polynomial \f$f(x)\f$ in {@link REF__PrimitivePoly_eq_poly2 (eq.poly2)}
- * is a primitive polynomial modulo \f$m\f$ if and only if  the three
- * following conditions are satisfied:
+ * We recall that the polynomial \f$f(z)\f$ in {@link REF__PrimitivePoly_eq_poly1 (eq.poly1)}
+ * with \f$c_k=1\f$ is primitive modulo \f$m\f$ if and only if the three following conditions are satisfied:
  * \anchor REF__PrimitivePoly_isprimi
  * <dl> <dt>None</dt>
  * <dd>
- * \f$[(-1)^{k+1} a_k]^{(m-1)/q} \bmod m \neq1\f$ for each prime
+ * \f$[(-1)^{k} c_0]^{(m-1)/q} \bmod m \neq1\f$ for each prime
  * factor \f$q\f$ of \f$m - 1\f$;
  * </dd>
  * <dt>None</dt>
  * <dd>
- * \f$x^r \bmod(f(x),m) =  (-1)^{k+1} a_k \bmod m\f$;
+ * \f$z^r \bmod(f(z),m) =  (-1)^{k} c_0 \bmod m\f$;
  * </dd>
  * <dt>None</dt>
  * <dd>
- * \f$x^{r/q} \bmod(f(x), m) \f$ has positive degree for each prime
+ * \f$z^{r/q} \bmod(f(z), m) \f$ has positive degree for each prime
  * factor \f$q\f$ of \f$r\f$, with \f$1<q< r\f$;
  * </dd>
  * </dl> where \f$r = (m^k - 1)/(m - 1)\f$.
- * Condition 1 is the same as saying that \f$(-1)^{k+1} a_k\f$ is a
+ * Condition 1 is the same as saying that \f$(-1)^{k} c_0\f$ is a
  * primitive root of \f$m\f$. Condition 3 is automatically satisfied
  * when \f$r\f$ is prime.
  *
@@ -109,26 +104,28 @@ public:
  */
 
 /**
- * Returns `true` iff the polynomial \f$f(x)\f$ with coefficients in `C` is a primitive polynomial
+ * Returns `true` iff the polynomial \f$f\f$ is a primitive polynomial
  * modulo \f$m\f$. The factorizations of \f$m-1\f$ and \f$r\f$ must be in `fm` and `fr` respectively.
  */
 template<typename Int>
-static bool isPrimitive(const IntVec &C, const Int &m, const IntFactorization<Int> &fm,
+static bool isPrimitive(const NTL::vector<Int> &aa, const Int &m, const IntFactorization<Int> &fm,
       const IntFactorization<Int> &fr);
 
 /**
- * Similar to `isPrimitive` above, except that it only checks for Conditions 2 and 3.
+ * Similar to `isPrimitive` above, except that this function only checks for Conditions 2 and 3.
  * Condition 1 is assumed to hold.
  */
 template<typename Int>
-static bool isPrimitive23(const IntVec &C, const Int &m, const IntFactorization<Int> &fr);
+static bool isPrimitive23(const NTL::vector<Int> &aa, const Int &m,
+      const IntFactorization<Int> &fr);
 
 /**
- * Returns in `f` the modulus polynomial \f$f(x)\f$ for given coefficients 'C', modulo 'm'.
+ * Sets the coefficients of the polynomial `f` so it corresponds to the characteristic polynomial
+ * \f$P(z) = z^k - a_1 z^{k-1} - \cdots- a_{k-1} z - a_k\f$ with coefficients \f$c_{k-j} = a_j = \f$`aa[j]`.
+ * Also sets the modulus for `f` to `m`.
  */
 template<typename Int>
-// static void getPoly(const IntVec &C, const Int &m, ModInt<Int>::PolX f);   //  This one needs to be fixed.....  **********
-static void getPoly(const IntVec &C, const Int &m, typename ModInt<Int>::PolX f);
+static void setPoly(const NTL::vector<Int> &aa, const Int &m, typename ModInt<Int>::PolX &f);
 
 /**
  * ****  This function does two different things !!!
@@ -138,57 +135,39 @@ static void getPoly(const IntVec &C, const Int &m, typename ModInt<Int>::PolX f)
  */
 //template<typename Int>
 //static void powerMod(const Int &j, const IntVec &C, const Int &m, ModInt<Int>::PolX fj);
-
 //===========================================================================
 // Implementation
-
 template<typename Int>
-static bool isPrimitive(const IntVec &C, const Int &m, const IntFactorization<Int> &fm,
+static bool isPrimitive(const NTL::vector<Int> &aa, const Int &m, const IntFactorization<Int> &fm,
       const IntFactorization<Int> &fr) {
-   
-   Int a0;
+   static typename ModInt<Int>::PolX f;  // We could also pass this f as a parameter and always reuse the same.
+   setPoly(aa, m, f);
    static int64_t k;
-   typename ModInt<Int>::PolX f;
-   
-   
-   getPoly(C, m, f);
-   
-   k = C.length() - 1;
-   
-   // rep is the NTL::ZZ equivalent of the NTL::ZZ_p element.
-   
-   a0 = -rep(ConstTerm(f));      
-   
-   if ((k & 2) == 0) a0 = -a0;
-   if (!isPrimitiveElement(a0, fm, m)) return false;
-   return isPrimitive23(C, m, fr);
-   
-   
-   return true;
-   
+   k = deg(f);
+   Int c0;
+   c0 = rep(ConstTerm(f));  // The constant term.
+   if ((k & 1) == 1) c0 = -c0;
+   if (!isPrimitiveElement(c0, fm, m)) return false;
+   return isPrimitive23(aa, m, fr);
 }
 
 template<typename Int>
-static bool isPrimitive23 (const IntVec &C, const Int &m, const IntFactorization<Int> &fr) {
-   
-   typename ModInt<Int>::PolX f;
-   getPoly(C, m, f);
+static bool isPrimitive23(const NTL::vector<Int> &aa, const Int &m,
+      const IntFactorization<Int> &fr) {
+   static typename ModInt<Int>::PolX f;
+   setPoly(aa, m, f);
    static int64_t k;
-   k = C.length() - 1;
-   if (1 == k) return true;
-   
-   
+   k = deg(f);
+   if (k == 1) return true;
    // First test for irreducibility, which is faster.
-   //  if (!isIrreducible())      // slow
    //  if (0 == DetIrredTest(Q))   // medium slow
    if (0 == IterIrredTest(f))   // fastest
    return false;
 
    // Test Condition 2
+   std::cout << "Testing Condition 2 \n";
    Int r0;
    r0 = fr.getNumber();
-   
-   //typename ModInt<Int>::PolX Q;
    typename ModInt<Int>::PolX Q;
    Q = PowerXMod(r0, f);
    if (0 != deg(Q)) return false;
@@ -197,9 +176,10 @@ static bool isPrimitive23 (const IntVec &C, const Int &m, const IntFactorization
    if ((k & 1) == 1) T1 = -T1;
    if (T1 < 0) T1 += m;
    if (rep(ConstTerm(Q)) != T1) return false;
-   
+
    // Test Condition 3
-   if (fr.getStatus() == LatticeTester::PRIME) return true;
+   std::cout << "Testing Condition 3 \n";
+   if (fr.getStatus() == PRIME) return true;
    std::vector<Int> invFactorList = fr.getInvFactorList();
    assert(!invFactorList.empty());
    typename std::vector<Int>::const_iterator it = invFactorList.begin();
@@ -208,40 +188,22 @@ static bool isPrimitive23 (const IntVec &C, const Int &m, const IntFactorization
       if (0 == deg(Q)) return false;
       ++it;
    }
-   
    return true;
 }
 
-// Here two new objects f and cP are created inside this function and are
-// never destroyed explicitly. Are they destroyed automatically on exit?
-
 template<typename Int>
-// static void getPoly(const IntVec &C, const Int &m, ModInt<Int>::PolX f) {   // Fix this!!!   *******
-static void getPoly(const IntVec &C, const Int &m, typename ModInt<Int>::PolX f) {
-   
-   ModInt<Int>::IntP::init(m);   
-   
-   typename ModInt<Int>::IntVecP cP;     
-   conv(cP, C);
-   
-   for (int64_t i = 0; i < cP.length(); i++) {
-      SetCoeff(f, i+1, cP[i]);
-   }
-   
-   f.normalize();
-   ModInt<Int>::PolE::init(f);
-   
-   
-   
+static void setPoly(const NTL::vector<Int> &aa, const Int &m, typename ModInt<Int>::PolX &f) {
+   ModInt<Int>::IntP::init(m);    // Sets the modulus to m.
+   typename ModInt<Int>::IntVecP cP;  // The coefficients `aa` must be converted to Z_p type.
+   conv(cP, aa);
+   int64_t k = cP.length() - 1;
+   SetCoeff(f, k, 1);
+   for (int64_t i = 0; i < k; i++)
+      SetCoeff(f, i, -cP[k - i]);
+   f.normalize();  // Strip leading zeros.
 }
 
-// Remove this!
-// template<typename Int>
-// static void powerMod(const Int &j, const IntVec &C, const Int &m, ModInt<Int>::PolX fj) {
-//   typename ModInt<Int>::PolX f;
-//   getF(C, m, f);
 //   power(fj, f, j);
-//}
 
-}  // namespace LatMRG
+}// namespace LatMRG
 #endif

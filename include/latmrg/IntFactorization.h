@@ -103,27 +103,32 @@ public:
    void makeUnique();
 
    /**
-    * Tries to find all the prime factors of this integer.
-    * It stores all its factors. If the number is a prime number then
-    * there is only one factor. The current implementation uses Yafu and 
-    * works only if Yafu is installed.
+    * Tries to find all the prime factors of this integer and stores all the factors
+    * in increasing order in a private list.  Then calls `makeUnique`.
+    * If the number is prime, there is a single factor in the list.
+    * This function works only if Yafu is installed.
     */
    void factorize();
-
-   /**
-    * Checks that the integer in this object is equal to the product of its factors.
-    * Returns `true` if it is, otherwise `false`.
-    */
-   bool checkProduct() const;
 
    /**
     * Given the list of prime factors \f$p\f$ of the integer \f$x\f$ in this object,
     * this function computes the internal list of the inverse factors \f$x/p\f$,
     * sorted in increasing order.
     * For example, if \f$x = 24\f$, the prime factorization is \f$24 = 2^3 \cdot 3\f$
-    * and the list on inverse factors is \f$[8, 12]\f$.
+    * and the list on inverse factors is \f$[24/3, 24/2] = [8, 12]\f$.
     */
    void calcInvFactors();
+
+   /**
+    * Same as calling `factorize` and `calcInvFactors` in a single function call.
+    */
+   void factorizePlus();
+
+   /**
+    * Checks that the integer in this object is equal to the product of its factors.
+    * Returns `true` if it is, otherwise `false`.
+    */
+   bool checkProduct() const;
 
    /**
     * Returns the main integer in this object.
@@ -182,6 +187,7 @@ private:
 
    /**
     * The status of this number, i.e. whether it is prime, composite, ...
+    * NOTE:  This variable is not properly maintained !!!!                 ********
     */
    PrimeType m_status;
 
@@ -282,6 +288,7 @@ template<typename Int>
 void IntFactorization<Int>::addFactor(const Int &x, int64_t mult, PrimeType st) {
    IntFactor<Int> f(x, mult, st);
    m_factorList.push_back(f);
+   if (m_factorList.size() > 1) m_status = COMPOSITE;
 }
 
 //===========================================================================
@@ -380,12 +387,12 @@ template<typename Int>
 void IntFactorization<Int>::factorize() {
 #ifdef USE_YAFU
    // std::string S("./data/yafu -s ");
-   std::string S("yafu -s ");
+   std::string S("yafu -s ");  // yafu must be accessible from the PATH.
    std::ostringstream num;
    num << m_number;
    S += num.str();
 
-   // Choose a temporary name for the file
+   // Choose a name for a temporary file for yafu.
    const char *filename = "temp938573291";
    S += " > ";
    S += filename;
@@ -399,38 +406,46 @@ void IntFactorization<Int>::factorize() {
    // Now read the result file and extract the prime factors from the
    // lines PRIME FACTOR xxx
    std::ifstream in(filename);
-      if (!(in.is_open())) {
-        std::cerr << "Error:   cannot open file   filename\n";
-        exit(8);
+   if (!(in.is_open())) {
+      std::cerr << "Error:   cannot open file   filename\n";
+      exit(8);
+   }
+   std::string line;
+   //std::string::size_type pos;
+   Int z;
+   while (getline(in, line)) {
+      S = line;
+      /*
+       * If the integer to be factored is not a prime number then
+       * the yafu output contains one of its factors per line.
+       * If it is a prime number then the first line of the output contains the
+       * number itself and the second line is 'this is a prime number'.
+       * We want to skip this second line when reading back the factors.
+       * For this, we skip the line when its first character is 't'.
+       */
+      if (S.substr(0, 1) != "t") {
+         NTL::conv(z, S.c_str());
+         if (z != 0) addFactor(z, 1, PRIME);
       }
-      std::string line;
-      //std::string::size_type pos;
-      Int z;
-      while (getline (in, line)) {
-        S = line;
-        /** 
-         * If the integer to be factorized is not a prime number then
-         * the yafu output contains one of its factors per line. 
-         * If it is a prime number then the first line of the output contains the  
-         * number itself and the second line is 'this is a prime number'.
-         * This text output would cause the program to crash if we tried to add it as a factor.
-         * Therefore, the program avoids to add the factor if the first character
-         * in the line of the output is 't'.
-        **/
-        if (S.substr(0,1) != "t") {
-           NTL::conv(z, S.c_str ());
-           if (z!=0)
-              addFactor (z, 1, PRIME);
-        }
-      }
-      makeUnique();
-      remove (filename);
+   }
+   if (m_factorList.size() == 1) m_status = PRIME;
+   makeUnique();
+   remove(filename);
 #else
    std::cout << "IntFactorization: Yafu is not installed or not accessible.\n";
    std::cout << "Exiting the program to avoid undefined behavior.";
    exit(1);
 #endif
 }
+
+//===========================================================================
+
+template<typename Int>
+void IntFactorization<Int>::factorizePlus() {
+   this->factorize();
+   this->calcInvFactors();
+}
+
 
 //===========================================================================
 
