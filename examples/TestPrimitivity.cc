@@ -14,6 +14,7 @@
 #include <NTL/matrix.h>
 #include <NTL/ZZ.h>
 #include "latticetester/FlexTypes.h"
+#include "latmrg/FlexModInt.h"
 #include "latmrg/EnumTypes.h"
 #include "latmrg/IntFactor.h"
 #include "latmrg/IntFactorization.h"
@@ -49,16 +50,37 @@ int main() {
 //   aa[1] = 1145902849652723;
 //   aa[2] = 0;
 //   aa[3] = -1184153554609676;
+
    mm = 101;
+   setModulus<NTL::ZZ>(mm);
+   // ModInt<Int>::IntP::init(mm);        // Sets the modulus to m.
+   r = (mm * mm * mm - 1) / (mm - 1);
    aa[0] = 1;
    aa[1] = 28;
    aa[2] = 49;
    aa[3] = 8;
-   r = (mm * mm * mm - 1) / (mm - 1);
    std::cout << "\nTesting for a primitive polynomial with m = " << mm << ", aa = " << aa << ", r = " << r << "\n";
    IntFactorization<NTL::ZZ> fm (mm-1);
    fm.factorizePlus();
    IntFactorization<NTL::ZZ> fr (r);
+   fr.setStatus(PRIME);
+   isP = isPrimitiveElement(aa[3], fm, mm);
+   std::cout << aa[3] << " is a primitive element mod " << mm << "? " << isP << "\n";
+
+   isP = isPrimitive<NTL::ZZ>(aa, mm, fm, fr);
+   std::cout << "Is it a primitive polynomial?  " << isP << "\n";
+
+   mm = 9223372036854773561;
+   setModulus<NTL::ZZ>(mm);
+   r = (mm * mm * mm - 1) / (mm - 1);
+   aa[0] = 1;
+   aa[1] = 1145902849652723;
+   aa[2] = 0;
+   aa[3] = -1184153554609676;
+   std::cout << "\nTesting for a primitive polynomial with m = " << mm << ", aa = " << aa << ", r = " << r << "\n";
+   fm.setNumber (mm-1);
+   fm.factorizePlus();
+   fr.setNumber (r);
    fr.setStatus(PRIME);
    isP = isPrimitiveElement(aa[3], fm, mm);
    std::cout << aa[3] << " is a primitive element mod " << mm << "? " << isP << "\n";

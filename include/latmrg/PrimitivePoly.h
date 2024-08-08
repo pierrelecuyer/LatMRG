@@ -17,12 +17,15 @@
 #include "NTL/lzz_pXFactoring.h"
 
 #include "latticetester/Util.h"
+#include "latmrg/FlexModInt.h"
 #include "latmrg/EnumTypes.h"
 #include "latmrg/IntFactor.h"
 #include "latmrg/PrimitiveInt.h"
 
 namespace LatMRG {
 
+/*  Moved to FlexModInt.h
+ *
 template<typename Int>
 class ModInt {
 public:
@@ -42,7 +45,9 @@ public:
    typedef NTL::mat_zz_p IntMatP;
    typedef NTL::zz_pX PolX;
 };
+*/
 
+/*
 template<>
 class ModInt<NTL::ZZ> {
 public:
@@ -52,6 +57,7 @@ public:
    typedef NTL::mat_ZZ_p IntMatP;
    typedef NTL::ZZ_pX PolX;
 };
+*/
 
 /**
  * This file provides static functions to test the primitivity of polynomials
@@ -103,6 +109,13 @@ public:
  * <tt>ZZ_pE</tt> which is implemented with the big integer type <tt>NTL::ZZ_p</tt>.
  */
 
+
+/**
+ * Sets to `m` the modulus used by NTL for its `IntP` calculations.
+ */
+//template<typename Int>
+//static void setModulus(const Int &m);
+
 /**
  * Returns `true` iff the polynomial \f$f\f$ is a primitive polynomial
  * modulo \f$m\f$. The factorizations of \f$m-1\f$ and \f$r\f$ must be in `fm` and `fr` respectively.
@@ -122,10 +135,9 @@ static bool isPrimitive23(const NTL::vector<Int> &aa, const Int &m,
 /**
  * Sets the coefficients of the polynomial `f` so it corresponds to the characteristic polynomial
  * \f$P(z) = z^k - a_1 z^{k-1} - \cdots- a_{k-1} z - a_k\f$ with coefficients \f$c_{k-j} = a_j = \f$`aa[j]`.
- * Also sets the modulus for `f` to `m`.
  */
 template<typename Int>
-static void setPoly(const NTL::vector<Int> &aa, const Int &m, typename ModInt<Int>::PolX &f);
+static void setPoly(const NTL::vector<Int> &aa, typename ModInt<Int>::PolX &f);
 
 /**
  * ****  This function does two different things !!!
@@ -135,13 +147,23 @@ static void setPoly(const NTL::vector<Int> &aa, const Int &m, typename ModInt<In
  */
 //template<typename Int>
 //static void powerMod(const Int &j, const IntVec &C, const Int &m, ModInt<Int>::PolX fj);
+
+
 //===========================================================================
 // Implementation
+
+/*
+template<typename Int>
+static void setModulus(const Int &m) {
+   ModInt<Int>::IntP::init(m);        // Sets the modulus to m.
+}
+*/
+
 template<typename Int>
 static bool isPrimitive(const NTL::vector<Int> &aa, const Int &m, const IntFactorization<Int> &fm,
       const IntFactorization<Int> &fr) {
    static typename ModInt<Int>::PolX f;  // We could also pass this f as a parameter and always reuse the same.
-   setPoly(aa, m, f);
+   setPoly(aa, f);
    static int64_t k;
    k = deg(f);
    Int c0;
@@ -155,7 +177,7 @@ template<typename Int>
 static bool isPrimitive23(const NTL::vector<Int> &aa, const Int &m,
       const IntFactorization<Int> &fr) {
    static typename ModInt<Int>::PolX f;
-   setPoly(aa, m, f);
+   setPoly(aa, f);
    static int64_t k;
    k = deg(f);
    if (k == 1) return true;
@@ -192,8 +214,8 @@ static bool isPrimitive23(const NTL::vector<Int> &aa, const Int &m,
 }
 
 template<typename Int>
-static void setPoly(const NTL::vector<Int> &aa, const Int &m, typename ModInt<Int>::PolX &f) {
-   ModInt<Int>::IntP::init(m);    // Sets the modulus to m.
+static void setPoly(const NTL::vector<Int> &aa, typename ModInt<Int>::PolX &f) {
+   // ModInt<Int>::IntP::init(m);        // Sets the modulus to m.
    typename ModInt<Int>::IntVecP cP;  // The coefficients `aa` must be converted to Z_p type.
    conv(cP, aa);
    int64_t k = cP.length() - 1;

@@ -18,11 +18,11 @@ namespace LatMRG {
 
 /**
  * Returns `true` iff `a` is a primitive element modulo \f$p^e\f$.
- * The prime factor decomposition of \f$p-1\f$ must be given in `f`
- * and the list of inverse factors in there must be up to date.
+ * The prime factor decomposition of \f$p-1\f$ must be given in `fac`,
+ * and the list of inverse factors in `fac` must be up to date.
  */
 template<typename Int>
-static bool isPrimitiveElement(const Int &a, const IntFactorization<Int> &f,
+static bool isPrimitiveElement(const Int &a, const IntFactorization<Int> &fac,
       const Int &p, long e = 1);
 
 
@@ -30,7 +30,7 @@ static bool isPrimitiveElement(const Int &a, const IntFactorization<Int> &f,
 // Implementation
 
 template<typename Int>
-bool isPrimitiveElement(const Int &a, const IntFactorization<Int> &f,
+bool isPrimitiveElement(const Int &a, const IntFactorization<Int> &fac,
       const Int &p, long e) {
    if (0 == p) throw std::range_error("PrimitiveInt::isPrimitiveElement: p = 0");
    if (0 == a) return false;
@@ -39,11 +39,11 @@ bool isPrimitiveElement(const Int &a, const IntFactorization<Int> &f,
    m = NTL::power(p, e);
    t1 = a;
    if (t1 < 0) t1 += m;
-   const std::vector<Int> invList = f.getInvFactorList();
+   const std::vector<Int> invList = fac.getInvFactorList();
    assert (!(invList.empty ()));
    for (auto it = invList.begin(); it != invList.end(); it++) {
       if (*it == (m - 1)) continue;
-      t2 = NTL::PowerMod(t1, *it, m);
+      t2 = NTL::PowerMod(t1, *it, m);  // Works for either ZZ or int64_t.
       if (t2 == 1) return false;
    }
    return true;

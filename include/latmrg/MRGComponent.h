@@ -12,16 +12,17 @@
 namespace LatMRG {
 
 /**
- * This class represents an MRG recurrence or order \f$k\f$ modulo \f$m\f$, of the form
+ * This class offers tools to verify if an MRG recurrence or order \f$k\f$ modulo \f$m\f$,
+ * of the form
  * \f[
- *   x_n = (a_1 x_{n-1} + \cdots+ a_k x_{n-k}) \mbox{ mod } m.
+ *   x_n = (a_1 x_{n-1} + \cdots+ a_k x_{n-k}) \mbox{ mod } m,
  * \f]
- * It offers primarily tools to verify if the recurrence has full period or not.
- * It stores the parameters and other information such as the factorizations of
- * \f$m-1\f$ and of \f$r = (m^k-1)/(m-1)\f$, which are needed to check the full period
- * conditions.  It does not look at the lattice structure at all.
- * One can easily use a single object of this class for several values of the
+ * has full period or not.  The object is constructed for given values of
+ * \f$k\f$ and \f$m\f$, and can be used for several values of the
  * coefficients \f$a_1,\dots,a_k\f$.
+ * It stores information such as the factorizations of
+ * \f$m-1\f$ and of \f$r = (m^k-1)/(m-1)\f$, which are needed to check the full period
+ * conditions.  It does not look at the lattice structure.
  */
 template<typename Int> class MRGComponent {
 
@@ -50,7 +51,7 @@ public:
 
     /**
      * Same as the previous constructor with \f$m = b^e + c\f$.
-     * */
+     */
     MRGComponent(Int b, int e, Int c, int k, DecompType decom1,
             const char *filem1, DecompType decor, const char *filer);
 
@@ -68,7 +69,7 @@ public:
     ~MRGComponent();
 
     /**
-     * Copy constructor;
+     * Copy constructor.
      */
     MRGComponent(const MRGComponent<Int> &comp);
 
@@ -79,7 +80,7 @@ public:
 
     /**
      * Sets the vector of multipliers to `aa`, with `aa[j]` containing \f$a_j\f$.
-     * The order of the MRG is set equal to the length of this vector, plus 1.
+     * The order \f$k\f$ of the MRG is set equal to the length of this vector, plus 1.
      */
     void setaa(const IntVec &aa);
 
@@ -92,8 +93,8 @@ public:
 
     /**
      * Returns the matrix multiplier for this MRG so it can be viewed as a MMRG.
-     *                                                                      ******  ??
-     * */
+     *                                                                Useful   ******  ??
+     */
     IntMat getA() const {
         return m_A;     // Must be constructed!
     }
@@ -104,16 +105,10 @@ public:
     // void setA(const IntMat &A);
 
     /**
-     * Returns `true` if coefficients \f$aa\f$ give a MRG with maximal
+     * Returns `true` if the coefficients \f$aa\f$ give an MRG with maximal
      * period; returns `false` otherwise.
      */
     bool maxPeriod(const IntVec &aa);
-
-    /**
-     * Returns `true` if coefficients in matrix \f$A\f$ give a MMRG with maximal
-     * period; returns `false` otherwise.    Move to MMCG  ????   ***********
-     */
-    // bool maxPeriod(const IntMat &A);
 
     /**
      * Assumes that the maximal-period condition (1) holds and checks only for
@@ -158,7 +153,7 @@ public:
     }
 
     /**
-     * Returns a const reference to `orbitSeed`, when available.
+     * Returns a const reference to the initial state `orbitSeed`, when available.
      * */
     IntVec& getOrbitSeed() {
         return orbitSeed;
@@ -193,7 +188,7 @@ public:
 private:
 
     /**
-     * Implements what does the constructor above, with the same arguments.
+     * This is called by the constructor, with the same arguments.
      */
     void init(const Int &m, int k, DecompType decom1, const char *filem1,
             DecompType decor, const char *filer);
@@ -221,7 +216,7 @@ private:
      * This is because we use NTL to compute the characteristic polynomial
      * of the matrix since it is already implemented.
      */
-    IntFactorization<NTL::ZZ> ifm2;
+    // IntFactorization<NTL::ZZ> ifm2;
 
     /**
      * The prime factor decomposition of \f$r=(m^k-1)/(m-1)\f$, where
@@ -236,7 +231,7 @@ private:
      * This is because we use NTL to compute the characteristic polynomial
      * of the matrix since it is already implemented.
      */
-    IntFactorization<NTL::ZZ> ifr2;
+    // IntFactorization<NTL::ZZ> ifr2;
 
     /**
      * The modulus \f$m\f$ of the recurrence, as a  `Modulus` object.
@@ -264,12 +259,12 @@ private:
     IntMat m_A;    // Want it here?
 
     /**
-     * Basis `b` with `b^e+r = m`.
+     * Basis `b` with `b^e+c = m`.
      * */
     Int m_b;
 
     /**
-     * Exponent `e` with `b^e+r = m`.
+     * Exponent `e` with `b^e+c = m`.
      * */
     int m_e;
 
@@ -316,6 +311,32 @@ private:
 
 //===========================================================================
 
+
+// Main constructor.
+template<typename Int>
+MRGComponent<Int>::MRGComponent(const Int &m, int k, DecompType decom1,
+        const char *filem1, DecompType decor, const char *filer) {
+    m_b = m;
+    m_e = 1;
+    m_c = Int(0);
+    init(m, k, decom1, filem1, decor, filer);
+}
+
+//===========================================================================
+
+template<typename Int>
+MRGComponent<Int>::MRGComponent(Int b, int e, Int c, int k, DecompType decom1,
+        const char *filem1, DecompType decor, const char *filer) {
+    Int m = NTL::power(b, e) + c;
+    m_b = b;
+    m_e = e;
+    m_c = c;
+    init(m, k, decom1, filem1, decor, filer);
+}
+
+//===========================================================================
+
+// Copy constructor.
 template<typename Int>
 MRGComponent<Int>::MRGComponent(const MRGComponent<Int> &lat) :
         ifm1(lat.ifm1), ifr(lat.ifr), m_k(lat.m_k) {
@@ -339,6 +360,7 @@ MRGComponent<Int>::MRGComponent(const MRGComponent<Int> &lat) :
 
 //===========================================================================
 
+// Assignment.
 template<typename Int>
 MRGComponent<Int>& MRGComponent<Int>::operator=(const MRGComponent<Int> &lat) {
     if (this != &lat) {
@@ -360,6 +382,7 @@ MRGComponent<Int>& MRGComponent<Int>::operator=(const MRGComponent<Int> &lat) {
 }
 
 //============================================================================
+
 
 template<typename Int>
 void MRGComponent<Int>::init(const Int &m0, int k0, DecompType decom1,
@@ -423,29 +446,6 @@ void MRGComponent<Int>::init(const Int &m0, int k0, DecompType decom1,
         ifr2.calcInvFactors();
     }
 
-}
-
-//===========================================================================
-
-template<typename Int>
-MRGComponent<Int>::MRGComponent(const Int &m, int k, DecompType decom1,
-        const char *filem1, DecompType decor, const char *filer) {
-    m_b = m;
-    m_e = 1;
-    m_c = Int(0);
-    init(m, k, decom1, filem1, decor, filer);
-}
-
-//===========================================================================
-
-template<typename Int>
-MRGComponent<Int>::MRGComponent(Int b, int e, Int c, int k, DecompType decom1,
-        const char *filem1, DecompType decor, const char *filer) {
-    Int m = NTL::power(b, e) + c;
-    m_b = b;
-    m_e = e;
-    m_c = c;
-    init(m, k, decom1, filem1, decor, filer);
 }
 
 //===========================================================================
