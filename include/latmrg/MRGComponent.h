@@ -2,12 +2,11 @@
 #define	LATMRG_MRGCOMPONENT_H
 
 #include "latmrg/EnumTypes.h"
-#include "latmrg/PrimitivePoly.h"
 #include "latmrg/IntFactorization.h"
 // #include "latmrg/Modulus.h"
-#include "latmrg/PrimitiveInt.h"
 #include <NTL/mat_poly_ZZ.h>
 #include <string>
+#include "Primitivity.h"
 
 namespace LatMRG {
 
@@ -387,7 +386,7 @@ MRGComponent<Int>& MRGComponent<Int>::operator=(const MRGComponent<Int> &lat) {
 template<typename Int>
 void MRGComponent<Int>::init(const Int &m0, int k0, DecompType decom1,
         const char *filem1, DecompType decor, const char *filer) {
-    PrimitivePoly<Int>::setM(m0);  // This one is no longer an object !!!   ******************
+    FlexModInt<Int>::setModulus(m0);
     // module.init(m0);
     m_m = m0;
     m_k = k0;
@@ -501,11 +500,11 @@ void MRGComponent<Int>::setA(const IntMat &A) {
 
 template<typename Int>
 bool MRGComponent<Int>::maxPeriod(const IntVec &aa) {
-    PrimitivePoly<Int>::setM(getM());
+    Primitivity<Int>::setM(getM());
     m_a = aa;      // The m_a is changed and this is not said in the doc!  ****
-    PrimitivePoly<Int>::reverse(m_a, m_k, 2);
-    PrimitivePoly<Int>::setF(m_a);
-    PrimitivePoly<Int> pol;
+    Primitivity<Int>::reverse(m_a, m_k, 2);
+    Primitivity<Int>::setF(m_a);
+    Primitivity<Int> pol;
     PrimitiveInt<Int> privfm(ifm1, getM(), 1);
     return pol.isPrimitive(privfm, ifr);
 }
@@ -538,7 +537,7 @@ template<typename Int>
 bool MRGComponent<Int>::maxPeriod(const IntMat &a0) {
     // Converting everything to NTL::ZZ to ease the characteristic polynomial
     // computation
-    PrimitivePoly<NTL::ZZ>::setM(NTL::ZZ(getM()));
+    Primitivity<NTL::ZZ>::setM(NTL::ZZ(getM()));
     NTL::ZZX poly;
     NTL::matrix<NTL::ZZ> mat(m_k, m_k);
     for (int i = 0; i < m_k; i++) {
@@ -550,8 +549,8 @@ bool MRGComponent<Int>::maxPeriod(const IntMat &a0) {
     NTL::CharPoly(poly, mat);
     // Copying the polynomial to a vector
     NTL::vector<NTL::ZZ> vec(NTL::VectorCopy(poly, m_k + 1));
-    PrimitivePoly<NTL::ZZ>::setF(vec);
-    PrimitivePoly<NTL::ZZ> pol;
+    Primitivity<NTL::ZZ>::setF(vec);
+    Primitivity<NTL::ZZ> pol;
     PrimitiveInt < NTL::ZZ > privfm(ifm2, NTL::ZZ(getM()), 1);
     return pol.isPrimitive(privfm, ifr2);
 }
@@ -563,13 +562,13 @@ bool MRGComponent<Int>::maxPeriod(const IntMat &a0) {
 
 template<typename Int>
 bool MRGComponent<Int>::maxPeriod23(const IntVec &a0) {
-    PrimitivePoly<Int>::setM(getM());
+    FlexModInt<Int>::setModulus(getM());
     m_a = a0;
     PrimitivePoly<Int>::reverse(m_a, m_k, 2);
     PrimitivePoly<Int>::setF(m_a);
     PrimitivePoly<Int> pol;
-    // La condition 1 a déjà été vérifiée dans SeekMain
-    return pol.isPrimitive(ifr);
+    // La condition 1 a déjà été vérifiée.
+    return pol.isPrimitive23(ifr);
 }
 
 //===========================================================================

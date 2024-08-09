@@ -16,15 +16,6 @@ namespace LatMRG {
  * This file provides a functions to test for this property.
  */
 
-/**
- * Returns `true` iff `a` is a primitive element modulo \f$p^e\f$.
- * The prime factor decomposition of \f$p-1\f$ must be given in `fac`,
- * and the list of inverse factors in `fac` must be up to date.
- */
-template<typename Int>
-static bool isPrimitiveElement(const Int &a, const IntFactorization<Int> &fac,
-      const Int &p, long e = 1);
-
 
 //============================================================================
 // Implementation

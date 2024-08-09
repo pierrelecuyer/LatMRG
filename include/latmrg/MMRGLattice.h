@@ -4,7 +4,7 @@
 #include "latticetester/IntLatticeExt.h"
 
 #include "latmrg/EnumTypes.h"
-#include "latmrg/PrimitivePoly.h"
+#include "Primitivity.h"
 
 namespace LatMRG {
 

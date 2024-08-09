@@ -2,11 +2,11 @@
 #define	LATMRG_LCGCOMPONENT_H
 
 #include "latmrg/EnumTypes.h"
-#include "latmrg/PrimitivePoly.h"
 #include "latmrg/IntFactorization.h"
 #include "latmrg/Modulus.h"
-#include "latmrg/PrimitiveInt.h"
 #include <string>
+#include "PrimitiveInt.h-old"
+#include "Primitivity.h"
 
 namespace LatMRG {
 
