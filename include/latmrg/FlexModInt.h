@@ -52,7 +52,7 @@ public:
    typedef NTL::vec_zz_p IntVecP;
    typedef NTL::mat_zz_p IntMatP;
 };
-/*
+
 // Not needed, I think.
 template<>
 class FlexModInt<NTL::ZZ> {
@@ -63,13 +63,12 @@ public:
    typedef NTL::mat_ZZ_p IntMatP;
    typedef NTL::ZZ_pX PolX;
 };
-*/
 
 /**
  * Sets to `m` the modulus used by NTL for its `IntP` calculations.
  */
-//template<typename Int>
-//static void setModulusIntP(const Int &m);
+template<typename Int>
+static void setModulusIntP(const Int &m);
 
 //===========================================================================
 // Implementation

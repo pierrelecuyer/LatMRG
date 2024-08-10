@@ -82,6 +82,8 @@ namespace LatMRG {
  * The function `isPrimitiveElement` does no use `FlexModInt`.
  */
 
+//===========================================================================
+// Declarations
 
 /**
  * Returns `true` iff `a` is a primitive element modulo \f$p^e\f$.
@@ -95,7 +97,7 @@ static bool isPrimitiveElement(const Int &a, const IntFactorization<Int> &fac,
 /**
  * Returns `true` iff the polynomial \f$f\f$ is a primitive polynomial
  * modulo \f$m\f$. The factorizations of \f$m-1\f$ and \f$r\f$ must be in `fm` and `fr` respectively.
- * The modulus `m` must have been set before by the `setModulusIntP` function from `FlexModInt`.  *******  ???
+ * The modulus `m` should be set before, via the `setModulusIntP` function from `FlexModInt`.
  */
 template<typename Int>
 static bool isPrimitive(const NTL::vector<Int> &aa, const Int &m, const IntFactorization<Int> &fm,
@@ -112,13 +114,14 @@ static bool isPrimitive23(const NTL::vector<Int> &aa, const Int &m,
 /**
  * Sets the coefficients of the polynomial `f` so it corresponds to the characteristic polynomial
  * \f$P(z) = z^k - a_1 z^{k-1} - \cdots- a_{k-1} z - a_k\f$ with coefficients \f$c_{k-j} = a_j = \f$`aa[j]`.
+ * The modulus used in `IntP` is assumed to be correct, this is not verified.
  */
 template<typename Int>
 static void setPoly(typename FlexModInt<Int>::PolX &f, const NTL::vector<Int> &aa);
 
 /**
- * ****  This function does two different things !!!
- *   One is done by getPoly, one is done in NTL.   Remove.    ******
+ * ****  This function was merging two different operations !!!  Remove.    ******
+ * One is done by getPoly, one is done in NTL.
  * Returns in `fj` the polynomial \f$x^j \mod f(x) (\bmod m)\f$ where \f$f(x)\f$ is the
  * polynomial with coefficients in 'C', modulo 'm'.
  */
@@ -127,14 +130,8 @@ static void setPoly(typename FlexModInt<Int>::PolX &f, const NTL::vector<Int> &a
 
 
 //===========================================================================
-// Implementation
+// IMPLEMENTTION
 
-/*
-template<typename Int>
-static void setModulus(const Int &m) {
-   FlexModInt<Int>::IntP::init(m);        // Sets the modulus to m.
-}
-*/
 
 template<typename Int>
 bool isPrimitiveElement(const Int &a, const IntFactorization<Int> &fac,
@@ -210,17 +207,16 @@ static bool isPrimitive23(const NTL::vector<Int> &aa, const Int &m,
 
 template<typename Int>
 static void setPoly(typename FlexModInt<Int>::PolX &f, const NTL::vector<Int> &aa) {
-   // FlexModInt<Int>::IntP::init(m);        // Sets the modulus to m.
    typename FlexModInt<Int>::IntVecP cP;  // The coefficients `aa` must be converted to Z_p type.
    conv(cP, aa);
    int64_t k = cP.length() - 1;
    SetCoeff(f, k, 1);  // c_k = 1.
    for (int64_t j = 0; j < k; j++)
       SetCoeff(f, j, -cP[k - j]);    // c_j = -a_{k-j} for j < k.
-   // f.normalize();  // Strip leading zeros.   Not needed since c_k = 1.
 }
 
 //   power(fj, f, j);
 
 }// namespace LatMRG
+
 #endif

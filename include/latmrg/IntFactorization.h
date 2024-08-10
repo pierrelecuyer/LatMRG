@@ -227,7 +227,6 @@ private:
 // End class IntFactorization
 
 // ==============================================================================
-
 // IMPLEMENTATION
 
 template<typename Int>
