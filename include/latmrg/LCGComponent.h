@@ -13,59 +13,42 @@ namespace LatMRG {
  * \f[
  *   x_n = (a x_{n-1} + c_0) \bmod m.
  * \f]
- * The object is constructed for a given value of \f$m\f$, and can be used for several values of the
- * parameters \f$a\f$ and  \f$c_0\f$.  It does not look at the lattice structure.
+ * The object is constructed for a given value of \f$m\f$ and a boolean that tells if we assume a nonzero increment
+ * \f$c_0\f$ relatively prime with \f$m\f$, or no increment (\f$c_0 = 0\f$).
+ * In the latter case,
+ * The same object can be used to test the period for several values of \f$a\f$.
+ * It does not look at the lattice structure.
  */
 template<typename Int>
 class LCGComponent {
 
 //  using namespace LatMRG;
 
-//private:
-   // typedef NTL::vector<Int> IntVec;
-   // typedef NTL::matrix<Int> IntMat;
-
 public:
 
    /**
-    * Constructor with modulus \f$m\f$, with the prime factor decomposition
-    * of \f$m-1\f$ specified by `decompm1`.
-    * The type `DecompType` is defined in `EnumTypes` and offers the
-    * following choices:  `DECOMP`: the integer will be factored,
+    * Constructor with modulus \f$m\f$, with the type of prime factor decomposition
+    * of \f$m-1\f$ or \f$m\f$ specified by `decomp`.
+    * When `increment` is `false`, we consider an LCG with no increment and we need the
+    * decomposition of \f$m-1\f$, otherwise we consider an LCG with an increment \f$c_0\f$
+    * relatively prime with \f$m\f$ and we need the prime decomposition of \f$m\f$.
+    * The type `DecompType` is defined in `EnumTypes` and offers the following choices:
+    * `DECOMP`: the integer will be factored,
     * `DECOMP_WRITE`: it will be factored and the prime factors written in a file,
     * `DECOMP_READ`: the prime factors are read from a file,
     * `DECOMP_PRIME`: the integer is assumed to be prime.
-    * The name `filem1` specifies the file where the factors of
-    * \f$m-1\f$ are read or written when the type
+    * The name `filename` specifies the file where the factors of
+    * \f$m-1\f$ or \f$m\f$ are read or written when the type
     * <tt>DECOMP_WRITE</tt> or <tt>DECOMP_READ</tt> is used.
     * The given files must be accessible by the program.
-    *
-    * Maybe we should just pass an `IntFactorization` instead of this.  Would be simpler?
     */
-   LCGComponent(const Int &m, DecompType decompm1, const char *filem1);
+   LCGComponent(const Int &m, DecompType decomp, const char *filename, bool increment = false);
 
    /**
     * Same as the previous constructor, but with `m=b^e+c`.
     */
-   LCGComponent(const Int &b, int e, const Int &c, DecompType decompm1, const char *filem1);
+   LCGComponent(const Int &b, int e, const Int &c, DecompType decomp, const char *filename, bool increment = false);
 
-   /**
-    * For an LCG component with an additive term \f$c_0\f$, we also need the prime factor
-    * decomposition of `m`.
-
-   LCGComponent(const Int &m, DecompType decompm1, const char *filem1,
-         DecompType decompm = NO_DECOMP, const char *filem = NULL);
-
-   LCGComponent(const Int &b, int e, const Int &c, DecompType decompm1, const char *filem1,
-         DecompType decompm = NO_DECOMP, const char *filem = NULL);
-    */
-
-   /**
-    * Constructor similar to the above, except that the modulus of
-    * congruence \f$m\f$ is inside the object `modul`.
-    */
-   // LCGComponent(Modulus<Int> &modul, int k, DecompType decom1,
-   //        const char *filem1, DecompType decor, const char *filer);
    /**
     * Destructor.
     */
@@ -94,25 +77,16 @@ public:
    /**
     * Returns `true` iff the LCG defined by
     * \f[
-    *   x_n = a x_{n-1} \bmod m
-    * \f]
-    * has full period \f$m\f$.
-    * This occurs if and only if \f$m\f$ is prime and \f$a\f$
-    * is a primitive element modulo \f$m\f$.
-    */
-   bool maxPeriod(const Int &a);
-
-   /**
-    * Returns `true` iff the LCG defined by
-    * \f[
     *   x_n = (a x_{n-1} + c_0) \bmod m
     * \f]
-    * has full period when \f$c_0\f$ is relatively prime with \f$m\f$.
-    * This function checks the following two conditions:
+    * has full period.  If the LCG has been constructed without an increment \f$c_0\f$,
+    * the function checks if f$a\f$ is a primitive element modulo \f$m\f$.
+    * If it was constructed with an increment, the function assumes that \f$c_0\f$
+    * is relatively prime with \f$m\f$ and it checks the two conditions:
     * (1) Every prime divisor \f$q\f$ of \f$m\f$ must divide \f$a-1\f$;
     * (2) If 4 divides \f$m\f$, then it must divide \f$a-1\f$.
     */
-   bool maxPeriodAdd(const Int &a);
+   bool maxPeriod(const Int &a);
 
    /**
     * Returns the value of the modulus \f$m\f$ of the recurrence.
@@ -165,19 +139,13 @@ private:
    /**
     * This is called by the constructor, with the same arguments.
     */
-   void init(const Int &m, DecompType decompm1, const char *filem1);
+   void init(const Int &m, DecompType decomp, const char *filename, bool increment = false);
 
    /**
-    * Used for the prime factor decomposition of \f$m-1\f$.
+    * Used for the prime factor decomposition of \f$m-1\f$ (when there is no increment)
+    * or \f$m\f$ (when the LCG has an increment).
     */
-   IntFactorization<Int> ifm1;
-
-   /**
-    * The prime factor decomposition of \f$m\f$.
-    * This one is used only for LCGs with a constant term.
-    * Also used to compute the full period of a LCG with a carry.  ?????
-    */
-   IntFactorization<Int> ifm;
+   IntFactorization<Int> m_fact;
 
    /**
     * The modulus \f$m\f$ of the recurrence.
@@ -191,18 +159,23 @@ private:
 
    /**
     * Basis `b` when `m = b^e + c`.
-    * */
+    */
    Int m_b;
 
    /**
     * Exponent `e` when `m = b^e + c`.
-    * */
+    */
    int m_e;
 
    /**
     * Rest `c` when `m = b^e + c`.
-    * */
+    */
    Int m_c;
+
+   /**
+    * Indicates if the LCG has an additive increment or not.
+    */
+   bool m_increment = false;
 
    /**
     * The length of the period \f$\rho\f$ for this MRG. For now, the
@@ -232,7 +205,7 @@ private:
     * Contains the starting state of the component for the case when the
     * lattice type is `ORBIT`. It is made of \f$k\f$ numbers.
     */
-   Int orbitSeed;
+   Int orbitSeed;   // Not used for now.
 
 };   // End of class declaration
 
@@ -290,22 +263,22 @@ private:
 //===========================================================================
 
 template<typename Int>
-LCGComponent<Int>::LCGComponent(const Int &m, DecompType decompm1, const char *filem1) {
+LCGComponent<Int>::LCGComponent(const Int &m, DecompType decomp, const char *filename, bool increment) {
    m_b = m;
    m_e = 1;
    m_c = Int(0);
-   init(m, decompm1, filem1);
+   init(m, decomp, filename, increment);
 }
 
 //===========================================================================
 
 template<typename Int>
-LCGComponent<Int>::LCGComponent(const Int &b, int e, const Int &c, DecompType decompm1, const char *filem1) {
+LCGComponent<Int>::LCGComponent(const Int &b, int e, const Int &c, DecompType decomp, const char *filename, bool increment) {
    Int m = NTL::power(b, e) + c;
    m_b = b;
    m_e = e;
    m_c = c;
-   init(m, decompm1, filem1);
+   init(m, decomp, filename, increment);
 }
 
 //===========================================================================
@@ -340,28 +313,13 @@ LCGComponent<Int>::~LCGComponent() {
 
 //============================================================================
 template<typename Int>
-void LCGComponent<Int>::init(const Int &m, DecompType decompm1, const char *filem1) {
+void LCGComponent<Int>::init(const Int &m, DecompType decomp, const char *filename, bool increment) {
    m_m = m;
+   m_increment = increment;
    setModulusIntP<Int>(m_m);
-   ifm = IntFactorization<Int>(m_m);
-   // std::cout << "Inside init 3 \n";
-   // ifm.factorizePlus();   // We always factorize m.
-   ifm1 = IntFactorization<Int>(m_m-1);
-   // ifm1(m_m - 1);
-   if (decompm1 != NO_DECOMP) {
-      if (decompm1 == DECOMP_READ) ifm1.read(filem1);
-      else ifm1.factorizePlus();
-      if (decompm1 == DECOMP_WRITE) {
-         std::ofstream fout(filem1);
-         fout << ifm1.toString();
-      }
-      // std::cout << "Inside init 5 \n";
-      std::ofstream fout("dummy");
-      // std::cout << "Before ifm1.toString \n";
-      if (filem1 != 0) fout << ifm1.toString();
-      // std::cout << "After ifm1.toString \n";
-      remove("dummy");
-   }
+   if (increment) m_fact = IntFactorization<Int>(m_m);
+   else m_fact = IntFactorization<Int>(m_m-1);
+   m_fact.decompToFactorsInv (decomp, filename);
 }
 
 //===========================================================================
@@ -375,19 +333,16 @@ void LCGComponent<Int>::seta(const Int &a) {
 
 template<typename Int>
 bool LCGComponent<Int>::maxPeriod(const Int &a) {
-   return isPrimitiveElement(a, ifm1, m_m);
-}
-
-//===========================================================================
-
-template<typename Int>
-bool LCGComponent<Int>::maxPeriodAdd(const Int &a) {
-   auto list = ifm.getFactorList();
-   for (auto iter = list.begin(); iter != list.end(); iter++) {
-      if ((a - Int(1)) % (*iter).getFactor() != 0) return false;
+   if (!m_increment)
+     return isPrimitiveElement(a, m_fact, m_m);   // Here, m is assumed to be prime.
+   else {
+      auto list = m_fact.getFactorList();
+      for (auto iter = list.begin(); iter != list.end(); iter++) {
+         if ((a - Int(1)) % (*iter).getFactor() != 0) return false;
+      }
+      if (m_m % 4 == 0 && (a - Int(1)) % 4 != 0) return false;
+      return true;
    }
-   if (m_m % 4 == 0 && (a - Int(1)) % 4 != 0) return false;
-   return true;
 }
 
 //===========================================================================
@@ -398,6 +353,7 @@ std::string LCGComponent<Int>::toString() {
    os << "LCGComponent:";
    os << "\n   m = " << m_m << " = " << m_b << "^" << m_e << " + " << m_c;
    os << "\n   a = " << m_a << "\n";
+   os << "\n   increment c_0 = " << m_increment << "\n";
    std::string str(os.str());
    return str;
 }

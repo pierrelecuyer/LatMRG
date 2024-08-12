@@ -381,38 +381,16 @@ void MRGComponent<Int>::init(const Int &m, int k, DecompType decompm1, const cha
    setModulusIntP<Int>(m_m);
    m_k = k;
    m_a.resize(m_k);
-   orbitSeed.resize(m_k);
+   orbitSeed.resize(m_k);   // Used ???
 
    Int mm1;  // m-1
    mm1 = m - 1;
    ifm1 = IntFactorization<Int>(mm1);
-   if (decompm1 != NO_DECOMP) {
-      if (decompm1 == DECOMP_READ) ifm1.read(filem1);
-      else ifm1.factorizePlus();
-      if (decompm1 == DECOMP_WRITE) {
-         std::ofstream fout(filem1);
-         fout << ifm1.toString();
-      }
-      std::ofstream fout("dummy");
-      if (filem1 != 0) fout << ifm1.toString();
-      remove("dummy");
-   }
+   ifm1.decompToFactorsInv (decompm1, filem1);
    Int r;
    r = (NTL::power(m, m_k) - 1) / (m - 1);
    ifr = IntFactorization<Int>(r);
-   // ifr.setNumber(r);
-   if (decompr != NO_DECOMP) {
-      if (decompr == DECOMP_READ) ifr.read(filer);
-      else if (decompr == DECOMP_PRIME) ifr.setStatus(PRIME);
-      else ifr.factorizePlus();
-      if (decompr == DECOMP_WRITE) {
-         std::ofstream fout(filer);
-         fout << ifr.toString();
-      }
-      std::ofstream fout("dummy");
-      if (filer != 0) fout << ifr.toString();
-      remove("dummy");
-   }
+   ifr.decompToFactorsInv (decompr, filer);
 }
 
 //===========================================================================
@@ -461,39 +439,11 @@ void MRGComponent<Int>::setaa(const IntVec &aa) {
  */
 
 //===========================================================================
-//  This one must be rewritten!       ****************
-//  Maybe just replaced by a single call to `isPrimitive`, and that's all!
+
 template<typename Int>
 bool MRGComponent<Int>::maxPeriod(const IntVec &aa) {
-   /*
-    Primitivity<Int>::setM(getM());
-    m_a = aa;      // The m_a is changed and this is not said in the doc!  ****
-    Primitivity<Int>::reverse(m_a, m_k, 2);
-    Primitivity<Int>::setF(m_a);
-    Primitivity<Int> pol;
-    PrimitiveInt<Int> privfm(ifm1, getM(), 1);
-    return pol.isPrimitive(privfm, ifr);
-    */
    return isPrimitive(aa, m_m, ifm1, ifr);
 }
-
-//===========================================================================
-
-//  This one is for an LCG, does not belong here.     ************
-/*
- template<typename Int>
- bool MRGComponent<Int>::maxPeriod(const Int &a) {
- auto list = factor.getFactorList();
- for (auto iter = list.begin(); iter != list.end(); iter++) {
- if ((a0 - Int(1)) % (*iter).getFactor() != 0)
- return false;
- }
- if (getM() % 4 == 0 && (a0 - Int(1)) % 4 != 0)
- return false;
-
- return true;
- }
- */
 
 //===========================================================================
 // This is for a matrix LCG, does not belong here.   *************
@@ -526,15 +476,6 @@ bool MRGComponent<Int>::maxPeriod(const IntVec &aa) {
 // Must be rewritten!
 template<typename Int>
 bool MRGComponent<Int>::maxPeriod23(const IntVec &aa) {
-   /*
-    FlexModInt<Int>::setModulus(getM());
-    m_a = a0;
-    PrimitivePoly<Int>::reverse(m_a, m_k, 2);
-    PrimitivePoly<Int>::setF(m_a);
-    PrimitivePoly<Int> pol;
-    // La condition 1 a déjà été vérifiée.
-    return pol.isPrimitive23(ifr);
-    */
    return isPrimitive(aa, m_m, ifm1, ifr);
 }
 

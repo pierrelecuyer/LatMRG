@@ -16,6 +16,7 @@
 
 namespace LatMRG {
 
+
 /**
  * Represents the factorization of an arbitrary positive integer, usually into prime factors,
  * but not always.  The factors are `IntFactor` objects.
@@ -89,6 +90,17 @@ public:
     * </center>
     */
    void read(const char *f);
+
+   /**
+    * Makes a decomposition of the current integer according to the selected value of `decomp`.
+    * The type `DecompType` is defined in `EnumTypes`..
+    * Unless this value is `NO_DECOMP`, the prime factors as well as the inverse factors
+    * are put in the `fact` object.
+    * The string `filename` is the name of the file where the factors are read or written
+    * when `decomp` is <tt>DECOMP_WRITE</tt> or <tt>DECOMP_READ</tt>.
+    * This file must be accessible by the program.
+    */
+   void decompToFactorsInv (DecompType decomp, const char *file);
 
    /**
     * Adds the factor `p` with multiplicity `mult` and prime status `status`
@@ -239,8 +251,8 @@ IntFactorization<Int>::IntFactorization(const char *name) :
 //===========================================================================
 
 template<typename Int>
-IntFactorization<Int>::IntFactorization(const Int &n) :
-      m_number(n), m_status(UNKNOWN) {
+IntFactorization<Int>::IntFactorization(const Int &x) :
+      m_number(x), m_status(UNKNOWN) {
 }
 
 //===========================================================================
@@ -284,16 +296,25 @@ IntFactorization<Int>::~IntFactorization() {
 //===========================================================================
 
 template<typename Int>
-void IntFactorization<Int>::addFactor(const Int &x, int64_t mult, PrimeType st) {
-   IntFactor<Int> f(x, mult, st);
-   m_factorList.push_back(f);
-   if (m_factorList.size() > 1) m_status = COMPOSITE;
+void IntFactorization<Int>::decompToFactorsInv (DecompType decomp, const char *filename) {
+   // fact.setNumber(x);
+   if (decomp != NO_DECOMP) {
+      if (decomp == DECOMP_READ) read(filename);
+      else factorize();
+      if (decomp == DECOMP_WRITE) {
+         std::ofstream fout(filename);
+         fout << toString();
+      }
+      calcInvFactors();
+   }
 }
+
 
 //===========================================================================
 
 template<typename Int>
 void IntFactorization<Int>::read(const char *name) {
+   // std::cout << "Reading file of factors " << name << "\n";
    std::ifstream in(name);
    if (!(in.is_open())) {
       std::string str("IntFactorization::read: Unable to open input file  ");
@@ -303,8 +324,10 @@ void IntFactorization<Int>::read(const char *name) {
    std::string tampon;
    // This should be modified to ignore the entire line because right now
    // we are limited if the number is too big.                             *********
-   in.ignore(256, '\n'); // drop rest of line
+   // in.ignore(256, '\n'); // drop rest of line
    int64_t vsize = 0;
+   in >> m_number;
+   // std::cout << "Number: " << m_number << "\n";
    while (in >> tampon) {
       Int x;
       int64_t k;
@@ -339,6 +362,15 @@ void IntFactorization<Int>::read(const char *name) {
 //===========================================================================
 
 template<typename Int>
+void IntFactorization<Int>::addFactor(const Int &x, int64_t mult, PrimeType st) {
+   IntFactor<Int> f(x, mult, st);
+   m_factorList.push_back(f);
+   if (m_factorList.size() > 1) m_status = COMPOSITE;
+}
+
+//===========================================================================
+
+template<typename Int>
 void IntFactorization<Int>::makeUnique() {
    sort();
    int64_t j = 1;
@@ -363,7 +395,7 @@ template<typename Int>
 std::string IntFactorization<Int>::toString() const {
    typename std::list<IntFactor<Int>>::const_iterator it = m_factorList.begin();
    std::ostringstream out;
-   out << "Factorization of " << m_number << ":\n";
+   out << m_number << "\n";
    while (it != m_factorList.end()) {
       out << (*it).toString() << std::endl;
       ++it;
@@ -460,7 +492,7 @@ bool IntFactorization<Int>::checkProduct() const {
       ++it;
    }
    if (temp != m_number) {
-      std::cout << "checkProduct: ERROR -->  " << m_number << " != " << temp << std::endl;
+      std::cout << "checkProduct: ERROR --> m_number = " << m_number << " != " << temp << std::endl;
    }
    return (temp == m_number);
 }

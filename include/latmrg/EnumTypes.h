@@ -82,18 +82,18 @@ enum LatticeType {
 };
 
 /**
- * Given an integer \f$r\f$, indicates what to do about the decomposition of
- * \f$r\f$ in its prime factors.
+ * Given an integer \f$x\f$, this type indicates what to do about the decomposition of
+ * \f$x\f$ in its prime factors, in the class `IntFactorization`.
  *
- * `DECOMP`: means that the program will factorize \f$r\f$.<br>
- * <tt>DECOMP_WRITE</tt>: means that the program will factorize \f$r\f$ and
- * writes the factors in a file.<br>
- * <tt>DECOMP_READ</tt>: means that \f$r\f$ is already factorized, and the
- * factors will be read from a file.<br>
- * <tt>DECOMP_PRIME</tt>: means that \f$r\f$ is prime. No factorization will
- * be done.
- * <tt>NO_DECOMP</tt>: The program will not need a decomposition. Used when not
- * checking the period.
+ * `DECOMP`: means that the program will factorize \f$x\f$.<br>
+ * <tt>DECOMP_WRITE</tt>: means that the program will factorize \f$x\f$ and
+ * writes the factors in a file, in the same format as for `read` below. <br>
+ * <tt>DECOMP_READ</tt>: means that \f$x\f$ is already factorized, and the
+ * factors will be read from a file, using function `read` below.<br>
+ * <tt>DECOMP_PRIME</tt>: means that \f$x\f$ is assumed to be prime.
+ * No factorization will be done.
+ * <tt>NO_DECOMP</tt>: The program will not make a decomposition in prime factors.
+ * Used when not checking the period.
  */
 enum DecompType {
    DECOMP, DECOMP_WRITE, DECOMP_READ, DECOMP_PRIME, NO_DECOMP
