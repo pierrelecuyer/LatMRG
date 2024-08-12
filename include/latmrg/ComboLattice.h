@@ -7,7 +7,7 @@
 
 #include "latmrg/MRGLattice.h"
 #include "latmrg/MRGPeriod.h"
-#include "latmrg/MWCLattice.h"
+#include "MWCComponent.h"
 
 namespace LatMRG {
 

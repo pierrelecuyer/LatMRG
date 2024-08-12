@@ -7,7 +7,7 @@
 
 // The code to define the Int and Real types.  Here we must recompile to change it.
 //#define TYPES_CODE  LD     // Int = int64_t, Real = double
-#define TYPES_CODE  ZD     // Int = ZZ, Real = double
+// #define TYPES_CODE  ZD     // Int = ZZ, Real = double
 
 #include <iostream>
 #include <cstdint>
@@ -25,9 +25,7 @@
 #include "latmrg/LCGComponent.h"
 #include "latmrg/MRGComponent.h"
 
-
 using namespace LatMRG;
-// using namespace LatticeTester;
 
 template<typename Int>
 static void TestPrimitiveInt(const Int &m, const Int &a) {
@@ -66,7 +64,7 @@ static void TestPeriodMRG (const Int &m, int k, const NTL::vector<Int> &aa, Deco
 
 int main() {
    typedef NTL::ZZ Int;
-   std::cout << "\nTestPrimitivity with Types: " << strFlexTypes << "\n\n";
+   std::cout << "\nTestPeriod with Int = ZZ  \n\n";
    Int m, a, r, b, c;
    int e;
    char filem1[] = "decomp2147483646.txt";
@@ -75,26 +73,26 @@ int main() {
    a = 16807;        // An LCG multiplier
    b = 2;  e = 31;  c = -1;
 
-   TestPrimitiveInt(m, a);
-   TestPeriodLCG (m, a, DECOMP_WRITE, filem1, false);
+   TestPrimitiveInt<Int>(m, a);
+   TestPeriodLCG<Int> (m, a, DECOMP_WRITE, filem1, false);
    std::cout << "Creating an IntFactorization from filem1 = " << filem1 << "\n";
    IntFactorization<Int> fact = IntFactorization<Int>(filem1);
-   std::cout << fact.toString() << "\n";
-   TestPeriodLCG (b, e, c, a, DECOMP_READ, filem1, false);
+   std::cout << fact.toString();
+   TestPeriodLCG<Int> (b, e, c, a, DECOMP_READ, filem1, false);
 
-   TestPeriodLCG (m, a, DECOMP, NULL, true);
-   TestPeriodLCG (m+1, (Int)16801, DECOMP, NULL, true);
+   TestPeriodLCG<Int> (m, a, DECOMP, NULL, true);
+   TestPeriodLCG<Int> (m+1, (Int)16801, DECOMP, NULL, true);
 
    int k = 3;
    NTL::vector<Int> aa;
    aa.SetLength(k+1);
-   // This one works only with Int = ZZ.
+   // This one works only with Int = ZZ, numbers are too large for int64_t.
    Int mm(9223372036854773561);
    aa[0] = 1;
    aa[1] = 1145902849652723;
    aa[2] = 0;
    aa[3] = -1184153554609676;
-   TestPeriodMRG (mm, 3, aa, DECOMP, NULL, DECOMP_PRIME, NULL);
+   TestPeriodMRG<Int> (mm, 3, aa, DECOMP, NULL, DECOMP_PRIME, NULL);
 
    return 0;
 }

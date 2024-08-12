@@ -16,7 +16,6 @@
 
 namespace LatMRG {
 
-
 /**
  * Represents the factorization of an arbitrary positive integer, usually into prime factors,
  * but not always.  The factors are `IntFactor` objects.
@@ -100,7 +99,7 @@ public:
     * when `decomp` is <tt>DECOMP_WRITE</tt> or <tt>DECOMP_READ</tt>.
     * This file must be accessible by the program.
     */
-   void decompToFactorsInv (DecompType decomp, const char *file);
+   void decompToFactorsInv(DecompType decomp, const char *file);
 
    /**
     * Adds the factor `p` with multiplicity `mult` and prime status `status`
@@ -296,7 +295,7 @@ IntFactorization<Int>::~IntFactorization() {
 //===========================================================================
 
 template<typename Int>
-void IntFactorization<Int>::decompToFactorsInv (DecompType decomp, const char *filename) {
+void IntFactorization<Int>::decompToFactorsInv(DecompType decomp, const char *filename) {
    // fact.setNumber(x);
    if (decomp != NO_DECOMP) {
       if (decomp == DECOMP_READ) read(filename);
@@ -308,7 +307,6 @@ void IntFactorization<Int>::decompToFactorsInv (DecompType decomp, const char *f
       calcInvFactors();
    }
 }
-
 
 //===========================================================================
 
@@ -476,7 +474,6 @@ void IntFactorization<Int>::factorizePlus() {
    this->factorize();
    this->calcInvFactors();
 }
-
 
 //===========================================================================
 

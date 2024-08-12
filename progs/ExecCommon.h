@@ -16,7 +16,7 @@
 #include "latticetester/Reducer.h"
 #include "latticetester/Util.h"
 
-#include "latmrg/MWCLattice.h"
+#include "../include/latmrg/MWCComponent.h"
 #include "latmrg/MMRGLattice.h"
 #include "latmrg/ComboLattice.h"
 #include "latmrg/Chrono.h"
