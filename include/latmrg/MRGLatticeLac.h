@@ -6,20 +6,24 @@
 #include "latticetester/Lacunary.h"
 #include "latticetester/IntLatticeExt.h"
 #include "latticetester/Types.h"
-// #include "latticetester/Const.h"
 // #include "latticetester/Lacunary.h"
 #include "latticetester/MRGLattice.h"
-// #include "latmrg/MRGComponent.h"
+#include "latmrg/FlexModInt.h"
 
 namespace LatMRG {
 
 /**
  * This subclass of `MRGLattice` constructs and handles lattice bases built from MRGs as in `MRGLattice`,
- * but with arbitrary lacunary indices that are regularly spaced by packets of the same size.
+ * but with arbitrary lacunary indices that can be spaced very far apart.
+ * A special case of this is when they are regularly spaced by packets of the same size.
  *
- * Perhaps the new functions offered here could be integrated into MRGLattice,
- * to reduce the number of classes.  ???            ************
- *
+ * To construct or increment the basis in that case, we proceed as described in Section 4.1.9 of the guide.
+ * First, \f$P(z)\f$ must be set as the polynomial modulus in NTL.
+ * Then for each lacunary index \f$\nu = i_j\f$, we compute the corresponding column by computing
+ * \f$z^{\nu-1} \bmod P(z)\f$ using `power` from `polE` in NTL, then transforming its vector of coefficients
+ * into the vector \f$(y_{\nu+k-2},\dots,y_{\nu-1})\f$ with the function `polyToColumn`.
+ * This gives a set of generating vectors, which can be reduced to a basis, as in `MRGLattice`.
+ * Under certain conditions, it is already a basis.
  */
 class MRGLatticeLac: public LatticeTester::MRGLattice {
 public:
@@ -29,13 +33,10 @@ public:
 
    /**
     * Constructor with modulus of congruence \f$m\f$, order of the recurrence
-    * \f$k\f$, multipliers \f$A\f$, maximal dimension `maxDim`, and lattice type
-    * `lattype`. Vector and matrix indices vary from 1 to `maxDim`. The length of
-    * the basis vectors is computed with `norm`. The bases are built using the
-    * *lacunary indices* `lac`.
-    * The basis is built for the lacunary
-    * indices `lac`.  `aa` has to be a vector of k+1 components
-    * with `a[i]`=\f$a_i\f$ for compatibility with other classes.
+    * \f$k\f$, multipliers in `aa`, and maximal dimension `maxDim`.
+    * The length of basis vectors is computed with `norm`.
+    * The basis is built for the lacunary indices in `lac`.
+    * The vector `aa` must have k+1 components with `a[j]`=\f$a_j\f$.
     */
    MRGLatticeLac(const Int &m, const IntVec &aa, int64_t maxDim, IntVec &lac,
          NormType norm = L2NORM);
@@ -58,37 +59,39 @@ public:
    virtual ~MRGLatticeLac();
 
    /**
-    * Sets the lacunary indices for this lattice to `lat`.
+    * Sets the lacunary indices for this lattice to `lac`.
     */
-   void setLac(const IntVec &lat);
+   void setLac(const IntVec &lac);
 
    /**
     * Returns the \f$j\f$-th lacunary index.
     */
    Int& getLac(int j);
 
+   /**
+    * Takes the polynomial `pcol` and returns in `col` the corresponding column in the
+    * matrix of generating vectors.
+    */
+   void polyToColumn (IntVec &col, FlexModInt<Int>::PolE &pcol);
+
+
 protected:
 
-   void initStates();
+   // void initStates();
 
-   /**
-    * Increases the dimension of the basis by 1.
-    */
-   void incDimBasis(int);
 
    /**
     * The lacunary indices.
     */
    IntVec m_lac;
 
-   //===========================================================================
-
-   /** Max order for lacunary case in this class; otherwise, it takes too much memory.
-    For order > ORDERMAX, use subclass MRGLatticeLac instead.
-    This means that we can have short lacunary indices, supported here,
-    and also long lacunary indices (e.g., for multiple streams), supported in MRGLatticeLac.  ******* ???
+   /**
+    * The characteristic polynomial `P(z)`.  Maybe no need to store it.
+    * We can redefine  `setaa` so it computes and set it.
+    * We can also compute it and set it in `buildBasis0`.  Probably safer.  ******
     */
-#define ORDERMAX 100
+   FlexModInt<Int>::PolE m_Pz;   // Maybe not needed.
+
 
 };
 
@@ -96,44 +99,69 @@ protected:
 // Implementation:
 
 
+// Constructor.
+template<typename Int, typename Real>
+MRGLatticeLac<Int, Real>::MRGLatticeLac<Int, Real>(const Int &m, const IntVec &aa, int64_t maxDim,
+      IntVec &lac, NormType norm) : MRGLattice<Int, Real>(m, aa, maxDim, norm) {
+   setLac(lac);
+}
+
+
+// This applies phi inverse as described in the guide, and reverses the coordinates.
+template<typename Int>
+void polyToColumn (IntVec &col, FlexModInt<Int>::PolE &pcol) {
+   // ... to do
+}
+
 
 //============================================================================
 
-// Builds an upper-triangular basis directly in `d` dimensions with the lacunary indices,
-// as explained in Section 4.1 of the guide of LatMRG, and puts it in `basis`.
-// Must have d <= m_maxdim.
+// Replaces the corresponding function in `MRGLattice`.
+
+// Builds a basis directly in `d` dimensions, as explained in Section 4.1.9 of
+// the guide of LatMRG.  Must have d <= m_maxdim.
+// This should be very similar to `buildProjection0`, except that the indices are usually far apart.
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
    assert(d <= this->m_maxDim);
-   int64_t dk = min(d, m_order);
-   int64_t i, j, k;
-   // Put the identity matrix in the upper left corner
+   int64_t k = m_order;
+   int64_t i, j, jj;
+
+   // REDO the following completely.                                             ********
+
+   for (j = 0; j < k-1; j++)
+      m_y[j] = 0;
+   m_y[k-1] = 1;
+   // Put the lower-triangular part of the identity matrix in the upper left corner
    for (i = 0; i < dk; i++) {
-      for (j = 0; j < dk; j++)
+      for (j = 0; j <= i; j++)
          basis[i][j] = (i == j);  // Avoid "if" statements.
    }
-   if (d > m_order) {
-      // Put m times the identity matrix to the lower right part and the zero matrix to the lower left part.
-      for (i = m_order; i < d; i++)
-         for (j = 0; j < d; j++)
-            basis[i][j] = this->m_modulo * (i == j);
-      // Fill the rest of the first m_order rows
-      for (i = 0; i < m_order; i++) {
-         for (j = m_order; j < d; j++) {
-            basis[i][j] = 0;
-            // Calculate the components of v_{i,j}. The first component of the coefficient is m_aCoeff[0] here
-            for (k = 1; k <= m_order; k++)
-               basis[i][j] += m_aCoeff[k] * basis[i][j - k] % this->m_modulo;
-         }
+   // Put m times the identity matrix to the lower right part and the zero matrix to the lower left part.
+   for (i = k; i < d; i++)  // If d <= m_order, this does nothing.
+      for (j = 0; j < d; j++)
+         basis[i][j] = this->m_modulo * (i == j);
+   // Fill the rest of the first m_order rows
+   for (j = k; j < d + k - 1; j++) {
+      // Calculate y_j = (a_1 y_{j-1} + ... + a_k y_{j-k}) mod m.
+      m_y[j] = 0;
+      for (jj = 1; jj <= k; jj++)
+         m_y[j] += m_aCoeff[jj] * m_y[j - jj];
+      m_y[j] = m_y[j] % this->m_modulo;
+      for (i = 0; i < min(k, d - j + k - 1); i++) {  // We want i < k and i+j-k+1 < d.
+         basis[i][i + j - k + 1] = m_y[j];
       }
    }
 }
 
 
-
 //============================================================================
 
 // Increases the dimension of given basis from d-1 to d dimensions.
+// We compute one new column using the polynomial representation.
+//
+// REDO this.       *****************
+//
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::incDimBasis0(IntMat &basis, int64_t d) {
    // int64_t d = 1 + this->getDim();  // New current dimension.
@@ -160,6 +188,9 @@ void MRGLattice<Int, Real>::incDimBasis0(IntMat &basis, int64_t d) {
 // We use the columns of basis to construct generating vectors and a pbasis for the projection.
 // This function returns the value of `projCase`, which is `true` iff the first m_order coordinates
 // are all in the projection.
+
+// This one may still work with no change. Check carefully and adjust if needed.      ************
+//
 template<typename Int, typename Real>
 bool MRGLattice<Int, Real>::buildProjection0(IntMat &basis, int64_t dimbasis, IntMat &pbasis,
       const Coordinates &proj) {
@@ -203,13 +234,14 @@ bool MRGLattice<Int, Real>::buildProjection0(IntMat &basis, int64_t dimbasis, In
    return projCase1;
 }
 
+// Check if any other function in the parent `MRGLattice`  needs to be changed.      ************
+
 //============================================================================
 
-// The old implementation.
+// The old implementation.  Will be removed.                *********
+//
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildLaBasis(int64_t d) {
-
-   // NOT USED, see: MRGLatticeLac::buildBasis
 
    if (this->m_order > ORDERMAX)
       LatticeTester::MyExit(1, "MRGLattice::buildLaBasis:   k > ORDERMAX");

@@ -59,9 +59,9 @@ class FlexModInt<NTL::ZZ> {
 public:
    typedef NTL::ZZ_p IntP;
    typedef NTL::ZZ_pE PolE;
+   typedef NTL::ZZ_pX PolX;
    typedef NTL::vec_ZZ_p IntVecP;
    typedef NTL::mat_ZZ_p IntMatP;
-   typedef NTL::ZZ_pX PolX;
 };
 
 /**
