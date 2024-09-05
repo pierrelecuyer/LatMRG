@@ -41,8 +41,11 @@ public:
     * The basis is built for the lacunary indices in `lac`.
     * The vector `aa` must have k+1 components with `a[j]`=\f$a_j\f$.
     */
-   MRGLatticeLac(const Int &m, const IntVec &aa, int64_t maxDim, IntVec &lac,
-         NormType norm = L2NORM);
+   //MRGLatticeLac(const Int &m, const IntVec &aa, int64_t maxDim, IntVec &lac,
+   //      NormType norm = L2NORM);
+   MRGLatticeLac(const Int &m, const IntVec &aa, int64_t maxDim, IntVec & lac, NormType norm = L2NORM);
+   
+
 
    /**
     * Copy constructor. The maximal dimension of the new basis is set to
@@ -59,7 +62,7 @@ public:
    /**
     * Destructor.
     */
-   virtual ~MRGLatticeLac();
+   virtual ~MRGLatticeLac(){ };
 
    /**
     * Sets the lacunary indices for this lattice to `lac`.
@@ -111,14 +114,28 @@ protected:
 template<typename Int, typename Real>
 MRGLatticeLac<Int, Real>::MRGLatticeLac(const Int &m, const IntVec &aa, int64_t maxDim,
       IntVec &lac, NormType norm) : MRGLattice<Int, Real>(m, aa, maxDim, norm) {
-   setLac(lac);
+   //setLac(lac); CW
 }
-
 
 // This applies phi inverse as described in the guide, and reverses the coordinates.
 template<typename Int, typename Real>
 void MRGLatticeLac<Int, Real>::polyToColumn(IntVec &col, typename FlexModInt<Int>::PolE &pcol) {
-   // ... to do
+   int i, j, k;
+   k = this->m_order;
+   Int temp;
+   IntVec c;
+   c.SetLength(k);
+   col.SetLength(k);
+   for (j = 1; j < k+1; j++) {
+      NTL::conv(c[j-1], coeff(rep(pcol), k-j));
+      for (i = 1; i < j; i ++) {
+         NTL::conv(temp, coeff(rep(pcol), j-1-i));
+         c[j-1] += this->m_aCoeff[i]*temp;
+      }
+   }
+   for (j = 0; j < k; j++) {
+      col[j] = c[k-j-1];
+   }
 }
 
 
