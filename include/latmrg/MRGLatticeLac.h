@@ -176,7 +176,7 @@ void MRGLatticeLac<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
    //std::cout << polDegOne << "\n";
    // Calculate powers p^\mu-1 for \mu in the set of lacunary indices
    for (j= 0; j < m_lac.length(); j++) {
-      power (polPower, polDegOne, m_lac[j]);
+      power (polPower, polDegOne, m_lac[j] - 1);
       std::cout << m_lac[j] << ": " << polPower << "\n";
       polyToColumn(col, polPower);
       std::cout << col << "\n";
