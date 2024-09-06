@@ -101,7 +101,7 @@ protected:
     * We can redefine  `setaa` so it computes and set it.
     * We can also compute it and set it in `buildBasis0`.  Probably safer.  ******
     */
-   typename FlexModInt<Int>::PolE m_Pz;   // Maybe not needed.
+   typename FlexModInt<Int>::PolX m_Pz;   // Maybe not needed.
 
 
 };
@@ -114,7 +114,8 @@ protected:
 template<typename Int, typename Real>
 MRGLatticeLac<Int, Real>::MRGLatticeLac(const Int &m, const IntVec &aa, int64_t maxDim,
       IntVec &lac, NormType norm) : MRGLattice<Int, Real>(m, aa, maxDim, norm) {
-   //setLac(lac); CW
+      m_lac = lac;
+      ZZ_p::init(m);
 }
 
 // This applies phi inverse as described in the guide, and reverses the coordinates.
@@ -153,9 +154,37 @@ void MRGLatticeLac<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
    int64_t k = this->m_order;
    int64_t dk = min(d, k);
    int64_t i, j, jj;
+   IntVec col;
+   
+   typename FlexModInt<Int>::PolE polDegOne;
+   typename FlexModInt<Int>::PolE polPower;
+   
+   // Set the characteristic polynomial of the recurrence
+   for (int64_t j = 1; j < this->m_aCoeff.length(); j++) {
+      SetCoeff(m_Pz, this->m_aCoeff.length() - j - 1, to_ZZ_p(this->m_aCoeff[j]));
+   }
+   SetCoeff(m_Pz, this->m_aCoeff.length() - 1, 1);
+   
+   ZZ_pE::init(m_Pz);
+   
+   //std::cout << m_Pz << "\n";
+   
+   // Auxilliary variables to calculate powers p^n(z)
+   std::string str = "[0 1]";
+   std::istringstream in (str);
+   in >> polDegOne;   
+   //std::cout << polDegOne << "\n";
+   // Calculate powers p^\mu-1 for \mu in the set of lacunary indices
+   for (j= 0; j < m_lac.length(); j++) {
+      power (polPower, polDegOne, m_lac[j]);
+      std::cout << m_lac[j] << ": " << polPower << "\n";
+      polyToColumn(col, polPower);
+      std::cout << col << "\n";
+   }
+   
 
    // REDO the following completely.                                             ********
-
+  /*
    for (j = 0; j < k-1; j++)
       this->m_y[j] = 0;
    this->m_y[k-1] = 1;
@@ -179,6 +208,8 @@ void MRGLatticeLac<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
          basis[i][i + j - k + 1] = this->m_y[j];
       }
    }
+   */
+
 }
 
 
