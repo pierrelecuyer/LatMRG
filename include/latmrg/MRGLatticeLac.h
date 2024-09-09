@@ -143,11 +143,12 @@ void MRGLatticeLac<Int, Real>::polyToColumn(IntVec &col, typename FlexModInt<Int
    c.SetLength(k);
    col.SetLength(k);
    for (j = 1; j < k+1; j++) {
+      c[j-1] = 0;
       NTL::conv(c[j-1], coeff(rep(pcol), k-j));
       for (i = 1; i < j; i ++) {
-         NTL::conv(temp, coeff(rep(pcol), j-1-i));
-         c[j-1] += this->m_aCoeff[i]*temp;
+         c[j-1] += this->m_aCoeff[i]*c[j - 1 - i];
       }
+      c[j-1] = c[j-1] % this->m_modulo;
    }
    for (j = 0; j < k; j++) {
       col[j] = c[k-j-1];
@@ -166,9 +167,9 @@ void MRGLatticeLac<Int, Real>::polyToColumn(IntVec &col, typename FlexModInt<Int
 template<typename Int, typename Real>
 void MRGLatticeLac<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
    assert(d <= this->m_maxDim);
-   int64_t k = this->m_order;
-   int64_t dk = min(d, k);
-   int64_t i, j, jj;
+   // int64_t k = this->m_order;
+   // int64_t dk = min(d, k);
+   int64_t i, j;
    IntVec col;
    
    typename FlexModInt<Int>::PolE polDegOne;
@@ -176,55 +177,31 @@ void MRGLatticeLac<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
    
    // Set the characteristic polynomial of the recurrence
    for (int64_t j = 1; j < this->m_aCoeff.length(); j++) {
-      SetCoeff(m_Pz, this->m_aCoeff.length() - j - 1, to_ZZ_p(this->m_aCoeff[j]));
+      SetCoeff(m_Pz, this->m_aCoeff.length() - j - 1, to_ZZ_p(-this->m_aCoeff[j]));
    }
    SetCoeff(m_Pz, this->m_aCoeff.length() - 1, 1);
    
    ZZ_pE::init(m_Pz);
-   
-   //std::cout << m_Pz << "\n";
-   
+      
    // Auxilliary variables to calculate powers p^n(z)
    std::string str = "[0 1]";
    std::istringstream in (str);
    in >> polDegOne;   
-   //std::cout << polDegOne << "\n";
    // Calculate powers p^\mu-1 for \mu in the set of lacunary indices
-   for (j= 0; j < m_lac.length(); j++) {
+   for (j = 0; j < m_lac.length(); j++) {
       power (polPower, polDegOne, m_lac[j] - 1);
-      std::cout << m_lac[j] << ": " << polPower << "\n";
       polyToColumn(col, polPower);
-      std::cout << col << "\n";
+      for (i = 0; i < col.length(); i++)
+         basis[i][j] = col[i];
    }
    
-
-   // REDO the following completely.                                             ********
-  /*
-   for (j = 0; j < k-1; j++)
-      this->m_y[j] = 0;
-   this->m_y[k-1] = 1;
-   // Put the lower-triangular part of the identity matrix in the upper left corner
-   for (i = 0; i < dk; i++) {
-      for (j = 0; j <= i; j++)
-         basis[i][j] = (i == j);  // Avoid "if" statements.
-   }
-   // Put m times the identity matrix to the lower right part and the zero matrix to the lower left part.
-   for (i = k; i < d; i++)  // If d <= m_order, this does nothing.
+   for (i = col.length(); i < d; i++) { 
       for (j = 0; j < d; j++)
-         basis[i][j] = this->m_modulo * (i == j);
-   // Fill the rest of the first m_order rows
-   for (j = k; j < d + k - 1; j++) {
-      // Calculate y_j = (a_1 y_{j-1} + ... + a_k y_{j-k}) mod m.
-      this->m_y[j] = 0;
-      for (jj = 1; jj <= k; jj++)
-         this->m_y[j] += this->m_aCoeff[jj] * this->m_y[j - jj];
-      this->m_y[j] = this->m_y[j] % this->m_modulo;
-      for (i = 0; i < min(k, d - j + k - 1); i++) {  // We want i < k and i+j-k+1 < d.
-         basis[i][i + j - k + 1] = this->m_y[j];
-      }
+         basis[i][j] = (i == j) * this->m_modulo;
    }
-   */
-
+   
+   std::cout << basis << "\n";
+ 
 }
 
 
