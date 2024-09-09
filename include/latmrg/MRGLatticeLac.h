@@ -41,12 +41,9 @@ public:
     * The basis is built for the lacunary indices in `lac`.
     * The vector `aa` must have k+1 components with `a[j]`=\f$a_j\f$.
     */
-   //MRGLatticeLac(const Int &m, const IntVec &aa, int64_t maxDim, IntVec &lac,
-   //      NormType norm = L2NORM);
-   MRGLatticeLac(const Int &m, const IntVec &aa, int64_t maxDim, IntVec & lac, NormType norm = L2NORM);
+   MRGLatticeLac(const Int &m, const IntVec &aa, int64_t maxDim, IntVec &lac,
+         NormType norm = L2NORM);
    
-
-
    /**
     * Copy constructor. The maximal dimension of the new basis is set to
     * <tt>Lat</tt>’s current dimension.
@@ -70,21 +67,6 @@ public:
    void setLac(const IntVec &lac) {m_lac = lac;};
    
    /**
-    * This function overrides the correpsonding protected function in 'MRGLattice'.
-    * It Builds a basis directly in `d` dimensions, as explained in Section 4.1.9 of
-    * the LatMRG guide.  Must have d <= m_maxdim. The basis matrix is taken as a 
-    * parameter.
-    */ 
-   void buildBasis0(IntMat &basis, int64_t d) override;
-   
-   /**
-    * This function overrides the correpsonding protected function in 'MRGLattice'.
-    * It increases the dimension of given basis from d-1 to d dimensions.
-    * One new column is calclated using the polynomial representation.
-    */
-   void incDimBasis0(IntMat &basis, int64_t d) override;
-   
-   /**
     * Maybe this function does not need to be changed.
     */
    bool buildProjection0(IntMat &basis, int64_t dimbasis, IntMat &pbasis, const Coordinates &proj) override;
@@ -104,8 +86,22 @@ public:
 protected:
 
    // void initStates();
-
-
+   
+   /**
+    * This function overrides the correpsonding protected function in 'MRGLattice'.
+    * It Builds a basis directly in `d` dimensions, as explained in Section 4.1.9 of
+    * the LatMRG guide.  Must have d <= m_maxdim. The basis matrix is taken as a 
+    * parameter.
+    */ 
+   void buildBasis0(IntMat &basis, int64_t d) override;
+   
+   /**
+    * This function overrides the correpsonding protected function in 'MRGLattice'.
+    * It increases the dimension of given basis from d-1 to d dimensions.
+    * One new column is calclated using the polynomial representation.
+    */
+   void incDimBasis0(IntMat &basis, int64_t d) override;
+   
    /**
     * The lacunary indices.
     */
@@ -117,6 +113,8 @@ protected:
     * We can also compute it and set it in `buildBasis0`.  Probably safer.  ******
     */
    typename FlexModInt<Int>::PolX m_Pz;   // Maybe not needed.
+   
+   
 
 
 };
