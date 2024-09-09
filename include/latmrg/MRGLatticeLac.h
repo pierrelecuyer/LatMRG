@@ -67,11 +67,26 @@ public:
    /**
     * Sets the lacunary indices for this lattice to `lac`.
     */
-   void setLac(const IntVec &lac);
+   void setLac(const IntVec &lac) {m_lac = lac;};
    
-   // CW
+   /**
+    * This function overrides the correpsonding protected function in 'MRGLattice'.
+    * It Builds a basis directly in `d` dimensions, as explained in Section 4.1.9 of
+    * the LatMRG guide.  Must have d <= m_maxdim. The basis matrix is taken as a 
+    * parameter.
+    */ 
    void buildBasis0(IntMat &basis, int64_t d) override;
+   
+   /**
+    * This function overrides the correpsonding protected function in 'MRGLattice'.
+    * It increases the dimension of given basis from d-1 to d dimensions.
+    * One new column is calclated using the polynomial representation.
+    */
    void incDimBasis0(IntMat &basis, int64_t d) override;
+   
+   /**
+    * Maybe this function does not need to be changed.
+    */
    bool buildProjection0(IntMat &basis, int64_t dimbasis, IntMat &pbasis, const Coordinates &proj) override;
 
    /**
@@ -114,7 +129,7 @@ protected:
 template<typename Int, typename Real>
 MRGLatticeLac<Int, Real>::MRGLatticeLac(const Int &m, const IntVec &aa, int64_t maxDim,
       IntVec &lac, NormType norm) : MRGLattice<Int, Real>(m, aa, maxDim, norm) {
-      m_lac = lac;
+      setLac(lac);
       ZZ_p::init(m);
 }
 
