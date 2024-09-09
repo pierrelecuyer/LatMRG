@@ -167,8 +167,9 @@ void MRGLatticeLac<Int, Real>::polyToColumn(IntVec &col, typename FlexModInt<Int
 template<typename Int, typename Real>
 void MRGLatticeLac<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
    assert(d <= this->m_maxDim);
-   // int64_t k = this->m_order;
-   // int64_t dk = min(d, k);
+   assert(d <= m_lac.length());
+   int64_t k = this->m_order;
+   int64_t dk = min(d, k);
    int64_t i, j;
    IntVec col;
    
@@ -188,19 +189,18 @@ void MRGLatticeLac<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
    std::istringstream in (str);
    in >> polDegOne;   
    // Calculate powers p^\mu-1 for \mu in the set of lacunary indices
-   for (j = 0; j < m_lac.length(); j++) {
-      power (polPower, polDegOne, m_lac[j] - 1);
+   // And fill the first k rows
+   for (j = 0; j < d; j++) {
+      power(polPower, polDegOne, m_lac[j] - 1);
       polyToColumn(col, polPower);
-      for (i = 0; i < col.length(); i++)
+      for (i = 0; i < dk; i++)
          basis[i][j] = col[i];
    }
-   
-   for (i = col.length(); i < d; i++) { 
+   // Fill the rest of the rows
+   for (i = dk; i < d; i++) { 
       for (j = 0; j < d; j++)
          basis[i][j] = (i == j) * this->m_modulo;
    }
-   
-   std::cout << basis << "\n";
  
 }
 
@@ -209,27 +209,30 @@ void MRGLatticeLac<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
 
 // Increases the dimension of given basis from d-1 to d dimensions.
 // We compute one new column using the polynomial representation.
-//
-// REDO this.       *****************
-//
+
 
 template<typename Int, typename Real>
 void MRGLatticeLac<Int, Real>::incDimBasis0(IntMat &basis, int64_t d) {
    // int64_t d = 1 + this->getDim();  // New current dimension.
+   IntVec col;
+   int64_t i;
+   int64_t k = this->m_order;
+   int64_t dk = min(d, k);
+   typename FlexModInt<Int>::PolE polDegOne;
+   typename FlexModInt<Int>::PolE polPower;
    assert(d <= this->m_maxDim);
-   int64_t i, j, k;
-   // Add new row and new column of the primal basis.
-   for (j = 0; j < d - 1; j++)
-      basis[d - 1][j] = 0;
-   if (d - 1 >= this->m_order) basis[d - 1][d - 1] = this->m_modulo;
-   else basis[d - 1][d - 1] = 1;
-   for (i = 0; i < d - 1; i++) {
-      basis[i][d - 1] = 0;
-      if (d - 1 >= this->m_order) {
-         for (k = 1; k <= this->m_order; k++)
-            basis[i][d - 1] += this->m_aCoeff[k] * basis[i][d - 1 - k] % this->m_modulo;
-      }
-   }
+   // Auxilliary variables to calculate powers p^n(z)
+   std::string str = "[0 1]";
+   std::istringstream in (str);
+   in >> polDegOne;   
+   power(polPower, polDegOne, m_lac[d-1] - 1);
+   polyToColumn(col, polPower);
+   // Put the coefficients in the desired row
+   for (i = 0; i < dk; i++)
+      basis[i][d-1] = col[i];
+   // Fill the rest of the row
+   for (i = dk; i < d; i++)
+      basis[i][d-1] = (i == d-1) * this->m_modulo;
 }
 
 
