@@ -1,6 +1,6 @@
 // This file is part of LatMRG.
 //
-// Copyright (C) 2012-2023  The LatMRG authors, under the supervision
+// Copyright (C) 2012-2024  The LatMRG authors, under the supervision
 // of Pierre L'Ecuyer at Universit� de Montr�al.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,7 +43,8 @@ namespace LatMRG {
    * However \f$r\f$ is typically much larger than \f$2^{64}\f$ in actual cases.
    */
 template<typename Int>
-static class PrimesFinder {
+class PrimesFinder {
+
 
       public:
 
@@ -90,15 +91,15 @@ static class PrimesFinder {
         /**
          * Writes the parameters of the find to the stream `fout`.
          */
-        void writeHeader (int64_t k, int64_t e, int64_t c1, int64_t c2, bool safe, bool facto,
+        static void writeHeader (int64_t k, int64_t e, int64_t c1, int64_t c2, bool safe, bool facto,
             std::ostream & fout, const int64_t KTRIALS = 200);
-
+        
         /**
          * Writes the CPU time of the find to the stream `fout`.
          */
-        // void writeFooter (std::ostream & fout);
+        void writeFooter (std::ostream & fout, Chrono & timer);
 
-        void nextM (Int & m) {
+        static void nextM (Int & m) {
           m -= 2;
           if (0 == m % 5)
             m -= 2;
@@ -111,16 +112,19 @@ static class PrimesFinder {
   template<typename Int>
     void PrimesFinder<Int>::findPrime (int64_t k, int64_t e, int64_t s, const Int & S1, const Int & S2,
         bool safe, bool facto, std::ostream & fout, const int64_t KTRIALS) {
+        
       Int m;
       if (NTL::IsOdd (S2))
         m = S2;
       else
         m = S2 - Int(1);
       int64_t i = 0;
-
+    
       while (i < s && m >= S1) {
-        LatticeTester::PrimeType status = LatticeTester::IntFactor<Int>::isPrime (m, KTRIALS);
-        if (status == LatticeTester::PRIME || status == LatticeTester::PROB_PRIME) {
+        PrimeType status = IntFactor<Int>::isPrime (m, KTRIALS);
+        
+        if (status == PRIME || status == PROB_PRIME) {
+          
           Int m1 = m - Int(1);
           if (safe) {
             if (1 == m % 4) {
@@ -128,21 +132,22 @@ static class PrimesFinder {
               continue;
             }
             Int m1s2 = m1 / Int(2);
-            status = LatticeTester::IntFactor<Int>::isPrime (m1s2, KTRIALS);
-            if (status != LatticeTester::PRIME && status != LatticeTester::PROB_PRIME) {
+            status = IntFactor<Int>::isPrime (m1s2, KTRIALS);
+            if (status != PRIME && status != PROB_PRIME) {
               nextM(m);
               continue;
             }
           }
+          
           Int r;
           NTL::set(r);
           if (k > 1) {
             r = NTL::power (m, k);
             --r;
             r = r/m1;
-            status = LatticeTester::IntFactor<Int>::isPrime (r, KTRIALS);
+            status = IntFactor<Int>::isPrime (r, KTRIALS);
           }
-          if (k == 1 || status == LatticeTester::PRIME || status == LatticeTester::PROB_PRIME) {
+          if (k == 1 || status == PRIME || status == PROB_PRIME) {
             i++;
             fout << "//========================================================"
               "======================\n\n";
@@ -166,37 +171,42 @@ static class PrimesFinder {
               fout << ifac.toString ();
             }
           }
+          
         }
+        
         nextM(m);
       }
+      
     }
 
   //===========================================================================
 
   template<typename Int>
     void PrimesFinder<Int>::findPrime (int64_t k, int64_t e, int64_t s, bool safe, bool facto,
-        std::ostream & fout) {
+        std::ostream & fout, const int64_t KTRIALS) {
       Int Sm1, Sm2;
       writeHeader (k, e, INT_MAX, INT_MAX, safe, facto, fout);
-      // timer.init();
+      Chrono timer;
+      timer.init();
       Sm2 = (Int(1)<<e) - 1;
       Sm1 = 2;
-      findPrime (k, e, s, Sm1, Sm2, safe, facto, fout);
-      // writeFooter (fout);
+      findPrime (k, e, s, Sm1, Sm2, safe, facto, fout, KTRIALS);
+      writeFooter (fout, timer);
     }
-
 
   //===========================================================================
 
   template<typename Int>
-    void PrimesFinder<Int>::findPrime (int64_t e, int64_t s, bool facto, std::ostream & fout)   {
+    void PrimesFinder<Int>::findPrime (int64_t e, int64_t s, bool facto, std::ostream & fout, 
+          const int64_t KTRIALS) {
       Int Sm1, Sm2;
       writeHeader (1, e, INT_MAX, INT_MAX, false, facto, fout);
-      // timer.init();
+      Chrono timer;
+      timer.init();
       Sm2 = (Int(1)<<e) - 1;
       Sm1 = 2;
-      findPrime (1, e, s, Sm1, Sm2, false, facto, fout);
-      // writeFooter (fout);
+      findPrime (1, e, s, Sm1, Sm2, false, facto, fout, KTRIALS);
+      writeFooter (fout, timer);
     }
 
 
@@ -204,23 +214,24 @@ static class PrimesFinder {
 
   template<typename Int>
     void PrimesFinder<Int>::findPrime (int64_t k, int64_t e, int64_t c1, int64_t c2, bool safe,
-        bool facto, std::ostream & fout)
-    {
+        bool facto, std::ostream & fout, const int64_t KTRIALS) {
       Int Sm1, Sm2;
       writeHeader (k, e, c1, c2, safe, facto, fout);
-      // timer.init();
+      Chrono timer;
+      timer.init();
       Sm1 = (Int(1)<<e) + c1;
       Sm2 = (Int(1)<<e) + c2;
-      findPrime (k, e, INT_MAX, Sm1, Sm2, safe, facto, fout);
-      // writeFooter (fout);
+      findPrime (k, e, INT_MAX, Sm1, Sm2, safe, facto, fout, KTRIALS);
+      writeFooter (fout);
     }
+
 
 
   //===========================================================================
 
   template<typename Int>
     void PrimesFinder<Int>::writeHeader (int64_t k, int64_t e, int64_t c1, int64_t c2, bool safe,
-        bool facto, std::ostream & fout, const int64_t KTRIALS = 200)   {
+        bool facto, std::ostream & fout, const int64_t KTRIALS)   {
       fout << "-----------------------------------------------------" << std::endl;
       fout << "Values such that m";
       if (safe)
@@ -243,6 +254,7 @@ static class PrimesFinder {
     }
 
 
+
   //===========================================================================
 
   template<typename Int>
@@ -250,5 +262,8 @@ static class PrimesFinder {
       fout << "\nCPU time: ";
       fout << timer.toString () << std::endl;
     }
+
+    
 }
+
 #endif
