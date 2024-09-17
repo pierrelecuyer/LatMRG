@@ -97,7 +97,7 @@ class PrimesFinder {
         /**
          * Writes the CPU time of the find to the stream `fout`.
          */
-        void writeFooter (std::ostream & fout, Chrono & timer);
+        static void writeFooter(std::ostream & fout, Chrono & timer);
 
         static void nextM (Int & m) {
           m -= 2;
@@ -222,7 +222,7 @@ class PrimesFinder {
       Sm1 = (Int(1)<<e) + c1;
       Sm2 = (Int(1)<<e) + c2;
       findPrime (k, e, INT_MAX, Sm1, Sm2, safe, facto, fout, KTRIALS);
-      writeFooter (fout);
+      writeFooter (fout, timer);
     }
 
 
@@ -258,7 +258,7 @@ class PrimesFinder {
   //===========================================================================
 
   template<typename Int>
-    void PrimesFinder<Int>::writeFooter (std::ostream & fout, Chrono & timer) {
+    void PrimesFinder<Int>::writeFooter(std::ostream & fout, Chrono & timer) {
       fout << "\nCPU time: ";
       fout << timer.toString () << std::endl;
     }
