@@ -434,8 +434,8 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
                for (int64_t j = 0; j < k; j++) {
                    this->m_basis[i][j+m*k] = A_power[j][i];
                }
-            A_power = A_power * this->m_A;
-         }
+          }
+          A_power = A_power * this->m_A;
       }
       
       // Fill in the remaining part of (A^{n-1})^t up to dimension d
@@ -446,8 +446,8 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
       }
       
       // Fill m times identity matrix for the rest of the basis matrix.
-      for (int64_t i = 0; i < d; i++) {
-         for (int64_t j = k; j < d; j++) {
+      for (int64_t i = k; i < d; i++) {
+         for (int64_t j = 0; j < d; j++) {
              this->m_basis[i][j] = (i == j) * this->m_modulo;
          }
       }
