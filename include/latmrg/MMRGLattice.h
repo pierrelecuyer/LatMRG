@@ -99,6 +99,11 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
          * `incDimBasis` or `incDimLaBasis`.
          */
         void incDim();
+        
+        /**
+         * Sets the matrix B
+         */
+        void setB(IntMat B) { m_B = B;}
 
         /**
          * Returns `true` for the case of lacunary indices, returns `false` for
@@ -225,6 +230,12 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
   MMRGLattice<Int, Real>::MMRGLattice(const Int & m, const IntMat & A, int maxDim,
       LatticeTester::NormType norm, LatticeType lat) : IntLatticeExt<Int, Real>(m, maxDim, norm) {
     m_A = A;
+    m_B.SetDims(m_A.NumRows(), m_A.NumRows());
+    for (int64_t i = 0; i < m_A.NumRows(); i++) {
+       for(int64_t j = 0; j < m_A.NumRows(); j++) {
+          m_B[i][j] = (i==j);
+       }
+    }
     m_latType = lat;
     m_lacunaryFlag = false;
     m_lacunaryType = NONE;
@@ -414,34 +425,36 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
     // up to now: implementation only for B = I
     {
       int64_t k, no_powers;
-      IntMat A_power;
+      IntMat A_power, BA_power;
       k = this->m_A.NumRows();      
       this->m_basis.resize(d, d);
-      no_powers = floor(d/k);
+      no_powers = floor(d/m_B.NumRows());
       
       
       // Fill the identity matrix in the upper left corner
-      for (int64_t i = 0; i < min(k, d); i++) {
-         for (int64_t j = 0; j < min(k, d); j++) {
-             this->m_basis[i][j] = (i == j);
+      for (int64_t i = 0; i < min(m_B.NumRows(), d); i++) {
+         for (int64_t j = 0; j < min(m_B.NumCols(), d); j++) {
+             this->m_basis[i][j] = m_B[i][j];
          }  
       }
       
-      // Fill in the powers of A^t which are neede completely 
+      // Fill in the powers (B*A^n)^t which are needed completely 
       A_power = this->m_A; 
       for (int64_t m = 1; m < no_powers; m++) {
+          BA_power = m_B*A_power;
           for (int64_t i = 0; i < k; i++) {
-               for (int64_t j = 0; j < k; j++) {
-                   this->m_basis[i][j+m*k] = A_power[j][i];
+               for (int64_t j = 0; j < m_B.NumRows(); j++) {
+                   this->m_basis[i][j+m*k] = BA_power[j][i];
                }
           }
           A_power = A_power * this->m_A;
       }
       
-      // Fill in the remaining part of (A^{n-1})^t up to dimension d
+      // Fill in the remaining part of (N*A^{n-1})^t up to dimension d
+      BA_power = m_B*A_power;
       for (int64_t i = 0; i < k; i++) {
-         for (int64_t j = 0; j < d - no_powers*k; j++) {
-             this->m_basis[i][j+no_powers*k] = A_power[j][i];
+         for (int64_t j = 0; j < d - no_powers*m_B.NumRows(); j++) {
+             this->m_basis[i][j+no_powers*k] = BA_power[j][i];
          }
       }
       
