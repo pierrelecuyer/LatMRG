@@ -98,7 +98,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
          * Increments the dimension of the basis by 1 by calling either
          * `incDimBasis` or `incDimLaBasis`.
          */
-        void incDim();
+        void incDimBasis() override;
         
         /**
          * Sets the matrix B
@@ -423,12 +423,12 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
     void MMRGLattice<Int, Real>::buildNonLacunaryBasis (int d)
     // a basis is built in dimension d
     // up to now: implementation only for B = I
-    {
+   {
       int64_t k, no_powers;
       IntMat A_power, BA_power;
       k = this->m_A.NumRows();      
-      this->m_basis.resize(d, d);
       no_powers = floor(d/m_B.NumRows());
+      this->setDim(d);
       
       
       // Fill the identity matrix in the upper left corner
@@ -465,7 +465,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
          }
       }
       
-    }
+   }
 
   //===========================================================================
 
@@ -596,7 +596,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
   //===========================================================================
   
     template<typename Int, typename Real>
-    void MMRGLattice<Int, Real>::incDim()
+    void MMRGLattice<Int, Real>::incDimBasis()
     {
       if (m_lacunaryFlag)
         incrementDimLacunaryBasis(m_numberLacIndices);
@@ -610,6 +610,30 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
     void MMRGLattice<Int, Real>::incrementDimNonLacunaryBasis()
     // X_n = A X_{n-1} mod m. We have: dimension >= order.
     {
+       int64_t d = 1 + this->getDim();  // New current dimension.
+       IntMat BA_power;
+       this->setDim(d);
+       std::cout << "d: " << d << "\n";
+       for (int64_t j = 0; j < d; j++)
+          this->m_basis[d-1][j] = (d-1==j) * this->m_modulo;
+          
+      int64_t no_powers = floor((d-1)/m_B.NumRows());
+      BA_power = m_A;
+      for (int64_t i = 1; i < no_powers; i++)
+         BA_power = BA_power*m_A;
+      BA_power = m_B*BA_power;
+      
+      int64_t currRow = d - 1 - no_powers*m_B.NumRows();
+      
+      std::cout << "Row: " << currRow << "\n";
+      
+      for (int64_t i = 0; i < BA_power.NumCols(); i++)
+         this->m_basis[i][d-1] = BA_power[currRow][i];
+       
+      for (int64_t i = BA_power.NumCols(); i < d-1 ; i++)
+        this->m_basis[i][d-1] = 0;
+          
+      /*
       IntMat tempdual(this->m_dualbasis);
       LatticeTester::IntLatticeExt<Int, Real>::incDim();
       int newDimension = this->getDim();
@@ -729,7 +753,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
 
       // if (!this->checkDuality())
       //   LatticeTester::MyExit (1, "BUG in MMRGLattice::incrementDimBasis");
-
+     */
     }
 
   //===========================================================================
@@ -737,7 +761,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
   template<typename Int, typename Real>
     void MMRGLattice<Int, Real>::incrementDimLacunaryBasis(int Imax)
     {
-      LatticeTester::IntLatticeExt<Int, Real>::incDim();
+      LatticeTester::IntLatticeExt<Int, Real>::incDimBasis();
       const int dim = this->getDim (); // new dimension (dim++)
 
       //PW_TODO
@@ -750,7 +774,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
 
       IntVec tempLineBasis (dim);
       IntVec tempColBasis (dim);
-
+      /* CW
       for (int i = 0; i < dim-1; i++) {
 
         // tempLineBasis <- m_basis[i]
@@ -808,6 +832,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
       //this->setDim (dim + 1);
       this->setNegativeNorm ();
       this->setDualNegativeNorm ();
+      */
 
     }
 
