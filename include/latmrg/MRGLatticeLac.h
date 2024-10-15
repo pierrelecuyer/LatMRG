@@ -23,7 +23,7 @@
 #include "latticetester/Types.h"
 #include "latticetester/Lacunary.h"
 #include "latticetester/IntLatticeExt.h"
-#include "latticetester/MRGLattice.h"
+#include "latmrg/MRGLattice.h"
 #include "latmrg/FlexModInt.h"
 
 namespace LatMRG {
@@ -43,7 +43,7 @@ namespace LatMRG {
  * Under certain conditions, it is already a basis.
  */
 template<typename Int, typename Real>
-class MRGLatticeLac: public LatticeTester::MRGLattice<Int, Real> {
+class MRGLatticeLac: public MRGLattice<Int, Real> {
 
 public:
    // Parent:

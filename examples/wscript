@@ -14,7 +14,7 @@ def build(ctx):
                 source=src,
                 includes=[inc_dir,src_dir],
                 lib=ctx.env.LIB_NTL + ctx.env.LIB_GMP + ctx.env.LIB_LATTICETESTER, 
-                stlib=ctx.env.STLIB_NTL + ctx.env.STLIB_GMP,
+                stlib=ctx.env.STLIB_NTL + ctx.env.STLIB_GMP + ctx.env.STLIB_LATTICETESTER,
                 target=src.name[:-3],
                 use=['latmrg'],
                 install_path='${BINDIR}/examples')
