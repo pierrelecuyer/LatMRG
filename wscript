@@ -75,8 +75,10 @@ def configure(ctx):
     ctx_check(features='cxx cxxprogram', lib='gmp', uselib_store='GMP')
 
     # Lattice Tester
-    #ctx_check(features='cxx cxxprogram', header_name='../latticetester/include/latticetester/IntLattice.h')
-    #ctx_check(features='cxx cxxprogram', lib='latticetester', uselib_store='latticetester')
+    # ctx_check(features='cxx cxxprogram', header_name='../latticetester/include/latticetester/IntLattice.h')
+    # ctx_check(features='cxx cxxprogram', header_name='../latticetester/include/latticetester/IntLattice.h')
+    ctx_check(features='cxx cxxprogram', header_name='/usr/local/lib/latticetester/IntLattice.h')
+    ctx_check(features='cxx cxxprogram', lib='latticetester', uselib_store='latticetester')
 
     # Doxygen
     if ctx.options.build_docs:
