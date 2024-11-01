@@ -75,7 +75,17 @@ public:
     * the length of this vector, minus 1.  `aa[j]` must contain \f$a_j\f$ for j=1,...,k.
     */
    void setaa(const IntVec &aa);
-
+   
+   /**
+    * Builds the vector to store \f$y_0, y_1, ..., y_{t+k-2}\f$ used in the matrix V^{(p)}.
+    */
+   void buildy(int64_t dim);
+   
+   /**
+    * Return the current dimesnion of the vector y.
+    */
+   int64_t getDimy() { return m_y.length();};
+   
    /**
     * Builds a basis in `dim` dimensions. This `dim` must not exceed `this->maxDim()`.
     * This initial primal basis will be upper triangular.
@@ -166,23 +176,8 @@ MRGLattice<Int, Real>::MRGLattice(const Int &m, const IntVec &aa, int64_t maxDim
    this->m_maxDim = maxDim;
    setaa(aa);
    this->m_dim = 0;
-   m_genTemp.resize(maxDim, maxDim);
-   m_y.resize(maxDim + m_order - 1);
-   
-   //CW new
-   int64_t k = m_order;
-   int64_t j, jj;
-   for (j = 0; j < k-1; j++)
-      m_y[j] = 0;
-   m_y[k-1] = 1;
-   for (j = k; j < maxDim + k - 1; j++) {
-      // Calculate y_j = (a_1 y_{j-1} + ... + a_k y_{j-k}) mod m.
-      m_y[j] = 0;
-      for (jj = 1; jj <= k; jj++)
-         m_y[j] += m_aCoeff[jj] * m_y[j - jj];
-      m_y[j] = m_y[j] % this->m_modulo;
-   }
-   std::cout << m_y << "\n";
+   m_genTemp.resize(maxDim, maxDim);   
+   buildy(maxDim + m_order - 1);
 }
 
 //============================================================================
@@ -227,6 +222,22 @@ void MRGLattice<Int, Real>::setaa(const IntVec &aa) {
    this->m_dimdual = 0;
 }
 
+template<typename Int, typename Real>
+void MRGLattice<Int, Real>::buildy(int64_t dim) {
+   int64_t k = m_order;
+   int64_t j, jj;
+   m_y.resize(dim);
+   for (j = 0; j < min(dim, k-1); j++)
+      m_y[j] = 0;
+   m_y[k-1] = 1;
+   for (j = k; j < dim; j++) {
+      // Calculate y_j = (a_1 y_{j-1} + ... + a_k y_{j-k}) mod m.
+      m_y[j] = 0;
+      for (jj = 1; jj <= k; jj++)
+         m_y[j] += m_aCoeff[jj] * m_y[j - jj];
+      m_y[j] = m_y[j] % this->m_modulo;
+   }
+}
 //============================================================================
 /*
 // Builds an upper-triangular basis directly in `d` dimensions, as explained in Section 4.1 of
@@ -540,6 +551,6 @@ template class MRGLattice<NTL::ZZ, xdouble> ;
 template class MRGLattice<NTL::ZZ, quad_float> ;
 template class MRGLattice<NTL::ZZ, NTL::RR> ;
 
-} // End namespace LatticeTester
+} // End namespace LatMRG
 
 #endif
