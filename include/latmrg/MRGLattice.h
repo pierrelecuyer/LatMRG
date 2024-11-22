@@ -97,7 +97,7 @@ public:
     * Builds a basis in `dim` dimensions. This `dim` must not exceed `this->maxDim()`.
     * This initial primal basis will be upper triangular - CW: based on V^{(p)}.
     */
-   void buildBasisAlt(int64_t dim);
+   void buildBasisPol(int64_t dim);
 
    /**
     * Builds both the primal and an m-dual lower triangular basis directly
@@ -158,7 +158,7 @@ protected:
     */
    void buildBasis0(IntMat &basis, int64_t d);
    
-   void buildBasis0Alt(IntMat &basis, int64_t d);
+   void buildBasis0Pol(IntMat &basis, int64_t d);
 
    void incDimBasis0(IntMat &basis, int64_t d);
 
@@ -326,7 +326,7 @@ void MRGLattice<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
 }
 
 template<typename Int, typename Real>
-void MRGLattice<Int, Real>::buildBasis0Alt(IntMat &basis, int64_t d) {
+void MRGLattice<Int, Real>::buildBasis0Pol(IntMat &basis, int64_t d) {
    assert(d <= this->m_maxDim);
    int64_t k = this->m_order;
    int64_t dk = min(d, k);
@@ -380,9 +380,9 @@ void MRGLattice<Int, Real>::buildBasis(int64_t d) {
 }
 
 template<typename Int, typename Real>
-void MRGLattice<Int, Real>::buildBasisAlt(int64_t d) {
+void MRGLattice<Int, Real>::buildBasisPol(int64_t d) {
    this->setDim(d);
-   this->buildBasis0Alt(this->m_basis, d);
+   this->buildBasis0Pol(this->m_basis, d);
    this->setNegativeNorm();
 }
 
@@ -611,7 +611,6 @@ template<typename Int, typename Real>
 void MRGLattice<Int, Real>::polyToColumn(IntVec &col, typename FlexModInt<Int>::PolE &pcol) {
    int i, j, k;
    k = this->m_order;
-   Int temp;
    IntVec c;
    c.SetLength(k);
    col.SetLength(k);
