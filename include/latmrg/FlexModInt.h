@@ -40,6 +40,7 @@ public:
    typedef NTL::ZZ_pX PolX;
    typedef NTL::vec_ZZ_p IntVecP;
    typedef NTL::mat_ZZ_p IntMatP;
+   static NTL::ZZ_p to_Int_p(Int a) {return NTL::to_ZZ_p(a);};
 };
 
 // Specialization for the case int64_t
@@ -51,6 +52,7 @@ public:
    typedef NTL::zz_pX PolX;
    typedef NTL::vec_zz_p IntVecP;
    typedef NTL::mat_zz_p IntMatP;
+   static NTL::zz_p to_Int_p(int64_t a) {return NTL::to_zz_p(a);};
 };
 
 // Not needed, I think.
@@ -62,6 +64,7 @@ public:
    typedef NTL::ZZ_pX PolX;
    typedef NTL::vec_ZZ_p IntVecP;
    typedef NTL::mat_ZZ_p IntMatP;
+   static NTL::ZZ_p to_Int_p(NTL::ZZ a) {return NTL::to_ZZ_p(a);};
 };
 
 /**
