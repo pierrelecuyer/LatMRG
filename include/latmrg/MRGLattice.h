@@ -23,6 +23,7 @@
 #include "latticetester/EnumTypes.h"
 #include "latticetester/IntLatticeExt.h"
 #include "latticetester/BasisConstruction.h"
+#include "latmrg/FlexModInt.h"
 
 namespace LatMRG {
 
@@ -88,9 +89,15 @@ public:
    
    /**
     * Builds a basis in `dim` dimensions. This `dim` must not exceed `this->maxDim()`.
-    * This initial primal basis will be upper triangular.
+    * This initial primal basis will be upper triangular - CW: based on V^{(0)}.
     */
    void buildBasis(int64_t dim);
+   
+        /**
+    * Builds a basis in `dim` dimensions. This `dim` must not exceed `this->maxDim()`.
+    * This initial primal basis will be upper triangular - CW: based on V^{(p)}.
+    */
+   void buildBasisAlt(int64_t dim);
 
    /**
     * Builds both the primal and an m-dual lower triangular basis directly
@@ -150,10 +157,18 @@ protected:
     * They are used inside buildBasis, buildBasisDual, incDimBasis, etc., with either `m_basis` or `m_y`.
     */
    void buildBasis0(IntMat &basis, int64_t d);
+   
+   void buildBasis0Alt(IntMat &basis, int64_t d);
 
    void incDimBasis0(IntMat &basis, int64_t d);
 
    bool buildProjection0(IntMat &basis, int64_t dimbasis, IntMat &pbasis, const Coordinates &proj);
+   
+   /**
+    * Takes the polynomial `pcol` and returns in `col` the corresponding column in the
+    * matrix of generating vectors.
+    */
+   void polyToColumn(IntVec &col, typename FlexModInt<Int>::PolE &pcol);
 
    /**
     * A vector to store \f$y_0, y_1, ..., y_{t+k-2}\f$ used in the matrix V^{(p)}.
@@ -165,6 +180,10 @@ protected:
     * before reducing them into a triangular basis.
     */
    IntMat m_genTemp;
+   
+   typename FlexModInt<Int>::PolX m_Pz;   // Maybe not needed.  
+   typename NTL::zz_pX m_Pz_test;
+
 
 };
 
@@ -306,6 +325,49 @@ void MRGLattice<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
    }
 }
 
+template<typename Int, typename Real>
+void MRGLattice<Int, Real>::buildBasis0Alt(IntMat &basis, int64_t d) {
+   assert(d <= this->m_maxDim);
+   int64_t k = this->m_order;
+   int64_t dk = min(d, k);
+   int64_t i, j;
+   IntVec col;
+   
+   typename FlexModInt<Int>::PolE polDegOne;
+   typename FlexModInt<Int>::PolE polPower;     
+   
+   // Set the characteristic polynomial of the recurrence   
+   for (j = 1; j < this->m_aCoeff.length(); j++) {
+     SetCoeff(m_Pz, this->m_aCoeff.length() - j - 1, FlexModInt<Int>::to_Int_p(-this->m_aCoeff[j]));
+   }   
+   SetCoeff(m_Pz, this->m_aCoeff.length() - 1, 1);    
+   FlexModInt<Int>::PolE::init(m_Pz);
+   
+   
+   // Auxilliary variables to calculate powers p^n(z)
+   std::string str = "[0 1]";
+   std::istringstream in (str);
+   in >> polDegOne;   
+   // Calculate powers p^\mu-1 for \mu in the set of lacunary indices
+   // And fill the first k rows
+   for (j = 0; j < d; j++) {
+      power(polPower, polDegOne, j);
+      polyToColumn(col, polPower);
+      for (i = 0; i < dk; i++)
+         basis[i][j] = col[i];
+   }
+   // Fill the rest of the rows
+   for (i = dk; i < d; i++) { 
+      for (j = 0; j < d; j++)
+         basis[i][j] = (i == j) * this->m_modulo;
+   }
+   
+
+
+}
+
+
+
 //============================================================================
 
 // An upper-triangular basis is built directly, as explained in the guide of LatMRG.
@@ -314,6 +376,13 @@ template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildBasis(int64_t d) {
    this->setDim(d);
    this->buildBasis0(this->m_basis, d);
+   this->setNegativeNorm();
+}
+
+template<typename Int, typename Real>
+void MRGLattice<Int, Real>::buildBasisAlt(int64_t d) {
+   this->setDim(d);
+   this->buildBasis0Alt(this->m_basis, d);
    this->setNegativeNorm();
 }
 
@@ -536,6 +605,29 @@ void MRGLattice<Int, Real>::buildProjectionDual(IntLattice<Int, Real> &projLatti
       mDualUpperTriangular(pbasis, pdualBasis, this->m_modulo, d);
    }
 }
+
+// This applies phi inverse as described in the guide, and reverses the coordinates.
+template<typename Int, typename Real>
+void MRGLattice<Int, Real>::polyToColumn(IntVec &col, typename FlexModInt<Int>::PolE &pcol) {
+   int i, j, k;
+   k = this->m_order;
+   Int temp;
+   IntVec c;
+   c.SetLength(k);
+   col.SetLength(k);
+   for (j = 1; j < k+1; j++) {
+      c[j-1] = 0;
+      NTL::conv(c[j-1], coeff(rep(pcol), k-j));
+      for (i = 1; i < j; i ++) {
+         c[j-1] += this->m_aCoeff[i]*c[j - 1 - i];
+      }
+      c[j-1] = c[j-1] % this->m_modulo;
+   }
+   for (j = 0; j < k; j++) {
+      col[j] = c[k-j-1];
+   }
+}
+
 
 //============================================================================
 template<typename Int, typename Real>
