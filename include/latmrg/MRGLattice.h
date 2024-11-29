@@ -267,18 +267,41 @@ void MRGLattice<Int, Real>::buildy(int64_t dim) {
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildyPol(int64_t dim) {
    int64_t k = m_order;
-   int64_t j, jj;
+   int64_t j, i;
+   int64_t n;
+   typename FlexModInt<Int>::PolE polDegOne;
+   typename FlexModInt<Int>::PolE polPower;  
+   IntVec col;
+   
+   // Set the characteristic polynomial of the recurrence   
+   for (j = 1; j < this->m_aCoeff.length(); j++) {
+     SetCoeff(m_Pz, this->m_aCoeff.length() - j - 1, FlexModInt<Int>::to_Int_p(-this->m_aCoeff[j]));
+   }   
+   SetCoeff(m_Pz, this->m_aCoeff.length() - 1, 1);    
+   FlexModInt<Int>::PolE::init(m_Pz);
+   
+   
+   // Auxilliary variables to calculate powers p^n(z)
+   std::string str = "[0 1]";
+   std::istringstream in (str);
+   in >> polDegOne;   
+  
    m_y.resize(dim);
    for (j = 0; j < min(dim, k-1); j++)
       m_y[j] = 0;
    m_y[k-1] = 1;
-   for (j = k; j < dim; j++) {
-      // Calculate y_j = (a_1 y_{j-1} + ... + a_k y_{j-k}) mod m.
-      m_y[j] = 0;
-      for (jj = 1; jj <= k; jj++)
-         m_y[j] += m_aCoeff[jj] * m_y[j - jj];
-      m_y[j] = m_y[j] % this->m_modulo;
+   n = ceil(dim/k);
+   for (j = 1; j < n; j++) {
+      // Calculate powers p^\mu-1 
+      // And fill the first k rows
+      power(polPower, polDegOne, j*n);
+      polyToColumn(col, polPower);
+      for (i = 0; i < k; i++) {
+         if (j*n+i+1 < dim) //There is some problem with the indices here -- still need to check
+            m_y[j*n+i+1] = col[i];
+      }
    }
+   
 }
 //============================================================================
 /*
@@ -385,6 +408,8 @@ void MRGLattice<Int, Real>::buildBasis0Pol(IntMat &basis, int64_t d) {
          basis[i][j] = (i == j) * this->m_modulo;
    }
    
+   buildyPol(4);
+   std::cout << this->m_y << "\n";
 
 
 }
