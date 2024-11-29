@@ -78,9 +78,14 @@ public:
    void setaa(const IntVec &aa);
    
    /**
-    * Builds the vector to store \f$y_0, y_1, ..., y_{t+k-2}\f$ used in the matrix V^{(p)}.
+    * Builds the vector to store \f$y_0, y_1, ..., y_{t+k-2}\f$ used in the matrix V^{(0)}.
     */
    void buildy(int64_t dim);
+   
+   /**
+    * Builds the vector to store \f$y_0, y_1, ..., y_{t+k-2}\f$ used in the matrix V^{(p)}.
+    */
+   void buildyPol(int64_t dim);
    
    /**
     * Return the current dimesnion of the vector y.
@@ -195,6 +200,7 @@ MRGLattice<Int, Real>::MRGLattice(const Int &m, const IntVec &aa, int64_t maxDim
    this->m_maxDim = maxDim;
    setaa(aa);
    this->m_dim = 0;
+   FlexModInt<Int>::mod_init(m);
    m_genTemp.resize(maxDim, maxDim);   
    buildy(maxDim + m_order - 1);
 }
@@ -243,6 +249,23 @@ void MRGLattice<Int, Real>::setaa(const IntVec &aa) {
 
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildy(int64_t dim) {
+   int64_t k = m_order;
+   int64_t j, jj;
+   m_y.resize(dim);
+   for (j = 0; j < min(dim, k-1); j++)
+      m_y[j] = 0;
+   m_y[k-1] = 1;
+   for (j = k; j < dim; j++) {
+      // Calculate y_j = (a_1 y_{j-1} + ... + a_k y_{j-k}) mod m.
+      m_y[j] = 0;
+      for (jj = 1; jj <= k; jj++)
+         m_y[j] += m_aCoeff[jj] * m_y[j - jj];
+      m_y[j] = m_y[j] % this->m_modulo;
+   }
+}
+
+template<typename Int, typename Real>
+void MRGLattice<Int, Real>::buildyPol(int64_t dim) {
    int64_t k = m_order;
    int64_t j, jj;
    m_y.resize(dim);
@@ -334,7 +357,7 @@ void MRGLattice<Int, Real>::buildBasis0Pol(IntMat &basis, int64_t d) {
    IntVec col;
    
    typename FlexModInt<Int>::PolE polDegOne;
-   typename FlexModInt<Int>::PolE polPower;     
+   typename FlexModInt<Int>::PolE polPower;  
    
    // Set the characteristic polynomial of the recurrence   
    for (j = 1; j < this->m_aCoeff.length(); j++) {
@@ -348,7 +371,7 @@ void MRGLattice<Int, Real>::buildBasis0Pol(IntMat &basis, int64_t d) {
    std::string str = "[0 1]";
    std::istringstream in (str);
    in >> polDegOne;   
-   // Calculate powers p^\mu-1 for \mu in the set of lacunary indices
+   // Calculate powers p^\mu-1 
    // And fill the first k rows
    for (j = 0; j < d; j++) {
       power(polPower, polDegOne, j);
