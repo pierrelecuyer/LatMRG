@@ -78,11 +78,6 @@ public:
    void setaa(const IntVec &aa);
    
    /**
-    * Builds the vector to store \f$y_0, y_1, ..., y_{t+k-2}\f$ used in the matrix V^{(0)}.
-    */
-   void buildy(int64_t dim);
-   
-   /**
     * Builds the vector to store \f$y_0, y_1, ..., y_{t+k-2}\f$ used in the matrix V^{(p)}.
     */
    void buildyPol(int64_t dim);
@@ -223,7 +218,6 @@ MRGLattice<Int, Real>::MRGLattice(const Int &m, const IntVec &aa, int64_t maxDim
    
       buildyPol(maxDim + m_order - 1);
    }
-   else buildy(maxDim + m_order - 1);;
 }
 
 //============================================================================
@@ -266,23 +260,6 @@ void MRGLattice<Int, Real>::setaa(const IntVec &aa) {
    m_order = aa.length() - 1;
    this->m_dim = 0;  // Current basis is now invalid.
    this->m_dimdual = 0;
-}
-
-template<typename Int, typename Real>
-void MRGLattice<Int, Real>::buildy(int64_t dim) {
-   int64_t k = m_order;
-   int64_t j, jj;
-   m_y.resize(dim);
-   for (j = 0; j < min(dim, k-1); j++)
-      m_y[j] = 0;
-   m_y[k-1] = 1;
-   for (j = k; j < dim; j++) {
-      // Calculate y_j = (a_1 y_{j-1} + ... + a_k y_{j-k}) mod m.
-      m_y[j] = 0;
-      for (jj = 1; jj <= k; jj++)
-         m_y[j] += m_aCoeff[jj] * m_y[j - jj];
-      m_y[j] = m_y[j] % this->m_modulo;
-   }
 }
 
 template<typename Int, typename Real>
@@ -386,16 +363,14 @@ void MRGLattice<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
       for (j = 0; j < d; j++)
          basis[i][j] = this->m_modulo * (i == j);
    // Fill the rest of the first m_order rows
-   for (j = k; j < d + k - 1; j++) {
-      // Calculate y_j = (a_1 y_{j-1} + ... + a_k y_{j-k}) mod m.
-      m_y[j] = 0;
-      for (jj = 1; jj <= k; jj++)
-         m_y[j] += m_aCoeff[jj] * m_y[j - jj];
-      m_y[j] = m_y[j] % this->m_modulo;
-      for (i = 0; i < min(k, d - j + k - 1); i++) {  // We want i < k and i+j-k+1 < d.
-         basis[i][i + j - k + 1] = m_y[j];
-      }
+   for (i = 0; i < dk; i++) {
+     for (j = dk; j < d; j++) {
+        basis[i][j] = 0;
+        for (jj = 1; jj <= m_order; jj++)
+           basis[i][j] += m_aCoeff[jj] * basis[i][j - jj] % this->m_modulo;  
+     }     
    }
+   
 }
 
 template<typename Int, typename Real>
