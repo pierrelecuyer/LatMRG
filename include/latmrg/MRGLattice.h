@@ -154,6 +154,11 @@ public:
     * The coefficients \f$a_1, ..., a_k\f$ of the MRG recurrence, a_j stored in `m_aCoeff[j]`.
     */
    IntVec m_aCoeff;
+   
+   /**
+    * Boolean variable which decides whether the polynomial basis V^{(p)} is used instead of V^{(0)}
+    */   
+   bool use_pol_basis = true;
 
 protected:
 
@@ -200,9 +205,25 @@ MRGLattice<Int, Real>::MRGLattice(const Int &m, const IntVec &aa, int64_t maxDim
    this->m_maxDim = maxDim;
    setaa(aa);
    this->m_dim = 0;
-   FlexModInt<Int>::mod_init(m);
-   m_genTemp.resize(maxDim, maxDim);   
-   buildy(maxDim + m_order - 1);
+   m_genTemp.resize(maxDim, maxDim);  
+   
+   // Build the vector y
+   if (use_pol_basis) {
+      // Polynomial case
+      FlexModInt<Int>::mod_init(m);
+      typename FlexModInt<Int>::PolE polDegOne;
+      typename FlexModInt<Int>::PolE polPower;  
+   
+      // Set the characteristic polynomial of the recurrence   
+      for (int64_t j = 1; j < this->m_aCoeff.length(); j++) {
+        SetCoeff(m_Pz, this->m_aCoeff.length() - j - 1, FlexModInt<Int>::to_Int_p(-this->m_aCoeff[j]));
+      }   
+      SetCoeff(m_Pz, this->m_aCoeff.length() - 1, 1);    
+      FlexModInt<Int>::PolE::init(m_Pz);
+   
+      buildyPol(maxDim + m_order - 1);
+   }
+   else buildy(maxDim + m_order - 1);;
 }
 
 //============================================================================
@@ -287,18 +308,24 @@ void MRGLattice<Int, Real>::buildyPol(int64_t dim) {
    in >> polDegOne;   
   
    m_y.resize(dim);
+   // Temporary
+   for (j = 0; j < dim; j++)
+     m_y[j] = 0;
+     
    for (j = 0; j < min(dim, k-1); j++)
       m_y[j] = 0;
    m_y[k-1] = 1;
    n = ceil(dim/k);
-   for (j = 1; j < n; j++) {
+   for (j = 1; j < n+1; j++) {
       // Calculate powers p^\mu-1 
       // And fill the first k rows
-      power(polPower, polDegOne, j*n);
+      power(polPower, polDegOne, j*k);
       polyToColumn(col, polPower);
+      //std::cout << j << ": " << col << "\n";
       for (i = 0; i < k; i++) {
-         if (j*n+i+1 < dim) //There is some problem with the indices here -- still need to check
-            m_y[j*n+i+1] = col[i];
+         if (j*k+i < dim) {
+            m_y[j*k+i] = col[k-i-1];
+         }
       }
    }
    
@@ -377,30 +404,10 @@ void MRGLattice<Int, Real>::buildBasis0Pol(IntMat &basis, int64_t d) {
    int64_t k = this->m_order;
    int64_t dk = min(d, k);
    int64_t i, j;
-   IntVec col;
    
-   typename FlexModInt<Int>::PolE polDegOne;
-   typename FlexModInt<Int>::PolE polPower;  
-   
-   // Set the characteristic polynomial of the recurrence   
-   for (j = 1; j < this->m_aCoeff.length(); j++) {
-     SetCoeff(m_Pz, this->m_aCoeff.length() - j - 1, FlexModInt<Int>::to_Int_p(-this->m_aCoeff[j]));
-   }   
-   SetCoeff(m_Pz, this->m_aCoeff.length() - 1, 1);    
-   FlexModInt<Int>::PolE::init(m_Pz);
-   
-   
-   // Auxilliary variables to calculate powers p^n(z)
-   std::string str = "[0 1]";
-   std::istringstream in (str);
-   in >> polDegOne;   
-   // Calculate powers p^\mu-1 
-   // And fill the first k rows
    for (j = 0; j < d; j++) {
-      power(polPower, polDegOne, j);
-      polyToColumn(col, polPower);
       for (i = 0; i < dk; i++)
-         basis[i][j] = col[i];
+         basis[i][j] = m_y[j-i+k-1];
    }
    // Fill the rest of the rows
    for (i = dk; i < d; i++) { 
@@ -408,8 +415,6 @@ void MRGLattice<Int, Real>::buildBasis0Pol(IntMat &basis, int64_t d) {
          basis[i][j] = (i == j) * this->m_modulo;
    }
    
-   buildyPol(4);
-   std::cout << this->m_y << "\n";
 
 
 }
