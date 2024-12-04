@@ -476,20 +476,11 @@ void MRGLattice<Int, Real>::incDimBasis0(IntMat &basis, int64_t d) {
       basis[d - 1][j] = 0;
    if (d > k) basis[d - 1][d - 1] = this->m_modulo;
    else basis[d - 1][d - 1] = 1;
-   /**
-   j = d + k - 2;
-   // Add new column.
-   basis[0][d - 1] = m_y[j];
-   for (i = 1; i < min(d, k); i++)
-      basis[i][d - 1] = basis[i - 1][d - 2];
-   for (i = k; i < d - 1; i++)
-      basis[i][d - 1] = 0;
-   */
    for (i = 0; i < d - 1; i++) {
       basis[i][d - 1] = 0;
       if (d - 1 >= m_order) {
          for (jj = 1; jj <= m_order; jj++)
-            basis[i][d - 1] += m_aCoeff[k] * basis[i][d - 1 - jj] % this->m_modulo;
+            basis[i][d - 1] += m_aCoeff[jj] * basis[i][d - 1 - jj] % this->m_modulo;
       }
    }
 }
