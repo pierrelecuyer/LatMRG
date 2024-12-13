@@ -89,21 +89,17 @@ public:
    
    /**
     * Builds a basis in `dim` dimensions. This `dim` must not exceed `this->maxDim()`.
-    * This initial primal basis will be upper triangular - CW: based on V^{(0)}.
+    * This initial primal basis will be upper triangular -  based on V^{(0)} or V^{(p)}
+    * depending on which approach is chosen by the user..
     */
    void buildBasis(int64_t dim);
-   
-        /**
-    * Builds a basis in `dim` dimensions. This `dim` must not exceed `this->maxDim()`.
-    * This initial primal basis will be upper triangular - CW: based on V^{(p)}.
-    */
-   void buildBasisPol(int64_t dim);
+
 
    /**
     * Builds both the primal and an m-dual lower triangular basis directly
     * in `dim` dimensions.  This `dim` must not exceed `maxDim`.
     */
-   void buildDualBasis(int64_t dim);
+   void buildDualBasis(int64_t dim); 
 
    /**
     * Increases the current dimension of the primal basis by 1 and updates the basis.
@@ -153,17 +149,20 @@ public:
    /**
     * Boolean variable which decides whether the polynomial basis V^{(p)} is used instead of V^{(0)}
     */   
-   bool use_pol_basis = true;
+   bool use_polynomial_basis = true;
 
 protected:
 
    /**
     * The following protected functions take the basis as a parameter for more flexibility.
     * They are used inside buildBasis, buildBasisDual, incDimBasis, etc., with either `m_basis` or `m_y`.
+    * For building the basis either the standard approach or the polynomial approach can be chosen
     */
    void buildBasis0(IntMat &basis, int64_t d);
    
    void buildBasis0Pol(IntMat &basis, int64_t d);
+   
+   void buildDualBasis0(IntMat &basis, int64_t d);      
 
    void incDimBasis0(IntMat &basis, int64_t d);
 
@@ -186,6 +185,18 @@ protected:
     */
    IntMat m_genTemp;
    
+   /**
+    * For generating the dual basis or increasing its dimension, we need a copy of the
+    * the primal basis.
+    */
+   IntMat m_primal_copy;
+   
+   /**
+    * If we want to increase the dimension of the dual basis with the polynomial approach
+    * we also need a copy of the dual basis.
+    */   
+   IntMat m_dual_copy;
+   
    typename FlexModInt<Int>::PolX m_Pz;   // Maybe not needed.  
    typename NTL::zz_pX m_Pz_test;
 
@@ -201,9 +212,11 @@ MRGLattice<Int, Real>::MRGLattice(const Int &m, const IntVec &aa, int64_t maxDim
    setaa(aa);
    this->m_dim = 0;
    m_genTemp.resize(maxDim, maxDim);  
+   m_primal_copy.resize(maxDim, maxDim);
+   m_dual_copy.resize(maxDim, maxDim);
    
    // Build the vector y
-   if (use_pol_basis) {
+   if (use_polynomial_basis) {
       // Polynomial case
       FlexModInt<Int>::mod_init(m);
       typename FlexModInt<Int>::PolE polDegOne;
@@ -246,6 +259,8 @@ MRGLattice<Int, Real>::MRGLattice(const MRGLattice<Int, Real> &lat) :
    m_aCoeff = lat.m_aCoeff;
    m_order = lat.m_order;
    m_y = lat.m_y;
+   this->m_basis = lat.getBasis();
+   this->m_dualbasis = lat.getDualBasis();
    // Should also copy the basis and all other variables???  ******
 }
 
@@ -261,6 +276,8 @@ void MRGLattice<Int, Real>::setaa(const IntVec &aa) {
    this->m_dim = 0;  // Current basis is now invalid.
    this->m_dimdual = 0;
 }
+
+//============================================================================
 
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildyPol(int64_t dim) {
@@ -339,6 +356,21 @@ void MRGLattice<Int, Real>::buildBasis00(IntMat &basis, int64_t d) {
 }
 */
 
+
+//============================================================================
+
+// An upper-triangular basis is built directly, as explained in the guide of LatMRG.
+// The dimension `maxDim` of the `IntMat` array is unchanged, but the basis dimension isset to `d`.
+template<typename Int, typename Real>
+void MRGLattice<Int, Real>::buildBasis(int64_t d) {
+   this->setDim(d);
+   if (use_polynomial_basis)
+      this->buildBasis0Pol(this->m_basis, d);
+   else
+      this->buildBasis0(this->m_basis, d);
+   this->setNegativeNorm();
+}
+
 //============================================================================
 
 // Builds an upper-triangular basis directly in `d` dimensions, as explained in Section 4.1 of
@@ -373,6 +405,11 @@ void MRGLattice<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
    
 }
 
+//============================================================================
+
+
+// Builds in basis in the polynomial case. It is based on the vector m_y built by 
+// the function buildypol.
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildBasis0Pol(IntMat &basis, int64_t d) {
    assert(d <= this->m_maxDim);
@@ -390,52 +427,26 @@ void MRGLattice<Int, Real>::buildBasis0Pol(IntMat &basis, int64_t d) {
          basis[i][j] = (i == j) * this->m_modulo;
    }
    
-
-
 }
-
 
 
 //============================================================================
 
-// An upper-triangular basis is built directly, as explained in the guide of LatMRG.
-// The dimension `maxDim` of the `IntMat` array is unchanged, but the basis dimension isset to `d`.
-template<typename Int, typename Real>
-void MRGLattice<Int, Real>::buildBasis(int64_t d) {
-   this->setDim(d);
-   this->buildBasis0(this->m_basis, d);
-   this->setNegativeNorm();
-}
 
 template<typename Int, typename Real>
-void MRGLattice<Int, Real>::buildBasisPol(int64_t d) {
-   this->setDim(d);
-   this->buildBasis0Pol(this->m_basis, d);
-   this->setNegativeNorm();
+void MRGLattice<Int, Real>::buildDualBasis(int64_t d) {
+   this->setDimDual(d);
+   this->buildDualBasis0(this->m_dualbasis, d);
+   this->setDualNegativeNorm();
 }
 
 //============================================================================
 
 // Builds the m-dual basis in a direct way in d dimensions.
 template<typename Int, typename Real>
-void MRGLattice<Int, Real>::buildDualBasis(int64_t d) {
-   if (d > this->m_dim) {  // Compute the initial primal basis up to d dimensions.
-      this->m_dim = d;
-   }
-   this->setDimDual(d);
-   int64_t dk = min(d, m_order);
-   int64_t i, j;
-   for (i = 0; i < dk; i++)
-      for (j = 0; j < d; j++)
-         this->m_dualbasis[i][j] = (i == j) * this->m_modulo;
-   for (i = dk; i < d; i++) {
-      for (j = 0; j < dk; j++) {
-         this->m_dualbasis[i][j] = -m_y[i-j+m_order-1];
-         }
-      for (j = dk; j < d; j++)
-         this->m_dualbasis[i][j] = (i == j);
-   }
-   this->setDualNegativeNorm();
+void MRGLattice<Int, Real>::buildDualBasis0(IntMat &basis, int64_t d) {
+   this->buildBasis0(m_primal_copy, d);
+   mDualUpperTriangular(m_primal_copy, basis, this->m_modulo, d);
 }
 
 //============================================================================
@@ -499,24 +510,31 @@ void MRGLattice<Int, Real>::incDimBasis() {
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::incDimDualBasis() {
    int64_t d = 1 + this->getDimDual();  // New current dimension.
+   int64_t i;
    this->setDimDual(d);
    while (this->m_dim < d) {  // Increase dimension if needed.
       this->m_dim++;
    }
-   int64_t i;
+   incDimBasis0(m_primal_copy, d);
    // Add one extra 0 coordinate to each vector of the m-dual basis.
    for (i = 0; i < d - 1; i++) {
       this->m_dualbasis[i][d - 1] = 0;
-      this->m_dualbasis[d - 1][i] = 0;
    }
-   // Add the new vector the dual basis
-   if (d <= m_order) this->m_dualbasis[d - 1][d - 1] = this->m_modulo;
+   
+   //Dinstinguish whether we use the polynomial approach or not
+   if (use_polynomial_basis) {
+     mDualUpperTriangular(m_primal_copy, m_dual_copy, this->m_modulo, d);
+     std::cout << m_dual_copy << "\n";
+     for (i = 0; i < d; i++) {
+       this->m_dualbasis[d-1][i] = m_dual_copy[d-1][i];  
+     }
+   }
    else {
-      this->m_dualbasis[d - 1][d - 1] = 1;
-      for (i = 0; i < m_order; i++)
-         this->m_dualbasis[d - 1][i] = -m_y[(d-1)-i+m_order-1];
+      for (i = 0; i < d-1; i++) {
+         this->m_dualbasis[d-1][i] = -m_primal_copy[i][d-1];  
+      } 
+      this->m_dualbasis[d-1][d-1] = 1;
    }
-   //  this->setDualNegativeNorm();   // just for testing ...  not needed.
 }
 
 //============================================================================
