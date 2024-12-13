@@ -643,6 +643,8 @@ void MRGLattice<Int, Real>::buildProjectionDual(IntLattice<Int, Real> &projLatti
    }
 }
 
+//============================================================================
+
 // This applies phi inverse as described in the guide, and reverses the coordinates.
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::polyToColumn(IntVec &col, typename FlexModInt<Int>::PolE &pcol) {
