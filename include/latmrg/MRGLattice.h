@@ -259,8 +259,8 @@ MRGLattice<Int, Real>::MRGLattice(const MRGLattice<Int, Real> &lat) :
    m_aCoeff = lat.m_aCoeff;
    m_order = lat.m_order;
    m_y = lat.m_y;
-   this->m_basis = lat.getBasis();
-   this->m_dualbasis = lat.getDualBasis();
+   //this->m_basis = lat.getBasis();
+   //this->m_dualbasis = lat.getDualBasis();
    // Should also copy the basis and all other variables???  ******
 }
 
@@ -546,41 +546,61 @@ template<typename Int, typename Real>
 bool MRGLattice<Int, Real>::buildProjection0(IntMat &basis, int64_t dimbasis, IntMat &pbasis,
       const Coordinates &proj) {
    int64_t d = proj.size();
-   int64_t i, j;
-   // projCase1 = false;
-   // Check if we are in case 1.
-   // This assumes that the coordinates of each projection are always in increasing order!  ***
+   int64_t i, j;   
    bool projCase1 = true; // This holds if the first m_order coordinates are all in `proj`.
-   if (d < (unsigned) m_order) projCase1 = false;
-   else {
-      j = 0;
-      for (auto it = proj.begin(); it != proj.end(); it++, j++) {
-         if (j < m_order) {
-            if (*it != unsigned(j + 1)) projCase1 = false;
-         } else break;
-      }
-   }
-   if (projCase1) {
-      // We first compute the first m_order rows of the projection basis.
-      for (i = 0; i < m_order; i++) {
-         j = 0;
-         for (auto it = proj.begin(); it != proj.end(); it++, j++)
-            pbasis[i][j] = basis[i][*it - 1];
-      }
-      // Then the other rows.
-      for (i = m_order; i < d; i++)
-         for (j = 0; j < d; j++)
-            pbasis[i][j] = this->m_modulo * (i == j);
-   } else {
-      // In this case we need to use the more general algorithm.
+    
+   // Algorith taylored to the polynomial basis V^{(p)}
+   // TODO CW: Test the polynomial algorithm!
+   if (use_polynomial_basis) {
+      int64_t k = this->m_order;
+      int64_t dk = min(d, k);
       j = 0;
       for (auto it = proj.begin(); it != proj.end(); it++, j++) {
          // Set column j of all generating vectors, for (j+1)-th coordinate of proj.
-         for (i = 0; i < dimbasis; i++)
-            m_genTemp[i][j] = basis[i][*it - 1];
+         for (i = 0; i < dimbasis; i++) {
+            m_genTemp[i][j] = (i == j) * this->m_modulo;
+            if (*it - 1 < (unsigned) d && i <dk)
+               m_genTemp[i][j] = m_y[*it - 1 - i + k -1];
+         }
       }
-      // std::cout << " Generating vectors: \n" << m_genTemp << "\n";
-      upperTriangularBasis(m_genTemp, pbasis, this->m_modulo, dimbasis, d);
+      upperTriangularBasis(m_genTemp, pbasis, this->m_modulo, dimbasis, d);      
+   }
+   else {
+      // Algorithm which does not necessarily use the special form of V^{(p)} but applies
+      // for an arbitrary choice of a basis, in particular also for V^{(0)}.
+      // Check if we are in case 1.
+      // This assumes that the coordinates of each projection are always in increasing order!  ***   
+      if (d < (unsigned) m_order) projCase1 = false;
+      else {
+         j = 0;
+         for (auto it = proj.begin(); it != proj.end(); it++, j++) {
+            if (j < m_order) {
+               if (*it != unsigned(j + 1)) projCase1 = false;
+            } else break;
+         }
+      }
+      if (projCase1) {
+         // We first compute the first m_order rows of the projection basis.
+         for (i = 0; i < m_order; i++) {
+            j = 0;
+            for (auto it = proj.begin(); it != proj.end(); it++, j++)
+               pbasis[i][j] = basis[i][*it - 1];
+         }
+         // Then the other rows.
+         for (i = m_order; i < d; i++)
+            for (j = 0; j < d; j++)
+               pbasis[i][j] = this->m_modulo * (i == j);
+      } else {
+         // In this case we need to use the more general algorithm.
+         j = 0;
+         for (auto it = proj.begin(); it != proj.end(); it++, j++) {
+            // Set column j of all generating vectors, for (j+1)-th coordinate of proj.
+            for (i = 0; i < dimbasis; i++)
+               m_genTemp[i][j] = basis[i][*it - 1];
+         }
+         // std::cout << " Generating vectors: \n" << m_genTemp << "\n";
+         upperTriangularBasis(m_genTemp, pbasis, this->m_modulo, dimbasis, d);
+      }
    }
    return projCase1;
 }
@@ -615,32 +635,10 @@ void MRGLattice<Int, Real>::buildProjectionDual(IntLattice<Int, Real> &projLatti
    projLattice.setDim(d);
    projLattice.setDimDual(d);
 
-   // We first build a basis for the primal basis of the projection.
-   bool projCase1 = this->buildProjection0(this->m_basis, this->m_dim, pbasis, proj);
-   // After this function call, the class variable `projCase1` is set.
-
-   // Then we compute its m-dual.
-   int64_t i, j, k;
-   if (projCase1) { // Get the m-dual basis directly. ** Is it really faster and worthwhile?   ****
-      // Get the first k columns directly from m_y.
-      for (j = 0; j < m_order; j++) {
-         pdualBasis[j][j] = this->m_modulo;
-         i = m_order;
-         auto it = proj.begin();
-         for (k = 0; k < m_order - 1; k++)
-            it++;
-         for (it++; it != proj.end(); ++it, ++i) {
-            pdualBasis[i][j] = --m_y[(*it-1)-i+m_order-1];
-         }
-      }
-      // The other columns are trivial.
-      for (i = 0; i < d; i++)
-         for (j = m_order; j < d; j++)
-            pdualBasis[i][j] = (i == j);
-   } else {
-      // We invert pbasis to get the m-dual.
-      mDualUpperTriangular(pbasis, pdualBasis, this->m_modulo, d);
-   }
+   // We first build a basis for the primal basis of the projection
+   this->buildProjection0(this->m_basis, this->m_dim, pbasis, proj);
+   // Then we simply calculate its dual.
+   mDualUpperTriangular(pbasis, pdualBasis, this->m_modulo, d);
 }
 
 //============================================================================
