@@ -550,17 +550,20 @@ bool MRGLattice<Int, Real>::buildProjection0(IntMat &basis, int64_t dimbasis, In
    bool projCase1 = true; // This holds if the first m_order coordinates are all in `proj`.
     
    // Algorith taylored to the polynomial basis V^{(p)}
-   // TODO CW: Test the polynomial algorithm!
    if (use_polynomial_basis) {
       int64_t k = this->m_order;
       int64_t dk = min(d, k);
       j = 0;
       for (auto it = proj.begin(); it != proj.end(); it++, j++) {
          // Set column j of all generating vectors, for (j+1)-th coordinate of proj.
-         for (i = 0; i < dimbasis; i++) {
+         for (i = 0; i < this->m_maxDim; i++) {
             m_genTemp[i][j] = (i == j) * this->m_modulo;
-            if (*it - 1 < (unsigned) d && i <dk)
+            //if (*it - 1 < (unsigned) d && i <dk)
+            //   m_genTemp[i][j] = m_y[*it - 1 - i + k -1];
+            if (i < dk) {
                m_genTemp[i][j] = m_y[*it - 1 - i + k -1];
+            }
+         
          }
       }
       upperTriangularBasis(m_genTemp, pbasis, this->m_modulo, dimbasis, d);      
@@ -595,11 +598,13 @@ bool MRGLattice<Int, Real>::buildProjection0(IntMat &basis, int64_t dimbasis, In
          j = 0;
          for (auto it = proj.begin(); it != proj.end(); it++, j++) {
             // Set column j of all generating vectors, for (j+1)-th coordinate of proj.
-            for (i = 0; i < dimbasis; i++)
+            // for (i = 0; i < dimbasis; i++)
+            //   m_genTemp[i][j] = basis[i][*it - 1];
+            for (i = 0; i < this->m_maxDim; i++)
                m_genTemp[i][j] = basis[i][*it - 1];
-         }
-         // std::cout << " Generating vectors: \n" << m_genTemp << "\n";
-         upperTriangularBasis(m_genTemp, pbasis, this->m_modulo, dimbasis, d);
+       }
+       // std::cout << " Generating vectors: \n" << m_genTemp << "\n";
+       upperTriangularBasis(m_genTemp, pbasis, this->m_modulo, dimbasis, d);
       }
    }
    return projCase1;
