@@ -256,12 +256,10 @@ MRGLattice<Int, Real>& MRGLattice<Int, Real>::operator=(const MRGLattice<Int, Re
 template<typename Int, typename Real>
 MRGLattice<Int, Real>::MRGLattice(const MRGLattice<Int, Real> &lat) :
       IntLatticeExt<Int, Real>(lat.m_modulo, lat.getDim(), lat.getNormType()) {
+   this->copy(lat);
    m_aCoeff = lat.m_aCoeff;
    m_order = lat.m_order;
    m_y = lat.m_y;
-   //this->m_basis = lat.getBasis();
-   //this->m_dualbasis = lat.getDualBasis();
-   // Should also copy the basis and all other variables???  ******
 }
 
 //============================================================================
@@ -524,7 +522,7 @@ void MRGLattice<Int, Real>::incDimDualBasis() {
    //Dinstinguish whether we use the polynomial approach or not
    if (use_polynomial_basis) {
      mDualUpperTriangular(m_primal_copy, m_dual_copy, this->m_modulo, d);
-     std::cout << m_dual_copy << "\n";
+     // std::cout << m_dual_copy << "\n";
      for (i = 0; i < d; i++) {
        this->m_dualbasis[d-1][i] = m_dual_copy[d-1][i];  
      }
