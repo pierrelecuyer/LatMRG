@@ -99,7 +99,7 @@ static bool isPrimitiveElement(const Int &a, const IntFactorization<Int> &fac, c
  * The modulus `m` should be set before, via the `setModulusIntP` function from `FlexModInt`.
  */
 template<typename Int>
-static bool isPrimitive(const NTL::vector<Int> &aa, const Int &m, const IntFactorization<Int> &fm,
+static bool isPrimitive(const NTL::Vec<Int> &aa, const Int &m, const IntFactorization<Int> &fm,
       const IntFactorization<Int> &fr);
 
 /**
@@ -107,7 +107,7 @@ static bool isPrimitive(const NTL::vector<Int> &aa, const Int &m, const IntFacto
  * Condition 1 is assumed to hold.
  */
 template<typename Int>
-static bool isPrimitive23(const NTL::vector<Int> &aa, const Int &m,
+static bool isPrimitive23(const NTL::Vec<Int> &aa, const Int &m,
       const IntFactorization<Int> &fr);
 
 /**
@@ -116,7 +116,7 @@ static bool isPrimitive23(const NTL::vector<Int> &aa, const Int &m,
  * The modulus used in `IntP` is assumed to be correct, this is not verified.
  */
 template<typename Int>
-static void setCharacPoly(typename FlexModInt<Int>::PolX &f, const NTL::vector<Int> &aa);
+static void setCharacPoly(typename FlexModInt<Int>::PolX &f, const NTL::Vec<Int> &aa);
 
 /**
  * In this version, the vector of coefficients is passed directly as an `IntVecP`,
@@ -135,7 +135,7 @@ static void setCharacPoly(typename FlexModInt<Int>::PolX &f,
  */
 template<typename Int>
 static void vecMRGToPoly(typename FlexModInt<Int>::PolX &f, typename FlexModInt<Int>::IntVecP aaP,
-      const NTL::vector<Int> &xx);
+      const NTL::Vec<Int> &xx);
 
 /**
  * Converts the polynomial representation in `f` to the vector state `xx` of an MRG,
@@ -144,7 +144,7 @@ static void vecMRGToPoly(typename FlexModInt<Int>::PolX &f, typename FlexModInt<
  * is assumed to be the correct one.
  */
 template<typename Int>
-static void polyToVecMRG(const NTL::vector<Int> &xx, typename FlexModInt<Int>::IntVecP aaP,
+static void polyToVecMRG(const NTL::Vec<Int> &xx, typename FlexModInt<Int>::IntVecP aaP,
       typename FlexModInt<Int>::PolX &f);
 
 /**
@@ -177,7 +177,7 @@ bool isPrimitiveElement(const Int &a, const IntFactorization<Int> &fac, const In
 }
 
 template<typename Int>
-static bool isPrimitive(const NTL::vector<Int> &aa, const Int &m, const IntFactorization<Int> &fm,
+static bool isPrimitive(const NTL::Vec<Int> &aa, const Int &m, const IntFactorization<Int> &fm,
       const IntFactorization<Int> &fr) {
    int64_t k = aa.length() - 1;
    Int ak = aa[k];
@@ -187,7 +187,7 @@ static bool isPrimitive(const NTL::vector<Int> &aa, const Int &m, const IntFacto
 }
 
 template<typename Int>
-static bool isPrimitive23(const NTL::vector<Int> &aa, const Int &m,
+static bool isPrimitive23(const NTL::Vec<Int> &aa, const Int &m,
       const IntFactorization<Int> &fr) {
    // First, we make sure that IntP is using the correct modulus m.
    if (m != FlexModInt<Int>::IntP::modulus()) setModulusIntP<Int>(m);
@@ -229,7 +229,7 @@ static bool isPrimitive23(const NTL::vector<Int> &aa, const Int &m,
 }
 
 template<typename Int>
-static void setCharacPoly(typename FlexModInt<Int>::PolX &f, const NTL::vector<Int> &aa) {
+static void setCharacPoly(typename FlexModInt<Int>::PolX &f, const NTL::Vec<Int> &aa) {
    typename FlexModInt<Int>::IntVecP aaP;  // The coefficients `aa` must be converted to Z_p type.
    conv(aaP, aa);
    int64_t k = aaP.length() - 1;
@@ -249,7 +249,7 @@ static void setCharacPoly(typename FlexModInt<Int>::PolX &f,
 
 template<typename Int>
 static void vecMRGToPoly(typename FlexModInt<Int>::PolX &f, typename FlexModInt<Int>::IntVecP aaP,
-      const NTL::vector<Int> &xx) {
+      const NTL::Vec<Int> &xx) {
    int64_t k = aaP.length() - 1;
    // We have xx[j] = x_{n-k+1+j].
    SetCoeff(f, k - 1, xx[0]);
@@ -263,7 +263,7 @@ static void vecMRGToPoly(typename FlexModInt<Int>::PolX &f, typename FlexModInt<
 }
 
 template<typename Int>
-static void polyToVecMRG(const NTL::vector<Int> &xx, typename FlexModInt<Int>::IntVecP aaP,
+static void polyToVecMRG(const NTL::Vec<Int> &xx, typename FlexModInt<Int>::IntVecP aaP,
       typename FlexModInt<Int>::PolX &f) {
    int64_t k = aaP.length() - 1;
    Getcoeff(xx[0], f, k - 1);
