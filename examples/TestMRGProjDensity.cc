@@ -1,3 +1,4 @@
+
 /**
  * This example shows how projections sometimes have a smaller density than the full lattice.
  * We do this with a small MRG example or order 3 with `m = 13`, then with a larger MRG example
@@ -10,9 +11,13 @@
 #include <algorithm>
 #include <NTL/vector.h>
 #include <NTL/matrix.h>
+#include <NTL/xdouble.h>
 #include <NTL/ZZ.h>
-#include <NTL/RR.h>
+#include <NTL/mat_ZZ.h>
 
+
+#include "latticetester/FlexTypes.h"
+#include "latticetester/Util.h"
 #include "latticetester/IntLattice.h"
 #include "latticetester/FigureOfMeritM.h"
 #include "latticetester/FigureOfMeritDualM.h"
@@ -30,9 +35,10 @@ using namespace LatticeTester;
 // We do this for the primal, then for the m-dual.
 // Finally, we examine more closely the projection over {1, 3, 4}.
 template<typename Int, typename Real>
-void testProjectionsMRG (const Int m, const NTL::vector<Int> a, const NTL::vector<int64_t> t) {
+void testProjectionsMRG (const Int m, const NTL::Vec<Int> a, const NTL::Vec<int64_t> t) {
+   
    int64_t maxdim = t[0];  // Maximum dimension of the lattice
-   int64_t order = a.size()-1;
+   int64_t order = a.length()-1;
    double merit;
    LatMRG::MRGLattice<Int, Real> lat(m, a, maxdim);
    WeightsUniform weights(1.0);
@@ -90,13 +96,17 @@ void testProjectionsMRG (const Int m, const NTL::vector<Int> a, const NTL::vecto
    std::cout << "Basis for m-dual projection {1,3,4}: \n" << proj.getBasis() << "\n";
    fomdual.setVerbosity(0);
    fomdual.computeMeritOneProj(proj, coord);
+   
 }
 
 
 int main() {
 
+
+   
    std::cout << "Types: NTL::ZZ, double \n";
-   NTL::vector<int64_t> t(3); // The t-vector for the FOM.
+   NTL::Vec<int64_t> t; // The t-vector for the FOM.
+   t.SetLength(3);
    t[0] = 8;    // We look at successive coordinates in up to t[0] dimensions.
    t[1] = 5;    // Then pairs and triples up to coord. 5.
    t[2] = 5;
@@ -105,7 +115,8 @@ int main() {
    std::cout << "\n=============================================================\n";
    std::cout << "Results for a small MRG example with m=13, k=3, a=(7,0,4). \n";
    NTL::ZZ m(13);
-   NTL::vector<NTL::ZZ> a(4); // Vector a has size 4, a[j] contains a_j.
+   NTL::Vec<NTL::ZZ> a; // Vector a has size 4, a[j] contains a_j.
+   a.SetLength(4);
    a[1] = 7;
    a[2] = 0;
    a[3] = 4;
@@ -119,6 +130,7 @@ int main() {
    a[2] = 0;
    a[3] = -1184153554609676;
    testProjectionsMRG<NTL::ZZ, double> (m, a, t);
+   
 
    return 0;
 }
