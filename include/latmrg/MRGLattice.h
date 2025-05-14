@@ -21,6 +21,7 @@
 #include <cassert>
 #include "latticetester/Util.h"
 #include "latticetester/EnumTypes.h"
+#include "latticetester/FlexTypes.h"
 #include "latticetester/IntLatticeExt.h"
 #include "latticetester/BasisConstruction.h"
 #include "latmrg/FlexModInt.h"
@@ -40,9 +41,9 @@ template<typename Int, typename Real>
 class MRGLattice: public IntLatticeExt<Int, Real> {
 
 private:
-   typedef NTL::vector<Int> IntVec;
-   typedef NTL::matrix<Int> IntMat;
-   typedef NTL::vector<Real> RealVec;
+   // typedef NTL::vector<Int> IntVec;
+   // typedef NTL::matrix<Int> IntMat;
+   // typedef NTL::vector<Real> RealVec;
 
 public:
 
@@ -211,9 +212,9 @@ MRGLattice<Int, Real>::MRGLattice(const Int &m, const IntVec &aa, int64_t maxDim
    this->m_maxDim = maxDim;
    setaa(aa);
    this->m_dim = 0;
-   m_genTemp.resize(maxDim, maxDim);  
-   m_primal_copy.resize(maxDim, maxDim);
-   m_dual_copy.resize(maxDim, maxDim);
+   m_genTemp.SetDims(maxDim, maxDim); 
+   m_primal_copy.SetDims(maxDim, maxDim);
+   m_dual_copy.SetDims(maxDim, maxDim);
    
    // Build the vector y
    if (use_polynomial_basis) {
@@ -244,7 +245,7 @@ MRGLattice<Int, Real>::~MRGLattice() {
 template<typename Int, typename Real>
 MRGLattice<Int, Real>& MRGLattice<Int, Real>::operator=(const MRGLattice<Int, Real> &lat) {
    if (this == &lat) return *this;
-   this->copy(lat);
+   // this->copy(lat); CW: copy constructor currently not available
    m_aCoeff = lat.m_aCoeff;
    m_order = lat.m_order;
    m_y = lat.m_y;
@@ -256,7 +257,7 @@ MRGLattice<Int, Real>& MRGLattice<Int, Real>::operator=(const MRGLattice<Int, Re
 template<typename Int, typename Real>
 MRGLattice<Int, Real>::MRGLattice(const MRGLattice<Int, Real> &lat) :
       IntLatticeExt<Int, Real>(lat.m_modulo, lat.getDim(), lat.getNormType()) {
-   this->copy(lat);
+   // this->copy(lat); CW: copy constructor currently not available
    m_aCoeff = lat.m_aCoeff;
    m_order = lat.m_order;
    m_y = lat.m_y;
@@ -299,7 +300,7 @@ void MRGLattice<Int, Real>::buildyPol(int64_t dim) {
    std::istringstream in (str);
    in >> polDegOne;   
   
-   m_y.resize(dim);
+   m_y.SetLength(dim);
    // Temporary
    for (j = 0; j < dim; j++)
      m_y[j] = 0;
