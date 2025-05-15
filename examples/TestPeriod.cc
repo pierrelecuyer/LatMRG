@@ -54,7 +54,7 @@ static void TestPeriodLCG (const Int &b, int e, const Int &c, const Int &a, Deco
 }
 
 template<typename Int>
-static void TestPeriodMRG (const Int &m, int k, const NTL::vector<Int> &aa, DecompType decompm1, const char *filem1, DecompType decompr,
+static void TestPeriodMRG (const Int &m, int k, const NTL::Vec<Int> &aa, DecompType decompm1, const char *filem1, DecompType decompr,
       const char *filer) {
    MRGComponent<Int> mrg(m, k, decompm1, filem1, decompr, filer);
    std::cout << "TestPeriodMRG for m = " << mrg.getModulus() << ", aa = " << aa << "\n";
@@ -84,7 +84,7 @@ int main() {
    TestPeriodLCG<Int> (m+1, (Int)16801, DECOMP, NULL, true);
 
    int k = 3;
-   NTL::vector<Int> aa;
+   NTL::Vec<Int> aa;
    aa.SetLength(k+1);
    // This one works only with Int = ZZ, numbers are too large for int64_t.
    Int mm(9223372036854773561);

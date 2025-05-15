@@ -21,8 +21,10 @@
 #include <cassert>
 #include "latticetester/Util.h"
 #include "latticetester/EnumTypes.h"
+#include "latticetester/FlexTypes.h"
 #include "latticetester/IntLatticeExt.h"
 #include "latticetester/BasisConstruction.h"
+#include "latmrg/FlexModInt.h"
 
 namespace LatMRG {
 
@@ -39,9 +41,9 @@ template<typename Int, typename Real>
 class MRGLattice: public IntLatticeExt<Int, Real> {
 
 private:
-   typedef NTL::vector<Int> IntVec;
-   typedef NTL::matrix<Int> IntMat;
-   typedef NTL::vector<Real> RealVec;
+   // typedef NTL::vector<Int> IntVec;
+   // typedef NTL::matrix<Int> IntMat;
+   // typedef NTL::vector<Real> RealVec;
 
 public:
 
@@ -75,18 +77,30 @@ public:
     * the length of this vector, minus 1.  `aa[j]` must contain \f$a_j\f$ for j=1,...,k.
     */
    void setaa(const IntVec &aa);
-
+   
+   /**
+    * Builds the vector to store \f$y_0, y_1, ..., y_{t+k-2}\f$ used in the matrix V^{(p)}.
+    */
+   void buildyPol(int64_t dim);
+   
+   /**
+    * Return the current dimesnion of the vector y.
+    */
+   int64_t getDimy() { return m_y.length();};
+   
    /**
     * Builds a basis in `dim` dimensions. This `dim` must not exceed `this->maxDim()`.
-    * This initial primal basis will be upper triangular.
+    * This initial primal basis will be upper triangular -  based on V^{(0)} or V^{(p)}
+    * depending on which approach is chosen by the user..
     */
    void buildBasis(int64_t dim);
+
 
    /**
     * Builds both the primal and an m-dual lower triangular basis directly
     * in `dim` dimensions.  This `dim` must not exceed `maxDim`.
     */
-   void buildDualBasis(int64_t dim);
+   void buildDualBasis(int64_t dim); 
 
    /**
     * Increases the current dimension of the primal basis by 1 and updates the basis.
@@ -132,18 +146,34 @@ public:
     * The coefficients \f$a_1, ..., a_k\f$ of the MRG recurrence, a_j stored in `m_aCoeff[j]`.
     */
    IntVec m_aCoeff;
+   
+   /**
+    * Boolean variable which decides whether the polynomial basis V^{(p)} is used instead of V^{(0)}
+    */   
+   bool use_polynomial_basis = true;
 
 protected:
 
    /**
     * The following protected functions take the basis as a parameter for more flexibility.
     * They are used inside buildBasis, buildBasisDual, incDimBasis, etc., with either `m_basis` or `m_y`.
+    * For building the basis either the standard approach or the polynomial approach can be chosen
     */
    void buildBasis0(IntMat &basis, int64_t d);
+   
+   void buildBasis0Pol(IntMat &basis, int64_t d);
+   
+   void buildDualBasis0(IntMat &basis, int64_t d);      
 
    void incDimBasis0(IntMat &basis, int64_t d);
 
    bool buildProjection0(IntMat &basis, int64_t dimbasis, IntMat &pbasis, const Coordinates &proj);
+   
+   /**
+    * Takes the polynomial `pcol` and returns in `col` the corresponding column in the
+    * matrix of generating vectors.
+    */
+   void polyToColumn(IntVec &col, typename FlexModInt<Int>::PolE &pcol);
 
    /**
     * A vector to store \f$y_0, y_1, ..., y_{t+k-2}\f$ used in the matrix V^{(p)}.
@@ -155,6 +185,22 @@ protected:
     * before reducing them into a triangular basis.
     */
    IntMat m_genTemp;
+   
+   /**
+    * For generating the dual basis or increasing its dimension, we need a copy of the
+    * the primal basis.
+    */
+   IntMat m_primal_copy;
+   
+   /**
+    * If we want to increase the dimension of the dual basis with the polynomial approach
+    * we also need a copy of the dual basis.
+    */   
+   IntMat m_dual_copy;
+   
+   typename FlexModInt<Int>::PolX m_Pz;   // Maybe not needed.  
+   typename NTL::zz_pX m_Pz_test;
+
 
 };
 
@@ -166,23 +212,26 @@ MRGLattice<Int, Real>::MRGLattice(const Int &m, const IntVec &aa, int64_t maxDim
    this->m_maxDim = maxDim;
    setaa(aa);
    this->m_dim = 0;
-   m_genTemp.resize(maxDim, maxDim);
-   m_y.resize(maxDim + m_order - 1);
+   m_genTemp.SetDims(maxDim, maxDim); 
+   m_primal_copy.SetDims(maxDim, maxDim);
+   m_dual_copy.SetDims(maxDim, maxDim);
    
-   //CW new
-   int64_t k = m_order;
-   int64_t j, jj;
-   for (j = 0; j < k-1; j++)
-      m_y[j] = 0;
-   m_y[k-1] = 1;
-   for (j = k; j < maxDim + k - 1; j++) {
-      // Calculate y_j = (a_1 y_{j-1} + ... + a_k y_{j-k}) mod m.
-      m_y[j] = 0;
-      for (jj = 1; jj <= k; jj++)
-         m_y[j] += m_aCoeff[jj] * m_y[j - jj];
-      m_y[j] = m_y[j] % this->m_modulo;
+   // Build the vector y
+   if (use_polynomial_basis) {
+      // Polynomial case
+      FlexModInt<Int>::mod_init(m);
+      typename FlexModInt<Int>::PolE polDegOne;
+      typename FlexModInt<Int>::PolE polPower;  
+   
+      // Set the characteristic polynomial of the recurrence   
+      for (int64_t j = 1; j < this->m_aCoeff.length(); j++) {
+        SetCoeff(m_Pz, this->m_aCoeff.length() - j - 1, FlexModInt<Int>::to_Int_p(-this->m_aCoeff[j]));
+      }   
+      SetCoeff(m_Pz, this->m_aCoeff.length() - 1, 1);    
+      FlexModInt<Int>::PolE::init(m_Pz);
+   
+      buildyPol(maxDim + m_order - 1);
    }
-   std::cout << m_y << "\n";
 }
 
 //============================================================================
@@ -196,7 +245,7 @@ MRGLattice<Int, Real>::~MRGLattice() {
 template<typename Int, typename Real>
 MRGLattice<Int, Real>& MRGLattice<Int, Real>::operator=(const MRGLattice<Int, Real> &lat) {
    if (this == &lat) return *this;
-   this->copy(lat);
+   // this->copy(lat); CW: copy constructor currently not available
    m_aCoeff = lat.m_aCoeff;
    m_order = lat.m_order;
    m_y = lat.m_y;
@@ -208,10 +257,10 @@ MRGLattice<Int, Real>& MRGLattice<Int, Real>::operator=(const MRGLattice<Int, Re
 template<typename Int, typename Real>
 MRGLattice<Int, Real>::MRGLattice(const MRGLattice<Int, Real> &lat) :
       IntLatticeExt<Int, Real>(lat.m_modulo, lat.getDim(), lat.getNormType()) {
+   // this->copy(lat); CW: copy constructor currently not available
    m_aCoeff = lat.m_aCoeff;
    m_order = lat.m_order;
    m_y = lat.m_y;
-   // Should also copy the basis and all other variables???  ******
 }
 
 //============================================================================
@@ -227,6 +276,53 @@ void MRGLattice<Int, Real>::setaa(const IntVec &aa) {
    this->m_dimdual = 0;
 }
 
+//============================================================================
+
+template<typename Int, typename Real>
+void MRGLattice<Int, Real>::buildyPol(int64_t dim) {
+   int64_t k = m_order;
+   int64_t j, i;
+   int64_t n;
+   typename FlexModInt<Int>::PolE polDegOne;
+   typename FlexModInt<Int>::PolE polPower;  
+   IntVec col;
+   
+   // Set the characteristic polynomial of the recurrence   
+   for (j = 1; j < this->m_aCoeff.length(); j++) {
+     SetCoeff(m_Pz, this->m_aCoeff.length() - j - 1, FlexModInt<Int>::to_Int_p(-this->m_aCoeff[j]));
+   }   
+   SetCoeff(m_Pz, this->m_aCoeff.length() - 1, 1);    
+   FlexModInt<Int>::PolE::init(m_Pz);
+   
+   
+   // Auxilliary variables to calculate powers p^n(z)
+   std::string str = "[0 1]";
+   std::istringstream in (str);
+   in >> polDegOne;   
+  
+   m_y.SetLength(dim);
+   // Temporary
+   for (j = 0; j < dim; j++)
+     m_y[j] = 0;
+     
+   for (j = 0; j < min(dim, k-1); j++)
+      m_y[j] = 0;
+   m_y[k-1] = 1;
+   n = ceil(dim/k);
+   for (j = 1; j < n+1; j++) {
+      // Calculate powers p^\mu-1 
+      // And fill the first k rows
+      power(polPower, polDegOne, j*k);
+      polyToColumn(col, polPower);
+      //std::cout << j << ": " << col << "\n";
+      for (i = 0; i < k; i++) {
+         if (j*k+i < dim) {
+            m_y[j*k+i] = col[k-i-1];
+         }
+      }
+   }
+   
+}
 //============================================================================
 /*
 // Builds an upper-triangular basis directly in `d` dimensions, as explained in Section 4.1 of
@@ -259,6 +355,21 @@ void MRGLattice<Int, Real>::buildBasis00(IntMat &basis, int64_t d) {
 }
 */
 
+
+//============================================================================
+
+// An upper-triangular basis is built directly, as explained in the guide of LatMRG.
+// The dimension `maxDim` of the `IntMat` array is unchanged, but the basis dimension isset to `d`.
+template<typename Int, typename Real>
+void MRGLattice<Int, Real>::buildBasis(int64_t d) {
+   this->setDim(d);
+   if (use_polynomial_basis)
+      this->buildBasis0Pol(this->m_basis, d);
+   else
+      this->buildBasis0(this->m_basis, d);
+   this->setNegativeNorm();
+}
+
 //============================================================================
 
 // Builds an upper-triangular basis directly in `d` dimensions, as explained in Section 4.1 of
@@ -283,51 +394,58 @@ void MRGLattice<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
       for (j = 0; j < d; j++)
          basis[i][j] = this->m_modulo * (i == j);
    // Fill the rest of the first m_order rows
-   for (j = k; j < d + k - 1; j++) {
-      // Calculate y_j = (a_1 y_{j-1} + ... + a_k y_{j-k}) mod m.
-      m_y[j] = 0;
-      for (jj = 1; jj <= k; jj++)
-         m_y[j] += m_aCoeff[jj] * m_y[j - jj];
-      m_y[j] = m_y[j] % this->m_modulo;
-      for (i = 0; i < min(k, d - j + k - 1); i++) {  // We want i < k and i+j-k+1 < d.
-         basis[i][i + j - k + 1] = m_y[j];
-      }
+   for (i = 0; i < dk; i++) {
+     for (j = dk; j < d; j++) {
+        basis[i][j] = 0;
+        for (jj = 1; jj <= m_order; jj++)
+           basis[i][j] += m_aCoeff[jj] * basis[i][j - jj] % this->m_modulo;  
+     }     
    }
+   
 }
 
 //============================================================================
 
-// An upper-triangular basis is built directly, as explained in the guide of LatMRG.
-// The dimension `maxDim` of the `IntMat` array is unchanged, but the basis dimension isset to `d`.
+
+// Builds in basis in the polynomial case. It is based on the vector m_y built by 
+// the function buildypol.
 template<typename Int, typename Real>
-void MRGLattice<Int, Real>::buildBasis(int64_t d) {
-   this->setDim(d);
-   this->buildBasis0(this->m_basis, d);
-   this->setNegativeNorm();
+void MRGLattice<Int, Real>::buildBasis0Pol(IntMat &basis, int64_t d) {
+   assert(d <= this->m_maxDim);
+   int64_t k = this->m_order;
+   int64_t dk = min(d, k);
+   int64_t i, j;
+   
+   for (j = 0; j < d; j++) {
+      for (i = 0; i < dk; i++)
+         basis[i][j] = m_y[j-i+k-1];
+   }
+   // Fill the rest of the rows
+   for (i = dk; i < d; i++) { 
+      for (j = 0; j < d; j++)
+         basis[i][j] = (i == j) * this->m_modulo;
+   }
+   
+}
+
+
+//============================================================================
+
+
+template<typename Int, typename Real>
+void MRGLattice<Int, Real>::buildDualBasis(int64_t d) {
+   this->setDimDual(d);
+   this->buildDualBasis0(this->m_dualbasis, d);
+   this->setDualNegativeNorm();
 }
 
 //============================================================================
 
 // Builds the m-dual basis in a direct way in d dimensions.
 template<typename Int, typename Real>
-void MRGLattice<Int, Real>::buildDualBasis(int64_t d) {
-   if (d > this->m_dim) {  // Compute the initial primal basis up to d dimensions.
-      this->m_dim = d;
-   }
-   this->setDimDual(d);
-   int64_t dk = min(d, m_order);
-   int64_t i, j;
-   for (i = 0; i < dk; i++)
-      for (j = 0; j < d; j++)
-         this->m_dualbasis[i][j] = (i == j) * this->m_modulo;
-   for (i = dk; i < d; i++) {
-      for (j = 0; j < dk; j++) {
-         this->m_dualbasis[i][j] = -m_y[i-j+m_order-1];
-         }
-      for (j = dk; j < d; j++)
-         this->m_dualbasis[i][j] = (i == j);
-   }
-   this->setDualNegativeNorm();
+void MRGLattice<Int, Real>::buildDualBasis0(IntMat &basis, int64_t d) {
+   this->buildBasis0(m_primal_copy, d);
+   mDualUpperTriangular(m_primal_copy, basis, this->m_modulo, d);
 }
 
 //============================================================================
@@ -368,20 +486,11 @@ void MRGLattice<Int, Real>::incDimBasis0(IntMat &basis, int64_t d) {
       basis[d - 1][j] = 0;
    if (d > k) basis[d - 1][d - 1] = this->m_modulo;
    else basis[d - 1][d - 1] = 1;
-   /**
-   j = d + k - 2;
-   // Add new column.
-   basis[0][d - 1] = m_y[j];
-   for (i = 1; i < min(d, k); i++)
-      basis[i][d - 1] = basis[i - 1][d - 2];
-   for (i = k; i < d - 1; i++)
-      basis[i][d - 1] = 0;
-   */
    for (i = 0; i < d - 1; i++) {
       basis[i][d - 1] = 0;
       if (d - 1 >= m_order) {
          for (jj = 1; jj <= m_order; jj++)
-            basis[i][d - 1] += m_aCoeff[k] * basis[i][d - 1 - jj] % this->m_modulo;
+            basis[i][d - 1] += m_aCoeff[jj] * basis[i][d - 1 - jj] % this->m_modulo;
       }
    }
 }
@@ -400,24 +509,31 @@ void MRGLattice<Int, Real>::incDimBasis() {
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::incDimDualBasis() {
    int64_t d = 1 + this->getDimDual();  // New current dimension.
+   int64_t i;
    this->setDimDual(d);
    while (this->m_dim < d) {  // Increase dimension if needed.
       this->m_dim++;
    }
-   int64_t i;
+   incDimBasis0(m_primal_copy, d);
    // Add one extra 0 coordinate to each vector of the m-dual basis.
    for (i = 0; i < d - 1; i++) {
       this->m_dualbasis[i][d - 1] = 0;
-      this->m_dualbasis[d - 1][i] = 0;
    }
-   // Add the new vector the dual basis
-   if (d <= m_order) this->m_dualbasis[d - 1][d - 1] = this->m_modulo;
+   
+   //Dinstinguish whether we use the polynomial approach or not
+   if (use_polynomial_basis) {
+     mDualUpperTriangular(m_primal_copy, m_dual_copy, this->m_modulo, d);
+     // std::cout << m_dual_copy << "\n";
+     for (i = 0; i < d; i++) {
+       this->m_dualbasis[d-1][i] = m_dual_copy[d-1][i];  
+     }
+   }
    else {
-      this->m_dualbasis[d - 1][d - 1] = 1;
-      for (i = 0; i < m_order; i++)
-         this->m_dualbasis[d - 1][i] = -m_y[(d-1)-i+m_order-1];
+      for (i = 0; i < d-1; i++) {
+         this->m_dualbasis[d-1][i] = -m_primal_copy[i][d-1];  
+      } 
+      this->m_dualbasis[d-1][d-1] = 1;
    }
-   //  this->setDualNegativeNorm();   // just for testing ...  not needed.
 }
 
 //============================================================================
@@ -429,41 +545,66 @@ template<typename Int, typename Real>
 bool MRGLattice<Int, Real>::buildProjection0(IntMat &basis, int64_t dimbasis, IntMat &pbasis,
       const Coordinates &proj) {
    int64_t d = proj.size();
-   int64_t i, j;
-   // projCase1 = false;
-   // Check if we are in case 1.
-   // This assumes that the coordinates of each projection are always in increasing order!  ***
+   int64_t i, j;   
    bool projCase1 = true; // This holds if the first m_order coordinates are all in `proj`.
-   if (d < (unsigned) m_order) projCase1 = false;
-   else {
-      j = 0;
-      for (auto it = proj.begin(); it != proj.end(); it++, j++) {
-         if (j < m_order) {
-            if (*it != unsigned(j + 1)) projCase1 = false;
-         } else break;
-      }
-   }
-   if (projCase1) {
-      // We first compute the first m_order rows of the projection basis.
-      for (i = 0; i < m_order; i++) {
-         j = 0;
-         for (auto it = proj.begin(); it != proj.end(); it++, j++)
-            pbasis[i][j] = basis[i][*it - 1];
-      }
-      // Then the other rows.
-      for (i = m_order; i < d; i++)
-         for (j = 0; j < d; j++)
-            pbasis[i][j] = this->m_modulo * (i == j);
-   } else {
-      // In this case we need to use the more general algorithm.
+    
+   // Algorith taylored to the polynomial basis V^{(p)}
+   if (use_polynomial_basis) {
+      int64_t k = this->m_order;
+      int64_t dk = min(d, k);
       j = 0;
       for (auto it = proj.begin(); it != proj.end(); it++, j++) {
          // Set column j of all generating vectors, for (j+1)-th coordinate of proj.
-         for (i = 0; i < dimbasis; i++)
-            m_genTemp[i][j] = basis[i][*it - 1];
+         for (i = 0; i < this->m_maxDim; i++) {
+            m_genTemp[i][j] = (i == j) * this->m_modulo;
+            //if (*it - 1 < (unsigned) d && i <dk)
+            //   m_genTemp[i][j] = m_y[*it - 1 - i + k -1];
+            if (i < dk) {
+               m_genTemp[i][j] = m_y[*it - 1 - i + k -1];
+            }
+         
+         }
       }
-      // std::cout << " Generating vectors: \n" << m_genTemp << "\n";
-      upperTriangularBasis(m_genTemp, pbasis, this->m_modulo, dimbasis, d);
+      upperTriangularBasis(m_genTemp, pbasis, this->m_modulo, dimbasis, d);      
+   }
+   else {
+      // Algorithm which does not necessarily use the special form of V^{(p)} but applies
+      // for an arbitrary choice of a basis, in particular also for V^{(0)}.
+      // Check if we are in case 1.
+      // This assumes that the coordinates of each projection are always in increasing order!  ***   
+      if (d < (unsigned) m_order) projCase1 = false;
+      else {
+         j = 0;
+         for (auto it = proj.begin(); it != proj.end(); it++, j++) {
+            if (j < m_order) {
+               if (*it != unsigned(j + 1)) projCase1 = false;
+            } else break;
+         }
+      }
+      if (projCase1) {
+         // We first compute the first m_order rows of the projection basis.
+         for (i = 0; i < m_order; i++) {
+            j = 0;
+            for (auto it = proj.begin(); it != proj.end(); it++, j++)
+               pbasis[i][j] = basis[i][*it - 1];
+         }
+         // Then the other rows.
+         for (i = m_order; i < d; i++)
+            for (j = 0; j < d; j++)
+               pbasis[i][j] = this->m_modulo * (i == j);
+      } else {
+         // In this case we need to use the more general algorithm.
+         j = 0;
+         for (auto it = proj.begin(); it != proj.end(); it++, j++) {
+            // Set column j of all generating vectors, for (j+1)-th coordinate of proj.
+            // for (i = 0; i < dimbasis; i++)
+            //   m_genTemp[i][j] = basis[i][*it - 1];
+            for (i = 0; i < this->m_maxDim; i++)
+               m_genTemp[i][j] = basis[i][*it - 1];
+       }
+       // std::cout << " Generating vectors: \n" << m_genTemp << "\n";
+       upperTriangularBasis(m_genTemp, pbasis, this->m_modulo, dimbasis, d);
+      }
    }
    return projCase1;
 }
@@ -498,33 +639,35 @@ void MRGLattice<Int, Real>::buildProjectionDual(IntLattice<Int, Real> &projLatti
    projLattice.setDim(d);
    projLattice.setDimDual(d);
 
-   // We first build a basis for the primal basis of the projection.
-   bool projCase1 = this->buildProjection0(this->m_basis, this->m_dim, pbasis, proj);
-   // After this function call, the class variable `projCase1` is set.
+   // We first build a basis for the primal basis of the projection
+   this->buildProjection0(this->m_basis, this->m_dim, pbasis, proj);
+   // Then we simply calculate its dual.
+   mDualUpperTriangular(pbasis, pdualBasis, this->m_modulo, d);
+}
 
-   // Then we compute its m-dual.
-   int64_t i, j, k;
-   if (projCase1) { // Get the m-dual basis directly. ** Is it really faster and worthwhile?   ****
-      // Get the first k columns directly from m_y.
-      for (j = 0; j < m_order; j++) {
-         pdualBasis[j][j] = this->m_modulo;
-         i = m_order;
-         auto it = proj.begin();
-         for (k = 0; k < m_order - 1; k++)
-            it++;
-         for (it++; it != proj.end(); ++it, ++i) {
-            pdualBasis[i][j] = --m_y[(*it-1)-i+m_order-1];
-         }
+//============================================================================
+
+// This applies phi inverse as described in the guide, and reverses the coordinates.
+template<typename Int, typename Real>
+void MRGLattice<Int, Real>::polyToColumn(IntVec &col, typename FlexModInt<Int>::PolE &pcol) {
+   int i, j, k;
+   k = this->m_order;
+   IntVec c;
+   c.SetLength(k);
+   col.SetLength(k);
+   for (j = 1; j < k+1; j++) {
+      c[j-1] = 0;
+      NTL::conv(c[j-1], coeff(rep(pcol), k-j));
+      for (i = 1; i < j; i ++) {
+         c[j-1] += this->m_aCoeff[i]*c[j - 1 - i];
       }
-      // The other columns are trivial.
-      for (i = 0; i < d; i++)
-         for (j = m_order; j < d; j++)
-            pdualBasis[i][j] = (i == j);
-   } else {
-      // We invert pbasis to get the m-dual.
-      mDualUpperTriangular(pbasis, pdualBasis, this->m_modulo, d);
+      c[j-1] = c[j-1] % this->m_modulo;
+   }
+   for (j = 0; j < k; j++) {
+      col[j] = c[k-j-1];
    }
 }
+
 
 //============================================================================
 template<typename Int, typename Real>
@@ -540,6 +683,6 @@ template class MRGLattice<NTL::ZZ, xdouble> ;
 template class MRGLattice<NTL::ZZ, quad_float> ;
 template class MRGLattice<NTL::ZZ, NTL::RR> ;
 
-} // End namespace LatticeTester
+} // End namespace LatMRG
 
 #endif

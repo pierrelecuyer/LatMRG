@@ -28,7 +28,7 @@ using namespace LatMRG;
 template<typename Int> class MRGComponent {
 
 private:
-   typedef NTL::vector<Int> IntVec;
+   // typedef NTL::Vec<Int> IntVec;
    // typedef NTL::matrix<Int> IntMat;
 
 public:
@@ -380,8 +380,8 @@ void MRGComponent<Int>::init(const Int &m, int k, DecompType decompm1, const cha
    m_m = m;
    setModulusIntP<Int>(m_m);
    m_k = k;
-   m_a.resize(m_k);
-   orbitSeed.resize(m_k);   // Used ???
+   m_a.SetLength(m_k);
+   orbitSeed.SetLength(m_k);   // Used ???
 
    Int mm1;  // m-1
    mm1 = m - 1;
