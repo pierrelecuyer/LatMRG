@@ -445,7 +445,7 @@ void MRGLattice<Int, Real>::buildDualBasis(int64_t d) {
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildDualBasis0(IntMat &basis, int64_t d) {
    this->buildBasis0(m_primal_copy, d);
-   mDualUpperTriangular(m_primal_copy, basis, this->m_modulo, d);
+   mDualUpperTriangular(basis, m_primal_copy, this->m_modulo, d);
 }
 
 //============================================================================
@@ -522,7 +522,7 @@ void MRGLattice<Int, Real>::incDimDualBasis() {
    
    //Dinstinguish whether we use the polynomial approach or not
    if (use_polynomial_basis) {
-     mDualUpperTriangular(m_primal_copy, m_dual_copy, this->m_modulo, d);
+     mDualUpperTriangular(m_dual_copy, m_primal_copy, this->m_modulo, d);
      // std::cout << m_dual_copy << "\n";
      for (i = 0; i < d; i++) {
        this->m_dualbasis[d-1][i] = m_dual_copy[d-1][i];  
@@ -642,7 +642,7 @@ void MRGLattice<Int, Real>::buildProjectionDual(IntLattice<Int, Real> &projLatti
    // We first build a basis for the primal basis of the projection
    this->buildProjection0(this->m_basis, this->m_dim, pbasis, proj);
    // Then we simply calculate its dual.
-   mDualUpperTriangular(pbasis, pdualBasis, this->m_modulo, d);
+   mDualUpperTriangular(pdualBasis, pbasis, this->m_modulo, d);
 }
 
 //============================================================================
