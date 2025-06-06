@@ -547,8 +547,9 @@ bool MRGLattice<Int, Real>::buildProjection0(IntMat &basis, int64_t dimbasis, In
    int64_t d = proj.size();
    int64_t i, j;   
    bool projCase1 = true; // This holds if the first m_order coordinates are all in `proj`.
-    
+
    // Algorith taylored to the polynomial basis V^{(p)}
+   
    if (use_polynomial_basis) {
       int64_t k = this->m_order;
       int64_t dk = min(d, k);
@@ -562,10 +563,9 @@ bool MRGLattice<Int, Real>::buildProjection0(IntMat &basis, int64_t dimbasis, In
             if (i < dk) {
                m_genTemp[i][j] = m_y[*it - 1 - i + k -1];
             }
-         
          }
       }
-      upperTriangularBasis(m_genTemp, pbasis, this->m_modulo, dimbasis, d);      
+      upperTriangularBasis(pbasis, m_genTemp, this->m_modulo, dimbasis, d);      
    }
    else {
       // Algorithm which does not necessarily use the special form of V^{(p)} but applies
@@ -603,7 +603,7 @@ bool MRGLattice<Int, Real>::buildProjection0(IntMat &basis, int64_t dimbasis, In
                m_genTemp[i][j] = basis[i][*it - 1];
        }
        // std::cout << " Generating vectors: \n" << m_genTemp << "\n";
-       upperTriangularBasis(m_genTemp, pbasis, this->m_modulo, dimbasis, d);
+       upperTriangularBasis(pbasis, m_genTemp, this->m_modulo, dimbasis, d);
       }
    }
    return projCase1;
