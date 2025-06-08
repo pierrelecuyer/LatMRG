@@ -210,28 +210,17 @@ template<typename Int, typename Real>
 MRGLattice<Int, Real>::MRGLattice(const Int &m, const IntVec &aa, int64_t maxDim, NormType norm) :
       IntLatticeExt<Int, Real>(m, maxDim, norm) {
    this->m_maxDim = maxDim;
+   
    setaa(aa);
    this->m_dim = 0;
    m_genTemp.SetDims(maxDim, maxDim); 
    m_primal_copy.SetDims(maxDim, maxDim);
-   m_dual_copy.SetDims(maxDim, maxDim);
+   m_dual_copy.SetDims(maxDim, maxDim);   
+   FlexModInt<Int>::mod_init(m);
    
    // Build the vector y
-   if (use_polynomial_basis) {
-      // Polynomial case
-      FlexModInt<Int>::mod_init(m);
-      typename FlexModInt<Int>::PolE polDegOne;
-      typename FlexModInt<Int>::PolE polPower;  
+   buildyPol(maxDim + m_order - 1);
    
-      // Set the characteristic polynomial of the recurrence   
-      for (int64_t j = 1; j < this->m_aCoeff.length(); j++) {
-        SetCoeff(m_Pz, this->m_aCoeff.length() - j - 1, FlexModInt<Int>::to_Int_p(-this->m_aCoeff[j]));
-      }   
-      SetCoeff(m_Pz, this->m_aCoeff.length() - 1, 1);    
-      FlexModInt<Int>::PolE::init(m_Pz);
-   
-      buildyPol(maxDim + m_order - 1);
-   }
 }
 
 //============================================================================
@@ -292,8 +281,7 @@ void MRGLattice<Int, Real>::buildyPol(int64_t dim) {
      SetCoeff(m_Pz, this->m_aCoeff.length() - j - 1, FlexModInt<Int>::to_Int_p(-this->m_aCoeff[j]));
    }   
    SetCoeff(m_Pz, this->m_aCoeff.length() - 1, 1);    
-   FlexModInt<Int>::PolE::init(m_Pz);
-   
+   FlexModInt<Int>::PolE::init(m_Pz);   
    
    // Auxilliary variables to calculate powers p^n(z)
    std::string str = "[0 1]";
@@ -301,20 +289,16 @@ void MRGLattice<Int, Real>::buildyPol(int64_t dim) {
    in >> polDegOne;   
   
    m_y.SetLength(dim);
-   // Temporary
+   // Initializte m_y
    for (j = 0; j < dim; j++)
      m_y[j] = 0;
-     
-   for (j = 0; j < min(dim, k-1); j++)
-      m_y[j] = 0;
    m_y[k-1] = 1;
    n = ceil(dim/k);
    for (j = 1; j < n+1; j++) {
       // Calculate powers p^\mu-1 
-      // And fill the first k rows
       power(polPower, polDegOne, j*k);
       polyToColumn(col, polPower);
-      //std::cout << j << ": " << col << "\n";
+      // And fill the next k entries
       for (i = 0; i < k; i++) {
          if (j*k+i < dim) {
             m_y[j*k+i] = col[k-i-1];
