@@ -159,13 +159,13 @@ protected:
     * They are used inside buildBasis, buildBasisDual, incDimBasis, etc., with either `m_basis` or `m_y`.
     * For building the basis either the standard approach or the polynomial approach can be chosen
     */
-   void buildBasis0(IntMat &basis, int64_t d);
+   virtual void buildBasis0(IntMat &basis, int64_t d);
    
-   void buildBasis0Pol(IntMat &basis, int64_t d);
+   virtual void buildBasis0Pol(IntMat &basis, int64_t d);
    
-   void buildDualBasis0(IntMat &basis, int64_t d);      
+   virtual void buildDualBasis0(IntMat &basis, int64_t d);      
 
-   void incDimBasis0(IntMat &basis, int64_t d);
+   virtual void incDimBasis0(IntMat &basis, int64_t d);
 
    bool buildProjection0(IntMat &basis, int64_t dimbasis, IntMat &pbasis, const Coordinates &proj);
    
