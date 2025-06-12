@@ -166,6 +166,10 @@ protected:
    virtual void buildDualBasis0(IntMat &basis, int64_t d);      
 
    virtual void incDimBasis0(IntMat &basis, int64_t d);
+   
+   virtual void incDimDualBasis0(IntMat &basis, int64_t d);   
+   
+   virtual void incDimDualBasis0Pol(IntMat &basis, int64_t d);
 
    bool buildProjection0(IntMat &basis, int64_t dimbasis, IntMat &pbasis, const Coordinates &proj);
    
@@ -488,37 +492,49 @@ void MRGLattice<Int, Real>::incDimBasis() {
    this->incDimBasis0(this->m_basis, d);
 }
 
-//============================================================================
-
 template<typename Int, typename Real>
-void MRGLattice<Int, Real>::incDimDualBasis() {
-   int64_t d = 1 + this->getDimDual();  // New current dimension.
+void MRGLattice<Int, Real>::incDimDualBasis0(IntMat &basis, int64_t d) {
    int64_t i;
-   this->setDimDual(d);
-   while (this->m_dim < d) {  // Increase dimension if needed.
-      this->m_dim++;
-   }
    incDimBasis0(m_primal_copy, d);
    // Add one extra 0 coordinate to each vector of the m-dual basis.
    for (i = 0; i < d - 1; i++) {
       this->m_dualbasis[i][d - 1] = 0;
    }
+   for (i = 0; i < d-1; i++) {
+      this->m_dualbasis[d-1][i] = -m_primal_copy[i][d-1];  
+   } 
+   this->m_dualbasis[d-1][d-1] = 1;
    
-   //Dinstinguish whether we use the polynomial approach or not
-   if (use_polynomial_basis) {
-     mDualUpperTriangular(m_dual_copy, m_primal_copy, this->m_modulo, d);
-     // std::cout << m_dual_copy << "\n";
-     for (i = 0; i < d; i++) {
-       this->m_dualbasis[d-1][i] = m_dual_copy[d-1][i];  
-     }
-   }
-   else {
-      for (i = 0; i < d-1; i++) {
-         this->m_dualbasis[d-1][i] = -m_primal_copy[i][d-1];  
-      } 
-      this->m_dualbasis[d-1][d-1] = 1;
+}
+
+template<typename Int, typename Real>
+void MRGLattice<Int, Real>::incDimDualBasis0Pol(IntMat &basis, int64_t d) {
+   int64_t i;
+   incDimBasis0(m_primal_copy, d);
+   // Add one extra 0 coordinate to each vector of the m-dual basis.
+   for (i = 0; i < d - 1; i++) {
+      this->m_dualbasis[i][d - 1] = 0;
+   }   
+   mDualUpperTriangular(m_dual_copy, m_primal_copy, this->m_modulo, d);
+   // std::cout << m_dual_copy << "\n";
+   for (i = 0; i < d; i++) {
+     this->m_dualbasis[d-1][i] = m_dual_copy[d-1][i];  
    }
 }
+
+
+//============================================================================
+
+template<typename Int, typename Real>
+void MRGLattice<Int, Real>::incDimDualBasis() {
+   int64_t d = 1 + this->getDimDual();  // New current dimension.   
+   while (this->m_dim < d) {  // Increase dimension if needed.
+      this->m_dim++;
+   }
+   this->setDimDual(d);
+   if (use_polynomial_basis) this->incDimDualBasis0(this->m_basis, d);
+   else this->incDimDualBasis0(this->m_basis, d);
+ }
 
 //============================================================================
 
