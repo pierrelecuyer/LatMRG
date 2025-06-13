@@ -95,7 +95,6 @@ public:
     */
    void buildBasis(int64_t dim);
 
-
    /**
     * Builds both the primal and an m-dual lower triangular basis directly
     * in `dim` dimensions.  This `dim` must not exceed `maxDim`.
@@ -133,31 +132,23 @@ public:
     */
    void buildProjectionDual(IntLattice<Int, Real> &projLattice, const Coordinates &proj) override;
 
+   /** 
+    * If 'usepol' is set to true then V^{(p)} is used otherwise V^{(0)}.
+    */
+   void setUsePolynomialBasis (const bool usepol) { use_polynomial_basis = usepol; }
+
    /**
     * Returns the first `dim` components of the generating vector \f$\ba\f$ as a string,
     * where `dim` is the current lattice dimension.
     */
    std::string toStringCoef() const;
-
-   // Order of this MRG.
-   int m_order;
-
-   /**
-    * The coefficients \f$a_1, ..., a_k\f$ of the MRG recurrence, a_j stored in `m_aCoeff[j]`.
-    */
-   IntVec m_aCoeff;
    
-   /**
-    * Boolean variable which decides whether the polynomial basis V^{(p)} is used instead of V^{(0)}
-    */   
-   bool use_polynomial_basis = true;
-
 protected:
 
    /**
     * The following protected functions take the basis as a parameter for more flexibility.
     * They are used inside buildBasis, buildBasisDual, incDimBasis, etc., with either `m_basis` or `m_y`.
-    * For building the basis either the standard approach or the polynomial approach can be chosen
+    * For building the basis either the standard approach or the polynomial approach can be chosen.
     */
    virtual void buildBasis0(IntMat &basis, int64_t d);
    
@@ -201,9 +192,19 @@ protected:
     * we also need a copy of the dual basis.
     */   
    IntMat m_dual_copy;
-   
-   typename FlexModInt<Int>::PolX m_Pz;   // Maybe not needed.  
-   typename NTL::zz_pX m_Pz_test;
+
+   /**
+    * Boolean variable which decides whether the polynomial basis V^{(p)} is used instead of V^{(0)}
+    */   
+   bool use_polynomial_basis = true;
+
+   // Order of this MRG.
+   int m_order;
+
+   /**
+    * The coefficients \f$a_1, ..., a_k\f$ of the MRG recurrence, a_j stored in `m_aCoeff[j]`.
+    */
+   IntVec m_aCoeff;
 
 
 };
@@ -213,18 +214,14 @@ protected:
 template<typename Int, typename Real>
 MRGLattice<Int, Real>::MRGLattice(const Int &m, const IntVec &aa, int64_t maxDim, NormType norm) :
       IntLatticeExt<Int, Real>(m, maxDim, norm) {
-   this->m_maxDim = maxDim;
-   
+   this->m_maxDim = maxDim;   
    setaa(aa);
    this->m_dim = 0;
    m_genTemp.SetDims(maxDim, maxDim); 
    m_primal_copy.SetDims(maxDim, maxDim);
    m_dual_copy.SetDims(maxDim, maxDim);   
    FlexModInt<Int>::mod_init(m);
-   
-   // Build the vector y
    buildyPol(maxDim + m_order - 1);
-   
 }
 
 //============================================================================
@@ -235,6 +232,7 @@ MRGLattice<Int, Real>::~MRGLattice() {
 }
 
 //============================================================================
+
 template<typename Int, typename Real>
 MRGLattice<Int, Real>& MRGLattice<Int, Real>::operator=(const MRGLattice<Int, Real> &lat) {
    if (this == &lat) return *this;
@@ -277,7 +275,8 @@ void MRGLattice<Int, Real>::buildyPol(int64_t dim) {
    int64_t j, i;
    int64_t n;
    typename FlexModInt<Int>::PolE polDegOne;
-   typename FlexModInt<Int>::PolE polPower;  
+   typename FlexModInt<Int>::PolE polPower;     
+   typename FlexModInt<Int>::PolX m_Pz;  
    IntVec col;
    
    // Set the characteristic polynomial of the recurrence   
@@ -308,9 +307,9 @@ void MRGLattice<Int, Real>::buildyPol(int64_t dim) {
             m_y[j*k+i] = col[k-i-1];
          }
       }
-   }
-   
+   }   
 }
+
 //============================================================================
 /*
 // Builds an upper-triangular basis directly in `d` dimensions, as explained in Section 4.1 of
@@ -343,7 +342,6 @@ void MRGLattice<Int, Real>::buildBasis00(IntMat &basis, int64_t d) {
 }
 */
 
-
 //============================================================================
 
 // An upper-triangular basis is built directly, as explained in the guide of LatMRG.
@@ -360,9 +358,8 @@ void MRGLattice<Int, Real>::buildBasis(int64_t d) {
 
 //============================================================================
 
-// Builds an upper-triangular basis directly in `d` dimensions, as explained in Section 4.1 of
-// the guide of LatMRG, using the matrix V^{(p)} that contains y_k,...,y_{k+t-2}.
-// Puts this matrix in `basis`.  Must have d <= m_maxdim.
+// Builds the upper-triangular basis V^{(0)} directly in `d` dimensions, as explained in Section 4.1 of
+// the guide of LatMRG, puts this matrix in `basis`.  Must have d <= m_maxdim.
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
    assert(d <= this->m_maxDim);
@@ -389,21 +386,18 @@ void MRGLattice<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
            basis[i][j] += m_aCoeff[jj] * basis[i][j - jj] % this->m_modulo;  
      }     
    }
-   
 }
 
 //============================================================================
 
-
-// Builds in basis in the polynomial case. It is based on the vector m_y built by 
-// the function buildypol.
+// Builds in basis matrix V^{(p)} that contains y_k,...,y_{k+t-2} (in the polynomial case). 
+/// It is based on the vector m_y built by the function buildypol.
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildBasis0Pol(IntMat &basis, int64_t d) {
    assert(d <= this->m_maxDim);
    int64_t k = this->m_order;
    int64_t dk = min(d, k);
    int64_t i, j;
-   
    for (j = 0; j < d; j++) {
       for (i = 0; i < dk; i++)
          basis[i][j] = m_y[j-i+k-1];
@@ -416,9 +410,7 @@ void MRGLattice<Int, Real>::buildBasis0Pol(IntMat &basis, int64_t d) {
    
 }
 
-
 //============================================================================
-
 
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildDualBasis(int64_t d) {
@@ -437,7 +429,6 @@ void MRGLattice<Int, Real>::buildDualBasis0(IntMat &basis, int64_t d) {
 }
 
 //============================================================================
-
 /*
 // Increases the dimension of given basis from d-1 to d dimensions.
 template<typename Int, typename Real>
@@ -459,6 +450,15 @@ void MRGLattice<Int, Real>::incDimBasis00(IntMat &basis, int64_t d) {
    }
 }
 */
+
+//============================================================================
+
+template<typename Int, typename Real>
+void MRGLattice<Int, Real>::incDimBasis() {
+   int64_t d = 1 + this->getDim();  // New current dimension.
+   this->setDim(d);
+   this->incDimBasis0(this->m_basis, d);
+}
 
 //============================================================================
 
@@ -485,12 +485,20 @@ void MRGLattice<Int, Real>::incDimBasis0(IntMat &basis, int64_t d) {
 
 //============================================================================
 
+// Increase the dimension of the dual matrix. The algorithm depends on
+// whether V^{(0)} or V^{(p)} is used.
 template<typename Int, typename Real>
-void MRGLattice<Int, Real>::incDimBasis() {
-   int64_t d = 1 + this->getDim();  // New current dimension.
-   this->setDim(d);
-   this->incDimBasis0(this->m_basis, d);
+void MRGLattice<Int, Real>::incDimDualBasis() {
+   int64_t d = 1 + this->getDimDual();  // New current dimension.   
+   while (this->m_dim < d) {  // Increase dimension if needed.
+      this->m_dim++;
+   }
+   this->setDimDual(d);      
+   if (use_polynomial_basis) this->incDimDualBasis0Pol(this->m_basis, d);
+   else this->incDimDualBasis0(this->m_basis, d);
 }
+
+//============================================================================
 
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::incDimDualBasis0(IntMat &basis, int64_t d) {
@@ -504,8 +512,9 @@ void MRGLattice<Int, Real>::incDimDualBasis0(IntMat &basis, int64_t d) {
       this->m_dualbasis[d-1][i] = -m_primal_copy[i][d-1];  
    } 
    this->m_dualbasis[d-1][d-1] = 1;
-   
 }
+
+//============================================================================
 
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::incDimDualBasis0Pol(IntMat &basis, int64_t d) {
@@ -529,20 +538,6 @@ void MRGLattice<Int, Real>::incDimDualBasis0Pol(IntMat &basis, int64_t d) {
       }
    }
 }
-
-
-//============================================================================
-
-template<typename Int, typename Real>
-void MRGLattice<Int, Real>::incDimDualBasis() {
-   int64_t d = 1 + this->getDimDual();  // New current dimension.   
-   while (this->m_dim < d) {  // Increase dimension if needed.
-      this->m_dim++;
-   }
-   this->setDimDual(d);      
-   if (use_polynomial_basis) this->incDimDualBasis0Pol(this->m_basis, d);
-   else this->incDimDualBasis0(this->m_basis, d);
- }
 
 //============================================================================
 
@@ -633,6 +628,7 @@ void MRGLattice<Int, Real>::buildProjection(IntLattice<Int, Real> &projLattice,
 }
 
 //============================================================================
+
 // The number of generating vectors here will be m_dim.
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildProjectionDual(IntLattice<Int, Real> &projLattice,
@@ -655,7 +651,7 @@ void MRGLattice<Int, Real>::buildProjectionDual(IntLattice<Int, Real> &projLatti
 
 //============================================================================
 
-// This applies phi inverse as described in the guide, and reverses the coordinates.
+// This function applies phi inverse as described in the guide, and reverses the coordinates.
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::polyToColumn(IntVec &col, typename FlexModInt<Int>::PolE &pcol) {
    int i, j, k;
