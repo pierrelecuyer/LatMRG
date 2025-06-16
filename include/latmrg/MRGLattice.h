@@ -178,7 +178,6 @@ void MRGLatticeLac<Int, Real>::buildBasis0Pol(IntMat &basis, int64_t d) {
    int64_t dk = min(d, k);
    int64_t i, j;
    IntVec col;
-   std::cout << "buildBasis0 called";
    
    typename FlexModInt<Int>::PolE polDegOne;
    typename FlexModInt<Int>::PolE polPower;
