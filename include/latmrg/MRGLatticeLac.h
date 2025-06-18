@@ -20,8 +20,8 @@
 
 #include <string>
 #include "latticetester/EnumTypes.h"
-#include "latticetester/Types.h"
-#include "latticetester/Lacunary.h"
+#include "latticetester/EnumTypes.h"
+//#include "latticetester/Lacunary.h"
 #include "latticetester/IntLatticeExt.h"
 #include "latmrg/MRGLattice.h"
 #include "latmrg/FlexModInt.h"
@@ -86,13 +86,6 @@ public:
     */
    Int& getLac(int j);
 
-   /**
-    * Takes the polynomial `pcol` and returns in `col` the corresponding column in the
-    * matrix of generating vectors.
-    */
-   void polyToColumn(IntVec &col, typename FlexModInt<Int>::PolE &pcol); 
-
-
 protected:
 
    /**
@@ -101,7 +94,7 @@ protected:
     * the LatMRG guide.  Must have d <= m_maxdim. The basis matrix is taken as a 
     * parameter.
     */ 
-   void buildBasis0(IntMat &basis, int64_t d) override;
+   void buildBasis0Pol(IntMat &basis, int64_t d) override;
    
    /**
     * This function overrides the correpsonding protected function in 'MRGLattice'.
@@ -115,13 +108,6 @@ protected:
     */
    IntVec m_lac;
 
-   /**
-    * The characteristic polynomial `P(z)`.  Maybe no need to store it.
-    * We can redefine  `setaa` so it computes and set it.
-    * We can also compute it and set it in `buildBasis0`.  Probably safer.  ******
-    */
-   typename FlexModInt<Int>::PolX m_Pz;   // Maybe not needed.  
-
 };
 
 
@@ -134,7 +120,9 @@ template<typename Int, typename Real>
 MRGLatticeLac<Int, Real>::MRGLatticeLac(const Int &m, const IntVec &aa, int64_t maxDim,
       IntVec &lac, NormType norm) : MRGLattice<Int, Real>(m, aa, maxDim, norm) {
       setLac(lac);
-      ZZ_p::init(m);
+      this->setaa(aa);
+      FlexModInt<Int>::mod_init(m);
+      this->buildyPol(maxDim + this->m_order - 1);
 }
 
 
@@ -174,32 +162,6 @@ template<typename Int, typename Real>
    return *this;
 }
 
-
-//============================================================================
-
-// This applies phi inverse as described in the guide, and reverses the coordinates.
-template<typename Int, typename Real>
-void MRGLatticeLac<Int, Real>::polyToColumn(IntVec &col, typename FlexModInt<Int>::PolE &pcol) {
-   int i, j, k;
-   k = this->m_order;
-   Int temp;
-   IntVec c;
-   c.SetLength(k);
-   col.SetLength(k);
-   for (j = 1; j < k+1; j++) {
-      c[j-1] = 0;
-      NTL::conv(c[j-1], coeff(rep(pcol), k-j));
-      for (i = 1; i < j; i ++) {
-         c[j-1] += this->m_aCoeff[i]*c[j - 1 - i];
-      }
-      c[j-1] = c[j-1] % this->m_modulo;
-   }
-   for (j = 0; j < k; j++) {
-      col[j] = c[k-j-1];
-   }
-}
-
-
 //============================================================================
 
 // Replaces the corresponding function in `MRGLattice`.
@@ -209,7 +171,7 @@ void MRGLatticeLac<Int, Real>::polyToColumn(IntVec &col, typename FlexModInt<Int
 // This should be very similar to `buildProjection0`, except that the indices are usually far apart.
 
 template<typename Int, typename Real>
-void MRGLatticeLac<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
+void MRGLatticeLac<Int, Real>::buildBasis0Pol(IntMat &basis, int64_t d) {
    assert(d <= this->m_maxDim);
    assert(d <= m_lac.length());
    int64_t k = this->m_order;
@@ -219,14 +181,6 @@ void MRGLatticeLac<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
    
    typename FlexModInt<Int>::PolE polDegOne;
    typename FlexModInt<Int>::PolE polPower;
-   
-   // Set the characteristic polynomial of the recurrence
-   for (int64_t j = 1; j < this->m_aCoeff.length(); j++) {
-      SetCoeff(m_Pz, this->m_aCoeff.length() - j - 1, to_ZZ_p(-this->m_aCoeff[j]));
-   }
-   SetCoeff(m_Pz, this->m_aCoeff.length() - 1, 1);
-   
-   ZZ_pE::init(m_Pz);
       
    // Auxilliary variables to calculate powers p^n(z)
    std::string str = "[0 1]";
@@ -236,7 +190,7 @@ void MRGLatticeLac<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
    // And fill the first k rows
    for (j = 0; j < d; j++) {
       power(polPower, polDegOne, m_lac[j] - 1);
-      polyToColumn(col, polPower);
+      this->polyToColumn(col, polPower);
       for (i = 0; i < dk; i++)
          basis[i][j] = col[i];
    }
@@ -245,7 +199,6 @@ void MRGLatticeLac<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
       for (j = 0; j < d; j++)
          basis[i][j] = (i == j) * this->m_modulo;
    }
- 
 }
 
 
@@ -269,7 +222,7 @@ void MRGLatticeLac<Int, Real>::incDimBasis0(IntMat &basis, int64_t d) {
    std::istringstream in (str);
    in >> polDegOne;   
    power(polPower, polDegOne, m_lac[d-1] - 1);
-   polyToColumn(col, polPower);
+   this->polyToColumn(col, polPower);
    // Put the coefficients in the desired row
    for (i = 0; i < dk; i++)
       basis[i][d-1] = col[i];
