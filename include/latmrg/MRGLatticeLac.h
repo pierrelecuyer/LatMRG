@@ -108,6 +108,11 @@ protected:
     */
    IntVec m_lac;
 
+   /** 
+    * Copy of the primal basis, used for increasing the dimension.
+    */
+   IntMat m_copy_primal_basis;
+
 };
 
 
@@ -123,6 +128,9 @@ MRGLatticeLac<Int, Real>::MRGLatticeLac(const Int &m, const IntVec &aa, int64_t 
       this->setaa(aa);
       FlexModInt<Int>::mod_init(m);
       this->buildyPol(maxDim + this->m_order - 1);
+      // Immediately build a copy of the full basis and store in copy_primal
+      m_copy_primal_basis.SetDims(maxDim, maxDim);
+      buildBasis0Pol(m_copy_primal_basis, maxDim);
 }
 
 
@@ -209,26 +217,31 @@ void MRGLatticeLac<Int, Real>::buildBasis0Pol(IntMat &basis, int64_t d) {
 
 template<typename Int, typename Real>
 void MRGLatticeLac<Int, Real>::incDimBasis0(IntMat &basis, int64_t d) {
-   // int64_t d = 1 + this->getDim();  // New current dimension.
-   IntVec col;
-   int64_t i;
-   int64_t k = this->m_order;
-   int64_t dk = min(d, k);
-   typename FlexModInt<Int>::PolE polDegOne;
-   typename FlexModInt<Int>::PolE polPower;
-   assert(d <= this->m_maxDim);
-   // Auxilliary variables to calculate powers p^n(z)
-   std::string str = "[0 1]";
-   std::istringstream in (str);
-   in >> polDegOne;   
-   power(polPower, polDegOne, m_lac[d-1] - 1);
-   this->polyToColumn(col, polPower);
-   // Put the coefficients in the desired row
-   for (i = 0; i < dk; i++)
-      basis[i][d-1] = col[i];
-   // Fill the rest of the row
-   for (i = dk; i < d; i++)
-      basis[i][d-1] = (i == d-1) * this->m_modulo;
+   int64_t i, j, l;
+   IntMat M; // Matrix according to guide which stores the current basis transformations
+   M.SetDims(d-1, d-1);
+   for (i = 0; i < d-1; i++) {
+      for (j = 0; j < d-1; j++) {
+         M[i][j] = basis[i][j];
+            for (l = 0; l < j; l++) {
+               M[i][j] -= M[i][l]*this->m_copy_primal_basis[l][j];
+            }
+         M[i][j] = M[i][j] / basis[j][j];
+      }
+   }
+
+   // Calculate the new last column
+   IntMat copy_curr_column, new_last_column;
+   copy_curr_column.SetDims(d-1,1);
+   for (i = 0; i < d-1; i++)
+      copy_curr_column[i][0] = this->m_copy_primal_basis[i][d-1];
+   mul(new_last_column, M, copy_curr_column);
+   for (i = 0; i < d-1; i++)
+      basis[i][d-1] = new_last_column[i][0];
+   
+   // Add last row
+   for (j = 0; j < d; j++)
+      basis[d-1][j] = this->m_copy_primal_basis[d-1][j];
 }
 
 }
