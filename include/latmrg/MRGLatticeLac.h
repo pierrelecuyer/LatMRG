@@ -98,20 +98,22 @@ protected:
    
    /**
     * This function overrides the correpsonding protected function in 'MRGLattice'.
+    * It increases the dimension of the given basis from d-1 to d dimensions.
+    * One new column is calclated using the algorithm from the guide.
+    */
+   void incDimBasis0(IntMat &basis, int64_t d) override;
+
+   /**
+    * This function overrides the correpsonding protected function in 'MRGLattice'.
     * It increases the dimension of given basis from d-1 to d dimensions.
     * One new column is calclated using the polynomial representation.
     */
-   void incDimBasis0(IntMat &basis, int64_t d) override;
+   void incDimDualBasis0Pol(IntMat &basis, int64_t d) override;
    
    /**
     * The lacunary indices.
     */
    IntVec m_lac;
-
-   /** 
-    * Copy of the primal basis, used for increasing the dimension.
-    */
-   IntMat m_copy_primal_basis;
 
 };
 
@@ -129,8 +131,11 @@ MRGLatticeLac<Int, Real>::MRGLatticeLac(const Int &m, const IntVec &aa, int64_t 
       FlexModInt<Int>::mod_init(m);
       this->buildyPol(maxDim + this->m_order - 1);
       // Immediately build a copy of the full basis and store in copy_primal
-      m_copy_primal_basis.SetDims(maxDim, maxDim);
-      buildBasis0Pol(m_copy_primal_basis, maxDim);
+      this->m_copy_primal_basis.SetDims(maxDim, maxDim);
+      buildBasis0Pol(this->m_copy_primal_basis, maxDim);
+      this->m_copy_dual_basis.SetDims(maxDim, maxDim);
+      mDualUpperTriangular(this->m_copy_dual_basis, this->m_copy_primal_basis, this->m_modulo, maxDim);
+      
 }
 
 
@@ -243,6 +248,17 @@ void MRGLatticeLac<Int, Real>::incDimBasis0(IntMat &basis, int64_t d) {
    for (j = 0; j < d; j++)
       basis[d-1][j] = this->m_copy_primal_basis[d-1][j];
 }
+
+template<typename Int, typename Real>
+void MRGLatticeLac<Int, Real>::incDimDualBasis0Pol(IntMat &basis, int64_t d) {
+   // Add zeros to last column
+   for (int i = 0; i < d-1; i++)
+      basis[i][d-1] = 0;
+   // Add last row
+   for (int i = 0; i < d; i++)
+      basis[d-1][i] = this->m_copy_dual_basis[d-1][i];
+}
+
 
 }
 #endif
