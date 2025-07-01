@@ -185,13 +185,13 @@ protected:
     * For generating the dual basis or increasing its dimension, we need a copy of the
     * the primal basis.
     */
-   IntMat m_primal_copy;
+   IntMat m_copy_primal_basis;
    
    /**
     * If we want to increase the dimension of the dual basis with the polynomial approach
     * we also need a copy of the dual basis.
     */   
-   IntMat m_dual_copy;
+   IntMat m_copy_dual_basis;
 
    /**
     * Boolean variable which decides whether the polynomial basis V^{(p)} is used instead of V^{(0)}
@@ -218,8 +218,8 @@ MRGLattice<Int, Real>::MRGLattice(const Int &m, const IntVec &aa, int64_t maxDim
    setaa(aa);
    this->m_dim = 0;
    m_genTemp.SetDims(maxDim, maxDim); 
-   m_primal_copy.SetDims(maxDim, maxDim);
-   m_dual_copy.SetDims(maxDim, maxDim);   
+   m_copy_primal_basis.SetDims(maxDim, maxDim);
+   m_copy_dual_basis.SetDims(maxDim, maxDim);   
    FlexModInt<Int>::mod_init(m);
    buildyPol(maxDim + m_order - 1);
 }
@@ -425,10 +425,10 @@ void MRGLattice<Int, Real>::buildDualBasis(int64_t d) {
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildDualBasis0(IntMat &basis, int64_t d) {
    if (use_polynomial_basis)
-      this->buildBasis0Pol(m_primal_copy, d);
+      this->buildBasis0Pol(m_copy_primal_basis, d);
    else
-      this->buildBasis0(m_primal_copy, d);
-   mDualUpperTriangular(basis, m_primal_copy, this->m_modulo, d);
+      this->buildBasis0(m_copy_primal_basis, d);
+   mDualUpperTriangular(basis, m_copy_primal_basis, this->m_modulo, d);
 }
 
 //============================================================================
@@ -497,8 +497,8 @@ void MRGLattice<Int, Real>::incDimDualBasis() {
       this->m_dim++;
    }
    this->setDimDual(d);      
-   if (use_polynomial_basis) this->incDimDualBasis0Pol(this->m_basis, d);
-   else this->incDimDualBasis0(this->m_basis, d);
+   if (use_polynomial_basis) this->incDimDualBasis0Pol(this->m_dualbasis, d);
+   else this->incDimDualBasis0(this->m_dualbasis, d);
 }
 
 //============================================================================
@@ -506,15 +506,15 @@ void MRGLattice<Int, Real>::incDimDualBasis() {
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::incDimDualBasis0(IntMat &basis, int64_t d) {
    int64_t i;
-   incDimBasis0(m_primal_copy, d);
+   incDimBasis0(m_copy_primal_basis, d);
    // Add one extra 0 coordinate to each vector of the m-dual basis.
    for (i = 0; i < d - 1; i++) {
-      this->m_dualbasis[i][d - 1] = 0;
+      basis[i][d - 1] = 0;
    }
    for (i = 0; i < d-1; i++) {
-      this->m_dualbasis[d-1][i] = -m_primal_copy[i][d-1];  
+      basis[d-1][i] = -m_copy_primal_basis[i][d-1];  
    } 
-   this->m_dualbasis[d-1][d-1] = 1;
+   basis[d-1][d-1] = 1;
 }
 
 //============================================================================
@@ -522,22 +522,21 @@ void MRGLattice<Int, Real>::incDimDualBasis0(IntMat &basis, int64_t d) {
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::incDimDualBasis0Pol(IntMat &basis, int64_t d) {
    int64_t i;
-   incDimBasis0(m_primal_copy, d);
+   incDimBasis0(m_copy_primal_basis, d);
    // Add one extra 0 coordinate to each vector of the m-dual basis.
    for (i = 0; i < d - 1; i++) {
-      this->m_dualbasis[i][d - 1] = 0;
+      basis[i][d - 1] = 0;
    }   
    if (this->m_order == 1) {    
       for (i = 0; i < d-1; i++) {
-         this->m_dualbasis[d-1][i] = m_primal_copy[i][d-1];  
+         basis[d-1][i] = m_copy_primal_basis[i][d-1];  
       }
-      this->m_dualbasis[d-1][d-1] = 1;
+      basis[d-1][d-1] = 1;
    }
    else { 
-      mDualUpperTriangular(m_dual_copy, m_primal_copy, this->m_modulo, d);
-      // std::cout << m_dual_copy << "\n";
+      mDualUpperTriangular(m_copy_dual_basis, m_copy_primal_basis, this->m_modulo, d);
       for (i = 0; i < d; i++) {
-        this->m_dualbasis[d-1][i] = m_dual_copy[d-1][i];  
+        basis[d-1][i] = m_copy_dual_basis[d-1][i];  
       }
    }
 }
