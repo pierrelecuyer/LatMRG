@@ -234,10 +234,10 @@ void MRGLatticeLac<Int, Real>::incDimBasis0(IntMat &basis, int64_t d) {
             for (l = 0; l < j; l++) {
                M[i][j] -= M[i][l]*this->m_copy_primal_basis[l][j];
             }
-         M[i][j] = M[i][j] / basis[j][j];
+         M[i][j] = M[i][j] / this->m_copy_primal_basis[j][j];
       }
    }
-
+   
    // Calculate the new last column by applying M to the last column of the stored primal basis.
    IntMat copy_curr_column, new_last_column;
    copy_curr_column.SetDims(d-1,1);
