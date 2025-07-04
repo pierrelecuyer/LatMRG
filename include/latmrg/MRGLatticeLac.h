@@ -98,10 +98,17 @@ protected:
    
    /**
     * This function overrides the correpsonding protected function in 'MRGLattice'.
+    * It increases the dimension of the given basis from d-1 to d dimensions.
+    * One new column is calclated using the algorithm from the guide.
+    */
+   void incDimBasis0(IntMat &basis, int64_t d) override;
+
+   /**
+    * This function overrides the correpsonding protected function in 'MRGLattice'.
     * It increases the dimension of given basis from d-1 to d dimensions.
     * One new column is calclated using the polynomial representation.
     */
-   void incDimBasis0(IntMat &basis, int64_t d) override;
+   void incDimDualBasis0Pol(IntMat &basis, int64_t d) override;
    
    /**
     * The lacunary indices.
@@ -123,6 +130,12 @@ MRGLatticeLac<Int, Real>::MRGLatticeLac(const Int &m, const IntVec &aa, int64_t 
       this->setaa(aa);
       FlexModInt<Int>::mod_init(m);
       this->buildyPol(maxDim + this->m_order - 1);
+      // Immediately build a copy of the full basis and store in copy_primal
+      this->m_copy_primal_basis.SetDims(maxDim, maxDim);
+      buildBasis0Pol(this->m_copy_primal_basis, maxDim);
+      this->m_copy_dual_basis.SetDims(maxDim, maxDim);
+      mDualUpperTriangular(this->m_copy_dual_basis, this->m_copy_primal_basis, this->m_modulo, maxDim);
+      
 }
 
 
@@ -209,27 +222,44 @@ void MRGLatticeLac<Int, Real>::buildBasis0Pol(IntMat &basis, int64_t d) {
 
 template<typename Int, typename Real>
 void MRGLatticeLac<Int, Real>::incDimBasis0(IntMat &basis, int64_t d) {
-   // int64_t d = 1 + this->getDim();  // New current dimension.
-   IntVec col;
-   int64_t i;
-   int64_t k = this->m_order;
-   int64_t dk = min(d, k);
-   typename FlexModInt<Int>::PolE polDegOne;
-   typename FlexModInt<Int>::PolE polPower;
-   assert(d <= this->m_maxDim);
-   // Auxilliary variables to calculate powers p^n(z)
-   std::string str = "[0 1]";
-   std::istringstream in (str);
-   in >> polDegOne;   
-   power(polPower, polDegOne, m_lac[d-1] - 1);
-   this->polyToColumn(col, polPower);
-   // Put the coefficients in the desired row
-   for (i = 0; i < dk; i++)
-      basis[i][d-1] = col[i];
-   // Fill the rest of the row
-   for (i = dk; i < d; i++)
-      basis[i][d-1] = (i == d-1) * this->m_modulo;
+   int64_t i, j, l;
+   IntMat M; 
+   // Calculate the matrix M according to guide. It stores the transformation from the standard basis to the current one.
+   M.SetDims(d-1, d-1);
+   for (i = 0; i < d-1; i++) {
+      for (j = 0; j < d-1; j++) {
+         M[i][j] = basis[i][j];
+            for (l = 0; l < j; l++) {
+               M[i][j] -= M[i][l]*this->m_copy_primal_basis[l][j];
+            }
+         M[i][j] = M[i][j] / basis[j][j];
+      }
+   }
+
+   // Calculate the new last column by applying M to the last column of the stored primal basis.
+   IntMat copy_curr_column, new_last_column;
+   copy_curr_column.SetDims(d-1,1);
+   for (i = 0; i < d-1; i++)
+      copy_curr_column[i][0] = this->m_copy_primal_basis[i][d-1];
+   mul(new_last_column, M, copy_curr_column);
+   for (i = 0; i < d-1; i++)
+      basis[i][d-1] = new_last_column[i][0];
+   
+   // Add last row from the stored primal basis.
+   for (j = 0; j < d; j++)
+      basis[d-1][j] = this->m_copy_primal_basis[d-1][j];
 }
+
+template<typename Int, typename Real>
+void MRGLatticeLac<Int, Real>::incDimDualBasis0Pol(IntMat &basis, int64_t d) {
+   // Add zeros to last column
+   for (int i = 0; i < d-1; i++)
+      basis[i][d-1] = 0;
+   // Add last row
+   for (int i = 0; i < d; i++)
+      basis[d-1][i] = this->m_copy_dual_basis[d-1][i];
+}
+
 
 }
 #endif
