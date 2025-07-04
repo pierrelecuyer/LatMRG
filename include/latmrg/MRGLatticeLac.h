@@ -126,8 +126,10 @@ protected:
 template<typename Int, typename Real>
 MRGLatticeLac<Int, Real>::MRGLatticeLac(const Int &m, const IntVec &aa, int64_t maxDim,
       IntVec &lac, NormType norm) : MRGLattice<Int, Real>(m, aa, maxDim, norm) {
+      this->m_maxDim = maxDim;   
       setLac(lac);
       this->setaa(aa);
+      this->m_dim = 0;
       FlexModInt<Int>::mod_init(m);
       this->buildyPol(maxDim + this->m_order - 1);
       // Immediately build a copy of the full basis and store in copy_primal
@@ -223,7 +225,8 @@ void MRGLatticeLac<Int, Real>::buildBasis0Pol(IntMat &basis, int64_t d) {
 template<typename Int, typename Real>
 void MRGLatticeLac<Int, Real>::incDimBasis0(IntMat &basis, int64_t d) {
    int64_t i, j, l;
-   IntMat M; // Matrix according to guide which stores the current basis transformations
+   IntMat M; 
+   // Calculate the matrix M according to guide. It stores the transformation from the standard basis to the current one.
    M.SetDims(d-1, d-1);
    for (i = 0; i < d-1; i++) {
       for (j = 0; j < d-1; j++) {
@@ -235,7 +238,7 @@ void MRGLatticeLac<Int, Real>::incDimBasis0(IntMat &basis, int64_t d) {
       }
    }
 
-   // Calculate the new last column
+   // Calculate the new last column by applying M to the last column of the stored primal basis.
    IntMat copy_curr_column, new_last_column;
    copy_curr_column.SetDims(d-1,1);
    for (i = 0; i < d-1; i++)
@@ -244,7 +247,7 @@ void MRGLatticeLac<Int, Real>::incDimBasis0(IntMat &basis, int64_t d) {
    for (i = 0; i < d-1; i++)
       basis[i][d-1] = new_last_column[i][0];
    
-   // Add last row
+   // Add last row from the stored primal basis.
    for (j = 0; j < d; j++)
       basis[d-1][j] = this->m_copy_primal_basis[d-1][j];
 }
