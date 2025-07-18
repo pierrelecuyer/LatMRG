@@ -76,7 +76,7 @@ public:
     * Sets the vector of multipliers. The order `k` of the lattice is set equal to
     * the length of this vector, minus 1. `aa[j]` must contain \f$a_j\f$ for j=1,...,k.
     */
-   void setaa(const IntVec &aa);   
+   virtual void setaa(const IntVec &aa);   
   
    /**
     * Builds a basis in `dim` dimensions. This `dim` must not exceed `this->maxDim()`.
@@ -215,6 +215,7 @@ protected:
 template<typename Int, typename Real>
 MRGLattice<Int, Real>::MRGLattice(const Int &m, const IntVec &aa, int64_t maxDim, NormType norm) :
       IntLatticeExt<Int, Real>(m, maxDim, norm) {
+   this->m_modulo = m;
    this->m_maxDim = maxDim;   
    setaa(aa);
    this->m_dim = 0;
@@ -395,11 +396,12 @@ void MRGLattice<Int, Real>::buildDualBasis(int64_t d) {
 // see Sections 3.1.4 and 3.1.5 of the guide.
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildDualBasis0(IntMat &basis, int64_t d) {
-   this->buildBasis0(m_copy_primal_basis, d);
    if (use_polynomial_basis) {
+      this->buildBasis0Pol(m_copy_primal_basis, d);      
       mDualUpperTriangular(basis, m_copy_primal_basis, this->m_modulo, d);
    }
    else { // Bulids the dual basis according to Eq. (25) in the guide
+      this->buildBasis0(m_copy_primal_basis, d);
       assert(d <= this->m_maxDim);
       int64_t k = this->m_order;
       int64_t dk = min(d, k);
@@ -511,7 +513,8 @@ void MRGLattice<Int, Real>::incDimDualBasis0Pol(IntMat &basis, int64_t d) {
 
 // We use the columns of basis to construct generating vectors and a pbasis for the projection.
 // This function returns the value of `projCase`, which is `true` iff the first m_order coordinates
-// are all in the projection.
+// are all in the projection, see Section 3.1.7 of the guide. The algorithm depends on which
+// basis type (V^{(0) or V^{(p)}) is used.
 template<typename Int, typename Real>
 bool MRGLattice<Int, Real>::buildProjection0(IntMat &basis, int64_t dimbasis, IntMat &pbasis,
       const Coordinates &proj) {
@@ -519,7 +522,7 @@ bool MRGLattice<Int, Real>::buildProjection0(IntMat &basis, int64_t dimbasis, In
    int64_t i, j;   
    bool projCase1 = true; // This holds if the first m_order coordinates are all in `proj`.
 
-   // Algorith taylored to the polynomial basis V^{(p)}
+   // Algorithm taylored to the polynomial basis V^{(p)}
    
    if (use_polynomial_basis) {
       int64_t k = this->m_order;
@@ -619,7 +622,7 @@ void MRGLattice<Int, Real>::buildProjectionDual(IntLattice<Int, Real> &projLatti
 
 //============================================================================
 
-// This function applies phi inverse as described in the guide, and reverses the coordinates.
+// This function applies phi inverse as described in Section 3.1.2 of the guide, and reverses the coordinates.
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::polyToColumn(IntVec &col, typename FlexModInt<Int>::PolE &pcol) {
    int i, j, k;
