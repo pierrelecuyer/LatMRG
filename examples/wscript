@@ -4,6 +4,8 @@
 def build(ctx):
     src_dir = ctx.path.parent.find_dir('examples/')
     inc_dir = ctx.path.find_dir('../include')
+    inc_dir2 = ctx.path.find_dir('../latticetester/include')
+    latticetester_src = ctx.path.find_dir('../latticetester/src').ant_glob('*.cc')
     ctx.add_group('group3')
     ctx.add_group('group4')
     ctx.add_group('group5')
@@ -11,10 +13,10 @@ def build(ctx):
     ctx.set_group('group3')
     for src in ctx.path.ant_glob('*.cc'):
         ctx(features='cxx cxxprogram',
-                source=src,
-                includes=[inc_dir,src_dir],
-                lib=ctx.env.LIB_NTL + ctx.env.LIB_GMP + ctx.env.LIB_LATTICETESTER, 
-                stlib=ctx.env.STLIB_NTL + ctx.env.STLIB_GMP + ctx.env.STLIB_LATTICETESTER,
+                source=[src] + latticetester_src,
+                includes=[inc_dir,inc_dir2,'../latticetester/src'],
+                lib=ctx.env.LIB_NTL + ctx.env.LIB_GMP, 
+                stlib=ctx.env.STLIB_NTL + ctx.env.STLIB_GMP,
                 target=src.name[:-3],
                 use=['latmrg'],
                 install_path='${BINDIR}/examples')

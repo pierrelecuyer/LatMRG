@@ -74,30 +74,23 @@ public:
 
    /**
     * Sets the vector of multipliers. The order `k` of the lattice is set equal to
-    * the length of this vector, minus 1.  `aa[j]` must contain \f$a_j\f$ for j=1,...,k.
+    * the length of this vector, minus 1. `aa[j]` must contain \f$a_j\f$ for j=1,...,k.
     */
-   void setaa(const IntVec &aa);
-   
-   /**
-    * Builds the vector to store \f$y_0, y_1, ..., y_{t+k-2}\f$ used in the matrix V^{(p)}.
-    */
-   void buildyPol(int64_t dim);
-   
-   /**
-    * Return the current dimesnion of the vector y.
-    */
-   int64_t getDimy() { return m_y.length();};
-   
+   void setaa(const IntVec &aa);   
+  
    /**
     * Builds a basis in `dim` dimensions. This `dim` must not exceed `this->maxDim()`.
     * This initial primal basis will be upper triangular -  based on V^{(0)} or V^{(p)}
-    * depending on which approach is chosen by the user..
+    * depending on which approach is chosen by the user.
     */
    void buildBasis(int64_t dim);
 
    /**
-    * Builds both the primal and an m-dual lower triangular basis directly
-    * in `dim` dimensions.  This `dim` must not exceed `maxDim`.
+    * Builds the m-dual lower triangular basis directly in `dim` dimensions. This `dim` must 
+    * not exceed `maxDim`. 
+    * In order to build the m-dual basis, the primal basis is needed, even if it has not been
+    * built yet. Therefore, a copy of the basis matrix is always created upon building the 
+    * m-dual basis. It is stored in the variable 'm_copy_primal_basis'.
     */
    void buildDualBasis(int64_t dim); 
 
@@ -108,10 +101,10 @@ public:
    void incDimBasis();
 
    /**
-    * Increases the current dimension of both the primal and m-dual basis by 1.
+    * Increases the current dimension of the m-dual basis by 1.
     * The new increased dimension must not exceed `maxDim`.
     * This function uses the simplified method for MRG lattices given in the lattice tester guide.
-    * It requires the original primal basis to update the m-dual.
+    * It requires to increase the dimension of 'm_copy_primal_basis' as well.
     */
    void incDimDualBasis();
 
@@ -119,7 +112,7 @@ public:
     * This method overrides its namesake in `IntLattice`. A basis for the projection of this
     * `MRGLattice` over the coordinates in `proj` is returned in `projLattice`.
     * The implementation used here exploits the rank-k lattice structure and it
-    * is faster than the general one. See Section 5.5 of the LatMRG guide.
+    * is faster than the general one. See Section 3.1.7 of the LatMRG guide.
     */
    void buildProjection(IntLattice<Int, Real> &projLattice, const Coordinates &proj) override;
 
@@ -133,7 +126,8 @@ public:
    void buildProjectionDual(IntLattice<Int, Real> &projLattice, const Coordinates &proj) override;
 
    /** 
-    * If 'usepol' is set to true then V^{(p)} is used otherwise V^{(0)}.
+    * If 'usepol' is set to true then the polynomial basis V^{(p)}, see Section 3.1.5 of the guide,
+    * is used. Otherwise the standard basis V^{(0)} is used, see Section 3.1.4 of the guide.
     */
    void setUsePolynomialBasis (const bool usepol) { use_polynomial_basis = usepol; }
 
@@ -144,11 +138,12 @@ public:
    std::string toStringCoef() const;
    
 protected:
-
+  
    /**
     * The following protected functions take the basis as a parameter for more flexibility.
-    * They are used inside buildBasis, buildBasisDual, incDimBasis, etc., with either `m_basis` or `m_y`.
+    * They are used inside buildBasis, buildBasisDual, incDimBasis, etc.
     * For building the basis either the standard approach or the polynomial approach can be chosen.
+    * The polynomial approach is implemented in those functions ending with Pol
     */
    virtual void buildBasis0(IntMat &basis, int64_t d);
    
@@ -163,12 +158,18 @@ protected:
    virtual void incDimDualBasis0Pol(IntMat &basis, int64_t d);
 
    bool buildProjection0(IntMat &basis, int64_t dimbasis, IntMat &pbasis, const Coordinates &proj);
-   
+
    /**
     * Takes the polynomial `pcol` and returns in `col` the corresponding column in the
     * matrix of generating vectors.
     */
    void polyToColumn(IntVec &col, typename FlexModInt<Int>::PolE &pcol);
+
+   /**
+    * Builds the vector to store \f$y_0, y_1, ..., y_{t+k-2}\f$ used to build the matrix V^{(p)},
+    * see Section 3.1.2 of the guide for details.
+    */
+   void buildyPol(int64_t dim);   
 
    /**
     * A vector to store \f$y_0, y_1, ..., y_{t+k-2}\f$ used in the matrix V^{(p)}.
@@ -291,8 +292,9 @@ void MRGLattice<Int, Real>::buildyPol(int64_t dim) {
    std::istringstream in (str);
    in >> polDegOne;   
   
+   // Builde the vector y according to the algorithm described in Section 3.1.2 of the guide.
+   // The vector is stored in the variable 'm_y'.
    m_y.SetLength(dim);
-   // Initializte m_y
    for (j = 0; j < dim; j++)
      m_y[j] = 0;
    m_y[k-1] = 1;
@@ -311,38 +313,6 @@ void MRGLattice<Int, Real>::buildyPol(int64_t dim) {
 }
 
 //============================================================================
-/*
-// Builds an upper-triangular basis directly in `d` dimensions, as explained in Section 4.1 of
-// the guide of LatMRG, puts it in `basis`.  Must have d <= m_maxdim.
-template<typename Int, typename Real>
-void MRGLattice<Int, Real>::buildBasis00(IntMat &basis, int64_t d) {
-   assert(d <= this->m_maxDim);
-   int64_t dk = min(d, m_order);
-   int64_t i, j, k;
-   // Put the identity matrix in the upper left corner
-   for (i = 0; i < dk; i++) {
-      for (j = 0; j < dk; j++)
-         basis[i][j] = (i == j);  // Avoid "if" statements.
-   }
-   if (d > m_order) {
-      // Put m times the identity matrix to the lower right part and the zero matrix to the lower left part.
-      for (i = m_order; i < d; i++)
-         for (j = 0; j < d; j++)
-            basis[i][j] = this->m_modulo * (i == j);
-      // Fill the rest of the first m_order rows
-      for (i = 0; i < m_order; i++) {
-         for (j = m_order; j < d; j++) {
-            basis[i][j] = 0;
-            // Calculate the components of v_{i,j}. The first component of the coefficient is m_aCoeff[0] here
-            for (k = 1; k <= m_order; k++)
-               basis[i][j] += m_aCoeff[k] * basis[i][j - k] % this->m_modulo;
-         }
-      }
-   }
-}
-*/
-
-//============================================================================
 
 // An upper-triangular basis is built directly, as explained in the guide of LatMRG.
 // The dimension `maxDim` of the `IntMat` array is unchanged, but the basis dimension isset to `d`.
@@ -358,7 +328,7 @@ void MRGLattice<Int, Real>::buildBasis(int64_t d) {
 
 //============================================================================
 
-// Builds the upper-triangular basis V^{(0)} directly in `d` dimensions, as explained in Section 4.1 of
+// Builds the upper-triangular basis V^{(0)} directly in `d` dimensions, as explained in Section 3.1.4 of
 // the guide of LatMRG, puts this matrix in `basis`.  Must have d <= m_maxdim.
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
@@ -387,8 +357,8 @@ void MRGLattice<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
 
 //============================================================================
 
-// Builds in basis matrix V^{(p)} that contains y_k,...,y_{k+t-2} (in the polynomial case). 
-/// It is based on the vector m_y built by the function buildypol.
+// Builds in basis matrix V^{(p)} directly in dimension 'd' from the entries of the vector 'm_y', 
+// as explained in Section 3.1.4 of the guide of LatMRG, puts this matrix in `basis`.  Must have d <= m_maxdim.
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildBasis0Pol(IntMat &basis, int64_t d) {
    assert(d <= this->m_maxDim);
@@ -419,6 +389,10 @@ void MRGLattice<Int, Real>::buildDualBasis(int64_t d) {
 //============================================================================
 
 // Builds the m-dual basis in a direct way in d dimensions.
+// If the basis matrix is in the polynomial form V^{(p)}, then the m-dual basis matrix
+// needs to be calculated using mDualUpperTriangular from the class 'BasisConstruction' 
+// of 'LatticeTester'. For V^{(0)}, there is a direct way to build the m-dual basis matrix,
+// see Sections 3.1.4 and 3.1.5 of the guide.
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildDualBasis0(IntMat &basis, int64_t d) {
    this->buildBasis0(m_copy_primal_basis, d);
@@ -443,29 +417,6 @@ void MRGLattice<Int, Real>::buildDualBasis0(IntMat &basis, int64_t d) {
 }
 
 //============================================================================
-/*
-// Increases the dimension of given basis from d-1 to d dimensions.
-template<typename Int, typename Real>
-void MRGLattice<Int, Real>::incDimBasis00(IntMat &basis, int64_t d) {
-   // int64_t d = 1 + this->getDim();  // New current dimension.
-   assert(d <= this->m_maxDim);
-   int64_t i, j, jj;
-   // Add new row and new column of the primal basis.
-   for (j = 0; j < d - 1; j++)
-      basis[d - 1][j] = 0;
-   if (d > m_order) basis[d - 1][d - 1] = this->m_modulo;
-   else basis[d - 1][d - 1] = 1;
-   for (i = 0; i < d - 1; i++) {
-      basis[i][d - 1] = 0;
-      if (d - 1 >= m_order) {
-         for (jj = 1; jj <= m_order; jj++)
-            basis[i][d - 1] += m_aCoeff[k] * basis[i][d - 1 - jj] % this->m_modulo;
-      }
-   }
-}
-*/
-
-//============================================================================
 
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::incDimBasis() {
@@ -476,10 +427,9 @@ void MRGLattice<Int, Real>::incDimBasis() {
 
 //============================================================================
 
-// Increases the dimension of given basis from d-1 to d dimensions.
+// Increases the dimension of given basis from d-1 to d dimensions, see Section 3.1.6 of the guide.
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::incDimBasis0(IntMat &basis, int64_t d) {
-   // int64_t d = 1 + this->getDim();  // New current dimension.
    assert(d <= this->m_maxDim);
    int64_t k = m_order;
    int64_t i, j, jj;
@@ -514,6 +464,8 @@ void MRGLattice<Int, Real>::incDimDualBasis() {
 
 //============================================================================
 
+// The function increases the dimension of the m-dual basis matrix if we work with
+// V^{(0)}, see Section 3.1.5 of the guide.
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::incDimDualBasis0(IntMat &basis, int64_t d) {
    int64_t i;
@@ -530,6 +482,9 @@ void MRGLattice<Int, Real>::incDimDualBasis0(IntMat &basis, int64_t d) {
 
 //============================================================================
 
+// If V^{(p)} is used, then m-dual basis matrix needs to be calculated by 
+// using mDualUpperTriangular if the order 'k' is greater than 1, see Section 3.1.5
+// of the guide.
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::incDimDualBasis0Pol(IntMat &basis, int64_t d) {
    int64_t i;
