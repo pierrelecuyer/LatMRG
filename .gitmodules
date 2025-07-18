@@ -1,3 +1,4 @@
 [submodule "latticetester"]
 	path = latticetester
 	url = https://github.com/pierrelecuyer/latticetester.git
+
