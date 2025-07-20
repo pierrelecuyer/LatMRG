@@ -42,8 +42,8 @@ Compiling *LatMRG* requires the following software to be installed:
 * [yafu](https://sourceforge.net/projects/yafu/) the `yafu` executable must be in the `./data`
   directory for the factorization function in `IntFactorization.h` to work properly
 * [Git](http://git-scm.com/) *(optional for downloading the source code)*
-* [Python](https://www.python.org/) *(Needed by waf to compile and build the library)*
-* [Doxygen](http://www.stack.nl/~dimitri/doxygen/) *(optional for generating
+* [Python](https://www.python.org/) *(needed by waf to compile and build the library)*
+* [Doxygen](http://www.stack.nl/~dimitri/doxygen/) *(required for generating
   the API documentation)*
 
 ## Configuring and building with the makefile
@@ -51,7 +51,9 @@ Compiling *LatMRG* requires the following software to be installed:
 _LatMRG_ currently only has a very simple `makefile`. If NTL is not installed in a
 default prefix such as `/usr/local`, or if you use `clang` instead of `gcc` you
 will need to modify it manually before building LatMRG. The following commands
-will build the library and executables.
+will pull and build the LatMRG library in `./LatMRG/lib`, and the executable
+programs in `./LatMRG/bin`:
+
 ```
 git clone --recursive https://github.com/umontreal-simul/LatMRG.git
 cd LatMRG/latticetester
@@ -59,10 +61,6 @@ cd LatMRG/latticetester
 cd ..
 make
 ```
-
-This will pull and build the LatMRG library in `./LatMRG/lib`, and the executable
-programs in `./LatMRG/bin`. 
-
 
 ## Configuring and building with waf
 
@@ -78,7 +76,7 @@ A few more details are given on that other GitHub page.
 To build *LatMRG* with `waf`, change the current directory to the root directory of 
 the library, for example:
 
-    cd latticetester
+    cd git/latmrg
 
 Some options you might want to use:
 - `--out /path/to/build/location` allows you to specify in which directory the
@@ -100,10 +98,40 @@ First, the project must be configured with:
 
 A simple 
     ./waf configure
-command should be enough to configure `waf` for a minimal build,
-without documentation. The documentation can be built by
-appending the `--build-docs` option to `waf configure`, if
-  [Doxygen](http://www.stack.nl/~dimitri/doxygen/) is available on the system.
+command should be enough to configure `waf` for a minimal build, without documentation. 
+
+To build the html documentation, 
+[Doxygen](http://www.stack.nl/~dimitri/doxygen/) must be available on the system
+and you must first configure with
+
+   ./waf configure --build-docs
+
+The waf script in `doc/wscript` manages the documentation build. 
+The source of the main page is in `doc/dox/main.dox`.
+The `.bib` files for the bibliography are in doc/bib/*.bib, which contains the submodule `bibtex-database`. 
+The Doxygen options are selected in the file `doc/Doxyfile.in`. For example, one may select if members from the `.cc` files are included or not
+by changing the `FILE_PATTERNS` option, select if the `#include` statements at the head of a file
+are shown or not with the `SHOW_INCLUDE_FILES` option, etc. 
+The built documentation is placed in `build/doc/html/` with `index.html` as its main entry.
+To deploy the documentation on the `pierrelecuyer.github.io/latmrg/` GitHub pages,
+the contents of this `html` directory must be moved to the `gh-pages` branch of `latmrg`. 
+The `README.md` in that branch provides more details on how to proceed for this deployment.
+
+If NTL and GMP are not part of the standard system installation and were
+manually installed under, say, the `/opt/ntl`, and `/opt/gmp` directories,
+which means that `/opt/ntl` and `/opt/gmp` all contain subdirectories named
+`include` and `lib`, you should do:
+
+    ./waf configure --ntl /opt/ntl --gmp /opt/gmp
+
+It is possible to set the `CXX` environment variable to the path to a specific
+C++ compiler to be used to build Lattice Tester, before running the `waf configure` command.
+
+In a UNIX shell, it is also possible to write and run a simple `configure.sh`
+script with `./configure.sh` to avoid typing the configure command by hand. 
+This can be useful if you have many flags to include.
+
+### Building and Installing
 
 Once everything is configured correctly, the following command will build the
 *LatMRG* library and command-line tool:
@@ -111,16 +139,15 @@ Once everything is configured correctly, the following command will build the
     ./waf build
 
 If the build process completed without errors, *LatMRG* can be installed to the
-directory specified with the `--prefix` option during the configuration step,
-with:
+directory specified with the `--prefix` option during the configuration step, with:
 
     ./waf install
 
 ## Authors
 
-François Blouin, Erwan Bourceret, Anna Bragina, Ajmal Chaumun, 
-Raymond Couture, Marco Jacques, David Munger, François Paradis, Marc-Antoine Savard, Richard Simard, 
-Josée Turgeon, and Christian Weiss
+Franï¿½ois Blouin, Erwan Bourceret, Anna Bragina, Ajmal Chaumun, 
+Raymond Couture, Marco Jacques, David Munger, Franï¿½ois Paradis, Marc-Antoine Savard, Richard Simard, 
+Josï¿½e Turgeon, and Christian Weiss
 have contributed to various versions of this software since around 1986,
 under the lead of Pierre L'Ecuyer.
 
