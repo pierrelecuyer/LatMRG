@@ -126,6 +126,12 @@ protected:
     * One new column is calclated using the polynomial representation.
     */
    void incDimDualBasis0Pol(IntMat &basis, int64_t d) override;
+
+    /**
+    * This function overrides the correpsonding protected function in 'MRGLattice'.
+    * It builds a projection for the primal basis.
+    */
+   bool buildProjection0(IntMat &basis, int64_t dimbasis, IntMat &pbasis, const Coordinates &proj) override;
       
    /**
     * Stores the lacunary indices.
@@ -307,6 +313,18 @@ void MRGLatticeLac<Int, Real>::incDimBasis0(IntMat &basis, int64_t d) {
    for (j = 0; j < d; j++)
       basis[d-1][j] = this->m_copy_primal_basis[d-1][j];
 }
+
+
+//============================================================================
+
+template<typename Int, typename Real>
+bool MRGLatticeLac<Int, Real>::buildProjection0(IntMat &basis, int64_t dimbasis, IntMat &pbasis,
+   const Coordinates &proj) {
+      projectionConstructionUpperTri<Int>(pbasis, basis, proj, this->m_modulo,
+         this->m_dim);
+   return false;
+}
+
 
 //============================================================================
 
