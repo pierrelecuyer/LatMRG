@@ -157,7 +157,7 @@ protected:
    
    virtual void incDimDualBasis0Pol(IntMat &basis, int64_t d);
 
-   bool buildProjection0(IntMat &basis, int64_t dimbasis, IntMat &pbasis, const Coordinates &proj);
+   virtual bool buildProjection0(IntMat &basis, int64_t dimbasis, IntMat &pbasis, const Coordinates &proj);
 
    /**
     * Takes the polynomial `pcol` and returns in `col` the corresponding column in the
@@ -502,6 +502,7 @@ void MRGLattice<Int, Real>::incDimDualBasis0Pol(IntMat &basis, int64_t d) {
       basis[d-1][d-1] = 1;
    }
    else { 
+      // It might be better to build the m_copy_dual_basis matrix just once and not every time when incDimDualBasis0Pol is called
       mDualUpperTriangular(m_copy_dual_basis, m_copy_primal_basis, this->m_modulo, d);
       for (i = 0; i < d; i++) {
         basis[d-1][i] = m_copy_dual_basis[d-1][i];  
@@ -531,12 +532,14 @@ bool MRGLattice<Int, Real>::buildProjection0(IntMat &basis, int64_t dimbasis, In
       for (auto it = proj.begin(); it != proj.end(); it++, j++) {
          // Set column j of all generating vectors, for (j+1)-th coordinate of proj.
          for (i = 0; i < this->m_maxDim; i++) {
-            m_genTemp[i][j] = (i == j) * this->m_modulo;
             //if (*it - 1 < (unsigned) d && i <dk)
             //   m_genTemp[i][j] = m_y[*it - 1 - i + k -1];
             if (i < dk) {
+               m_genTemp[i][j] = (i == j);
                m_genTemp[i][j] = m_y[*it - 1 - i + k -1];
             }
+            else
+               m_genTemp[i][j] = (i == j) * this->m_modulo;
          }
       }
       upperTriangularBasis(pbasis, m_genTemp, this->m_modulo, dimbasis, d);      
@@ -565,7 +568,7 @@ bool MRGLattice<Int, Real>::buildProjection0(IntMat &basis, int64_t dimbasis, In
          // Then the other rows.
          for (i = m_order; i < d; i++)
             for (j = 0; j < d; j++)
-               pbasis[i][j] = this->m_modulo * (i == j);
+               pbasis[i][j] = this->m_modulo * (i == j); // CW: LatMRG
       } else {
          // In this case we need to use the more general algorithm.
          j = 0;
