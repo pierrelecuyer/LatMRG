@@ -52,7 +52,7 @@ int main() {
 
    WeightsUniform weights(1.0);
 
-   NormaBestLat normaDual(-log(m), 1, maxdim, L2NORM);
+   NormaBestLat normaDual(-log(m), a.length()-1, maxdim, L2NORM);
 
    FigureOfMeritDualM<NTL::ZZ, double> fomdual(t, weights, normaDual, &m_red);
 
@@ -78,7 +78,7 @@ int main() {
 
    ReducerBB<NTL::ZZ, double> m_red2(lat2); 
 
-   NormaBestLat normaDual2(-log(m), 3, maxdim);
+   NormaBestLat normaDual2(-log(m), a.length()-1, maxdim);
 
    FigureOfMeritDualM<NTL::ZZ, double> fomdual2(t, weights, normaDual2, &m_red2);
    
@@ -106,7 +106,7 @@ int main() {
 
    ReducerBB<NTL::ZZ, double> m_red3(lat3); 
 
-   NormaBestLat normaDual3(-log(m), 1, maxdim);
+   NormaBestLat normaDual3(-log(m), a.length()-1, maxdim);
 
    FigureOfMeritDualM<NTL::ZZ, double> fomdual3(t, weights, normaDual3, &m_red3);
    
