@@ -88,12 +88,12 @@ public:
     * If 'buildBasisCopy' is set to true, then 'm_copy_primal_basis' and
     * 'm_dual_copy_basis' are updated according to the new generator vector.
     */
-   void setaa(const IntVec &lac, bool buildBasisCopy = true) override;
+   void setaa(const IntVec &lac, bool buildBasisCopy = true);
 
    /**
     * Returns the \f$j\f$-th lacunary index.
     */
-   Int& getLac(int j);
+   Int& getLac(int j) {return m_lac[j];};
 
 protected:
 
