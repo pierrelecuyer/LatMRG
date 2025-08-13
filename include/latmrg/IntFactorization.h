@@ -37,6 +37,7 @@ namespace LatMRG {
  */
 template<typename Int>
 class IntFactorization {
+
 public:
 
    /**
