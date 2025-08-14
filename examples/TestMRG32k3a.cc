@@ -11,6 +11,7 @@
 #include "latticetester/BasisConstruction.h"
 #include "latticetester/ReducerStatic.h"
 #include "latticetester/NormaBestLat.h"
+#include "latticetester/NormaRogers.h"
 #include "latticetester/WeightsUniform.h"
 #include "latticetester/FigureOfMeritDualM.h"
 #include "latmrg/MRGLattice.h"
@@ -34,7 +35,8 @@ int main() {
    t[0] = maxdim;  t[1] = 0;  t[2] = 0;
    MRGLattice<Int, Real> mrgc = MRGLattice<Int, Real>(m, aa, maxdim);
    WeightsUniform weights(1.0);
-   NormaBestLat normaDual(-log(m), 3, maxdim);  // Factors computed for dual.
+   // NormaBestLat normaDual(-log(m), 3, maxdim);  // Factors computed for dual.
+   NormaRogers normaDual(-log(m), 3, maxdim);  // Factors computed for dual, Rogers bound as in rLEC99b.
    ReducerBB<Int, Real> red(maxdim);   // Single ReducerBB with internal lattice `lat`.
    FigureOfMeritDualM<Int, Real> fom(t, weights, normaDual, &red, true); // FoM for dual lattice.
    fom.setVerbosity(3);
