@@ -25,7 +25,7 @@ namespace LatMRG {
 
 /**
  * This file provides static functions to test for the primitivity of an integer
- * or of a polynomial in a finite field.
+ * or a polynomial in a finite field.
  *
  * Suppose that \f$a\f$, \f$e\f$, and \f$p\f$ are integers, \f$p\f$ is a
  * prime number, and \f$a\f$ is relatively prime with \f$m=p^e\f$.
@@ -84,6 +84,7 @@ namespace LatMRG {
 
 //===========================================================================
 // Declarations
+
 /**
  * Returns `true` iff `a` is a primitive element modulo \f$p^e\f$.
  * The prime factor decomposition of \f$p-1\f$ must be given in `fac`,
