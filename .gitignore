@@ -8,7 +8,6 @@ obsolete/
 unused/
 .*
 *.o
-*.res
 *.log
 *.pyc
 __pycache__
