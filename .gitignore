@@ -13,7 +13,7 @@ unused/
 __pycache__
 doc/html
 !.gitignore
-!.gitmodules
+# !.gitmodules
 makefile_
 NOTES
 

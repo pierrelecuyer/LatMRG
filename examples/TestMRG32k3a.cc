@@ -29,44 +29,92 @@ int main() {
    aa[3] = to_ZZ("8738613264398222622");
    Chrono timer;
 
-   int64_t maxdim(46);  // Maximum dimension of the lattice
+   int64_t maxdim(45);  // Maximum dimension of the lattice
    NTL::Vec <int64_t> t; // The t-vector for the FOM.
    t.SetLength(3);
    t[0] = maxdim;  t[1] = 0;  t[2] = 0;
+   double merit, minmerit;
    MRGLattice<Int, Real> mrgc = MRGLattice<Int, Real>(m, aa, maxdim);
    WeightsUniform weights(1.0);
-   // NormaBestLat normaDual(-log(m), 3, maxdim);  // Factors computed for dual.
-   NormaRogers normaDual(-log(m), 3, maxdim);  // Factors computed for dual, Rogers bound as in rLEC99b.
+   NormaRogers normaDual(-log(m), 3, maxdim);  // Normalization for m-dual: Roger's bounds as in rLEC99b.
    ReducerBB<Int, Real> red(maxdim);   // Single ReducerBB with internal lattice `lat`.
    FigureOfMeritDualM<Int, Real> fom(t, weights, normaDual, &red, true); // FoM for dual lattice.
    fom.setVerbosity(3);
+   std::cout << "\nResults from TestMRG32k3a.cc \n\n";
 
-   // We compute the FOM in successive dimensions up to maxdim, without applying the BB.
+   // We first compute the FOM in successive dimensions up to maxdim, with the default BKZ + BB.
+   // It uses delta = 0.99999 and blocksize = 10.
+   std::cout << "=============================================\n";
+   std::cout << "MRG32k3a, with BKZ+BB with default parameters \n";
+   timer.init();
+   mrgc.buildDualBasis(4);
+   minmerit = fom.computeMeritSucc(mrgc);
+   std::cout << "minmerit = " << minmerit << "\n";
+   std::cout << "CPU time: " << timer.toString() << "\n\n";
+
+   // Here we apply only the default BKZ, no BB.
    fom.setBB(false);
+   std::cout << "===========================================\n";
+   std::cout << "MRG32k3a, only BKZ, no BB \n";
    timer.init();
    mrgc.buildDualBasis(4);
-   double merit = fom.computeMeritSucc(mrgc);
-   std::cout << "MRG32k3a, no BB, merit = " << merit << "\n";
+   minmerit = fom.computeMeritSucc(mrgc);
+   std::cout << "minmerit = " << minmerit << "\n";
    std::cout << "CPU time: " << timer.toString() << "\n\n";
 
-   // Here we also apply the BB, also in up to maxdim dimensions.
+   // Then only LLL with delta = 0.9.
+   fom.setBKZ(0.0);
+   fom.setLLL(0.9);
+   std::cout << "===========================================\n";
+   std::cout << "MRG32k3a, only LLL with delta = 0.9, no BB \n";
+   timer.init();
+   mrgc.buildDualBasis(4);
+   minmerit = fom.computeMeritSucc(mrgc);
+   std::cout << "minmerit = " << minmerit << "\n";
+   std::cout << "CPU time: " << timer.toString() << "\n\n";
+
+   // Here we rebuild the basis from scratch each time we increase the dimension,
+   // with the default BKZ + BB.
+   int64_t j;
+   fom.setLLL(0.99999);
+   fom.setBKZ(0.99999, 10);
    fom.setBB(true);
+   Coordinates coord;
+   minmerit = DBL_MAX;
+   std::cout << "===========================================\n";
+   std::cout << "MRG32k3a, BKZ+BB, rebuild basis at each step \n";
+   std::cout << "coordinates      sqlen       merit           minmerit \n";
    timer.init();
-   mrgc.buildDualBasis(4);
-   merit = fom.computeMeritSucc(mrgc);
-   std::cout << "MRG32k3a, with BB, merit = " << merit << "\n";
+   for (j = 1; j <= 3; j++) coord.insert(j);
+   for (j = 4; j <= maxdim; j++) {
+      coord.insert(j);
+      mrgc.buildDualBasis(j);
+      mrgc.dualize();
+      merit = fom.computeMeritOneProj(mrgc, coord, minmerit);
+      minmerit = min(merit, minmerit);
+   }
+   std::cout << "minmerit = " << minmerit << "\n";
    std::cout << "CPU time: " << timer.toString() << "\n\n";
 
-   // Here we compute the shortest dual vector only in maxdim dimensions.
+   // Rebuild basis from scratch and use only LLL with delta = 0.9.
+   fom.setLLL(0.9);
+   fom.setBKZ(0.0);
+   fom.setBB(false);
+   minmerit = DBL_MAX;
+   coord.clear();
+   std::cout << "===========================================\n";
+   std::cout << "MRG32k3a, only LLL with delta = 0.9, rebuild basis at each step \n";
+   std::cout << "coordinates      sqlen       merit           minmerit \n";
    timer.init();
-   int64_t newdim = maxdim;
-   mrgc.buildDualBasis(newdim);
-   mrgc.dualize();
-   Coordinates coord;   // We have to do this due to some bad design...
-   for (int64_t j = 1; j <= newdim; j++)
+   for (j = 1; j <= 3; j++) coord.insert(j);
+   for (j = 4; j <= maxdim; j++) {
       coord.insert(j);
-   merit = fom.computeMeritOneProj(mrgc, coord);
-   std::cout << "MRG32k3a, direct with BB, merit = " << merit << "\n";
+      mrgc.buildDualBasis(j);
+      mrgc.dualize();
+      merit = fom.computeMeritOneProj(mrgc, coord, minmerit);
+      minmerit = min(merit, minmerit);
+   }
+   std::cout << "minmerit = " << minmerit << "\n";
    std::cout << "CPU time: " << timer.toString() << "\n\n";
 
    return 0;
