@@ -125,17 +125,6 @@ public:
     */
    void buildProjectionDual(IntLattice<Int, Real> &projLattice, const Coordinates &proj) override;
 
-   /** 
-    * If 'usepol' is set to true then the polynomial basis V^{(p)}, see Section 3.1.5 of the guide,
-    * is used. Otherwise the standard basis V^{(0)} is used, see Section 3.1.4 of the guide.
-    */
-   void setUsePolynomialBasis (const bool usepol) { use_polynomial_basis = usepol; 
-      if (usepol) {
-      m_copy_primal_basis.SetDims(this->m_maxDim, this->m_maxDim);
-      m_copy_dual_basis.SetDims(this->m_maxDim, this->m_maxDim);
-      }
-   }
-
    /**
     * Returns the first `dim` components of the generating vector \f$\ba\f$ as a string,
     * where `dim` is the current lattice dimension.
@@ -152,15 +141,11 @@ protected:
     */
    virtual void buildBasis0(IntMat &basis, int64_t d);
    
-   virtual void buildBasis0Pol(IntMat &basis, int64_t d);
-   
    virtual void buildDualBasis0(IntMat &basis, int64_t d);      
 
    virtual void incDimBasis0(IntMat &basis, int64_t d);
    
    virtual void incDimDualBasis0(IntMat &basis, int64_t d);   
-   
-   virtual void incDimDualBasis0Pol(IntMat &basis, int64_t d);
 
    virtual bool buildProjection0(IntMat &basis, int64_t dimbasis, IntMat &pbasis, const Coordinates &proj);
 
@@ -193,17 +178,6 @@ protected:
     * the first m_order rows of the matrix and save it here.
     */
    IntMat m_copy_primal_basis;
-   
-   /**
-    * If we want to increase the dimension of the dual basis with the polynomial approach
-    * we also need a copy of the dual basis.
-    */   
-   IntMat m_copy_dual_basis;
-
-   /**
-    * Boolean variable which decides whether the polynomial basis V^{(p)} is used instead of V^{(0)}
-    */   
-   bool use_polynomial_basis = false;
 
    // Order of this MRG.
    int m_order;
@@ -212,6 +186,8 @@ protected:
     * The coefficients \f$a_1, ..., a_k\f$ of the MRG recurrence, a_j stored in `m_aCoeff[j]`.
     */
    IntVec m_aCoeff;
+
+   
 
 
 };
@@ -325,10 +301,7 @@ void MRGLattice<Int, Real>::buildyPol(int64_t dim) {
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildBasis(int64_t d) {
    this->setDim(d);
-   if (use_polynomial_basis)
-      this->buildBasis0Pol(this->m_basis, d);
-   else
-      this->buildBasis0(this->m_basis, d);
+   this->buildBasis0(this->m_basis, d);
    this->setNegativeNorm();
 }
 
@@ -363,28 +336,6 @@ void MRGLattice<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
 
 //============================================================================
 
-// Builds in basis matrix V^{(p)} directly in dimension 'd' from the entries of the vector 'm_y', 
-// as explained in Section 3.1.4 of the guide of LatMRG, puts this matrix in `basis`.  Must have d <= m_maxdim.
-template<typename Int, typename Real>
-void MRGLattice<Int, Real>::buildBasis0Pol(IntMat &basis, int64_t d) {
-   assert(d <= this->m_maxDim);
-   int64_t k = this->m_order;
-   int64_t dk = min(d, k);
-   int64_t i, j;
-   for (j = 0; j < d; j++) {
-      for (i = 0; i < dk; i++)
-         basis[i][j] = m_y[j-i+k-1];
-   }
-   // Fill the rest of the rows
-   for (i = dk; i < d; i++) { 
-      for (j = 0; j < d; j++)
-         basis[i][j] = (i == j) * this->m_modulo;
-   }
-   
-}
-
-//============================================================================
-
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildDualBasis(int64_t d) {
    this->setDimDual(d);
@@ -401,35 +352,30 @@ void MRGLattice<Int, Real>::buildDualBasis(int64_t d) {
 // see Sections 3.1.4 and 3.1.5 of the guide.
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildDualBasis0(IntMat &basis, int64_t d) {
-   if (use_polynomial_basis) {
-      this->buildBasis0Pol(m_copy_primal_basis, d);      
-      mDualUpperTriangular(basis, m_copy_primal_basis, this->m_modulo, d);
-   }
-   else { // Bulids the dual basis according to Eq. (25) in the guide
-      // this->buildBasis0(m_copy_primal_basis, d);
-      assert(d <= this->m_maxDim);
-      int64_t k = this->m_order;
-      int64_t dk = min(d, k);
-      int64_t i, j, jj;
-      for (i = 0; i < d; i++)  // If d <= m_order, this does nothing.
-         for (j = 0; j < d; j++)
-            basis[j][i] = (i == j);
-      for (i = 0; i < dk; i++) {
-         for (j = dk; j < d; j++) {
-            basis[j][i] = 0;
-            for (jj = 1; jj <= m_order; jj++)
-               basis[j][i] += m_aCoeff[jj] * basis[j - jj][i] % this->m_modulo;
-            m_copy_primal_basis[i][j] = basis[j][i];
-            basis[j][i] = - basis[j][i];  
-         }       
-      }      
-      for (i = 0; i < dk; i++) {
-         for (j = 0; j < dk; j++) {
-            basis[j][i] = (i == j) * this->m_modulo;  
-            m_copy_primal_basis[i][i] = 1;
-         }
-      }   
-   }
+    // Bulids the dual basis according to Eq. (25) in the guide
+    assert(d <= this->m_maxDim);
+    int64_t k = this->m_order;
+    int64_t dk = min(d, k);
+    int64_t i, j, jj;
+    for (i = 0; i < d; i++)  // If d <= m_order, this does nothing.
+       for (j = 0; j < d; j++)
+          basis[j][i] = (i == j);
+    for (i = 0; i < dk; i++) {
+       for (j = dk; j < d; j++) {
+          basis[j][i] = 0;
+          for (jj = 1; jj <= m_order; jj++)
+             basis[j][i] += m_aCoeff[jj] * basis[j - jj][i] % this->m_modulo;
+          m_copy_primal_basis[i][j] = basis[j][i];
+          basis[j][i] = - basis[j][i];  
+       }       
+    }      
+    for (i = 0; i < dk; i++) {
+       for (j = 0; j < dk; j++) {
+          basis[j][i] = (i == j) * this->m_modulo;  
+          m_copy_primal_basis[i][i] = 1;
+       }
+    }   
+   
 }
 
 //============================================================================
@@ -474,8 +420,7 @@ void MRGLattice<Int, Real>::incDimDualBasis() {
    while (this->m_dim < d) {  // Increase dimension if needed.
       this->m_dim++;
    }
-   if (use_polynomial_basis) this->incDimDualBasis0Pol(this->m_dualbasis, d);
-   else this->incDimDualBasis0(this->m_dualbasis, d);
+   this->incDimDualBasis0(this->m_dualbasis, d);
 }
 
 //============================================================================
@@ -500,108 +445,59 @@ void MRGLattice<Int, Real>::incDimDualBasis0(IntMat &basis, int64_t d) {
    basis[d-1][d-1] = 1;
 }
 
-//============================================================================
-
-// If V^{(p)} is used, then m-dual basis matrix needs to be calculated by 
-// using mDualUpperTriangular if the order 'k' is greater than 1, see Section 3.1.5
-// of the guide.
-template<typename Int, typename Real>
-void MRGLattice<Int, Real>::incDimDualBasis0Pol(IntMat &basis, int64_t d) {
-   int64_t i;
-   incDimBasis0(m_copy_primal_basis, d);
-   // Add one extra 0 coordinate to each vector of the m-dual basis.
-   for (i = 0; i < d - 1; i++) {
-      basis[i][d - 1] = 0;
-   }   
-   if (this->m_order == 1) {    
-      for (i = 0; i < d-1; i++) {
-         basis[d-1][i] = m_copy_primal_basis[i][d-1];  
-      }
-      basis[d-1][d-1] = 1;
-   }
-   else { 
-      // It might be better to build the m_copy_dual_basis matrix just once and not every time when incDimDualBasis0Pol is called
-      mDualUpperTriangular(m_copy_dual_basis, m_copy_primal_basis, this->m_modulo, d);
-      for (i = 0; i < d; i++) {
-        basis[d-1][i] = m_copy_dual_basis[d-1][i];  
-      }
-   }
-}
 
 //============================================================================
 
 // We use the columns of basis to construct generating vectors and a pbasis for the projection.
 // This function returns the value of `projCase`, which is `true` iff the first m_order coordinates
-// are all in the projection, see Section 3.1.7 of the guide. The algorithm depends on which
-// basis type (V^{(0) or V^{(p)}) is used.
+// are all in the projection, see Section 3.1.7 of the guide. 
 template<typename Int, typename Real>
 bool MRGLattice<Int, Real>::buildProjection0(IntMat &basis, int64_t dimbasis, IntMat &pbasis,
       const Coordinates &proj) {
+   
    int64_t d = proj.size();
    int64_t i, j;   
    bool projCase1 = true; // This holds if the first m_order coordinates are all in `proj`.
 
-   // Algorithm taylored to the polynomial basis V^{(p)}
-   
-   if (use_polynomial_basis) {
-      int64_t k = this->m_order;
-      int64_t dk = min(d, k);
+   // Algorithm which does not necessarily use the special form of V^{(p)} but applies
+   // for an arbitrary choice of a basis, in particular also for V^{(0)}.
+   // Check if we are in case 1.
+   // This assumes that the coordinates of each projection are always in increasing order!  ***   
+   if (d < (unsigned) m_order) projCase1 = false;
+   else {
+      j = 0;
+      for (auto it = proj.begin(); it != proj.end(); it++, j++) {
+         if (j < m_order) {
+            if (*it != unsigned(j + 1)) projCase1 = false;
+         } else break;
+      }
+   }
+   if (projCase1) {
+      // We first compute the first m_order rows of the projection basis.
+      for (i = 0; i < m_order; i++) {
+         j = 0;
+         for (auto it = proj.begin(); it != proj.end(); it++, j++)
+            pbasis[i][j] = basis[i][*it - 1];
+      }
+      // Then the other rows.
+      for (i = m_order; i < d; i++)
+         for (j = 0; j < d; j++)
+            pbasis[i][j] = this->m_modulo * (i == j); // CW: LatMRG
+   } else {
+      // In this case we need to use the more general algorithm.
       j = 0;
       for (auto it = proj.begin(); it != proj.end(); it++, j++) {
          // Set column j of all generating vectors, for (j+1)-th coordinate of proj.
-         for (i = 0; i < this->m_maxDim; i++) {
-            //if (*it - 1 < (unsigned) d && i <dk)
-            //   m_genTemp[i][j] = m_y[*it - 1 - i + k -1];
-            if (i < dk) {
-               m_genTemp[i][j] = (i == j);
-               m_genTemp[i][j] = m_y[*it - 1 - i + k -1];
-            }
-            else
-               m_genTemp[i][j] = (i == j) * this->m_modulo;
-         }
-      }
-      upperTriangularBasis(pbasis, m_genTemp, this->m_modulo, dimbasis, d);      
-   }
-   else {
-      // Algorithm which does not necessarily use the special form of V^{(p)} but applies
-      // for an arbitrary choice of a basis, in particular also for V^{(0)}.
-      // Check if we are in case 1.
-      // This assumes that the coordinates of each projection are always in increasing order!  ***   
-      if (d < (unsigned) m_order) projCase1 = false;
-      else {
-         j = 0;
-         for (auto it = proj.begin(); it != proj.end(); it++, j++) {
-            if (j < m_order) {
-               if (*it != unsigned(j + 1)) projCase1 = false;
-            } else break;
-         }
-      }
-      if (projCase1) {
-         // We first compute the first m_order rows of the projection basis.
-         for (i = 0; i < m_order; i++) {
-            j = 0;
-            for (auto it = proj.begin(); it != proj.end(); it++, j++)
-               pbasis[i][j] = basis[i][*it - 1];
-         }
-         // Then the other rows.
-         for (i = m_order; i < d; i++)
-            for (j = 0; j < d; j++)
-               pbasis[i][j] = this->m_modulo * (i == j); // CW: LatMRG
-      } else {
-         // In this case we need to use the more general algorithm.
-         j = 0;
-         for (auto it = proj.begin(); it != proj.end(); it++, j++) {
-            // Set column j of all generating vectors, for (j+1)-th coordinate of proj.
-            // for (i = 0; i < dimbasis; i++)
-            //   m_genTemp[i][j] = basis[i][*it - 1];
-            for (i = 0; i < this->m_maxDim; i++)
-               m_genTemp[i][j] = basis[i][*it - 1];
-       }
-       // std::cout << " Generating vectors: \n" << m_genTemp << "\n";
-       upperTriangularBasis(pbasis, m_genTemp, this->m_modulo, dimbasis, d);
-      }
-   }
+         // for (i = 0; i < dimbasis; i++)
+         //   m_genTemp[i][j] = basis[i][*it - 1];
+         for (i = 0; i < this->m_maxDim; i++)
+            m_genTemp[i][j] = basis[i][*it - 1];
+    }
+    // std::cout << " Generating vectors: \n" << m_genTemp << "\n";
+    upperTriangularBasis(pbasis, m_genTemp, this->m_modulo, dimbasis, d);
+   }   
    return projCase1;
+
 }
 
 //============================================================================
