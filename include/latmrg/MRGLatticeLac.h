@@ -104,7 +104,7 @@ protected:
     * the LatMRG guide.  Must have d <= m_maxdim. The basis matrix is taken as a 
     * parameter.
     */ 
-   void buildBasis0Pol(IntMat &basis, int64_t d) override;
+   void buildBasis0(IntMat &basis, int64_t d) override;
    
    /**
     * This functions overrides the corresponding protected function in 'MRGLattice',
@@ -125,7 +125,7 @@ protected:
     * It increases the dimension of a given dual basis from d-1 to d dimensions.
     * One new column is calclated using the polynomial representation.
     */
-   void incDimDualBasis0Pol(IntMat &basis, int64_t d) override;
+   void incDimDualBasis0(IntMat &basis, int64_t d) override;
 
     /**
     * This function overrides the correpsonding protected function in 'MRGLattice'.
@@ -137,6 +137,12 @@ protected:
     * Stores the lacunary indices.
     */
    IntVec m_lac;
+
+   /**
+    * If we want to increase the dimension of the dual basis with the polynomial approach
+    * we also need a copy of the dual basis.
+    */   
+   IntMat m_copy_dual_basis;
 
 };
 
@@ -159,7 +165,7 @@ MRGLatticeLac<Int, Real>::MRGLatticeLac(const Int &m, const IntVec &aa, int64_t 
       FlexModInt<Int>::mod_init(m);
       this->buildyPol(maxDim + this->m_order - 1);
       // Immediately build a copy of the full basis and store in copy_primal
-      buildBasis0Pol(this->m_copy_primal_basis, maxDim);
+      buildBasis0(this->m_copy_primal_basis, maxDim);
       mDualUpperTriangular(this->m_copy_dual_basis, this->m_copy_primal_basis, this->m_modulo, maxDim);
       
 }
@@ -209,7 +215,7 @@ template<typename Int, typename Real>
 void MRGLatticeLac<Int, Real>::setLac(const IntVec &lac, bool buildBasisCopy) {
    m_lac = lac;
    if (buildBasisCopy) {
-      buildBasis0Pol(this->m_copy_primal_basis, this->m_maxDim);
+      buildBasis0(this->m_copy_primal_basis, this->m_maxDim);
       mDualUpperTriangular(this->m_copy_dual_basis, this->m_copy_primal_basis, this->m_modulo, this->m_maxDim);
    }
 }
@@ -223,7 +229,7 @@ void MRGLatticeLac<Int, Real>::setaa(const IntVec &aa, bool buildBasisCopy) {
    this->m_dim = 0;  // Current basis is now invalid.
    this->m_dimdual = 0;
    if (buildBasisCopy) {
-      buildBasis0Pol(this->m_copy_primal_basis, this->m_maxDim);
+      buildBasis0(this->m_copy_primal_basis, this->m_maxDim);
       mDualUpperTriangular(this->m_copy_dual_basis, this->m_copy_primal_basis, this->m_modulo, this->m_maxDim);
    }
 }
@@ -237,7 +243,7 @@ void MRGLatticeLac<Int, Real>::setaa(const IntVec &aa, bool buildBasisCopy) {
 // The implementation is very except that the indices are usually far apart.
 
 template<typename Int, typename Real>
-void MRGLatticeLac<Int, Real>::buildBasis0Pol(IntMat &basis, int64_t d) {
+void MRGLatticeLac<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
    assert(d <= this->m_maxDim);
    assert(d <= m_lac.length());
    int64_t k = this->m_order;
@@ -332,7 +338,7 @@ bool MRGLatticeLac<Int, Real>::buildProjection0(IntMat &basis, int64_t dimbasis,
 // of the dual basis has already been built upon creation of the object.
 
 template<typename Int, typename Real>
-void MRGLatticeLac<Int, Real>::incDimDualBasis0Pol(IntMat &basis, int64_t d) {
+void MRGLatticeLac<Int, Real>::incDimDualBasis0(IntMat &basis, int64_t d) {
    // Add zeros to last column
    for (int i = 0; i < d-1; i++)
       basis[i][d-1] = 0;
@@ -340,6 +346,8 @@ void MRGLatticeLac<Int, Real>::incDimDualBasis0Pol(IntMat &basis, int64_t d) {
    for (int i = 0; i < d; i++)
       basis[d-1][i] = this->m_copy_dual_basis[d-1][i];
 }
+
+
 
 }
 #endif
