@@ -129,7 +129,12 @@ public:
     * If 'usepol' is set to true then the polynomial basis V^{(p)}, see Section 3.1.5 of the guide,
     * is used. Otherwise the standard basis V^{(0)} is used, see Section 3.1.4 of the guide.
     */
-   void setUsePolynomialBasis (const bool usepol) { use_polynomial_basis = usepol; }
+   void setUsePolynomialBasis (const bool usepol) { use_polynomial_basis = usepol; 
+      if (usepol) {
+      m_copy_primal_basis.SetDims(this->m_maxDim, this->m_maxDim);
+      m_copy_dual_basis.SetDims(this->m_maxDim, this->m_maxDim);
+      }
+   }
 
    /**
     * Returns the first `dim` components of the generating vector \f$\ba\f$ as a string,
@@ -184,7 +189,8 @@ protected:
    
    /**
     * For generating the dual basis or increasing its dimension, we need a copy of the
-    * the primal basis.
+    * the primal basis if we use polynomial arithmetic. Otherwise we just need to keep
+    * the first m_order rows of the matrix and save it here.
     */
    IntMat m_copy_primal_basis;
    
@@ -197,7 +203,7 @@ protected:
    /**
     * Boolean variable which decides whether the polynomial basis V^{(p)} is used instead of V^{(0)}
     */   
-   bool use_polynomial_basis = true;
+   bool use_polynomial_basis = false;
 
    // Order of this MRG.
    int m_order;
@@ -220,8 +226,7 @@ MRGLattice<Int, Real>::MRGLattice(const Int &m, const IntVec &aa, int64_t maxDim
    setaa(aa);
    this->m_dim = 0;
    m_genTemp.SetDims(maxDim, maxDim); 
-   m_copy_primal_basis.SetDims(maxDim, maxDim);
-   m_copy_dual_basis.SetDims(maxDim, maxDim);   
+   m_copy_primal_basis.SetDims(this->m_order, maxDim);
    FlexModInt<Int>::mod_init(m);
    buildyPol(maxDim + m_order - 1);
 }
@@ -401,20 +406,29 @@ void MRGLattice<Int, Real>::buildDualBasis0(IntMat &basis, int64_t d) {
       mDualUpperTriangular(basis, m_copy_primal_basis, this->m_modulo, d);
    }
    else { // Bulids the dual basis according to Eq. (25) in the guide
-      this->buildBasis0(m_copy_primal_basis, d);
+      // this->buildBasis0(m_copy_primal_basis, d);
       assert(d <= this->m_maxDim);
       int64_t k = this->m_order;
       int64_t dk = min(d, k);
-      int64_t i, j;
-      for (i = 0; i < dk; i++) {
+      int64_t i, j, jj;
+      for (i = 0; i < d; i++)  // If d <= m_order, this does nothing.
          for (j = 0; j < d; j++)
-            basis[i][j] = this->m_modulo * (i == j);  // Avoid "if" statements.
-      }
-      for (i= dk; i < d; i++) {
-         for (j= 0; j <=i; j++)
-            basis[i][j] = - m_copy_primal_basis[j][i];
-         basis[i][i] = 1;
+            basis[j][i] = (i == j);
+      for (i = 0; i < dk; i++) {
+         for (j = dk; j < d; j++) {
+            basis[j][i] = 0;
+            for (jj = 1; jj <= m_order; jj++)
+               basis[j][i] += m_aCoeff[jj] * basis[j - jj][i] % this->m_modulo;
+            m_copy_primal_basis[i][j] = basis[j][i];
+            basis[j][i] = - basis[j][i];  
+         }       
       }      
+      for (i = 0; i < dk; i++) {
+         for (j = 0; j < dk; j++) {
+            basis[j][i] = (i == j) * this->m_modulo;  
+            m_copy_primal_basis[i][i] = 1;
+         }
+      }   
    }
 }
 
@@ -471,12 +485,16 @@ void MRGLattice<Int, Real>::incDimDualBasis() {
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::incDimDualBasis0(IntMat &basis, int64_t d) {
    int64_t i;
-   incDimBasis0(m_copy_primal_basis, d);
+   for (i = 0; i < this->m_order; i++) {
+      m_copy_primal_basis[i][d - 1] = 0;
+      for (int jj = 1; jj <= m_order; jj++)
+         m_copy_primal_basis[i][d - 1] += m_aCoeff[jj] * m_copy_primal_basis[i][d - 1 - jj] % this->m_modulo;
+   }
    // Add one extra 0 coordinate to each vector of the m-dual basis.
    for (i = 0; i < d - 1; i++) {
       basis[i][d - 1] = 0;
    }
-   for (i = 0; i < d-1; i++) {
+   for (i = 0; i < this->m_order; i++) {
       basis[d-1][i] = -m_copy_primal_basis[i][d-1];  
    } 
    basis[d-1][d-1] = 1;
