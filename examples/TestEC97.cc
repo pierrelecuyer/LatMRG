@@ -39,7 +39,6 @@ using namespace LatticeTester;
 template<typename Int, typename Real>
 static void FoMMRGLattice(Int m, int64_t maxdim, const NTL::Vec<Int> a, const NTL::Vec<int64_t> t) {
    LatMRG::MRGLattice<Int, Real> lat(m, a, maxdim);
-   lat.setUsePolynomialBasis(true);
    ReducerBB<Int, Real> m_red(lat); 
    WeightsUniform weights(1.0);
    NormaBestLat normaDual(-log(m), a.length()-1, maxdim, L2NORM);
