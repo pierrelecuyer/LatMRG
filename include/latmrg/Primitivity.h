@@ -86,7 +86,8 @@ namespace LatMRG {
 // Declarations
 
 /**
- * Returns `true` iff `a` is a primitive element modulo \f$p^e\f$.
+ * Returns `true` iff `a` is a primitive element modulo \f$p^e\f$,
+ * where \f$p\f$ is assumed to be a prime number.
  * The prime factor decomposition of \f$p-1\f$ must be given in `fac`,
  * and the list of inverse factors in `fac` must be up to date.
  */

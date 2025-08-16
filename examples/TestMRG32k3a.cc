@@ -21,6 +21,7 @@ using namespace LatticeTester;
 using namespace LatMRG;
 
 int main() {
+   // Note how large ZZ integers can be initialized in NTL.
    Int m = to_ZZ("18446645023178547541");
    IntVec aa;
    aa.SetLength(4);

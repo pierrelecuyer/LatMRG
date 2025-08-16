@@ -180,7 +180,7 @@ MRGLatticeLac<Int,Real>::MRGLatticeLac(const MRGLatticeLac<Int, Real> &Lat) {
    this->m_basis = Lat.m_basis;
    this->m_dualbasis = Lat.m_dualbasis;   
    setLac(Lat.m_lac, false);
-   setaa(Lat.m_aCoeff, true);
+   setaa(Lat.m_aa, true);
 }
 
 
@@ -199,7 +199,7 @@ template<typename Int, typename Real>
    this->m_basis = Lat.m_basis;
    this->m_dualbasis = Lat.m_dualbasis;   
    setLac(Lat.m_lac, false);
-   setaa(Lat.m_aCoeff, true);
+   setaa(Lat.m_aa, true);
    return *this;
 }
 
@@ -218,7 +218,7 @@ void MRGLatticeLac<Int, Real>::setLac(const IntVec &lac, bool buildBasisCopy) {
 
 template<typename Int, typename Real>
 void MRGLatticeLac<Int, Real>::setaa(const IntVec &aa, bool buildBasisCopy) {
-   this->m_aCoeff = aa;
+   this->m_aa = aa;
    this->m_order = aa.length() - 1;
    this->m_dim = 0;  // Current basis is now invalid.
    this->m_dimdual = 0;
