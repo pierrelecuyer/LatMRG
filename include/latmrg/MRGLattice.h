@@ -40,13 +40,17 @@ namespace LatMRG {
 template<typename Int, typename Real>
 class MRGLattice: public IntLatticeExt<Int, Real> {
 
+private:
+   // typedef NTL::vector<Int> IntVec;
+   // typedef NTL::matrix<Int> IntMat;
+   // typedef NTL::vector<Real> RealVec;
+
 public:
 
    /**
     * This constructor takes as input the modulus `m`, the vector of multipliers `aa`,
     * and the norm used to measure the vector lengths.
-    * The vector `aa` is assumed to have length `k+1`, with \f$a_j\f$ in `aa[j]`.
-    * The order `k` is deduced from that.
+    * The vector `aa` must have length `k+1`, with \f$a_j\f$ in `aa[j]`.
     * The maximal dimension `maxDim` will be the maximal dimension of the basis.
     * This constructor does not build the basis, so we can build it for a smaller
     * number of dimensions or only for selected projections.
@@ -146,23 +150,6 @@ protected:
    virtual bool buildProjection0(IntMat &basis, int64_t dimbasis, IntMat &pbasis, const Coordinates &proj);
 
    /**
-    * Takes the polynomial `pcol` and returns in `col` the corresponding column in the
-    * matrix of generating vectors.
-    */
-   void polyToColumn(IntVec &col, typename FlexModInt<Int>::PolE &pcol);
-
-   /**
-    * Builds the vector to store \f$y_0, y_1, ..., y_{t+k-2}\f$ used to build the matrix V^{(p)},
-    * see Section 3.1.2 of the guide for details.
-    */
-   void buildyPol(int64_t dim);   
-
-   /**
-    * A vector to store \f$y_0, y_1, ..., y_{t+k-2}\f$ used in the matrix V^{(p)}.
-    */
-   IntVec m_y;
-
-   /**
     * This auxiliary matrix is used to store the generating vectors of a projections
     * before reducing them into a triangular basis.
     */
@@ -176,12 +163,12 @@ protected:
    IntMat m_copy_primal_basis;
 
    // Order of this MRG.
-   int64_t m_order;
+   int m_order;
 
    /**
-    * The coefficients \f$a_1, ..., a_k\f$ of the MRG recurrence, a_j stored in `m_aa[j]`.
+    * The coefficients \f$a_1, ..., a_k\f$ of the MRG recurrence, a_j stored in `m_aCoeff[j]`.
     */
-   IntVec m_aa;
+   IntVec m_aCoeff;
 
    
 
@@ -199,15 +186,13 @@ MRGLattice<Int, Real>::MRGLattice(const Int &m, const IntVec &aa, int64_t maxDim
    this->m_dim = 0;
    m_genTemp.SetDims(maxDim, maxDim); 
    m_copy_primal_basis.SetDims(this->m_order, maxDim);
-   FlexModInt<Int>::mod_init(m);
-   buildyPol(maxDim + m_order - 1);
 }
 
 //============================================================================
 
 template<typename Int, typename Real>
 MRGLattice<Int, Real>::~MRGLattice() {
-   m_aa.kill();
+   m_aCoeff.kill();
 }
 
 //============================================================================
@@ -216,9 +201,8 @@ template<typename Int, typename Real>
 MRGLattice<Int, Real>& MRGLattice<Int, Real>::operator=(const MRGLattice<Int, Real> &lat) {
    if (this == &lat) return *this;
    // this->copy(lat); CW: copy constructor currently not available
-   m_aa = lat.m_aa;
+   m_aCoeff = lat.m_aCoeff;
    m_order = lat.m_order;
-   m_y = lat.m_y;
    return *this;
 }
 
@@ -228,9 +212,8 @@ template<typename Int, typename Real>
 MRGLattice<Int, Real>::MRGLattice(const MRGLattice<Int, Real> &lat) :
       IntLatticeExt<Int, Real>(lat.m_modulo, lat.getDim(), lat.getNormType()) {
    // this->copy(lat); CW: copy constructor currently not available
-   m_aa = lat.m_aa;
+   m_aCoeff = lat.m_aCoeff;
    m_order = lat.m_order;
-   m_y = lat.m_y;
 }
 
 //============================================================================
@@ -240,55 +223,12 @@ MRGLattice<Int, Real>::MRGLattice(const MRGLattice<Int, Real> &lat) :
  */
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::setaa(const IntVec &aa) {
-   m_aa = aa;
+   m_aCoeff = aa;
    m_order = aa.length() - 1;
    this->m_dim = 0;  // Current basis is now invalid.
    this->m_dimdual = 0;
 }
 
-//============================================================================
-
-template<typename Int, typename Real>
-void MRGLattice<Int, Real>::buildyPol(int64_t dim) {
-   int64_t k = m_order;
-   int64_t j, i;
-   int64_t n;
-   typename FlexModInt<Int>::PolE polDegOne;
-   typename FlexModInt<Int>::PolE polPower;     
-   typename FlexModInt<Int>::PolX m_Pz;  
-   IntVec col;
-   
-   // Set the characteristic polynomial of the recurrence   
-   for (j = 1; j < this->m_aa.length(); j++) {
-     SetCoeff(m_Pz, this->m_aa.length() - j - 1, FlexModInt<Int>::to_Int_p(-this->m_aa[j]));
-   }   
-   SetCoeff(m_Pz, this->m_aa.length() - 1, 1);
-   FlexModInt<Int>::PolE::init(m_Pz);   
-   
-   // Auxilliary variables to calculate powers p^n(z)
-   std::string str = "[0 1]";
-   std::istringstream in (str);
-   in >> polDegOne;   
-  
-   // Builde the vector y according to the algorithm described in Section 3.1.2 of the guide.
-   // The vector is stored in the variable 'm_y'.
-   m_y.SetLength(dim);
-   for (j = 0; j < dim; j++)
-     m_y[j] = 0;
-   m_y[k-1] = 1;
-   n = ceil(dim/k);
-   for (j = 1; j < n+1; j++) {
-      // Calculate powers p^\mu-1 
-      power(polPower, polDegOne, j*k);
-      polyToColumn(col, polPower);
-      // And fill the next k entries
-      for (i = 0; i < k; i++) {
-         if (j*k+i < dim) {
-            m_y[j*k+i] = col[k-i-1];
-         }
-      }
-   }   
-}
 
 //============================================================================
 
@@ -325,7 +265,7 @@ void MRGLattice<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
      for (j = dk; j < d; j++) {
         basis[i][j] = 0;
         for (jj = 1; jj <= m_order; jj++)
-           basis[i][j] += m_aa[jj] * basis[i][j - jj] % this->m_modulo;
+           basis[i][j] += m_aCoeff[jj] * basis[i][j - jj] % this->m_modulo;  
      }     
    }
 }
@@ -342,10 +282,10 @@ void MRGLattice<Int, Real>::buildDualBasis(int64_t d) {
 //============================================================================
 
 // Builds the m-dual basis in a direct way in d dimensions.
-// If the basis matrix is in the polynomial form V^{(p)}, then the m-dual basis matrix
-// needs to be calculated using mDualUpperTriangular from the class 'BasisConstruction' 
-// of 'LatticeTester'. For V^{(0)}, there is a direct way to build the m-dual basis matrix,
-// see Sections 3.1.4 and 3.1.5 of the guide.
+// For V^{(0)}, there is a direct way to build the m-dual basis matrix W^{(0)},
+// see Section 3.1.4 of the guide. Moreover, the function stores a copy of the
+// first m_order rows of the matrix in the variable m_copy_primal_basis. This
+// is required for being able to increase the dimension
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildDualBasis0(IntMat &basis, int64_t d) {
     // Bulids the dual basis according to Eq. (25) in the guide
@@ -391,18 +331,18 @@ void MRGLattice<Int, Real>::incDimBasis0(IntMat &basis, int64_t d) {
    assert(d <= this->m_maxDim);
    int64_t k = m_order;
    int64_t i, j, jj;
+   for (i = 0; i < d - 1; i++) {
+      basis[i][d - 1] = 0;
+      if (d - 1 >= m_order) {
+         for (jj = 1; jj <= m_order; jj++)
+            basis[i][d - 1] += m_aCoeff[jj] * basis[i][d - 1 - jj] % this->m_modulo;
+      }
+   }
    // Add new row to the primal basis.
    for (j = 0; j < d - 1; j++)
       basis[d - 1][j] = 0;
    if (d > k) basis[d - 1][d - 1] = this->m_modulo;
    else basis[d - 1][d - 1] = 1;
-   for (i = 0; i < d - 1; i++) {
-      basis[i][d - 1] = 0;
-      if (d - 1 >= m_order) {
-         for (jj = 1; jj <= m_order; jj++)
-            basis[i][d - 1] += m_aa[jj] * basis[i][d - 1 - jj] % this->m_modulo;
-      }
-   }
 }
 
 //============================================================================
@@ -426,15 +366,18 @@ void MRGLattice<Int, Real>::incDimDualBasis() {
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::incDimDualBasis0(IntMat &basis, int64_t d) {
    int64_t i;
+
+   // Add one extra 0 coordinate to each vector of the m-dual basis.
+   for (i = 0; i < d - 1; i++) {
+      basis[i][d - 1] = 0;
+   }
+   // Calculate another column of the copy of the primal basis ...
    for (i = 0; i < this->m_order; i++) {
       m_copy_primal_basis[i][d - 1] = 0;
       for (int jj = 1; jj <= m_order; jj++)
          m_copy_primal_basis[i][d - 1] += m_aCoeff[jj] * m_copy_primal_basis[i][d - 1 - jj] % this->m_modulo;
    }
-   // Add one extra 0 coordinate to each vector of the m-dual basis.
-   for (i = 0; i < d - 1; i++) {
-      basis[i][d - 1] = 0;
-   }
+   // ... and use it to add another row to the dual basis.
    for (i = 0; i < this->m_order; i++) {
       basis[d-1][i] = -m_copy_primal_basis[i][d-1];  
    } 
@@ -484,9 +427,7 @@ bool MRGLattice<Int, Real>::buildProjection0(IntMat &basis, int64_t dimbasis, In
       j = 0;
       for (auto it = proj.begin(); it != proj.end(); it++, j++) {
          // Set column j of all generating vectors, for (j+1)-th coordinate of proj.
-         // for (i = 0; i < dimbasis; i++)
-         //   m_genTemp[i][j] = basis[i][*it - 1];
-         for (i = 0; i < this->m_maxDim; i++)
+         for (i = 0; i < dimbasis; i++)
             m_genTemp[i][j] = basis[i][*it - 1];
     }
     // std::cout << " Generating vectors: \n" << m_genTemp << "\n";
@@ -533,34 +474,12 @@ void MRGLattice<Int, Real>::buildProjectionDual(IntLattice<Int, Real> &projLatti
    mDualUpperTriangular(pdualBasis, pbasis, this->m_modulo, d);
 }
 
-//============================================================================
-
-// This function applies phi inverse as described in Section 3.1.2 of the guide, and reverses the coordinates.
-template<typename Int, typename Real>
-void MRGLattice<Int, Real>::polyToColumn(IntVec &col, typename FlexModInt<Int>::PolE &pcol) {
-   int64_t i, j, k;
-   k = this->m_order;
-   IntVec c;
-   c.SetLength(k);
-   col.SetLength(k);
-   for (j = 1; j < k+1; j++) {
-      c[j-1] = 0;
-      NTL::conv(c[j-1], coeff(rep(pcol), k-j));
-      for (i = 1; i < j; i ++) {
-         c[j-1] += this->m_aa[i]*c[j - 1 - i];
-      }
-      c[j-1] = c[j-1] % this->m_modulo;
-   }
-   for (j = 0; j < k; j++) {
-      col[j] = c[k-j-1];
-   }
-}
 
 
 //============================================================================
 template<typename Int, typename Real>
 std::string MRGLattice<Int, Real>::toStringCoef() const {
-   return toString(m_aa, 1, this->getDim() + 1);
+   return toString(m_aCoeff, 1, this->getDim() + 1);
 }
 
 //============================================================================
