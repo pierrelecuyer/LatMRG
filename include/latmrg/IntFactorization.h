@@ -74,7 +74,7 @@ public:
 
    /**
     * Reads a factorization by reading the list of (possibly prime) factors
-    * of an integer from file `f`, in the following format.
+    * of an integer from file `f` whose name is given as a character string, in the following format.
     * The first line contains the integer itself. The following lines
     * contain one factor per line: the factor (first field) with its
     * multiplicity (second field), and its status (third field). The status
@@ -164,7 +164,7 @@ public:
    }
 
    /**
-    * Sets the value of this integer to \f$x\f$.
+    * Sets to \f$x\f$ the value of the integer to be factored.
     */
    void setNumber(const Int &x) {
       m_number = x;
@@ -193,7 +193,7 @@ public:
 private:
 
    /**
-    * The number whose factor decomposition is kept in this object.
+    * The integer whose factor decomposition is kept in this object.
     */
    Int m_number;
 
@@ -512,8 +512,8 @@ void IntFactorization<Int>::calcInvFactors() {
    }
 }
 
-template class IntFactorization<std::int64_t> ;
-template class IntFactorization<NTL::ZZ> ;
+// template class IntFactorization<std::int64_t> ;
+// template class IntFactorization<NTL::ZZ> ;
 
 }
 #endif

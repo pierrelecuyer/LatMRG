@@ -27,10 +27,6 @@ using namespace LatMRG;
  */
 template<typename Int> class MRGComponent {
 
-private:
-   // typedef NTL::Vec<Int> IntVec;
-   // typedef NTL::matrix<Int> IntMat;
-
 public:
 
    /**
@@ -43,40 +39,26 @@ public:
     * `DECOMP_WRITE`: it will be factored and the prime factors written in a file,
     * `DECOMP_READ`: the prime factors are read from a file,
     * `DECOMP_PRIME`: the integer is assumed to be prime.
-    * The names `filem1` and `filer` specify the file where the factors of
+    * The names `filem1` and `filer` (character strings) specify the file where the factors of
     * \f$m-1\f$ and \f$r\f$, are read or written when the type
     * <tt>DECOMP_WRITE</tt> or <tt>DECOMP_READ</tt> is used.
     * The given files must be accessible by the program.
+    * The format for the factorization in these files is described in class `IntFactorization`.
     */
-   MRGComponent(const Int &m, int k, DecompType decompm1, const char *filem1, DecompType decompr,
+   MRGComponent(const Int &m, int64_t k, DecompType decompm1, const char *filem1, DecompType decompr,
          const char *filer);
 
    /**
     * Same as the previous constructor, but with \f$m = b^e + c\f$.
     */
-   MRGComponent(Int b, int e, Int c, int k, DecompType decompm1, const char *filem1,
+   MRGComponent(Int b, int64_t e, Int c, int64_t k, DecompType decompm1, const char *filem1,
          DecompType decompr, const char *filer);
 
-   /**
-    * Constructor similar to the above, except that the modulus of
-    * congruence \f$m\f$ is inside the object `modul`.
-    *               Should we keep this?      ************  ???
-    */
-//    MRGComponent(Modulus<Int> &modul, int k, DecompType decom1,
-//            const char *filem1, DecompType decor, const char *filer);
    /**
     * Destructor.
     */
    ~MRGComponent();
 
-   /**
-    * Copy constructor.    Not sure if we need this!!!!    *****
-    */
-   // MRGComponent(const MRGComponent<Int> &comp);
-   /**
-    * Assignment operator, assigns `comp` to this object.
-    */
-   // MRGComponent& operator=(const MRGComponent<Int> &comp);
    /**
     * Sets the vector of multipliers to `aa`, with `aa[j]` containing \f$a_j\f$.
     * The order \f$k\f$ of the MRG is set equal to the length of this vector, plus 1.
@@ -88,20 +70,9 @@ public:
     * Returns the vector of multipliers of the recurrence, in same format as `aa` above.
     */
    IntVec getaa() const {
-      return m_a;
+      return m_aa;
    }
 
-   /**
-    * Constructs and returns the matrix multiplier for this MRG so it can be viewed as a MMRG.
-    *                                                                Useful   ******  ??
-    */
-//   IntMat getA() const {
-   // return m_A;     // Must be constructed!       *********
-//   }
-   /**
-    * Sets the matrix of the recurrence to \f$A\f$.      NOT HERE! *******
-    * */
-   // void setA(const IntMat &A);
    /**
     * Returns `true` if the coefficients \f$aa\f$ give an MRG with maximal
     * period; returns `false` otherwise.
@@ -125,7 +96,7 @@ public:
    /**
     * Returns the value of the order \f$k\f$ of the recurrence.
     */
-   int getOrder() const {
+   int64_t getOrder() const {
       return m_k;
    }
 
@@ -139,7 +110,7 @@ public:
    /**
     * Returns the value of `e` for which `b^e+r = m`, when available.
     */
-   int& gete() {
+   int64_t& gete() {
       return m_e;
    }
 
@@ -164,28 +135,22 @@ public:
 
    /**
     * Sets the type of this generator component.    ??????
-    *            No underscore.  *****************
-    void set_type(GenType type) {
+    void setType(GenType type) {
     m_type = type;
     }
     * Gets the type of this component.
     *
-    GenType get_type() {
+    GenType getType() {
     return m_type;
     }
-
-    * The modulo of the MWC generator if we study one. This is because the
-    * we check MWC period with module.m as the modulo of the equivalentn LCG.
     */
-   // Int m_MWCb;    // Does no belong here!     ************
-   //    Does not belong here, I think.
-   // void setPower2(std::vector<IntVec> &coeffs);
+
 private:
 
    /**
     * This is called by the constructor, with the same arguments.
     */
-   void init(const Int &m, int k, DecompType decom1, const char *filem1, DecompType decor,
+   void init(const Int &m, int64_t k, DecompType decom1, const char *filem1, DecompType decor,
          const char *filer);
 
    /**
@@ -236,12 +201,12 @@ private:
    /**
     * The order \f$k\f$ of the recurrence.
     */
-   int m_k = 1;
+   int64_t m_k = 1;
 
    /**
     * The multipliers \f$a_i\f$ of the recurrence, \f$i = 1, ..., k\f$.
     */
-   IntVec m_a;
+   IntVec m_aa;
 
    /**
     * The generator matrix \f$A\f$ of the recurrence for MMRG   ******  ???
@@ -255,7 +220,7 @@ private:
    /**
     * Exponent `e` with `b^e+c = m`.
     * */
-   int m_e;
+   int64_t m_e;
 
    /**
     * Rest `c` with `b^e+c = m`.
@@ -303,7 +268,7 @@ private:
 
 // Main constructor.
 template<typename Int>
-MRGComponent<Int>::MRGComponent(const Int &m, int k, DecompType decompm1, const char *filem1,
+MRGComponent<Int>::MRGComponent(const Int &m, int64_t k, DecompType decompm1, const char *filem1,
       DecompType decompr, const char *filer) {
    m_b = m;
    m_e = 1;
@@ -315,7 +280,7 @@ MRGComponent<Int>::MRGComponent(const Int &m, int k, DecompType decompm1, const 
 
 // Constructor with alternative format for m.
 template<typename Int>
-MRGComponent<Int>::MRGComponent(Int b, int e, Int c, int k, DecompType decompm1, const char *filem1,
+MRGComponent<Int>::MRGComponent(Int b, int64_t e, Int c, int64_t k, DecompType decompm1, const char *filem1,
       DecompType decompr, const char *filer) {
    Int m = NTL::power(b, e) + c;
    m_b = b;
@@ -335,8 +300,8 @@ MRGComponent<Int>::MRGComponent(Int b, int e, Int c, int k, DecompType decompm1,
  nj = lat.nj;
  rho = lat.rho;
  //   a.kill();
- m_a.resize(m_k);
- m_a = lat.m_a;
+ m_aa.resize(m_k);
+ m_aa = lat.m_aa;
  //   orbitSeed.kill();
  orbitSeed.resize(m_k);
  orbitSeed = lat.orbitSeed;
@@ -360,8 +325,8 @@ MRGComponent<Int>::MRGComponent(Int b, int e, Int c, int k, DecompType decompm1,
  nj = lat.nj;
  rho = lat.rho;
  //    a.kill();
- m_a.resize(m_k);
- m_a = lat.m_a;
+ m_aa.resize(m_k);
+ m_aa = lat.m_aa;
  //     orbitSeed.kill();
  orbitSeed.resize(m_k);
  orbitSeed = lat.orbitSeed;
@@ -375,12 +340,12 @@ MRGComponent<Int>::MRGComponent(Int b, int e, Int c, int k, DecompType decompm1,
 
 //============================================================================
 template<typename Int>
-void MRGComponent<Int>::init(const Int &m, int k, DecompType decompm1, const char *filem1,
+void MRGComponent<Int>::init(const Int &m, int64_t k, DecompType decompm1, const char *filem1,
       DecompType decompr, const char *filer) {
    m_m = m;
    setModulusIntP<Int>(m_m);
    m_k = k;
-   m_a.SetLength(m_k);
+   m_aa.SetLength(m_k);
    orbitSeed.SetLength(m_k);   // Used ???
 
    Int mm1;  // m-1
@@ -397,7 +362,7 @@ void MRGComponent<Int>::init(const Int &m, int k, DecompType decompm1, const cha
 
 /**
  template<typename Int>
- MRGComponent<Int>::MRGComponent(Modulus<Int> &modu, int k, DecompType decom1,
+ MRGComponent<Int>::MRGComponent(Modulus<Int> &modu, int64_t k, DecompType decom1,
  const char *filem1, DecompType decor, const char *filer) {
  init(modu.m, k, decom1, filem1, decor, filer);
 
@@ -424,8 +389,8 @@ MRGComponent<Int>::~MRGComponent() {
 
 template<typename Int>
 void MRGComponent<Int>::setaa(const IntVec &aa) {
-   // m_a.SetLength(aa.length());
-   m_a = aa;
+   // m_aa.SetLength(aa.length());
+   m_aa = aa;
 }
 
 //===========================================================================
@@ -456,8 +421,8 @@ bool MRGComponent<Int>::maxPeriod(const IntVec &aa) {
  Primitivity<NTL::ZZ>::setM(NTL::ZZ(getM()));
  NTL::ZZX poly;
  NTL::matrix<NTL::ZZ> mat(m_k, m_k);
- for (int i = 0; i < m_k; i++) {
- for (int j = 0; j < m_k; j++) {
+ for (int64_t i = 0; i < m_k; i++) {
+ for (int64_t j = 0; j < m_k; j++) {
  mat[i][j] = NTL::ZZ(a0[i][j]);
  }
  }
@@ -489,7 +454,7 @@ std::string MRGComponent<Int>::toString() {
    os << "\n   k = " << m_k;
    os << "\n   a = ";
    std::string str(os.str());
-   std::string s2 = LatticeTester::toString(m_a, m_k);
+   std::string s2 = LatticeTester::toString(m_aa, m_k);
    str += s2;
    str += "\n";
    return str;

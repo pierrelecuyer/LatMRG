@@ -40,17 +40,13 @@ namespace LatMRG {
 template<typename Int, typename Real>
 class MRGLattice: public IntLatticeExt<Int, Real> {
 
-private:
-   // typedef NTL::vector<Int> IntVec;
-   // typedef NTL::matrix<Int> IntMat;
-   // typedef NTL::vector<Real> RealVec;
-
 public:
 
    /**
     * This constructor takes as input the modulus `m`, the vector of multipliers `aa`,
     * and the norm used to measure the vector lengths.
-    * The vector `aa` must have length `k+1`, with \f$a_j\f$ in `aa[j]`.
+    * The vector `aa` is assumed to have length `k+1`, with \f$a_j\f$ in `aa[j]`.
+    * The order `k` is deduced from that.
     * The maximal dimension `maxDim` will be the maximal dimension of the basis.
     * This constructor does not build the basis, so we can build it for a smaller
     * number of dimensions or only for selected projections.
@@ -180,12 +176,12 @@ protected:
    IntMat m_copy_primal_basis;
 
    // Order of this MRG.
-   int m_order;
+   int64_t m_order;
 
    /**
-    * The coefficients \f$a_1, ..., a_k\f$ of the MRG recurrence, a_j stored in `m_aCoeff[j]`.
+    * The coefficients \f$a_1, ..., a_k\f$ of the MRG recurrence, a_j stored in `m_aa[j]`.
     */
-   IntVec m_aCoeff;
+   IntVec m_aa;
 
    
 
@@ -211,7 +207,7 @@ MRGLattice<Int, Real>::MRGLattice(const Int &m, const IntVec &aa, int64_t maxDim
 
 template<typename Int, typename Real>
 MRGLattice<Int, Real>::~MRGLattice() {
-   m_aCoeff.kill();
+   m_aa.kill();
 }
 
 //============================================================================
@@ -220,7 +216,7 @@ template<typename Int, typename Real>
 MRGLattice<Int, Real>& MRGLattice<Int, Real>::operator=(const MRGLattice<Int, Real> &lat) {
    if (this == &lat) return *this;
    // this->copy(lat); CW: copy constructor currently not available
-   m_aCoeff = lat.m_aCoeff;
+   m_aa = lat.m_aa;
    m_order = lat.m_order;
    m_y = lat.m_y;
    return *this;
@@ -232,7 +228,7 @@ template<typename Int, typename Real>
 MRGLattice<Int, Real>::MRGLattice(const MRGLattice<Int, Real> &lat) :
       IntLatticeExt<Int, Real>(lat.m_modulo, lat.getDim(), lat.getNormType()) {
    // this->copy(lat); CW: copy constructor currently not available
-   m_aCoeff = lat.m_aCoeff;
+   m_aa = lat.m_aa;
    m_order = lat.m_order;
    m_y = lat.m_y;
 }
@@ -244,7 +240,7 @@ MRGLattice<Int, Real>::MRGLattice(const MRGLattice<Int, Real> &lat) :
  */
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::setaa(const IntVec &aa) {
-   m_aCoeff = aa;
+   m_aa = aa;
    m_order = aa.length() - 1;
    this->m_dim = 0;  // Current basis is now invalid.
    this->m_dimdual = 0;
@@ -263,10 +259,10 @@ void MRGLattice<Int, Real>::buildyPol(int64_t dim) {
    IntVec col;
    
    // Set the characteristic polynomial of the recurrence   
-   for (j = 1; j < this->m_aCoeff.length(); j++) {
-     SetCoeff(m_Pz, this->m_aCoeff.length() - j - 1, FlexModInt<Int>::to_Int_p(-this->m_aCoeff[j]));
+   for (j = 1; j < this->m_aa.length(); j++) {
+     SetCoeff(m_Pz, this->m_aa.length() - j - 1, FlexModInt<Int>::to_Int_p(-this->m_aa[j]));
    }   
-   SetCoeff(m_Pz, this->m_aCoeff.length() - 1, 1);    
+   SetCoeff(m_Pz, this->m_aa.length() - 1, 1);
    FlexModInt<Int>::PolE::init(m_Pz);   
    
    // Auxilliary variables to calculate powers p^n(z)
@@ -329,7 +325,7 @@ void MRGLattice<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
      for (j = dk; j < d; j++) {
         basis[i][j] = 0;
         for (jj = 1; jj <= m_order; jj++)
-           basis[i][j] += m_aCoeff[jj] * basis[i][j - jj] % this->m_modulo;  
+           basis[i][j] += m_aa[jj] * basis[i][j - jj] % this->m_modulo;
      }     
    }
 }
@@ -404,7 +400,7 @@ void MRGLattice<Int, Real>::incDimBasis0(IntMat &basis, int64_t d) {
       basis[i][d - 1] = 0;
       if (d - 1 >= m_order) {
          for (jj = 1; jj <= m_order; jj++)
-            basis[i][d - 1] += m_aCoeff[jj] * basis[i][d - 1 - jj] % this->m_modulo;
+            basis[i][d - 1] += m_aa[jj] * basis[i][d - 1 - jj] % this->m_modulo;
       }
    }
 }
@@ -542,7 +538,7 @@ void MRGLattice<Int, Real>::buildProjectionDual(IntLattice<Int, Real> &projLatti
 // This function applies phi inverse as described in Section 3.1.2 of the guide, and reverses the coordinates.
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::polyToColumn(IntVec &col, typename FlexModInt<Int>::PolE &pcol) {
-   int i, j, k;
+   int64_t i, j, k;
    k = this->m_order;
    IntVec c;
    c.SetLength(k);
@@ -551,7 +547,7 @@ void MRGLattice<Int, Real>::polyToColumn(IntVec &col, typename FlexModInt<Int>::
       c[j-1] = 0;
       NTL::conv(c[j-1], coeff(rep(pcol), k-j));
       for (i = 1; i < j; i ++) {
-         c[j-1] += this->m_aCoeff[i]*c[j - 1 - i];
+         c[j-1] += this->m_aa[i]*c[j - 1 - i];
       }
       c[j-1] = c[j-1] % this->m_modulo;
    }
@@ -564,7 +560,7 @@ void MRGLattice<Int, Real>::polyToColumn(IntVec &col, typename FlexModInt<Int>::
 //============================================================================
 template<typename Int, typename Real>
 std::string MRGLattice<Int, Real>::toStringCoef() const {
-   return toString(m_aCoeff, 1, this->getDim() + 1);
+   return toString(m_aa, 1, this->getDim() + 1);
 }
 
 //============================================================================
