@@ -80,8 +80,7 @@ public:
   
    /**
     * Builds a basis in `dim` dimensions. This `dim` must not exceed `this->maxDim()`.
-    * This initial primal basis will be upper triangular -  based on V^{(0)} or V^{(p)}
-    * depending on which approach is chosen by the user.
+    * This initial primal basis will be upper triangular.
     */
    void buildBasis(int64_t dim);
 
@@ -346,14 +345,13 @@ void MRGLattice<Int, Real>::incDimBasis0(IntMat &basis, int64_t d) {
 
 //============================================================================
 
-// Increase the dimension of the dual matrix. The algorithm depends on
-// whether V^{(0)} or V^{(p)} is used.
+// Increase the dimension of the dual matrix.
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::incDimDualBasis() {
    int64_t d = 1 + this->getDimDual();  // New current dimension. 
    this->setDimDual(d);        
-   while (this->m_dim < d) {  // Increase dimension if needed.
-      this->m_dim++;
+   while (this->m_dimdual < d) {  // Increase dimension if needed.
+      this->m_dimdual++;
    }
    this->incDimDualBasis0(this->m_dualbasis, d);
 }
