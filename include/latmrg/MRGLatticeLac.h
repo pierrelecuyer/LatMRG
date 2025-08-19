@@ -78,7 +78,7 @@ public:
    /**
     * Sets the lacunary indices for this lattice to `lac`.
     * If 'buildBasisCopy' is set to true, then 'm_copy_primal_basis' and
-    * 'm_dual_copy_basis' are updated according to the new lacunary indices.
+    * 'm_copy_dual_basis' are updated according to the new lacunary indices.
     */
    void setLac(const IntVec &lac, bool buildBasisCopy = true);
 
@@ -86,7 +86,7 @@ public:
    /**
     * Sets the generating vector to `aa`.
     * If 'buildBasisCopy' is set to true, then 'm_copy_primal_basis' and
-    * 'm_dual_copy_basis' are updated according to the new generator vector.
+    * 'm_copy_dual_basis' are updated according to the new generator vector.
     */
    void setaa(const IntVec &lac, bool buildBasisCopy = true);
 
