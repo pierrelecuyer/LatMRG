@@ -90,7 +90,7 @@ public:
     * not exceed `maxDim`. 
     * In order to build the m-dual basis, the primal basis is needed, even if it has not been
     * built yet. Therefore, a copy of the basis matrix is always created upon building the 
-    * m-dual basis. It is stored in the variable 'm_copy_primal_basis'.
+    * m-dual basis. It is stored in the variable 'm_y'.
     */
    void buildDualBasis(int64_t dim); 
 
@@ -104,7 +104,7 @@ public:
     * Increases the current dimension of the m-dual basis by 1.
     * The new increased dimension must not exceed `maxDim`.
     * This function uses the simplified method for MRG lattices given in the lattice tester guide.
-    * It requires to increase the dimension of 'm_copy_primal_basis' as well.
+    * It requires to increase the dimension of 'm_y' as well.
     */
    void incDimDualBasis();
 
@@ -157,10 +157,9 @@ protected:
    
    /**
     * For generating the dual basis or increasing its dimension, we need a copy of the
-    * the primal basis if we use polynomial arithmetic. Otherwise we just need to keep
-    * the first m_order rows of the matrix and save it here.
+    * the first 'm_order' rows of the primal basis
     */
-   IntMat m_copy_primal_basis;
+   IntMat m_y;
 
    // Order of this MRG.
    int m_order;
@@ -185,7 +184,7 @@ MRGLattice<Int, Real>::MRGLattice(const Int &m, const IntVec &aa, int64_t maxDim
    setaa(aa);
    this->m_dim = 0;
    m_genTemp.SetDims(maxDim, maxDim); 
-   m_copy_primal_basis.SetDims(this->m_order, maxDim);
+   m_y.SetDims(this->m_order, maxDim);
 }
 
 //============================================================================
@@ -284,7 +283,7 @@ void MRGLattice<Int, Real>::buildDualBasis(int64_t d) {
 // Builds the m-dual basis in a direct way in d dimensions.
 // For V^{(0)}, there is a direct way to build the m-dual basis matrix W^{(0)},
 // see Section 3.1.4 of the guide. Moreover, the function stores a copy of the
-// first m_order rows of the matrix in the variable m_copy_primal_basis. This
+// first m_order rows of the matrix in the variable m_y. This
 // is required for being able to increase the dimension
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildDualBasis0(IntMat &basis, int64_t d) {
@@ -301,14 +300,14 @@ void MRGLattice<Int, Real>::buildDualBasis0(IntMat &basis, int64_t d) {
           basis[j][i] = 0;
           for (jj = 1; jj <= m_order; jj++)
              basis[j][i] += m_aCoeff[jj] * basis[j - jj][i] % this->m_modulo;
-          m_copy_primal_basis[i][j] = basis[j][i];
+          m_y[i][j] = basis[j][i];
           basis[j][i] = - basis[j][i];  
        }       
     }      
     for (i = 0; i < dk; i++) {
        for (j = 0; j < dk; j++) {
           basis[j][i] = (i == j) * this->m_modulo;  
-          m_copy_primal_basis[i][i] = 1;
+          m_y[i][i] = 1;
        }
     }   
    
@@ -373,13 +372,13 @@ void MRGLattice<Int, Real>::incDimDualBasis0(IntMat &basis, int64_t d) {
    }
    // Calculate another column of the copy of the primal basis ...
    for (i = 0; i < this->m_order; i++) {
-      m_copy_primal_basis[i][d - 1] = 0;
+      m_y[i][d - 1] = 0;
       for (int jj = 1; jj <= m_order; jj++)
-         m_copy_primal_basis[i][d - 1] += m_aCoeff[jj] * m_copy_primal_basis[i][d - 1 - jj] % this->m_modulo;
+         m_y[i][d - 1] += m_aCoeff[jj] * m_y[i][d - 1 - jj] % this->m_modulo;
    }
    // ... and use it to add another row to the dual basis.
    for (i = 0; i < this->m_order; i++) {
-      basis[d-1][i] = -m_copy_primal_basis[i][d-1];  
+      basis[d-1][i] = -m_y[i][d-1];  
    } 
    basis[d-1][d-1] = 1;
 }
