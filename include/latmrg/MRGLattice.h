@@ -40,11 +40,6 @@ namespace LatMRG {
 template<typename Int, typename Real>
 class MRGLattice: public IntLatticeExt<Int, Real> {
 
-private:
-   // typedef NTL::vector<Int> IntVec;
-   // typedef NTL::matrix<Int> IntMat;
-   // typedef NTL::vector<Real> RealVec;
-
 public:
 
    /**

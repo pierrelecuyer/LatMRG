@@ -3,7 +3,7 @@
  */
 
 // This defines the Int type. We must recompile to change it.
-#define TYPES_CODE  ZQ     // Int = ZZ, Real = double
+#define TYPES_CODE  ZD     // Int = ZZ, Real = double
 
 #include <NTL/ZZ.h>
 #include "latticetester/FlexTypes.h"
@@ -29,7 +29,7 @@ int main() {
    aa[2] = to_ZZ("3186860506199273833");
    aa[3] = to_ZZ("8738613264398222622");
 
-   int64_t maxdim(50);  // Maximum dimension of the lattice
+   int64_t maxdim(20);  // Maximum dimension of the lattice
    NTL::Vec <int64_t> t; // The t-vector for the FOM.
    t.SetLength(3);
    t[0] = maxdim;  t[1] = 0;  t[2] = 0;
@@ -52,7 +52,7 @@ int main() {
    std::cout << "\n=============================================\n";
    std::cout << "MRG32k3a, with BKZ+BB with delta = 0.99999 and block size = 20 \n";
    fom.computeMeritSucc(mrgc);
-
+/*
    // Again BKZ + BB, but with delta = 0.99999999 and blocksize k = 50.
    fom.setBKZ(0.99999999, 50);
    std::cout << "\n=============================================\n";
@@ -95,7 +95,7 @@ int main() {
    std::cout << "\n===========================================\n";
    std::cout << "MRG32k3a, only LLL with delta = 0.9, rebuild basis at each step \n";
    fom.computeMeritSuccRebuild(mrgc);
-
+*/
    return 0;
 }
 
