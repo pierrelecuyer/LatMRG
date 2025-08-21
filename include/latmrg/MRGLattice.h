@@ -89,7 +89,7 @@ public:
     * not exceed `maxDim`. 
     * In order to build the m-dual basis, the primal basis is needed, even if it has not been
     * built yet. Therefore, a copy of the basis matrix is always created upon building the 
-    * m-dual basis. It is stored in the variable 'm_basis_first_k_rows'.
+    * m-dual basis. It is stored in the variable 'm_bV0'.
     */
    void buildDualBasis(int64_t dim); 
 
@@ -103,7 +103,7 @@ public:
     * Increases the current dimension of the m-dual basis by 1.
     * The new increased dimension must not exceed `maxDim`.
     * This function uses the simplified method for MRG lattices given in the lattice tester guide.
-    * It requires to increase the dimension of 'm_basis_first_k_rows' as well.
+    * It requires to increase the dimension of 'm_bV0' as well.
     */
    void incDimDualBasis();
 
@@ -152,12 +152,26 @@ protected:
     * Builds the vector to store \f$y_0, y_1, ..., y_{t+k-2}\f$ used to build the matrix V^{(p)},
     * see Section 3.1.2 of the guide for details.
     */
-   void buildyPol(int64_t dim);   
+   void buildy(int64_t dim);  
+      
+   // Order of this MRG.
+   int m_order;
+
+   /**
+   * The coefficients \f$a_1, ..., a_k\f$ of the MRG recurrence, a_j stored in `m_aCoeff[j]`.
+   */
+   IntVec m_aCoeff; 
 
    /**
     * A vector to store \f$y_0, y_1, ..., y_{t+k-2}\f$ used in the matrix V^{(p)}.
     */
    IntVec m_y;
+
+   /**
+   * For generating the dual basis or increasing its dimension, we need a copy of the
+   * the first 'm_order' rows of the primal basis
+   */
+   IntMat m_bV0;
 
 
    /**
@@ -166,19 +180,9 @@ protected:
     */
    IntMat m_genTemp;
    
-   /**
-    * For generating the dual basis or increasing its dimension, we need a copy of the
-    * the first 'm_order' rows of the primal basis
-    */
-   IntMat m_basis_first_k_rows;
 
-   // Order of this MRG.
-   int m_order;
 
-   /**
-    * The coefficients \f$a_1, ..., a_k\f$ of the MRG recurrence, a_j stored in `m_aCoeff[j]`.
-    */
-   IntVec m_aCoeff;
+
 
    
 
@@ -195,8 +199,9 @@ MRGLattice<Int, Real>::MRGLattice(const Int &m, const IntVec &aa, int64_t maxDim
    setaa(aa);
    this->m_dim = 0;
    m_genTemp.SetDims(maxDim, maxDim); 
-   m_basis_first_k_rows.SetDims(this->m_order, maxDim);
-   buildyPol(maxDim + m_order - 1);
+   m_bV0.SetDims(this->m_order, maxDim);   
+   m_y.SetLength(maxDim + m_order - 1);
+   buildy(maxDim + m_order - 1);
 }
 
 //============================================================================
@@ -214,7 +219,6 @@ MRGLattice<Int, Real>& MRGLattice<Int, Real>::operator=(const MRGLattice<Int, Re
    // this->copy(lat); CW: copy constructor currently not available
    m_aCoeff = lat.m_aCoeff;
    m_order = lat.m_order;
-   FlexModInt<Int>::mod_init(lat.m_modulo);
    return *this;
 }
 
@@ -226,7 +230,6 @@ MRGLattice<Int, Real>::MRGLattice(const MRGLattice<Int, Real> &lat) :
    // this->copy(lat); CW: copy constructor currently not available
    m_aCoeff = lat.m_aCoeff;
    m_order = lat.m_order;
-   FlexModInt<Int>::mod_init(lat.m_modulo);
 }
 
 //============================================================================
@@ -312,7 +315,7 @@ void MRGLattice<Int, Real>::buildDualBasis(int64_t d) {
 // Builds the m-dual basis in a direct way in d dimensions.
 // For V^{(0)}, there is a direct way to build the m-dual basis matrix W^{(0)},
 // see Section 3.1.4 of the guide. Moreover, the function stores a copy of the
-// first m_order rows of the matrix in the variable m_basis_first_k_rows. This
+// first m_order rows of the matrix in the variable m_bV0. This
 // is required for being able to increase the dimension
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildDualBasis0(IntMat &basis, int64_t d) {
@@ -339,12 +342,12 @@ void MRGLattice<Int, Real>::buildDualBasis0(IntMat &basis, int64_t d) {
    // Moreover, we need to store the first k rows of V^{(0)} in dimension d
    for (i = 0; i < this->m_order; i++)  // If d <= m_order, this does nothing.
        for (j = 0; j < this->m_order; j++)
-          m_basis_first_k_rows[j][i] = (i == j);
+          m_bV0[j][i] = (i == j);
    for (i = 0; i < dk; i++) {
        for (j = dk; j < d; j++) {
-          m_basis_first_k_rows[i][j] = 0;
+          m_bV0[i][j] = 0;
           for (jj = 1; jj <= m_order; jj++)
-             m_basis_first_k_rows[i][j] += m_aCoeff[jj] * m_basis_first_k_rows[i][j - jj] % this->m_modulo;
+             m_bV0[i][j] += m_aCoeff[jj] * m_bV0[i][j - jj] % this->m_modulo;
        }       
     }       
    /* 
@@ -361,14 +364,14 @@ void MRGLattice<Int, Real>::buildDualBasis0(IntMat &basis, int64_t d) {
           basis[j][i] = 0;
           for (jj = 1; jj <= m_order; jj++)
              basis[j][i] += m_aCoeff[jj] * basis[j - jj][i] % this->m_modulo;
-          m_basis_first_k_rows[i][j] = basis[j][i];
+          m_bV0[i][j] = basis[j][i];
           basis[j][i] = - basis[j][i];  
        }       
     }      
     for (i = 0; i < dk; i++) {
        for (j = 0; j < dk; j++) {
           basis[j][i] = (i == j) * this->m_modulo;  
-          m_basis_first_k_rows[i][i] = 1;
+          m_bV0[i][i] = 1;
        }
     }   
    */
@@ -394,16 +397,15 @@ void MRGLattice<Int, Real>::incDimBasis0(IntMat &basis, int64_t d) {
    int64_t i, j, jj;
    for (i = 0; i < d - 1; i++) {
       basis[i][d - 1] = 0;
-      if (d - 1 >= m_order) {
-         for (jj = 1; jj <= m_order; jj++)
+      if (d - 1 >= k) {
+         for (jj = 1; jj <= k; jj++)
             basis[i][d - 1] += m_aCoeff[jj] * basis[i][d - 1 - jj] % this->m_modulo;
       }
    }
    // Add me_k as new row to the primal basis.
    for (j = 0; j < d - 1; j++)
       basis[d - 1][j] = 0;
-   if (d > k) basis[d - 1][d - 1] = this->m_modulo;
-   else basis[d - 1][d - 1] = 1;
+   basis[d - 1][d - 1] = this->m_modulo;
 }
 
 //============================================================================
@@ -433,14 +435,16 @@ void MRGLattice<Int, Real>::incDimDualBasis0(IntMat &basis, int64_t d) {
    }
    // Calculate another column of the copy of the primal basis ...
    for (i = 0; i < this->m_order; i++) {
-      m_basis_first_k_rows[i][d - 1] = 0;
+      m_bV0[i][d - 1] = 0;
       for (int jj = 1; jj <= m_order; jj++)
-         m_basis_first_k_rows[i][d - 1] += m_aCoeff[jj] * m_basis_first_k_rows[i][d - 1 - jj] % this->m_modulo;
+         m_bV0[i][d - 1] += m_aCoeff[jj] * m_bV0[i][d - 1 - jj] % this->m_modulo;
    }
    // ... and use it to add another row to the dual basis.
    for (i = 0; i < this->m_order; i++) {
-      basis[d-1][i] = -m_basis_first_k_rows[i][d-1];  
+      basis[d-1][i] = -m_bV0[i][d-1];  
    } 
+   for (i = this->m_order; i < d-1; i++)
+      basis[d-1][i] = 0;
    basis[d-1][d-1] = 1;
 }
 
@@ -475,8 +479,9 @@ bool MRGLattice<Int, Real>::buildProjection0(IntMat &basis, int64_t dimbasis, In
       // We first compute the first m_order rows of the projection basis.
       for (i = 0; i < m_order; i++) {
          j = 0;
-         for (auto it = proj.begin(); it != proj.end(); it++, j++)
-            pbasis[i][j] = basis[i][*it - 1];
+         for (auto it = proj.begin(); it != proj.end(); it++, j++) {
+            pbasis[i][j] = m_y[*it - 1 - i + this->m_order - 1];
+         }
       }
       // Then the other rows.
       for (i = m_order; i < d; i++)
@@ -487,14 +492,15 @@ bool MRGLattice<Int, Real>::buildProjection0(IntMat &basis, int64_t dimbasis, In
       j = 0;
       for (auto it = proj.begin(); it != proj.end(); it++, j++) {
          // Set column j of all generating vectors, for (j+1)-th coordinate of proj.
-         for (i = 0; i < dimbasis; i++)
-            m_genTemp[i][j] = basis[i][*it - 1];
+         for (i = 0; i < this->m_order; i++) {
+               m_genTemp[i][j] = m_y[*it - 1 -i + this->m_order - 1];
+         }
     }
     // std::cout << " Generating vectors: \n" << m_genTemp << "\n";
     upperTriangularBasis(pbasis, m_genTemp, this->m_modulo, dimbasis, d);
+    // 
    }   
    return projCase1;
-
 }
 
 //============================================================================
@@ -507,7 +513,6 @@ void MRGLattice<Int, Real>::buildProjection(IntLattice<Int, Real> &projLattice,
       const Coordinates &proj) {
    // int64_t d = proj.size();
    assert(*proj.end() <= uint64_t(this->m_dim));
-   // IntMat &pbasis = projLattice.getBasis(); // We want to construct this basis of the projection.
    projLattice.setDim(proj.size());
    this->buildProjection0(this->m_basis, this->m_dim, projLattice.getBasis(), proj);
 }
@@ -553,13 +558,12 @@ void MRGLattice<Int, Real>::buildProjectionDual(IntLattice<Int, Real> &projLatti
 //============================================================================
 
 template<typename Int, typename Real>
-void MRGLattice<Int, Real>::buildyPol(int64_t dim) {
+void MRGLattice<Int, Real>::buildy(int64_t dim) {
    int64_t k = m_order;
    int64_t j, jj;
   
    // Builde the vector y according to the algorithm described in Section 3.1.2 of the guide.
    // The vector is stored in the variable 'm_y'.
-   m_y.SetLength(dim);
    for (j = 0; j < dim; j++)
      m_y[j] = 0;
    m_y[k-1] = 1;
