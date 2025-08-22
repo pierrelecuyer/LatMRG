@@ -1,8 +1,0 @@
-<mk>
-	<power x="16" y="5" />
-	<k x="3" />
-	<safe x="false" />
-	<factor x="true" />
-</mk>
-<out />
-<print_time x="false" />

@@ -1,0 +1,28 @@
+var classtinyxml2_1_1XMLUtil =
+[
+    [ "SkipWhiteSpace", "d2/da5/classtinyxml2_1_1XMLUtil.html#ac9946290e942fbf226a6520bb6a4988f", null ],
+    [ "SkipWhiteSpace", "d2/da5/classtinyxml2_1_1XMLUtil.html#a98dc0102191bfd217f4ba47eb653062c", null ],
+    [ "IsWhiteSpace", "d2/da5/classtinyxml2_1_1XMLUtil.html#a357ec3af8fc433d19023a815f45e8e33", null ],
+    [ "IsNameStartChar", "d2/da5/classtinyxml2_1_1XMLUtil.html#abe106a69ac4d942a4381a4d9dfd0e0bd", null ],
+    [ "IsNameChar", "d2/da5/classtinyxml2_1_1XMLUtil.html#a04b17341538fa11752f24b4301d19485", null ],
+    [ "StringEqual", "d2/da5/classtinyxml2_1_1XMLUtil.html#acfcd287cacfd2533e1bc9ea4dfb56602", null ],
+    [ "IsUTF8Continuation", "d2/da5/classtinyxml2_1_1XMLUtil.html#ad7fd82e0fe610d73ef7bf9f359f104a3", null ],
+    [ "ReadBOM", "d2/da5/classtinyxml2_1_1XMLUtil.html#ad62150de2eba02edf10cffb9e39114ef", null ],
+    [ "GetCharacterRef", "d2/da5/classtinyxml2_1_1XMLUtil.html#a06833d372c8668ed6e3f38756f6d7cc6", null ],
+    [ "ConvertUTF32ToUTF8", "d2/da5/classtinyxml2_1_1XMLUtil.html#aad2d5b0f7e4327bff0bf558148f01a82", null ],
+    [ "ToStr", "d2/da5/classtinyxml2_1_1XMLUtil.html#a5819187d33b5b4d626399118eb622016", null ],
+    [ "ToStr", "d2/da5/classtinyxml2_1_1XMLUtil.html#a096ca738f14b06866d99489e1c315402", null ],
+    [ "ToStr", "d2/da5/classtinyxml2_1_1XMLUtil.html#ad77298cc6025249b28da58c7289190d1", null ],
+    [ "ToStr", "d2/da5/classtinyxml2_1_1XMLUtil.html#a6aef5d230e3972fbedda75b0ba5bbcdb", null ],
+    [ "ToStr", "d2/da5/classtinyxml2_1_1XMLUtil.html#a5ddef1a1d33db500b74b45110df48b6c", null ],
+    [ "ToStr", "d2/da5/classtinyxml2_1_1XMLUtil.html#abce55b1eb11af278acdd59fd1db12e34", null ],
+    [ "ToStr", "d2/da5/classtinyxml2_1_1XMLUtil.html#aff2cf3b9474538d497f672735ce87fd1", null ],
+    [ "ToInt", "d2/da5/classtinyxml2_1_1XMLUtil.html#ac7fa220dd1c428ed6a77850d56a6e4bf", null ],
+    [ "ToUnsigned", "d2/da5/classtinyxml2_1_1XMLUtil.html#a46f7e9542929001e726853ed8b571c07", null ],
+    [ "ToBool", "d2/da5/classtinyxml2_1_1XMLUtil.html#ae1692c644a807da2cd9e1e45f79a102f", null ],
+    [ "ToFloat", "d2/da5/classtinyxml2_1_1XMLUtil.html#ac13b56b82e7f1d2d3954666b76c67d22", null ],
+    [ "ToDouble", "d2/da5/classtinyxml2_1_1XMLUtil.html#a7e37ab30ba19c2b02042ab093172e9b8", null ],
+    [ "ToInt64", "d2/da5/classtinyxml2_1_1XMLUtil.html#a8114c7289f19ee58129b2439584953e6", null ],
+    [ "ToUnsigned64", "d2/da5/classtinyxml2_1_1XMLUtil.html#a9a0e74ba8b2f8ecc0656bb18f1e4f8ad", null ],
+    [ "SetBoolSerialization", "d2/da5/classtinyxml2_1_1XMLUtil.html#aa2c657802d96f8bc21af6ed33179d381", null ]
+];
