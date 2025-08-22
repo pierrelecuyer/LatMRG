@@ -206,7 +206,6 @@ MRGLattice<Int, Real>::MRGLattice(const Int &m, const IntVec &aa, int64_t maxDim
       maxdimy = maxDim + m_order - 1;
    m_maxdim_m_y = maxdimy;
    m_y.SetLength(maxdimy);
-   //buildy(maxDim + m_order - 1);
    buildy(m_order);
 }
 
