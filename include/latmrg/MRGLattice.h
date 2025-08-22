@@ -123,6 +123,11 @@ public:
     */
    virtual void buildProjectionDual(IntLattice<Int, Real> &projLattice, const Coordinates &proj) override;
 
+   /*
+    * Returns the dimension up to which the vector 'm_y' has been built.
+   */
+   int64_t getDimy() {return dim_m_y;};
+
    /**
     * Returns the first `dim` components of the generating vector \f$\ba\f$ as a string,
     * where `dim` is the current lattice dimension.
@@ -258,7 +263,7 @@ void MRGLattice<Int, Real>::setaa(const IntVec &aa) {
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildBasis(int64_t d) {
    // Make sure that the vector m_y is large enough
-   if (dim_m_y < d + m_order - 1)
+   if (getDimy() < d + m_order - 1)
       buildy(d + m_order - 1);
    this->setDim(d);
    assert(d <= this->m_maxDim);
@@ -284,7 +289,7 @@ void MRGLattice<Int, Real>::buildDualBasis(int64_t d) {
    this->setDimDual(d);
    assert(d <= this->m_maxDim);
    // Make sure that the vector m_y is large enough
-   if (dim_m_y < d + m_order - 1) 
+   if (getDimy() < d + m_order - 1) 
       buildy(d + m_order - 1);
    int64_t k = this->m_order;
    int64_t i, j;
@@ -387,7 +392,7 @@ void MRGLattice<Int, Real>::buildProjection(IntLattice<Int, Real> &projLattice,
       }
    }
    // Make sure that the vector m_y is large enough   
-   if (dim_m_y < int64_t(*proj.rbegin() + this->m_order - 1)) {
+   if (getDimy() < int64_t(*proj.rbegin() + this->m_order - 1)) {
       buildy(*proj.rbegin() + this->m_order - 1);
    }
    if (projCase1) {
@@ -438,7 +443,7 @@ void MRGLattice<Int, Real>::buildProjectionDual(IntLattice<Int, Real> &projLatti
    // basis directly from Eq. (30) of the guide, so there is not need to build the primal basis.
    if (this->m_order==1 && *proj.begin() == 1) {
       // Make sure that the vector m_y is large enough
-      if (dim_m_y < int64_t(*proj.rbegin() + this->m_order - 1)) {
+      if (getDimy() < int64_t(*proj.rbegin() + this->m_order - 1)) {
          buildy(*proj.rbegin() + this->m_order - 1);
       }
       j = 0;
