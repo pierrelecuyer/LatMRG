@@ -318,6 +318,7 @@ void MRGLattice<Int, Real>::incDimBasis() {
    assert(d <= this->m_maxDim);
    int64_t k = m_order;
    int64_t i, j, jj;
+   // We compute the entries of the new column by using the recurrence
    for (i = 0; i < d - 1; i++) {
       this->m_basis[i][d - 1] = 0;
       if (d - 1 >= k) {
