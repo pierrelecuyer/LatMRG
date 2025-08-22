@@ -11,8 +11,6 @@ unused/
 *.log
 *.pyc
 __pycache__
-doc/html
-!.gitignore
 # !.gitmodules
 makefile_
 NOTES
