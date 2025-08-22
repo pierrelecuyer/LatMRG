@@ -201,7 +201,8 @@ MRGLattice<Int, Real>::MRGLattice(const Int &m, const IntVec &aa, int64_t maxDim
       maxdimy = maxDim + m_order - 1;
    m_maxdim_m_y = maxdimy;
    m_y.SetLength(maxdimy);
-   buildy(maxDim + m_order - 1);
+   //buildy(maxDim + m_order - 1);
+   buildy(m_order);
 }
 
 //============================================================================
@@ -258,7 +259,7 @@ template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildBasis(int64_t d) {
    // Make sure that the vector m_y is large enough
    if (dim_m_y < d + m_order - 1)
-      buildy(dim_m_y < d + m_order - 1);
+      buildy(d + m_order - 1);
    this->setDim(d);
    assert(d <= this->m_maxDim);
    int64_t k = this->m_order;
@@ -283,8 +284,8 @@ void MRGLattice<Int, Real>::buildDualBasis(int64_t d) {
    this->setDimDual(d);
    assert(d <= this->m_maxDim);
    // Make sure that the vector m_y is large enough
-   if (dim_m_y < d + m_order - 1)
-      buildy(dim_m_y < d + m_order - 1);
+   if (dim_m_y < d + m_order - 1) 
+      buildy(d + m_order - 1);
    int64_t k = this->m_order;
    int64_t i, j;
    if (k == 1) {
@@ -455,7 +456,7 @@ void MRGLattice<Int, Real>::buildProjectionDual(IntLattice<Int, Real> &projLatti
       // Otherwise, we first build a basis for the primal basis of the projection
       this->buildProjection(projLattice, proj);
       // Then we simply calculate its dual.
-      mDualUpperTriangular(pdualBasis, pbasis, this->m_modulo, d);   
+      mDualUpperTriangular(pdualBasis, pbasis, this->m_modulo, d); 
    }
 }
 
