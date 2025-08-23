@@ -356,6 +356,7 @@ void MRGLattice<Int, Real>::incDimDualBasis() {
       for (int jj = 1; jj <= m_order; jj++)
          m_bV0[i][d - 1] += m_aCoeff[jj] * m_bV0[i][d - 1 - jj] % this->m_modulo;
    }
+   dim_m_bV0++;
    // ... and use it to add another row to the dual basis.
    for (i = 0; i < this->m_order; i++) {
       this->m_dualbasis[d-1][i] = -m_bV0[i][d-1];  
