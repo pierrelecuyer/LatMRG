@@ -78,7 +78,7 @@ public:
    /**
     * Sets the lacunary indices for this lattice to `lac`.
     * If 'buildBasisCopy' is set to true, then 'm_copy_primal_basis' and
-    * 'm_dual_copy_basis' are updated according to the new lacunary indices.
+    * 'm_copy_dual_basis' are updated according to the new lacunary indices.
     */
    void setLac(const IntVec &lac, bool buildBasisCopy = true);
 
@@ -86,7 +86,7 @@ public:
    /**
     * Sets the generating vector to `aa`.
     * If 'buildBasisCopy' is set to true, then 'm_copy_primal_basis' and
-    * 'm_dual_copy_basis' are updated according to the new generator vector.
+    * 'm_copy_dual_basis' are updated according to the new generator vector.
     */
    void setaa(const IntVec &lac, bool buildBasisCopy = true);
 
@@ -104,34 +104,36 @@ protected:
     * the LatMRG guide.  Must have d <= m_maxdim. The basis matrix is taken as a 
     * parameter.
     */ 
-   void buildBasis0(IntMat &basis, int64_t d) override;
+   void buildBasis0(IntMat &basis, int64_t d);
+
+   void buildBasis(int64_t dim) override;
    
    /**
     * This functions overrides the corresponding protected function in 'MRGLattice',
     * which is necessary because the entire copy of the primal basis is build upon
     * creation of the object.
     */
-   void buildDualBasis0(IntMat &basis, int64_t d) override;
+   void buildDualBasis0(IntMat &basis, int64_t d);
    
    /**
     * This function overrides the correpsonding protected function in 'MRGLattice'.
     * It increases the dimension of the given basis from d-1 to d dimensions.
     * One new column is calclated using the algorithm from the guide.
     */
-   void incDimBasis0(IntMat &basis, int64_t d) override;
+   void incDimBasis0(IntMat &basis, int64_t d);
 
    /**
     * This function overrides the correpsonding protected function in 'MRGLattice'.
     * It increases the dimension of a given dual basis from d-1 to d dimensions.
     * One new column is calclated using the polynomial representation.
     */
-   void incDimDualBasis0(IntMat &basis, int64_t d) override;
+   void incDimDualBasis0(IntMat &basis, int64_t d);
 
     /**
     * This function overrides the correpsonding protected function in 'MRGLattice'.
     * It builds a projection for the primal basis.
     */
-   bool buildProjection0(IntMat &basis, int64_t dimbasis, IntMat &pbasis, const Coordinates &proj) override;
+   bool buildProjection0(IntMat &basis, int64_t dimbasis, IntMat &pbasis, const Coordinates &proj);
 
       /**
     * Takes the polynomial `pcol` and returns in `col` the corresponding column in the
@@ -163,7 +165,7 @@ protected:
 // Constructor.
 template<typename Int, typename Real>
 MRGLatticeLac<Int, Real>::MRGLatticeLac(const Int &m, const IntVec &aa, int64_t maxDim,
-      IntVec &lac, NormType norm) : MRGLattice<Int, Real>(m, aa, maxDim, norm) {
+      IntVec &lac, NormType norm) : MRGLattice<Int, Real>(m, aa, maxDim, 0, norm) {
       this->m_modulo = m;
       // Sets the modulus inside NTL
       FlexModInt<Int>::mod_init(this->m_modulo);
@@ -174,8 +176,9 @@ MRGLatticeLac<Int, Real>::MRGLatticeLac(const Int &m, const IntVec &aa, int64_t 
       setLac(lac, false);
       this->setaa(aa, false);
       // Immediately build a copy of the full basis and store in m_copy_primal_basis
-      buildBasis0(this->m_copy_primal_basis, maxDim);
-      mDualUpperTriangular(this->m_copy_dual_basis, this->m_copy_primal_basis, this->m_modulo, maxDim);
+       buildBasis0(this->m_copy_primal_basis, maxDim);
+       mDualUpperTriangular(this->m_copy_dual_basis, this->m_copy_primal_basis, this->m_modulo, maxDim);
+   
       
 }
 
@@ -292,6 +295,16 @@ void MRGLatticeLac<Int, Real>::buildBasis0(IntMat &basis, int64_t d) {
       for (j = 0; j < d; j++)
          basis[i][j] = (i == j) * this->m_modulo;
    }
+}
+
+//============================================================================
+
+
+template<typename Int, typename Real>
+void MRGLatticeLac<Int, Real>::buildBasis(int64_t d) {
+   this->setDim(d);
+   this->buildBasis0(this->m_basis, d);
+   this->setNegativeNorm();
 }
 
 //============================================================================

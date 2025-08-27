@@ -35,8 +35,6 @@ int main() {
 
    LatMRG::MRGLattice<NTL::ZZ, double> lat(m, a, maxdim);
 
-   // lat.setUsePolynomialBasis(true);
-
    ReducerBB<NTL::ZZ, double> m_red(lat);   
    
    m_red.setVerbosity(2);
