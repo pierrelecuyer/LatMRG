@@ -26,6 +26,7 @@
 #include "latticetester/WeightsUniform.h"
 #include "latticetester/BasisConstruction.h"
 #include "latticetester/ReducerStatic.h"
+
 #include "latmrg/MRGLattice.h"
 #include "latmrg/MRGLatticeLac.h"
 
@@ -37,15 +38,16 @@ using namespace LatticeTester;
  * and the actual FoM is determined by the vector 't'. 
  */
 template<typename Int, typename Real>
-static void FoMMRGLattice(Int m, int64_t maxdim, const NTL::Vec<Int> a, const NTL::Vec<int64_t> t) {
-   LatMRG::MRGLattice<Int, Real> lat(m, a, maxdim);
+static void FoMMRGLattice(Int m, int64_t maxdim, const NTL::Vec<Int> aa, const NTL::Vec<int64_t> t) {
+   LatMRG::MRGLattice<Int, Real> lat(m, aa, maxdim);
    ReducerBB<Int, Real> m_red(lat); 
    WeightsUniform weights(1.0);
-   NormaBestLat normaDual(-log(m), a.length()-1, maxdim, L2NORM);
+   NormaBestLat normaDual(-log(m), aa.length()-1, maxdim, L2NORM);
    FigureOfMeritDualM<Int, Real> fomdual(t, weights, normaDual, &m_red);
-   fomdual.setVerbosity(2);
-    IntLattice<Int, Real> proj(m, t.length());
-   fomdual.computeMerit(lat, proj);
+   fomdual.setVerbosity(3);
+   //IntLattice<Int, Real> proj(m, t.length());
+   //fomdual.computeMerit(lat, proj);
+   fomdual.computeMeritSucc(lat);
 }
 
 /**
@@ -53,16 +55,18 @@ static void FoMMRGLattice(Int m, int64_t maxdim, const NTL::Vec<Int> a, const NT
  * lacunary indices defined by 'lac'.
  */
 template<typename Int, typename Real>
-static void FoMMRGLatticeLac(Int m, int64_t maxdim, const NTL::Vec<Int> a, const NTL::Vec<int64_t> t, 
-  NTL::Vec<Int> lac) {
-   LatMRG::MRGLatticeLac<Int, Real> lat(m, a, maxdim, lac);
+static void FoMMRGLatticeLac(Int m, int64_t maxdim, const NTL::Vec<Int> aa, const NTL::Vec<int64_t> t,
+       NTL::Vec<Int> lac) {
+   LatMRG::MRGLatticeLac<Int, Real> lat(m, aa, maxdim);
+   lat.setLac(lac);
    ReducerBB<Int, Real> m_red(lat); 
    WeightsUniform weights(1.0);
-   NormaBestLat normaDual(-log(m), a.length()-1, maxdim, L2NORM);
+   NormaBestLat normaDual(-log(m), aa.length()-1, maxdim, L2NORM);
    FigureOfMeritDualM<Int, Real> fomdual(t, weights, normaDual, &m_red);
-   fomdual.setVerbosity(2);
-   IntLattice<Int, Real> proj(m, t.length());
-   fomdual.computeMerit(lat, proj);
+   fomdual.setVerbosity(3);
+   // IntLattice<Int, Real> proj(m, t.length());
+   std::cout << "t = " << t << "\n";
+   fomdual.computeMeritSucc(lat);
 }
 
 
@@ -75,26 +79,26 @@ int main() {
    t[0] = 8;    // We look at successive coordinates in up to t[0] dimensions.
    t[1] = 0;      
    NTL::ZZ m;
-   NTL::Vec<NTL::ZZ> a; // Vector a has size d+1, if it contains d elements.
+   NTL::Vec<NTL::ZZ> aa; // Vector a has size d+1, if it contains d elements.
    
    
    std::cout << "\n=============================================================\n";
    std::cout << "Results for a MRG example with m = 2147483647 and a = 45991\n";
    m = 2147483647;
-   a.SetLength(2);
-   a[1] = 45991;
-   FoMMRGLattice<NTL::ZZ, double>(m, maxdim, a, t);   
+   aa.SetLength(2);
+   aa[1] = 45991;
+   FoMMRGLattice<NTL::ZZ, double>(m, maxdim, aa, t);
    std::cout << "\n The results are the same as in [rLEC97c], Table 6!\n";
 
 
    std::cout << "\n=============================================================\n";
    std::cout << "Results for a MRG example with m = 9223372036854773561, a = (1145902849652723, 0, -1184153554609676). \n";
    m = 9223372036854773561;
-   a.SetLength(4);
-   a[1] = 1145902849652723;
-   a[2] = 0;
-   a[3] = -1184153554609676;
-  FoMMRGLattice<NTL::ZZ, double>(m, maxdim, a, t);
+   aa.SetLength(4);
+   aa[1] = 1145902849652723;
+   aa[2] = 0;
+   aa[3] = -1184153554609676;
+  FoMMRGLattice<NTL::ZZ, double>(m, maxdim, aa, t);
   std::cout << "\n The results are the same as in [rLEC97c], Table 7!\n";
 
    
@@ -103,9 +107,9 @@ int main() {
    maxdim = 8;
    m = 4294967296;
    m = m / 4;
-   a.SetLength(2);
-   a[1] = 1099087573;  
-   FoMMRGLattice<NTL::ZZ, double>(m, maxdim, a, t);    
+   aa.SetLength(2);
+   aa[1] = 1099087573;
+   FoMMRGLattice<NTL::ZZ, double>(m, maxdim, aa, t);
   std::cout << "\n The results are the same as in [rLEC97c], Table 1!\n";
 
   
@@ -113,6 +117,7 @@ int main() {
    std::cout << "Results for a MRG example with lacunary indices\n";
    std::cout << "m = 2147483647, a = 16807, d =131072. \n";
    std::cout << "The lacunary indices are 1, 2, 3, d+1, d+2, d+3, 2*d+1, 2*d+2\n";  
+   maxdim = 8;
    NTL::Vec<NTL::ZZ> lac; // Vector containing the lacunary indices.
    NTL::ZZ d;
    d = 131072;  
@@ -121,10 +126,11 @@ int main() {
    lac[3] = d+1;   lac[4] = d+2;   lac[5] = d+3;
    lac[6] = 2*d+1;   lac[7] = 2*d+2;
    m = 2147483647;
-   a.SetLength(2);
-   a[1] = 16807;
+   aa.SetLength(2);
+   aa[1] = 16807;
    t.SetLength(1);
    t[0] = 8;    
-   FoMMRGLatticeLac<NTL::ZZ, double>(m, maxdim, a, t, lac);    
+   // t[1] = 0;
+   FoMMRGLatticeLac<NTL::ZZ, double>(m, maxdim, aa, t, lac);
    std::cout << "\n The results are the same as in [rLEC97c], Table 2!\n";
 }

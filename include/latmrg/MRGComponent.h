@@ -266,7 +266,7 @@ private:
 //===========================================================================
 // IMPLEMENTTION
 
-=============================================================================
+//=============================================================================
 // Main constructor.
 template<typename Int>
 MRGComponent<Int>::MRGComponent(const Int &m, int64_t k, DecompType decompm1, const char *filem1,

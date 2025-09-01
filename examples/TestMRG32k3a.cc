@@ -15,7 +15,7 @@
 #include "latticetester/WeightsUniform.h"
 #include "latticetester/FigureOfMeritDualM.h"
 #include "latmrg/MRGLattice.h"
-#include "latmrg/MRGLatticeLac.h"
+// #include "latmrg/MRGLatticeLac.h"
 
 using namespace LatticeTester;
 using namespace LatMRG;
@@ -29,20 +29,22 @@ int main() {
    aa[2] = to_ZZ("3186860506199273833");
    aa[3] = to_ZZ("8738613264398222622");
 
-   int64_t maxdim(20);  // Maximum dimension of the lattice
+   int64_t maxdim(50);  // Maximum dimension of the lattice.  ***
+
    NTL::Vec <int64_t> t; // The t-vector for the FOM.
    t.SetLength(3);
    t[0] = maxdim;  t[1] = 0;  t[2] = 0;
-   MRGLattice<Int, Real> mrgc = MRGLattice<Int, Real>(m, aa, maxdim);
+   MRGLattice<Int, Real> mrgc = MRGLattice<Int, Real>(m, aa, maxdim, 0, maxdim);
    WeightsUniform weights(1.0);
    NormaRogers normaDual(-log(m), 3, maxdim);  // Normalization for m-dual: Roger's bounds as in rLEC99b.
-   ReducerBB<Int, Real> red(maxdim);   // Single ReducerBB with internal lattice `lat`.
+   ReducerBB<Int, Real> red(maxdim);           // Single ReducerBB.
    FigureOfMeritDualM<Int, Real> fom(t, weights, normaDual, &red, true); // FoM for dual lattice.
    fom.setVerbosity(3);
    std::cout << "\nResults from TestMRG32k3a.cc \n";
 
    // We first compute the FOM in successive dimensions up to maxdim, with the default BKZ + BB.
    // It uses delta = 0.99999 and blocksize = 10.
+   fom.setBKZ(0.99999, 10);
    std::cout << "\n=============================================\n";
    std::cout << "MRG32k3a, with BKZ+BB with default parameters \n";
    fom.computeMeritSucc(mrgc);
@@ -52,7 +54,7 @@ int main() {
    std::cout << "\n=============================================\n";
    std::cout << "MRG32k3a, with BKZ+BB with delta = 0.99999 and block size = 20 \n";
    fom.computeMeritSucc(mrgc);
-/*
+
    // Again BKZ + BB, but with delta = 0.99999999 and blocksize k = 50.
    fom.setBKZ(0.99999999, 50);
    std::cout << "\n=============================================\n";
@@ -95,7 +97,7 @@ int main() {
    std::cout << "\n===========================================\n";
    std::cout << "MRG32k3a, only LLL with delta = 0.9, rebuild basis at each step \n";
    fom.computeMeritSuccRebuild(mrgc);
-*/
+
    return 0;
 }
 

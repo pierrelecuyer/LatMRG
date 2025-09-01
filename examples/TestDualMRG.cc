@@ -18,12 +18,12 @@
 #include "latticetester/BasisConstruction.h"
 #include "latticetester/ReducerStatic.h"
 #include "latmrg/MRGLattice.h"
-#include "latmrg/MRGLatticeLac.h"
+// #include "latmrg/MRGLatticeLac.h"
 
 using namespace LatticeTester;
 
 int main() {
-    int64_t maxdim = 8;
+    int64_t maxdim = 6;
 
     NTL::ZZ m;
     NTL::Vec<NTL::ZZ> a; // Vector a has size 4, a[j] contains a_j.
@@ -35,12 +35,15 @@ int main() {
 
    LatMRG::MRGLattice<NTL::ZZ, double> lat(m, a, maxdim);
 
-   ReducerBB<NTL::ZZ, double> m_red(lat);   
-   
-   m_red.setVerbosity(2);
 
-   lat.buildDualBasis(8);
+   // ReducerBB<NTL::ZZ, double> m_red(lat);
+   // m_red.setVerbosity(3);
 
-   std::cout << " The dual basis is given by \n ############## \n" << lat.getDualBasis() << "\n";
+   lat.buildBasis(maxdim);
+   // std::cout << " Vector y: \n ############## \n" << lat.gety() << "\n";
+   std::cout << " The basis is \n ############## \n" << lat.getBasis() << "\n";
+
+   lat.buildDualBasis(maxdim);
+   std::cout << " The dual basis is \n ############## \n" << lat.getDualBasis() << "\n";
    
 }
