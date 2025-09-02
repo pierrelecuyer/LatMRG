@@ -166,6 +166,12 @@ public:
 
 protected:
 
+
+   /**
+    * Builds an initial upper-triangular basis in `dim` dimensions and puts it in `basis`.
+    */
+   void buildBasisOriginal(IntMat& basis, int64_t dim);
+
    /**
     * Stores the set \f$I\f$ of lacunary indices and its length \f$s\f$.
     */
@@ -367,18 +373,18 @@ void MRGLatticeLac<Int, Real>::computeVIks(int64_t dim) {
 
 //============================================================================
 
-// Builds an upper-triangular basis in `dim` dimensions, using `m_VIks`.
+// Builds an upper-triangular `basis` in `dim` dimensions, using `m_VIks`.
 template<typename Int, typename Real>
-void MRGLatticeLac<Int, Real>::buildBasis(int64_t dim) {
+void MRGLatticeLac<Int, Real>::buildBasisOriginal(IntMat& basis, int64_t dim) {
    int64_t k = this->m_order;
    assert(dim >= k);
    assert(dim <= min(this->m_maxDim, m_s));
-   this->setDim(dim);
+   // this->setDim(dim);
    if (dim > m_dimVIks) computeVIks(dim);
    int64_t i, j;
    // Fill the first k rows using m_VIks.
-   IntMat& pbasis = this->m_basis;   // reference to a basis.
-   if (!m_case1) pbasis = this->m_genTemp;
+   IntMat& pbasis = basis;      // reference to a basis.
+   if (!m_case1) pbasis = this->m_genTemp;  // Should be rare.
    for (i = 0; i < k; i++)
       for (j = 0; j < dim; j++)
          pbasis[i][j] = m_VIks[i][j];
@@ -393,7 +399,19 @@ void MRGLatticeLac<Int, Real>::buildBasis(int64_t dim) {
             pbasis[i+k][j] = (i == j) * this->m_modulo;
       upperTriangularBasis(this->m_basis, pbasis, this->m_modulo, dim+k, dim);
    }
-   m_basisOriginal = this->m_basis;
+}
+
+//============================================================================
+
+// Builds an upper-triangular `basis` in `dim` dimensions, using `m_VIks`.
+template<typename Int, typename Real>
+void MRGLatticeLac<Int, Real>::buildBasis(int64_t dim) {
+   this->m_dim = dim;
+   if (m_dimVIks < this->m_maxDim) computeVIks(this->m_maxDim);
+   buildBasisOriginal(m_basisOriginal, this->m_maxDim);
+   for (int64_t i = 0; i < dim; i++)
+      for (int64_t j = 0; j < dim; j++)
+         this->m_basis[i][j] = m_basisOriginal[i][j];
 }
 
 //============================================================================
@@ -403,8 +421,10 @@ template<typename Int, typename Real>
 void MRGLatticeLac<Int, Real>::buildDualBasis(int64_t dim) {
    buildBasis(dim);
    this->setDimDual(dim);
-   mDualUpperTriangular(this->m_dualbasis, this->m_basis, this->m_modulo, dim);
-   m_dualbasisOriginal = this->m_dualbasis;
+   mDualUpperTriangular(this->m_dualbasisOriginal, this->m_basisOriginal, this->m_modulo, this->m_maxDim);
+   for (int64_t i = 0; i < dim; i++)
+      for (int64_t j = 0; j < dim; j++)
+         this->m_dualbasis[i][j] = m_dualbasisOriginal[i][j];
 }
 
 //============================================================================
@@ -415,7 +435,10 @@ void MRGLatticeLac<Int, Real>::buildDualBasis(int64_t dim) {
 template<typename Int, typename Real>
 void MRGLatticeLac<Int, Real>::incDimBasis() {
    int64_t i, j, l;
+   assert (this->m_case1);  // This works only for case1.
+   this->m_dim++;
    int64_t d = this->m_dim;
+
    // IntMat M;
    // Calculate the matrix M according to guide. It stores the transformation from the standard basis to the current one.
    // M.SetDims(d-1, d-1);  // This allocates space for a new matrix object from scratch each time we call this function!
@@ -440,7 +463,6 @@ void MRGLatticeLac<Int, Real>::incDimBasis() {
    // Add last row from the stored primal basis.
    for (j = 0; j < d; j++)
       this->m_basis[d-1][j] = m_basisOriginal[d-1][j];
-   this->m_dim++;
 }
 
 
@@ -451,13 +473,13 @@ void MRGLatticeLac<Int, Real>::incDimBasis() {
 
 template<typename Int, typename Real>
 void MRGLatticeLac<Int, Real>::incDimDualBasis() {
+   this->m_dimdual++;
    int64_t d = this->m_dimdual;
    // Put zeros in new column and add a new row.
    for (int i = 0; i < d-1; i++)
       this->m_dualbasis[i][d-1] = 0;
    for (int j = 0; j < d; j++)
       this->m_dualbasis[d-1][j] = m_dualbasisOriginal[d-1][j];
-   this->m_dimdual++;
 }
 
 //============================================================================

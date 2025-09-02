@@ -38,16 +38,19 @@ using namespace LatticeTester;
  * and the actual FoM is determined by the vector 't'. 
  */
 template<typename Int, typename Real>
-static void FoMMRGLattice(Int m, int64_t maxdim, const NTL::Vec<Int> aa, const NTL::Vec<int64_t> t) {
-   LatMRG::MRGLattice<Int, Real> lat(m, aa, maxdim);
+static void FOMSuccMRGLattice(Int m, const NTL::Vec<Int> aa, int64_t lowDim, int64_t highDim) {
+   NTL::Vec<int64_t> t;
+   t.SetLength(2);
+   LatMRG::MRGLattice<Int, Real> lat(m, aa, highDim);
    ReducerBB<Int, Real> m_red(lat); 
    WeightsUniform weights(1.0);
-   NormaBestLat normaDual(-log(m), aa.length()-1, maxdim, L2NORM);
+   NormaBestLat normaDual(-log(m), aa.length()-1, highDim, L2NORM);
    FigureOfMeritDualM<Int, Real> fomdual(t, weights, normaDual, &m_red);
    fomdual.setVerbosity(3);
    //IntLattice<Int, Real> proj(m, t.length());
    //fomdual.computeMerit(lat, proj);
-   fomdual.computeMeritSucc(lat);
+   std::cout << "lowDim, highDim = " << lowDim << "  " << highDim << "\n";
+   fomdual.computeMeritSucc(lat, lowDim, highDim);
 }
 
 /**
@@ -55,18 +58,21 @@ static void FoMMRGLattice(Int m, int64_t maxdim, const NTL::Vec<Int> aa, const N
  * lacunary indices defined by 'lac'.
  */
 template<typename Int, typename Real>
-static void FoMMRGLatticeLac(Int m, int64_t maxdim, const NTL::Vec<Int> aa, const NTL::Vec<int64_t> t,
-       NTL::Vec<Int> lac) {
-   LatMRG::MRGLatticeLac<Int, Real> lat(m, aa, maxdim);
+static void FOMSuccMRGLatticeLac(Int m, const NTL::Vec<Int> aa, NTL::Vec<Int> lac,
+       int64_t lowDim, int64_t highDim) {
+   NTL::Vec<int64_t> t;
+   t.SetLength(2);
+   LatMRG::MRGLatticeLac<Int, Real> lat(m, aa, highDim);
    lat.setLac(lac);
    ReducerBB<Int, Real> m_red(lat); 
    WeightsUniform weights(1.0);
-   NormaBestLat normaDual(-log(m), aa.length()-1, maxdim, L2NORM);
+   NormaBestLat normaDual(-log(m), aa.length()-1, highDim, L2NORM);
    FigureOfMeritDualM<Int, Real> fomdual(t, weights, normaDual, &m_red);
    fomdual.setVerbosity(3);
    // IntLattice<Int, Real> proj(m, t.length());
-   std::cout << "t = " << t << "\n";
-   fomdual.computeMeritSucc(lat);
+   // std::cout << "t = " << t << "\n";
+   std::cout << "lowDim, highDim = " << lowDim << "  " << highDim << "\n";
+   fomdual.computeMeritSucc(lat, lowDim, highDim);
 }
 
 
@@ -87,7 +93,7 @@ int main() {
    m = 2147483647;
    aa.SetLength(2);
    aa[1] = 45991;
-   FoMMRGLattice<NTL::ZZ, double>(m, maxdim, aa, t);
+   FOMSuccMRGLattice<NTL::ZZ, double>(m, aa, 2, maxdim);
    std::cout << "\n The results are the same as in [rLEC97c], Table 6!\n";
 
 
@@ -98,8 +104,8 @@ int main() {
    aa[1] = 1145902849652723;
    aa[2] = 0;
    aa[3] = -1184153554609676;
-  FoMMRGLattice<NTL::ZZ, double>(m, maxdim, aa, t);
-  std::cout << "\n The results are the same as in [rLEC97c], Table 7!\n";
+   FOMSuccMRGLattice<NTL::ZZ, double>(m, aa, 4, maxdim);
+   std::cout << "\n The results are the same as in [rLEC97c], Table 7!\n";
 
    
    std::cout << "\n=============================================================\n";
@@ -109,8 +115,8 @@ int main() {
    m = m / 4;
    aa.SetLength(2);
    aa[1] = 1099087573;
-   FoMMRGLattice<NTL::ZZ, double>(m, maxdim, aa, t);
-  std::cout << "\n The results are the same as in [rLEC97c], Table 1!\n";
+   FOMSuccMRGLattice<NTL::ZZ, double>(m, aa, 2, maxdim);
+   std::cout << "\n The results are the same as in [rLEC97c], Table 1!\n";
 
   
    std::cout << "\n=============================================================\n";
@@ -131,6 +137,6 @@ int main() {
    t.SetLength(1);
    t[0] = 8;    
    // t[1] = 0;
-   FoMMRGLatticeLac<NTL::ZZ, double>(m, maxdim, aa, t, lac);
+   FOMSuccMRGLatticeLac<NTL::ZZ, double>(m, aa, lac, 3, maxdim);
    std::cout << "\n The results are the same as in [rLEC97c], Table 2!\n";
 }
