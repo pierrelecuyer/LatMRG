@@ -106,6 +106,16 @@ public:
    virtual void setaa(const IntVec &aa);
 
    /**
+    * Compute the entries of \f$(y_0, y_1, ..., y_{t+k-2})\f$, where \f$\t=\f$`maxCoord` is the largest
+    * coordinate index that we want to use for the lattice or for a projection.
+    * If `maxCoord` is given, `m_maxCoord` is updated to this new value, otherwise the old
+    *  `m_maxCoord` is used and kept.
+    */
+   virtual void computey(int64_t maxCoord);
+
+   virtual void computey();
+
+   /**
     * Builds a primal basis in `dim` dimensions. This `dim` must be at least the order `k` and
     * must not exceed `m_maxDim` or `m_maxCoord`.
     * This initial primal basis will be upper triangular.
@@ -160,23 +170,9 @@ public:
 protected:
 
    /**
-    * Compute the entries of \f$(y_0, y_1, ..., y_{t+k-2})\f$, where \f$\t=\f$`maxCoord` is the largest
-    * coordinate index that we want to use for the lattice or for a projection.
-    * If `maxCoord` is given, `m_maxCoord` is updated to this new value, otherwise the old
-    *  `m_maxCoord` is used and kept.
-    *
-    * This recomputes the whole vector y completely from scratch !!!   *****
-    */
-   void computey(int64_t maxCoord);
-
-   void computey();
-
-   /**
     * This function initializes the first `dim` columns of `m_bV0`.
     * One must have `m_order <= dim <= maxDim`.
     * It is called by `buildDualBasis`.
-    *
-    * This computes the matrix bV0 from scratch up to dim dimensions!
     */
    void buildV0(int64_t dim);
 
@@ -205,7 +201,7 @@ protected:
    int64_t m_dimbV0 = 0;
 
    /**
-    * Used to construct an m-dual basis and to increasing its dimension.
+    * Used to construct an m-dual basis and when increasing its dimension.
     */
    IntMat m_bV0;
 
@@ -357,19 +353,18 @@ void MRGLattice<Int, Real>::buildDualBasis(int64_t d) {
    // m_dimbV0 = 0;   Not needed if `m_aa` did not change.
    int64_t i, j;
    if (k == 1) {
+      // Fill first column.
+      this->m_dualbasis[0][0] = this->m_modulo;
+      for (i = 1; i < d; i++)
+         this->m_dualbasis[i][0] = -m_y[i] % this->m_modulo;
+      // Then the other columns.
       for (i = 0; i < d; i++)
-         this->m_dualbasis[0][i] = (i == 0) * this->m_modulo;
-      for (j = 1; j < d; j++)
-         this->m_dualbasis[j][0] = -m_y[j] % this->m_modulo;
-      for (i = 1; i < d; i++) {
          for (j = 1; j < d; j++)
             this->m_dualbasis[i][j] = (i == j);
-      }
    } else {
       buildBasis(d);  // This basis is upper-triangular.
       mDualUpperTriangular(this->m_dualbasis, this->m_basis, this->m_modulo, d);
    }
-   // this->setDualNegativeNorm();
 }
 
 //============================================================================
