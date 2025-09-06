@@ -16,5 +16,5 @@ makefile_
 NOTES
 
 # The next few lines are files that are local working files
-MixMaxSearch*
-results/*
+# MixMaxSearch*
+# results/*
