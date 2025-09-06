@@ -189,11 +189,6 @@ protected:
    bool m_case1 = true;
 
    /**
-    * The current number of columns for which `m_VIks` is computed.
-    */
-   int64_t m_dimVIks = 0;
-
-   /**
     * This is the matrix \f$\mathbb{V}_{I,k\times s}\f$ defined in the guide.
     * It contains the ingredients we need to build a basis.
     * Each time the vector of coefficients \f$\mathbb{a}\f$ or the set \f$I\f$ of
@@ -203,8 +198,13 @@ protected:
    IntMat m_VIks;
 
    /**
+    * The current number of columns for which `m_VIks` is computed.
+    */
+   int64_t m_dimVIks = 0;
+
+   /**
     * Auxiliary matrix used to store a set of generating vectors used to compute a
-    * triangular basis when `m_case == false`.
+    * triangular basis when `m_case1 == false`.
     * Its size must be at least `(maxDim + k) x maxDim`.
     * It is already defined in the parent class, but its size here may be larger.
     */
@@ -219,7 +219,7 @@ protected:
    IntMat m_dualbasisOriginal;
 
    IntMat m_M;  // Matrix M used in `incDimBsis`.
-
+   int64_t m_dimM = 0;  // Its current dimension.
 };
 
 //===========================================================================
@@ -384,7 +384,6 @@ void MRGLatticeLac<Int, Real>::buildBasisOriginal(IntMat &basis, int64_t dim) {
    int64_t k = this->m_order;
    assert(dim >= k);
    assert(dim <= min(this->m_maxDim, m_s));
-   // this->setDim(dim);
    if (dim > m_dimVIks) computeVIks(dim);
    int64_t i, j;
    // Fill the first k rows using m_VIks.
@@ -410,7 +409,7 @@ void MRGLatticeLac<Int, Real>::buildBasisOriginal(IntMat &basis, int64_t dim) {
 // Builds an upper-triangular `basis` in `dim` dimensions, using `m_VIks`.
 template<typename Int, typename Real>
 void MRGLatticeLac<Int, Real>::buildBasis(int64_t dim) {
-   this->m_dim = dim;
+   this->setDim(dim);
    if (m_dimVIks < this->m_maxDim) computeVIks(this->m_maxDim);
    buildBasisOriginal(m_basisOriginal, this->m_maxDim);
    for (int64_t i = 0; i < dim; i++)
@@ -441,14 +440,13 @@ template<typename Int, typename Real>
 void MRGLatticeLac<Int, Real>::incDimBasis() {
    int64_t i, j, l;
    assert(this->m_case1);  // This works only for case1.
-   this->m_dim++;
    int64_t d = this->m_dim;
-
-   // IntMat M;
-   // Calculate the matrix M according to guide. It stores the transformation from the standard basis to the current one.
-   // M.SetDims(d-1, d-1);  // This allocates space for a new matrix object from scratch each time we call this function!
-   for (i = 0; i < d - 1; i++) {
-      for (j = 0; j < d - 1; j++) {
+   if (m_dimM <= d) {
+      m_M.SetDims(this->m_maxDim, this->m_maxDim);
+      m_dimM = this->m_maxDim;
+   }
+   for (i = 0; i < d; i++) {
+      for (j = 0; j < d; j++) {
          m_M[i][j] = this->m_basis[i][j];
          for (l = 0; l < j; l++) {
             m_M[i][j] -= m_M[i][l] * m_basisOriginal[l][j];
@@ -460,14 +458,15 @@ void MRGLatticeLac<Int, Real>::incDimBasis() {
    //IntMat copy_curr_column, new_last_column;
    //copy_curr_column.SetDims(d-1,1);  // Again another matrix creation!
 
-   for (i = 0; i < d - 1; i++) {
-      this->m_basis[i][d - 1] = 0;
-      for (j = 0; j < d - 1; j++)
-         MulAddTo(this->m_basis[i][d - 1], m_M[i][j], m_basisOriginal[j][d - 1]);
+   for (i = 0; i < d; i++) {
+      this->m_basis[i][d] = 0;
+      for (j = 0; j < d; j++)
+         MulAddTo(this->m_basis[i][d], m_M[i][j], m_basisOriginal[j][d]);
    }
    // Add last row from the stored primal basis.
-   for (j = 0; j < d; j++)
-      this->m_basis[d - 1][j] = m_basisOriginal[d - 1][j];
+   for (j = 0; j <= d; j++)
+      this->m_basis[d][j] = m_basisOriginal[d][j];
+   this->m_dim++;
 }
 
 //============================================================================
@@ -477,13 +476,13 @@ void MRGLatticeLac<Int, Real>::incDimBasis() {
 
 template<typename Int, typename Real>
 void MRGLatticeLac<Int, Real>::incDimDualBasis() {
-   this->m_dimdual++;
    int64_t d = this->m_dimdual;
    // Put zeros in new column and add a new row.
-   for (int i = 0; i < d - 1; i++)
-      this->m_dualbasis[i][d - 1] = 0;
-   for (int j = 0; j < d; j++)
-      this->m_dualbasis[d - 1][j] = m_dualbasisOriginal[d - 1][j];
+   for (int i = 0; i < d; i++)
+      this->m_dualbasis[i][d] = 0;
+   for (int j = 0; j <= d; j++)
+      this->m_dualbasis[d][j] = m_dualbasisOriginal[d][j];
+   this->m_dimdual++;
 }
 
 //============================================================================
@@ -519,14 +518,14 @@ void MRGLatticeLac<Int, Real>::polyToColumn(IntVec &col, typename FlexModInt<Int
    k = this->m_order;
    IntVec c;
    c.SetLength(k);   // Allocates memory for a new vector!
-   col.SetLength(k);
-   for (j = 1; j < k + 1; j++) {
-      c[j - 1] = 0;
-      NTL::conv(c[j - 1], coeff(rep(pcol), k - j));
-      for (i = 1; i < j; i++) {
-         c[j - 1] += this->m_aa[i] * c[j - 1 - i];
+   col.SetLength(k);  // This is dangerous !!!!   ************
+   for (j = 0; j < k; j++) {
+      c[j] = 0;
+      NTL::conv(c[j], coeff(rep(pcol), k - j - 1));
+      for (i = 1; i <= j; i++) {
+         c[j] += this->m_aa[i] * c[j - i];
       }
-      c[j - 1] = c[j - 1] % this->m_modulo;
+      c[j] = c[j] % this->m_modulo;
    }
    for (j = 0; j < k; j++) {
       col[j] = c[k - j - 1];

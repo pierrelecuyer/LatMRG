@@ -26,6 +26,7 @@
 #include "latmrg/MRGLattice.h"
 #include "latmrg/MRGLatticeLac.h"
 #include "latmrg/LCGLattice.h"
+#include "latmrg/LCGLatticeLac.h"
 
 using namespace LatticeTester;
 
@@ -69,18 +70,17 @@ static void FOMSuccLatticeLac(Int &m, IntVec &aa, IntVec lac, int64_t lowDim, in
    NormaBestLat normaDual(-log(m), k, highDim, L2NORM);
    FigureOfMeritDualM<Int, Real> fomdual(t, weights, normaDual, &red);
    fomdual.setVerbosity(3);
+   std::cout << "\nUsing MRGLatticeLac: \n";
    std::cout << "lowDim = " << lowDim << ", highDim = " << highDim << "\n";
    fomdual.computeMeritSucc(mrg, lowDim, highDim);
-   /*
-    if (k == 1) {
-    LatMRG::LCGLattice<Int, Real> lcg(m, aa[1], highDim);
-    mrg.setLac(lac);
+   if (k == 1) {
+    LatMRG::LCGLatticeLac<Int, Real> lcg(m, aa[1], highDim);
+    lcg.setLac(lac);
     red.setIntLattice(lcg);
-    std::cout << "\nUsing LCGLattice: \n";
+    std::cout << "\nUsing LCGLatticeLac: \n";
     std::cout << "lowDim = " << lowDim << ", highDim = " << highDim << "\n";
     fomdual.computeMeritSucc(lcg, lowDim, highDim);
     }
-    */
 }
 
 int main() {
@@ -122,17 +122,14 @@ int main() {
    std::cout << "\nThe results and timings should be compared with Table 1 of [rLEC97c].\n";
 
    std::cout << "\n=============================================================\n";
-   std::cout << "An LCG with m = 2147483647, a = 16807, lacunary with leap = 131072, \n";
+   std::cout << "An LCG with m = 2147483647, a = 16807, lacunary with leap d = 131072, \n";
    std::cout << "Lacunary indices 1, 2, 3, d+1, d+2, d+3, 2*d+1, 2*d+2, ...\n";
-   maxdim = 30;
+   maxdim = 42;
    Int leap(131072);  // Value of d
    IntVec lac;
    lac.SetLength(maxdim);
    for (int64_t i = 0; i < maxdim; i++)
       lac[i] = 1 + (i % 3) + leap * (i / 3);
-   // lac[0] = 1;   lac[1] = 2;   lac[2] = 3;
-   // lac[3] = leap+1;   lac[4] = leap+2;   lac[5] = leap+3;
-   // lac[6] = 2*leap+1;  lac[7] = 2*leap+2;
    m = 2147483647;
    aa.SetLength(2);
    aa[1] = 16807;
