@@ -258,46 +258,6 @@ MRGLatticeLac<Int, Real>::MRGLatticeLac(const Int &m, const IntVec &aa, int64_t 
       MRGLatticeLac<Int, Real>(m, aa, maxDim, maxDim, norm) {
 }
 
-/*
- //============================================================================
-
- template<typename Int, typename Real>
- MRGLatticeLac<Int,Real>::MRGLatticeLac(const MRGLatticeLac<Int, Real> &Lat) {
- this->m_modulo = Lat.m_modulo;
- this->m_maxDim = Lat.m_maxDim;
- this->m_dim = Lat.m_dim;
- this->m_dimdual = Lat.m_dimdual;
- this->m_norm = Lat.m_norm;
- this->m_vecNorm = RealVec(Lat.m_vecNorm);
- this->m_dualvecNorm = RealVec(Lat.m_dualvecNorm);
- this->m_basis = Lat.m_basis;
- this->m_dualbasis = Lat.m_dualbasis;
- setLac(Lat.m_lac, false);
- FlexModInt<Int>::mod_init(this->m_modulo);
- setaa(Lat.m_aa, true);
- }
-
- //============================================================================
-
- // Copy Constructor
- template<typename Int, typename Real>
- MRGLatticeLac<Int, Real> & MRGLatticeLac<Int, Real>::operator= (const MRGLatticeLac<Int, Real> & Lat) {
- this->m_modulo = Lat.m_modulo;
- this->m_maxDim = Lat.m_maxDim;
- this->m_dim = Lat.m_dim;
- this->m_dimdual = Lat.m_dimdual;
- this->m_norm = Lat.m_norm;
- this->m_vecNorm = RealVec(Lat.m_vecNorm);
- this->m_dualvecNorm = RealVec(Lat.m_dualvecNorm);
- this->m_basis = Lat.m_basis;
- this->m_dualbasis = Lat.m_dualbasis;
- setLac(Lat.m_lac, false);
- FlexModInt<Int>::mod_init(this->m_modulo);
- setaa(Lat.m_aa, true);
- return *this;
- }
- */
-
 //============================================================================
 template<typename Int, typename Real>
 void MRGLatticeLac<Int, Real>::setLac(const IntVec &lac) {

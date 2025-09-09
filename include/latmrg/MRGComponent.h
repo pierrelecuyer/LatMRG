@@ -1,7 +1,6 @@
 #ifndef	LATMRG_MRGCOMPONENT_H
 #define	LATMRG_MRGCOMPONENT_H
 
-// #include "latmrg/Modulus.h"
 #include <NTL/mat_poly_ZZ.h>
 #include <string>
 #include "latmrg/EnumTypes.h"
@@ -20,9 +19,9 @@ using namespace LatMRG;
  * \f]
  * has full period or not.  The object is constructed for given values of
  * \f$k\f$ and \f$m\f$, and can be used for several values of the
- * coefficients \f$a_1,\dots,a_k\f$.
+ * coefficients \f$a_1,\dots,a_k\f$, via the function `maxPeriod`.
  * It stores information such as the factorizations of
- * \f$m-1\f$ and of \f$r = (m^k-1)/(m-1)\f$, which are needed to check the full period
+ * \f$m-1\f$ and of \f$r = (m^k-1)/(m-1)\f$, which are needed to check for the full period
  * conditions.  It does not look at the lattice structure.
  */
 template<typename Int> class MRGComponent {
@@ -74,8 +73,9 @@ public:
    }
 
    /**
-    * Returns `true` if the coefficients \f$aa\f$ give an MRG with maximal
+    * Returns `true` if the coefficients in `aa` give an MRG with maximal
     * period; returns `false` otherwise.
+    * The internal vector of multipliers is set to this `aa`.
     */
    bool maxPeriod(const IntVec &aa);
 
@@ -83,6 +83,7 @@ public:
     * Assumes that the maximal-period condition (1) holds and checks only for
     * conditions 2 and 3. Returns `true` iff these two conditions hold for the
     * vector of coefficients \f$aa\f$.
+    * The internal vector of multipliers is set to this `aa`.
     */
    bool maxPeriod23(const IntVec &aa);
 
@@ -124,9 +125,9 @@ public:
    /**
     * Returns a const reference to the initial state `orbitSeed`, when available.
     * */
-   IntVec& getOrbitSeed() {
-      return orbitSeed;
-   }
+//   IntVec& getOrbitSeed() {
+//      return orbitSeed;
+//   }
 
    /**
     * Returns a descriptor of this object as a string.
@@ -156,8 +157,9 @@ private:
    /**
     * The type of generator this stores. Should be MRG, MMRG or MWC. The
     * default value is LCG.
-    * */
+    */
    // GenType m_type = LCG;   // This should not be here, but should depend on the subclass, it seems.
+
    /**
     * The prime factor decomposition of \f$m-1\f$.
     */
@@ -175,6 +177,7 @@ private:
     * of the matrix since it is already implemented.
     */
    // IntFactorization<NTL::ZZ> ifm2;
+
    /**
     * The prime factor decomposition of \f$r=(m^k-1)/(m-1)\f$, where
     * \f$k\f$ is the order of the recurrence.
@@ -258,7 +261,7 @@ private:
     * lattice type is `ORBIT`. It is made of \f$k\f$ numbers.
     *                            *********   But this class does not look at lattices!
     */
-   IntVec orbitSeed;
+   //  IntVec orbitSeed;
 
 };
 // End class declaration
@@ -290,55 +293,6 @@ MRGComponent<Int>::MRGComponent(Int b, int64_t e, Int c, int64_t k, DecompType d
    init(m, k, decompm1, filem1, decompr, filer);
 }
 
-//===========================================================================
-
-/*
- // Copy constructor.
- template<typename Int>
- MRGComponent<Int>::MRGComponent(const MRGComponent<Int> &lat) :
- ifm1(lat.ifm1), ifr(lat.ifr), m_k(lat.m_k) {
- m_m = lat.m_m;
- nj = lat.nj;
- rho = lat.rho;
- //   a.kill();
- m_aa.resize(m_k);
- m_aa = lat.m_aa;
- //   orbitSeed.kill();
- orbitSeed.resize(m_k);
- orbitSeed = lat.orbitSeed;
-
- // m_type = lat.m_type;
- //if (m_type == MWC)
- //    m_MWCb = lat.m_MWCb;
- m_b = lat.m_b;
- m_e = lat.m_e;
- m_c = lat.m_c;
- }
-
- //===========================================================================
-
- // Assignment constructor.
- template<typename Int>
- MRGComponent<Int>& MRGComponent<Int>::operator=(const MRGComponent<Int> &lat) {
- if (this != &lat) {
- m_k = lat.m_k;
- m_m = lat.m_m;
- nj = lat.nj;
- rho = lat.rho;
- //    a.kill();
- m_aa.resize(m_k);
- m_aa = lat.m_aa;
- //     orbitSeed.kill();
- orbitSeed.resize(m_k);
- orbitSeed = lat.orbitSeed;
- //      ifm1 = lat.ifm1;
- //      ifr = lat.ifr;
- }
- // m_type = lat.m_type;
- return *this;
- }
- */
-
 //============================================================================
 template<typename Int>
 void MRGComponent<Int>::init(const Int &m, int64_t k, DecompType decompm1, const char *filem1,
@@ -347,8 +301,7 @@ void MRGComponent<Int>::init(const Int &m, int64_t k, DecompType decompm1, const
    setModulusIntP<Int>(m_m);
    m_k = k;
    m_aa.SetLength(m_k);
-   orbitSeed.SetLength(m_k);   // Used ???
-
+   // orbitSeed.SetLength(m_k);   // Used ???
    Int mm1;  // m-1
    mm1 = m - 1;
    ifm1 = IntFactorization<Int>(mm1);
@@ -358,26 +311,6 @@ void MRGComponent<Int>::init(const Int &m, int64_t k, DecompType decompm1, const
    ifr = IntFactorization<Int>(r);
    ifr.decompToFactorsInv (decompr, filer);
 }
-
-//===========================================================================
-
-/**
- template<typename Int>
- MRGComponent<Int>::MRGComponent(Modulus<Int> &modu, int64_t k, DecompType decom1,
- const char *filem1, DecompType decor, const char *filer) {
- init(modu.m, k, decom1, filem1, decor, filer);
-
- LatticeTester::PrimeType status = LatticeTester::IntFactor < Int
- > ::isPrime(modu.m, 100);
- if (status == LatticeTester::PRIME || LatticeTester::PROB_PRIME == status) {
- modu.primeF = true;
- } else {
- std::cout << " WARNING:  m is NOT prime" << std::endl;
- modu.primeF = false;
- }
- module = modu;
- }
- */
 
 //===========================================================================
 template<typename Int>
@@ -390,59 +323,24 @@ MRGComponent<Int>::~MRGComponent() {
 
 template<typename Int>
 void MRGComponent<Int>::setaa(const IntVec &aa) {
-   // m_aa.SetLength(aa.length());
+   assert(aa.length() == m_k);
    m_aa = aa;
 }
 
 //===========================================================================
 
-/*
- template<typename Int>
- void MRGComponent<Int>::setA(const IntMat &A) {
- m_A.SetDims(A.NumRows(), A.NumCols());
- m_A = A;
- }
- */
-
-//===========================================================================
-
 template<typename Int>
 bool MRGComponent<Int>::maxPeriod(const IntVec &aa) {
+   setaa(aa);
    return isPrimitive(aa, m_m, ifm1, ifr);
 }
-
-//===========================================================================
-// This is for a matrix LCG, does not belong here.   *************
-/*
-
- template<typename Int>
- bool MRGComponent<Int>::maxPeriod(const IntMat &a0) {
- // Converting everything to NTL::ZZ to ease the characteristic polynomial
- // computation
- Primitivity<NTL::ZZ>::setM(NTL::ZZ(getM()));
- NTL::ZZX poly;
- NTL::matrix<NTL::ZZ> mat(m_k, m_k);
- for (int64_t i = 0; i < m_k; i++) {
- for (int64_t j = 0; j < m_k; j++) {
- mat[i][j] = NTL::ZZ(a0[i][j]);
- }
- }
- // Characteristic polynomial computation
- NTL::CharPoly(poly, mat);
- // Copying the polynomial to a vector
- NTL::vector<NTL::ZZ> vec(NTL::VectorCopy(poly, m_k + 1));
- Primitivity<NTL::ZZ>::setF(vec);
- Primitivity<NTL::ZZ> pol;
- PrimitiveInt < NTL::ZZ > privfm(ifm2, NTL::ZZ(getM()), 1);
- return pol.isPrimitive(privfm, ifr2);
- }
- */
 
 //===========================================================================
 // Must be rewritten!
 template<typename Int>
 bool MRGComponent<Int>::maxPeriod23(const IntVec &aa) {
-   return isPrimitive(aa, m_m, ifm1, ifr);
+   setaa(aa);
+   return isPrimitive23(aa, m_m, ifr);
 }
 
 //===========================================================================
@@ -453,10 +351,10 @@ std::string MRGComponent<Int>::toString() {
    os << "MRGComponent:";
    os << "\n   m = " << m_m << " = " << m_b << "^" << m_e << " + " << m_c;
    os << "\n   k = " << m_k;
-   os << "\n   a = ";
+   os << "\n   aa = ";
    std::string str(os.str());
-   std::string s2 = LatticeTester::toString(m_aa, m_k);
-   str += s2;
+   std::string sa = LatticeTester::toString(m_aa, m_k);
+   str += sa;
    str += "\n";
    return str;
 }

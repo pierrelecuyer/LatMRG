@@ -15,9 +15,10 @@ namespace LatMRG {
  * \f]
  * The object is constructed for a given value of \f$m\f$ and a boolean that tells if we assume a nonzero increment
  * \f$c_0\f$ relatively prime with \f$m\f$, or no increment (\f$c_0 = 0\f$).
- * In the latter case,
- * The same object can be used to test the period for several values of \f$a\f$.
- * It does not look at the lattice structure.
+ * The constructor takes the value of \f$m\f$ and computes or read the required factorizations.
+ * The function `maxPeriod` tests the period for a given value of \f$a\f$.
+ * This can be done for several values of \f$a\f$ with the same `LCGComponent` object.
+ * No value of \f$a\f$ is saved in the object.
  */
 template<typename Int>
 class LCGComponent {
@@ -27,7 +28,7 @@ class LCGComponent {
 public:
 
    /**
-    * Constructor with modulus \f$m\f$, with the type of prime factor decomposition
+    * Construct an object for modulus \f$m\f$, with the type of prime factor decomposition
     * of \f$m-1\f$ or \f$m\f$ specified by `decomp`.
     * When `increment` is `false`, we consider an LCG with no increment and we need the
     * decomposition of \f$m-1\f$, otherwise we consider an LCG with an increment \f$c_0\f$
@@ -41,6 +42,7 @@ public:
     * \f$m-1\f$ or \f$m\f$ are read or written when the type
     * <tt>DECOMP_WRITE</tt> or <tt>DECOMP_READ</tt> is used.
     * The given files must be accessible by the program.
+    * The format for the factorization in these files is described in class `IntFactorization`.
     */
    LCGComponent(const Int &m, DecompType decomp, const char *filename, bool increment = false);
 
@@ -55,41 +57,17 @@ public:
    ~LCGComponent();
 
    /**
-    * Copy constructor;
-    */
-   // LCGComponent(const MRGComponent<Int> &comp);
-   /**
-    * Assignment operator.
-    */
-   // LCGComponent<Int>& operator=(const MRGComponent<Int> &comp);
-   /**
-    * Sets the multiplier \f$a\f$ of the recurrence to `a`.
-    */
-   void seta(const Int &a);
-
-   /**
-    * Gets the multiplier \f$a\f$ of the recurrence.
-    */
-   Int geta() const {
-      return m_a;
-   }
-
-   /**
-    * Returns `true` iff the LCG defined by
-    * \f[
-    *   x_n = (a x_{n-1} + c_0) \bmod m
-    * \f]
-    * has full period.  If the LCG has been constructed without an increment \f$c_0\f$,
+    * Returns `true` iff the LCG has full period. If there is no increment \f$c_0\f$,
     * the function checks if f$a\f$ is a primitive element modulo \f$m\f$.
-    * If it was constructed with an increment, the function assumes that \f$c_0\f$
-    * is relatively prime with \f$m\f$ and it checks the two conditions:
+    * If there is an increment, this increment is assumed to be
+    * relatively prime with \f$m\f$ and this function checks the two conditions:
     * (1) Every prime divisor \f$q\f$ of \f$m\f$ must divide \f$a-1\f$;
     * (2) If 4 divides \f$m\f$, then it must divide \f$a-1\f$.
     */
    bool maxPeriod(const Int &a);
 
    /**
-    * Returns the value of the modulus \f$m\f$ of the recurrence.
+    * Returns the value of the modulus \f$m\f$.
     */
    const Int getModulus() const {
       return m_m;
@@ -117,11 +95,18 @@ public:
    }
 
    /**
-    * Returns a const reference to the initial state `orbitSeed`, when available.
-    * */
-   Int& getOrbitSeed() {
-      return orbitSeed;
+    * Returns the factorization of `m` or `m-1`.
+    */
+   IntFactorization<Int>& getFactorization() {
+      return m_fact;
    }
+
+   /**
+    * Returns a const reference to the initial state `orbitSeed`, when available.
+    */
+   //Int& getOrbitSeed() {
+   //   return orbitSeed;
+   //}
 
    /**
     * Returns this object as a string.
@@ -129,10 +114,10 @@ public:
    std::string toString();
 
    /**
-    * The modulo of the MWC generator if we study one. This is because the
-    * we check MWC period with module.m as the modulo of the equivalent LCG.
-    * */
-   Int m_MWCb;
+    * The equivalent modulo of the MWC generator, if relevant. This is because
+    * we check MWC period with the modulo of the equivalent LCG.                   ?????
+    */
+   //  Int m_MWCb;
 
 private:
 
@@ -151,11 +136,6 @@ private:
     * The modulus \f$m\f$ of the recurrence.
     */
    Int m_m;
-
-   /**
-    * The multiplier \f$a\f$ of the recurrence.
-    */
-   Int m_a;
 
    /**
     * Basis `b` when `m = b^e + c`.
@@ -201,64 +181,19 @@ private:
     * calculated by `MRGLatticeFactory` and stored here for simplicity.
     */
    // Int nj;
+
    /**
     * Contains the starting state of the component for the case when the
     * lattice type is `ORBIT`. It is made of \f$k\f$ numbers.
     */
-   Int orbitSeed;   // Not used for now.
+   // Int orbitSeed;   // Not used for now.  Should be in LCGLattice.
 
 };   // End of class declaration
 
 
+
 //===========================================================================
 // IMPLEMENTATION
-
-/*
- // Copy constructor.
- template<typename Int>
- LCGComponent<Int>::LCGComponent(const LCGComponent<Int> &lat) :
- ifm1(lat.ifm1), ifr(lat.ifr), m_k(lat.m_k) {
- module = lat.module;
- nj = lat.nj;
- rho = lat.rho;
- //   a.kill();
- m_a.resize(m_k);
- m_a = lat.m_a;
- //   orbitSeed.kill();
- orbitSeed.resize(m_k);
- orbitSeed = lat.orbitSeed;
-
- m_type = lat.m_type;
- if (m_type == MWC)
- m_MWCb = lat.m_MWCb;
- m_b = lat.m_b;
- m_e = lat.m_e;
- m_r = lat.m_r;
- }
-
- //===========================================================================
-
- // Assignment.
- template<typename Int>
- LCGComponent<Int>& LCGComponent<Int>::operator=(const LCGComponent<Int> &lat) {
- if (this != &lat) {
- m_k = lat.m_k;
- module = lat.module;
- nj = lat.nj;
- rho = lat.rho;
- //    a.kill();
- m_a.resize(m_k);
- LatticeTester::CopyVect(m_a, lat.m_a, m_k);
- //     orbitSeed.kill();
- orbitSeed.resize(m_k);
- LatticeTester::CopyVect(orbitSeed, lat.orbitSeed, m_k);
- //      ifm1 = lat.ifm1;
- //      ifr = lat.ifr;
- }
- m_type = lat.m_type;
- return *this;
- }
- */
 
 //===========================================================================
 
@@ -282,28 +217,6 @@ LCGComponent<Int>::LCGComponent(const Int &b, int e, const Int &c, DecompType de
 }
 
 //===========================================================================
-/*
-template<typename Int>
-LCGComponent<Int>::LCGComponent(const Int &m, DecompType decompm1, const char *filem1,
-      DecompType decompm, const char *filem) {
-   m_b = m;
-   m_e = 1;
-   m_c = Int(0);
-   init(m, decompm1, filem1);
-}
-
-template<typename Int>
-LCGComponent<Int>::LCGComponent(const Int &b, int e, const Int &c, DecompType decompm1, const char *filem1,
-      DecompType decompm, const char *filem) {
-   Int m = NTL::power(b, e) + c;
-   m_b = b;
-   m_e = e;
-   m_c = c;
-   init(m, decompm1, filem1);
-}
-*/
-
-//===========================================================================
 
 template<typename Int>
 LCGComponent<Int>::~LCGComponent() {
@@ -325,16 +238,9 @@ void LCGComponent<Int>::init(const Int &m, DecompType decomp, const char *filena
 //===========================================================================
 
 template<typename Int>
-void LCGComponent<Int>::seta(const Int &a) {
-   m_a = a;
-}
-
-//===========================================================================
-
-template<typename Int>
 bool LCGComponent<Int>::maxPeriod(const Int &a) {
    if (!m_increment)
-     return isPrimitiveElement(a, m_fact, m_m);   // Here, m is assumed to be prime.
+      return isPrimitiveElement(a, m_fact, m_m);   // Here, m is assumed to be prime.
    else {
       auto list = m_fact.getFactorList();
       for (auto iter = list.begin(); iter != list.end(); iter++) {
@@ -350,9 +256,8 @@ bool LCGComponent<Int>::maxPeriod(const Int &a) {
 template<typename Int>
 std::string LCGComponent<Int>::toString() {
    std::ostringstream os;
-   os << "LCGComponent:";
+   os << "LCGComponent with: ";
    os << "\n   m = " << m_m << " = " << m_b << "^" << m_e << " + " << m_c;
-   os << "\n   a = " << m_a << "\n";
    os << "\n   increment c_0 = " << m_increment << "\n";
    std::string str(os.str());
    return str;

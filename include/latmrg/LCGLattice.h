@@ -171,30 +171,6 @@ template<typename Int, typename Real>
 LCGLattice<Int, Real>::~LCGLattice() {
 }
 
-//=========================================================================
-/*
- template<typename Int, typename Real>
- LCGLattice<Int, Real>::LCGLattice(const LCGLattice &lat) :
- LatticeTester::IntLatticeExt<Int, Real>::IntLatticeExt(lat.m_modulo, 0, lat.getDim(),
- lat.getNorm()) {
- m_a = lat.m_a;
- m_shift = lat.m_shift;
- }
-
- //=========================================================================
-
- template<typename Int, typename Real>
- LCGLattice<Int, Real>& LCGLattice<Int, Real>::operator=(const LCGLattice &lat) {
- if (this == &lat) return *this;
- this->m_dim = lat.m_dim;
- this->copyBasis(lat);
- this->m_order = lat.m_order;
- m_a = lat.m_a;
- m_shift = lat.m_shift;
- return *this;
- }
- */
-
 //============================================================================
 template<typename Int, typename Real>
 void LCGLattice<Int, Real>::seta(const Int &a, int64_t maxCoord) {

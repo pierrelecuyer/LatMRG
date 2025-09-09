@@ -1,9 +1,8 @@
-#ifndef LATMRG_MMRGLATTICE_H
-#define LATMRG_MMRGLATTICE_H
+#ifndef LATMRG_MLCGLATTICE_H
+#define LATMRG_MLCGLATTICE_H
 
 #include "latticetester/EnumTypes.h"
 #include "latticetester/Types.h"
-#include "latticetester/Lacunary.h"
 #include "latticetester/IntLatticeExt.h"
 #include "latticetester/MRGLattice.h"
 #include "latmrg/FlexModInt.h"
@@ -12,21 +11,20 @@
 namespace LatMRG {
 
   /**
-   * \todo Make this class not use/compute the dual if not asked.
    *
    * This class implements lattice basis built from M-MRG (matrix multiple
    * recursive linear congruential generators). One must first call the
    * constructor with a given congruence modulus \f$m\f$, a given generator
    * matrix for the recurrence, and a maximal dimension for the basis. One must
    * then build the lattice basis associated to the generator matrix for a
-   * given dimension. Each MMRG is defined by a generator matrix \f$A\f$. This
-   * MMRG satisfies the recurrence
+   * given dimension. Each MLCG is defined by a generator matrix \f$A\f$. This
+   * MLCG satisfies the recurrence
    * \f[
    *   X_n = A X_{n-1} \mod m.
    * \f]
    */
  template<typename Int, typename Real>
-class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
+class MLCGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
    public:
    // Parent:
    // MRGLattice(const Int &m, const IntVec &aa, int64_t maxDim, NormType norm = L2NORM);
@@ -38,7 +36,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
        * The basis is built for the lacunary indices in `lac`.
        * The vector `aa` must have k+1 components with `a[j]`=\f$a_j\f$.
        */
-      MMRGLattice(const Int & m, const IntMat & A, int maxDim,
+      MLCGLattice(const Int & m, const IntMat & A, int maxDim,
             LatticeTester::NormType norm = LatticeTester::L2NORM,
             LatticeType lat = FULL);
    
@@ -47,7 +45,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
        * indices `lac`.
       */
       //PW_TODO à faire plus tard
-      MMRGLattice (const Int & m, const IntMat & A, int maxDim,
+      MLCGLattice (const Int & m, const IntMat & A, int maxDim,
          LacunaryType & lacunaryType, IntVec & lac,
          LatticeTester::NormType norm = LatticeTester::L2NORM,
          LatticeType lat = FULL);
@@ -56,12 +54,12 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
          * Copy constructor. The maximal dimension of the created basis is set
          * equal to <tt>Lat</tt>’s current dimension.
          */
-        MMRGLattice (const MMRGLattice<Int, Real> & Lat);
+        MLCGLattice (const MLCGLattice<Int, Real> & Lat);
 
         /**
          * Destructor.
          */
-        ~MMRGLattice();
+        ~MLCGLattice();
         
         /**
          * Cleans and releases memory used by this object.
@@ -72,7 +70,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
          * Assigns `Lat` to this object. The maximal dimension of this basis is
          * set equal to <tt>Lat</tt>’s current dimension.
          */
-        MMRGLattice<Int, Real> & operator= (const MMRGLattice<Int, Real> & Lat);
+        MLCGLattice<Int, Real> & operator= (const MLCGLattice<Int, Real> & Lat);
 
        /**
          * Returns the \f$j\f$-th lacunary index.
@@ -112,7 +110,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
         bool isLacunary() const { return m_lacunaryFlag; }
 
         /**
-         * Returns a non-mutable copy of the generator matrix of the MMRG
+         * Returns a non-mutable copy of the generator matrix of the MLCG
          */
         const IntMat & getGeneratorMatrix() const { return m_A; }
 
@@ -130,13 +128,13 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
         void init();
 
         /**
-         * Builds the basis of the MMRG recurrence in case of non-lacunary
+         * Builds the basis of the MLCG recurrence in case of non-lacunary
          * indices.
          */
         void buildNonLacunaryBasis (int d);
 
         /**
-         * Builds the basis of the MMRG recurrence in case of lacunary
+         * Builds the basis of the MLCG recurrence in case of lacunary
          * indices.
          */
         void buildLacunaryBasis (int dimension);
@@ -220,6 +218,10 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
         ///bool *m_ip;
     }; // End class declaration
 
+
+
+
+
   /* Max order for lacunary case in this class; takes too much memory.
      For order > ORDERMAX, use subclass MRGLatticeLac instead */
   //PW_TODO à voir plus tard avec lacunary
@@ -227,7 +229,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
   //===========================================================================
 
   template<typename Int, typename Real>
-  MMRGLattice<Int, Real>::MMRGLattice(const Int & m, const IntMat & A, int maxDim,
+  MLCGLattice<Int, Real>::MLCGLattice(const Int & m, const IntMat & A, int maxDim,
       LatticeTester::NormType norm, LatticeType lat) : IntLatticeExt<Int, Real>(m, maxDim, norm) {
     m_A = A;
     m_B.SetDims(m_A.NumRows(), m_A.NumRows());
@@ -245,7 +247,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
   //===========================================================================
 
   template<typename Int, typename Real>
-    MMRGLattice<Int, Real>::MMRGLattice(const Int & m, const IntMat & A, int maxDim,
+    MLCGLattice<Int, Real>::MLCGLattice(const Int & m, const IntMat & A, int maxDim,
         LacunaryType & lacunaryType, IntVec & lac,
         LatticeTester::NormType norm, LatticeType lat):
       IntLatticeExt<Int, Real> (m, maxDim, norm)
@@ -265,7 +267,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
   //===========================================================================
 
   template<typename Int, typename Real>
-    MMRGLattice<Int, Real>::MMRGLattice(const MMRGLattice & lat):
+    MLCGLattice<Int, Real>::MLCGLattice(const MLCGLattice & lat):
       IntLatticeExt<Int, Real>(lat.m_modulo, lat.m_order,
           lat.getDim(), true, lat.getNorm ()), m_lac(lat.m_lac)
   {
@@ -304,7 +306,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
 
 
   template<typename Int, typename Real>
-    MMRGLattice<Int, Real>::~MMRGLattice ()
+    MLCGLattice<Int, Real>::~MLCGLattice ()
     {
        kill();
     }
@@ -312,7 +314,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
   //===========================================================================
     
     template<typename Int, typename Real>
-    void MMRGLattice<Int, Real>::kill()
+    void MLCGLattice<Int, Real>::kill()
     {
       //if (0 != m_ip)
       //  delete[] m_ip;
@@ -326,8 +328,8 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
   //===========================================================================
 
   template<typename Int, typename Real>
-    MMRGLattice<Int, Real> & MMRGLattice<Int, Real>::operator=
-    (const MMRGLattice<Int, Real> & lat)
+    MLCGLattice<Int, Real> & MLCGLattice<Int, Real>::operator=
+    (const MLCGLattice<Int, Real> & lat)
     {
       if (this == &lat)
         return *this;
@@ -345,7 +347,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
   //===========================================================================
 
   template<typename Int, typename Real>
-    void MMRGLattice<Int, Real>::init()
+    void MLCGLattice<Int, Real>::init()
     {
       //kill(); //PW_TODO : wzf ? M-A : Indeed wzf...?
       // This should not be needed
@@ -373,18 +375,18 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
   //===========================================================================
 
   template<typename Int, typename Real>
-    Int & MMRGLattice<Int, Real>::getLac (int j)
+    Int & MLCGLattice<Int, Real>::getLac (int j)
     {
       if (isLacunary() && j <= m_lac.getSize() && j > 0)
         return m_lac.getLac(j);
-      throw std::out_of_range("MMRGLattice::getLac");
+      throw std::out_of_range("MLCGLattice::getLac");
     }
 
 
   //===========================================================================
   
   template<typename Int, typename Real>
-    void MMRGLattice<Int, Real>::setLac(const LatticeTester::Lacunary<Int> & lac)
+    void MLCGLattice<Int, Real>::setLac(const LatticeTester::Lacunary<Int> & lac)
     {
       m_lac = lac;
       m_lacunaryFlag = true;
@@ -397,7 +399,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
   //PW_TODO merdasse à tester
 
   template<typename Int, typename Real>
-    std::string MMRGLattice<Int, Real>::toString () const
+    std::string MLCGLattice<Int, Real>::toString () const
     {
       std::ostringstream out;
       out << "A = " << m_A << "\n";
@@ -408,7 +410,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
  //===========================================================================
 
   template<typename Int, typename Real>
-    void MMRGLattice<Int, Real>::buildBasis (int64_t d)
+    void MLCGLattice<Int, Real>::buildBasis (int64_t d)
     {
       if (m_lacunaryFlag)
         buildLacunaryBasis(d);
@@ -420,7 +422,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
   //===========================================================================
 
   template<typename Int, typename Real>
-    void MMRGLattice<Int, Real>::buildNonLacunaryBasis (int d)
+    void MLCGLattice<Int, Real>::buildNonLacunaryBasis (int d)
     // a basis is built in dimension d
     // up to now: implementation only for B = I
    {
@@ -470,7 +472,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
   //===========================================================================
 
   template<typename Int, typename Real>
-    void MMRGLattice<Int, Real>::getSubLine(IntVec & vec, IntMat& B, int lign, int jMin,
+    void MLCGLattice<Int, Real>::getSubLine(IntVec & vec, IntMat& B, int lign, int jMin,
         int jMax)
     {
       // both jMin and jMax are included
@@ -482,7 +484,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
   //===========================================================================
 
   template<typename Int, typename Real>
-    void MMRGLattice<Int, Real>::buildLacunaryBasis (int dimension)
+    void MLCGLattice<Int, Real>::buildLacunaryBasis (int dimension)
     {
     /*
       int sizeA = this->getOrder();
@@ -588,7 +590,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
       */
 
       // if (!this->checkDuality())
-      //   LatticeTester::MyExit (1, "BUG in MMRGLattice::buildNonLacunaryBasis");
+      //   LatticeTester::MyExit (1, "BUG in MLCGLattice::buildNonLacunaryBasis");
 
     }
 
@@ -596,7 +598,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
   //===========================================================================
   
     template<typename Int, typename Real>
-    void MMRGLattice<Int, Real>::incDimBasis()
+    void MLCGLattice<Int, Real>::incDimBasis()
     {
       if (m_lacunaryFlag)
         incrementDimLacunaryBasis(m_numberLacIndices);
@@ -607,7 +609,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
   //===========================================================================
 
   template<typename Int, typename Real>
-    void MMRGLattice<Int, Real>::incrementDimNonLacunaryBasis()
+    void MLCGLattice<Int, Real>::incrementDimNonLacunaryBasis()
     // X_n = A X_{n-1} mod m. We have: dimension >= order.
     {
        int64_t d = 1 + this->getDim();  // New current dimension.
@@ -641,7 +643,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
 
       // ************* update of the primal lattice *************
       //  - we add a new coordinate to each vector v_i, this value being
-      //  determined by the MMRG recurrence (even if the original vectors have
+      //  determined by the MLCG recurrence (even if the original vectors have
       //  been transformed linearly and we must apply the same transformations
       //  to their last coordinates).
       //  - we add an extra vector (0,..., 0, m) to complete this dimension
@@ -715,7 +717,7 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
       //   // update of the new v_i coordinates using the *temp* matrix and the
       //   // first coefficients of each line (can be seen as a seed vector). So
       //   // this *temp* matrix multiplied by this seed vector gives us the next
-      //   // values generated by the MMRG for the considered dimension.
+      //   // values generated by the MLCG for the considered dimension.
       //   IntVec initialState;
       //   for (int i = 0; i < (newDimension-1); i++) {
       //     getSubLine(initialState, this->m_basis, i, 0, sizeA-1);
@@ -752,14 +754,14 @@ class MMRGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
       // this->setDualNegativeNorm();
 
       // if (!this->checkDuality())
-      //   LatticeTester::MyExit (1, "BUG in MMRGLattice::incrementDimBasis");
+      //   LatticeTester::MyExit (1, "BUG in MLCGLattice::incrementDimBasis");
      */
     }
 
   //===========================================================================
 
   template<typename Int, typename Real>
-    void MMRGLattice<Int, Real>::incrementDimLacunaryBasis(int Imax)
+    void MLCGLattice<Int, Real>::incrementDimLacunaryBasis(int Imax)
     {
       LatticeTester::IntLatticeExt<Int, Real>::incDimBasis();
       const int dim = this->getDim (); // new dimension (dim++)
