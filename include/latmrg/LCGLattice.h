@@ -109,20 +109,20 @@ public:
 
    /**
     * Builds a basis for the projection of this `MRGLattice` onto the coordinates
-    * in `proj` and puts it as the `m_basis` of `projLattice`.
+    * in `coordSet` and puts it as the `m_basis` of `projLattice`.
     * The construction uses the vector \f$\mathbf{y}\f$, as explained in the guide.
     * The largest coordinate of the projection must not exceed `m_maxCoord` and
     * the number of coordinates must not exceed `m_maxDimProj`.
     * The first coordinate of the projection must be coordinate 1.
     */
-   virtual void buildProjection(IntLattice<Int, Real> &projLattice, const Coordinates &proj)
+   virtual void buildProjection(IntLattice<Int, Real> &projLattice, const Coordinates &coordSet)
          override;
 
    /**
     * Similar to `buildProjection`, but builds a basis for the m-dual of the projection and puts it
     * as the `m_dualbasis` of `projLattice`.
     */
-   virtual void buildProjectionDual(IntLattice<Int, Real> &projLattice, const Coordinates &proj)
+   virtual void buildProjectionDual(IntLattice<Int, Real> &projLattice, const Coordinates &coordSet)
          override;
 
 protected:
@@ -258,15 +258,15 @@ void LCGLattice<Int, Real>::incDimDualBasis() {
 
 template<typename Int, typename Real>
 void LCGLattice<Int, Real>::buildProjection(IntLattice<Int, Real> &projLattice,
-      const Coordinates &proj) {
-   int64_t s = proj.size();
+      const Coordinates &coordSet) {
+   int64_t s = coordSet.size();
    assert(s <= this->m_maxDimProj);
-   assert(*proj.end() <= uint64_t(this->m_maxCoord));  // Vector y is large enough.
+   assert(*coordSet.end() <= uint64_t(this->m_maxCoord));  // Vector y is large enough.
    projLattice.setDim(s);
    IntMat & pbasis = projLattice.getBasis();  // Reference to basis of projection.
    int64_t i, j = 0;
    // Put the first row of the projection basis.
-   for (auto it = proj.begin(); it != proj.end(); it++, j++)
+   for (auto it = coordSet.begin(); it != coordSet.end(); it++, j++)
       pbasis[0][j] = this->m_y[*it - 1];
    // Then the other rows.
    for (i = 1; i < s; i++)
@@ -278,15 +278,15 @@ void LCGLattice<Int, Real>::buildProjection(IntLattice<Int, Real> &projLattice,
 
 template<typename Int, typename Real>
 void LCGLattice<Int, Real>::buildProjectionDual(IntLattice<Int, Real> &projLattice,
-      const Coordinates &proj) {
-   int64_t s = proj.size();     // The dimension of this projection.
+      const Coordinates &coordSet) {
+   int64_t s = coordSet.size();     // The dimension of this projection.
    assert(s <= this->m_maxDimProj);
-   assert(*proj.end() <= uint64_t(this->m_maxCoord));  // Vector y is large enough.
+   assert(*coordSet.end() <= uint64_t(this->m_maxCoord));  // Vector y is large enough.
    projLattice.setDimDual(s);
    IntMat & pdualBasis = projLattice.getDualBasis();   // Ref to m-dual basis.
    int64_t i, j = 0;
    // First column. The first entry will be overwrtten after.
-   for (auto it = proj.begin(); it != proj.end(); it++, j++)
+   for (auto it = coordSet.begin(); it != coordSet.end(); it++, j++)
       pdualBasis[j][0] = -this->m_y[*it - 1];
    pdualBasis[0][0] = this->m_modulo;
    // Other columns.

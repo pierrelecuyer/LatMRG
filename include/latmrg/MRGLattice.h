@@ -145,7 +145,7 @@ public:
 
    /**
     * Builds a basis for the projection of this `MRGLattice` onto the coordinates
-    * in `proj` and puts it as the `m_basis` of `projLattice`.
+    * in `coordSet` and puts it as the `m_basis` of `projLattice`.
     * The construction uses the vector \f$\mathbf{y}\f$, as explained in the guide.
     * The largest coordinate of the projection must not exceed `m_maxCoord` and
     * the number of coordinates must not exceed `m_maxDimProj`.
@@ -153,14 +153,14 @@ public:
     * otherwise we may have to build a basis from a set of up to \f$k+s\f$ generating vectors,
     * where \f$s\f$ is the dimension of the projection.
     */
-   virtual void buildProjection(IntLattice<Int, Real> &projLattice, const Coordinates &proj)
+   virtual void buildProjection(IntLattice<Int, Real> &projLattice, const Coordinates &coordSet)
          override;
 
    /**
     * Similar to `buildProjection`, but builds a basis for the m-dual of the projection and puts it
     * as the `m_dualbasis` in `projLattice`.
     */
-   virtual void buildProjectionDual(IntLattice<Int, Real> &projLattice, const Coordinates &proj)
+   virtual void buildProjectionDual(IntLattice<Int, Real> &projLattice, const Coordinates &coordSet)
          override;
 
    /**
@@ -426,27 +426,27 @@ void MRGLattice<Int, Real>::incDimDualBasis() {
 //============================================================================
 
 // The number of generating vectors will be this->m_dim.
-// The dimension of the projection will be equal to the cardinality of `proj`.
+// The dimension of the projection will be equal to the cardinality of `coordSet`.
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildProjection(IntLattice<Int, Real> &projLattice,
-      const Coordinates &proj) {
-   int64_t d = proj.size();
+      const Coordinates &coordSet) {
+   int64_t d = coordSet.size();
    assert(d <= m_maxDimProj);
-   assert(*proj.end() <= uint64_t(m_maxCoord));  // Vector y is large enough.
+   assert(*coordSet.end() <= uint64_t(m_maxCoord));  // Vector y is large enough.
    projLattice.setDim(d);
    IntMat & pbasis = projLattice.getBasis();  // Reference to basis of projection.
    int64_t i, j;
    int64_t k = this->m_order;
-   bool projCase1 = true; // This holds if the first m_order coordinates are all in `proj`.
+   bool projCase1 = true; // This holds if the first m_order coordinates are all in `coordSet`.
    // Check if we are in case 1.
    // This assumes that the coordinates of each projection are always in increasing order!  ***   
    // Note that we do not have direct access to coordinate `k` to check if it equals `k`.
    if (d < (unsigned) m_order) projCase1 = false;
    else {
-      // auto it = proj.begin() += uint64_t(k-1);  // Does not work.
+      // auto it = coordSet.begin() += uint64_t(k-1);  // Does not work.
       // if (*it != unsigned(k)) projCase1 = false;
       j = 1;
-      for (auto it = proj.begin(); it != proj.end(), j <= k; it++, j++) {
+      for (auto it = coordSet.begin(); it != coordSet.end(), j <= k; it++, j++) {
          // if (j <= k) {
          if (*it != unsigned(j)) {
             projCase1 = false;
@@ -454,76 +454,55 @@ void MRGLattice<Int, Real>::buildProjection(IntLattice<Int, Real> &projLattice,
          }
       }
    }
-   // Make sure that the vector m_y is large enough   
-   //if (getDimy() < int64_t(*proj.rbegin() + this->m_order - 1)) {
-   //   buildy(*proj.rbegin() + this->m_order - 1);
-   //}
-   if (projCase1) {
-      // We first compute the first m_order rows of the projection basis.
-      for (i = 0; i < k; i++) {
-         j = 0;
-         for (auto it = proj.begin(); it != proj.end(); it++, j++) {
-            pbasis[i][j] = m_y[*it - 1 - i + k - 1];
-         }
-      }
-      // Then the other rows.
-      for (i = k; i < d; i++)
-         for (j = 0; j < d; j++)
-            pbasis[i][j] = this->m_modulo * (i == j);
-   } else {
-      // In this case we need to use the more general algorithm.
-      j = 0;
-      for (auto it = proj.begin(); it != proj.end(); it++, j++) {
-         // Set column j of all generating vectors, for (j+1)-th coordinate of proj.
-         for (i = 0; i < k; i++) {
-            m_genTemp[i][j] = m_y[*it - i + k - 2];
-         }
-      }
-      // std::cout << " Generating vectors: \n" << m_genTemp << "\n";
-      upperTriangularBasis(pbasis, m_genTemp, this->m_modulo, this->m_dim, d);
+   int64_t iadd = 0;
+   if (!projCase1) {
+      iadd = k;  // We will have k more rows in pbasis.
+      pbasis = m_genTemp;  // Will be a set of gen vectors.
    }
-
+   // We first copy the selected coordinates for first k rows.
+   j = 0;
+   for (auto it = coordSet.begin(); it != coordSet.end(); it++, j++)
+      for (i = 0; i < k; i++)
+         pbasis[i][j] = m_y[*it - i + k - 2];
+   // Then the other rows.
+   for (i = k; i < d + iadd; i++)
+      for (j = 0; j < d; j++)
+         pbasis[i][j] = this->m_modulo * (i == j+iadd);
+   // If not case1, we must reduce the set of gen vectors.
+   if (!projCase1)
+   // std::cout << " Generating vectors: \n" << m_genTemp << "\n";
+      upperTriangularBasis(projLattice.getBasis(), m_genTemp, this->m_modulo, this->m_dim, d);
 }
 
 //============================================================================
 
 template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildProjectionDual(IntLattice<Int, Real> &projLattice,
-      const Coordinates &proj) {
-   int64_t d = proj.size();     // The dimension of this projection.
+      const Coordinates &coordSet) {
+   int64_t d = coordSet.size();     // The dimension of this projection.
    assert(d <= m_maxDimProj);
-   assert(*proj.end() <= uint64_t(m_maxCoord));  // Vector y is large enough.
+   assert(*coordSet.end() <= uint64_t(m_maxCoord));  // Vector y is large enough.
    int64_t i, j;
-   // If dimension is not large enough, we increase it.    Needed ???
-   // while (*proj.end() > uint64_t(this->m_dim)) {
-   //   this->m_dim++;
-   // }
    projLattice.setDimDual(d);
    IntMat & pbasis = projLattice.getBasis();  // Reference to basis of projection.
    IntMat & pdualBasis = projLattice.getDualBasis();   // And its m-dual.
    // In the special case where i_1 = k = 1, we get the m-dual basis directly.
    // so there is not need to build the primal basis.
-   if (this->m_order == 1 && *proj.begin() == 1) {
-      // Make sure that the vector m_y is large enough
-      //if (getDimy() < int64_t(*proj.rbegin() + this->m_order - 1)) {
-      //   buildy(*proj.rbegin() + this->m_order - 1);    // Recomputes the whole vector !!!  ***
-      //}
+   if (this->m_order == 1 && *coordSet.begin() == 1) {
       j = 0;
-      for (auto it = proj.begin(); it != proj.end(); it++, j++) {
+      for (auto it = coordSet.begin(); it != coordSet.end(); it++, j++) {
          pdualBasis[j][0] = -m_y[*it - 1];
       }
       for (j = 0; j < d; j++)
          pdualBasis[0][j] = (i == j) * this->m_modulo;
-      // pdualBasis[i][j] = (i==j) * this->m_modulo;   // i is not initialized.  ***
       for (i = 1; i < d; i++) {
          for (j = 1; j < d; j++)
             pdualBasis[i][j] = (i == j);
       }
    } else {
-      // Otherwise, we first build a basis for the primal basis of the projection
-      // and put it in the `m_basis` field of `projLattice`.
-      this->buildProjection(projLattice, proj);
-      // Then we calculate its dual.
+      // Otherwise, we build a basis for the primal basis of the projection,
+      // and we compute its m-dual.
+      this->buildProjection(projLattice, coordSet);
       mDualUpperTriangular(pdualBasis, pbasis, this->m_modulo, d);
    }
 }

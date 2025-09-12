@@ -45,8 +45,8 @@ class MRGLatticeLac: public MRGLattice<Int, Real> {
 public:
 
    /**
-    * These four constructors have the same parameters as the parent constructors,
-    * except for `maxCoord` which is not used.
+    * These constructors have the same parameters as the parent constructors,
+    * except for `maxCoord` which is not used here.
     * We have the modulus \f$m\f$, vector of multipliers in `aa` (optional) or just the order \f$k\f$,
     * maximal dimension `maxDim` of a basis (primal or m-dual),
     * maximal dimension `maxDimProj` of a projection (for `buildProjection`), and the type of norm.
@@ -147,18 +147,18 @@ public:
 
    /**
     * Builds a basis for the projection of the current `MRGLatticeLac` onto the coordinates
-    * in `proj` and puts it as the `m_basis` of `projLattice`.
+    * in `coordSet` and puts it as the `m_basis` of `projLattice`.
     * This is done simply by projecting the current `m_basis`, as in the default
     * implementation in `IntLattice`.
     */
-   virtual void buildProjection(IntLattice<Int, Real> &projLattice, const Coordinates &proj)
+   virtual void buildProjection(IntLattice<Int, Real> &projLattice, const Coordinates &coordSet)
          override;
 
    /**
     * Similar to `buildProjection`, but builds a basis for the m-dual of the projection and puts it
     * as the `m_dualbasis` in `projLattice`.  Also done as the default in `IntLattice`.
     */
-   virtual void buildProjectionDual(IntLattice<Int, Real> &projLattice, const Coordinates &proj)
+   virtual void buildProjectionDual(IntLattice<Int, Real> &projLattice, const Coordinates &coordSet)
          override;
 
    /**
@@ -224,6 +224,9 @@ protected:
 
 //===========================================================================
 // Implementation:
+
+//===========================================================================
+
 
 template<typename Int, typename Real>
 MRGLatticeLac<Int, Real>::MRGLatticeLac(const Int &m, int64_t k, int64_t maxDim, int64_t maxDimProj,
@@ -450,8 +453,8 @@ void MRGLatticeLac<Int, Real>::incDimDualBasis() {
 /*
  template<typename Int, typename Real>
  bool MRGLatticeLac<Int, Real>::buildProjection(IntMat &basis, int64_t dimbasis, IntMat &pbasis,
- const Coordinates &proj) {
- projectionConstructionUpperTri<Int>(pbasis, basis, proj, this->m_modulo,
+ const Coordinates &coordSet) {
+ projectionConstructionUpperTri<Int>(pbasis, basis, coordSet, this->m_modulo,
  this->m_dim);
  return false;
  }
@@ -459,13 +462,13 @@ void MRGLatticeLac<Int, Real>::incDimDualBasis() {
 
 template<typename Int, typename Real>
 void MRGLatticeLac<Int, Real>::buildProjection(IntLattice<Int, Real> &projLattice,
-      const Coordinates &proj) {
+      const Coordinates &coordSet) {
    myExit("MRGLatticeLac::buildProjection not yet implemented.");
 }
 
 template<typename Int, typename Real>
 void MRGLatticeLac<Int, Real>::buildProjectionDual(IntLattice<Int, Real> &projLattice,
-      const Coordinates &proj) {
+      const Coordinates &coordSet) {
    myExit("MRGLatticeLac::buildProjectionDual not yet implemented.");
 }
 

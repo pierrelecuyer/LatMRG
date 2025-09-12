@@ -15,7 +15,10 @@
 #include "NTL/lzz_pE.h"
 #include "NTL/lzz_pX.h"
 #include "NTL/lzz_pXFactoring.h"
+#include "NTL/mat_poly_ZZ_p.h"
+#include "NTL/mat_poly_lzz_p.h"
 
+#include "latticetester/FlexTypes.h"
 #include "latticetester/Util.h"
 #include "latmrg/FlexModInt.h"
 #include "latmrg/EnumTypes.h"
@@ -77,8 +80,9 @@ namespace LatMRG {
  * primitive root of \f$m\f$. Condition 3 is automatically satisfied
  * when \f$r\f$ is prime.
  *
- * The types used for the polynomial coefficients in depend on the choice
- * of `Int` and are determined by the template class `FlexModInt.h`.
+ * The types used for the polynomial coefficients depend on the choice
+ * of `Int` and are determined by the selected types code in `FlexTypes`
+ * or in the template class `FlexModInt.h`.
  * The function `isPrimitiveElement` does no use `FlexModInt`.
  */
 
@@ -101,7 +105,24 @@ static bool isPrimitiveElement(const Int &a, const IntFactorization<Int> &fac, c
  * The modulus `m` should be set before, via the `setModulusIntP` function from `FlexModInt`.
  */
 template<typename Int>
+static bool isPrimitive(typename FlexModInt<Int>::PolX &f, const Int &m, const IntFactorization<Int> &fm,
+      const IntFactorization<Int> &fr);
+
+/**
+ * Returns `true` iff the characteristic polynomial
+ * \f$P(z) = z^k - a_1 z^{k-1} - \cdots- a_{k-1} z - a_k\f$ with coefficients \f$c_{k-j} = a_j = \f$`aa[j]`
+ * is a primitive polynomial modulo \f$m\f$.
+ */
+template<typename Int>
 static bool isPrimitive(const NTL::Vec<Int> &aa, const Int &m, const IntFactorization<Int> &fm,
+      const IntFactorization<Int> &fr);
+
+/**
+ * Returns `true` iff the characteristic polynomial of the matrix `A` is a primitive polynomial
+ * modulo \f$m\f$.
+ */
+template<typename Int>
+static bool isPrimitive(const NTL::Mat<Int> &A, const Int &m, const IntFactorization<Int> &fm,
       const IntFactorization<Int> &fr);
 
 /**
@@ -109,7 +130,15 @@ static bool isPrimitive(const NTL::Vec<Int> &aa, const Int &m, const IntFactoriz
  * Condition 1 is assumed to hold.
  */
 template<typename Int>
+static bool isPrimitive23(typename FlexModInt<Int>::PolX &f, const Int &m,
+      const IntFactorization<Int> &fr);
+
+template<typename Int>
 static bool isPrimitive23(const NTL::Vec<Int> &aa, const Int &m,
+      const IntFactorization<Int> &fr);
+
+template<typename Int>
+static bool isPrimitive23(const NTL::Mat<Int> &A, const Int &m,
       const IntFactorization<Int> &fr);
 
 /**
@@ -118,35 +147,44 @@ static bool isPrimitive23(const NTL::Vec<Int> &aa, const Int &m,
  * The modulus used in `IntP` is assumed to be correct, this is not verified.
  */
 template<typename Int>
-static void setCharacPoly(typename FlexModInt<Int>::PolX &f, const NTL::Vec<Int> &aa);
+static void getCharacPoly(typename FlexModInt<Int>::PolX &f, const NTL::Vec<Int> &aa);
 
 /**
  * In this version, the vector of coefficients is passed directly as an `IntVecP`,
  * so there is no need to convert it internally (this is more efficient).
  */
 template<typename Int>
-static void setCharacPoly(typename FlexModInt<Int>::PolX &f,
+static void getCharacPoly(typename FlexModInt<Int>::PolX &f,
       typename FlexModInt<Int>::IntVecP &aaP);
 
 /**
- * Converts the vector state `xx` of an MRG to its polynomial representation in `f`.
+ * Computes and returns in `f` the characteristic polynomial of the matrix `A`.
+ */
+template<typename Int>
+static void getCharacPoly(typename FlexModInt<Int>::PolX &f, const NTL::Mat<Int> &A);
+
+//template<typename Int>
+//static void getCharacPoly(typename FlexModInt<Int>::PolX &f, const typename FlexModInt<Int>::IntMatP &A);
+
+/**
+ * Converts the vector state `vstate` of an MRG to its polynomial representation in `f`.
  * The vector of coefficients of the MRG is passed in `aa` and the modulus used in `IntP`
  * is assumed to be the correct one.
- * The vector `xx` is assumed to contain the vector state \f$(x_{n-k+1,\dots,x_n)\f$ with
- * `xx[j]` \f$x_{n-k+1+j]\f$.  The polynomial `f` will have degree `k-1` or less.
+ * The vector `vstate` is assumed to contain the vector state \f$(x_{n-k+1,\dots,x_n)\f$ with
+ * `vstate[j]` \f$x_{n-k+1+j]\f$.  The polynomial `f` will have degree `k-1` or less.
  */
 template<typename Int>
 static void vecMRGToPoly(typename FlexModInt<Int>::PolX &f, typename FlexModInt<Int>::IntVecP aaP,
-      const NTL::Vec<Int> &xx);
+      const NTL::Vec<Int> &vstate);
 
 /**
- * Converts the polynomial representation in `f` to the vector state `xx` of an MRG,
- * with `xx[j]` \f$x_{n-k+1+j]\f$.   The polynomial `f` must have degree `k-1` or less.
+ * Converts the polynomial representation in `f` to the vector state `vstate` of an MRG,
+ * with `vstate[j]` \f$x_{n-k+1+j]\f$.   The polynomial `f` must have degree `k-1` or less.
  * The vector of coefficients of the MRG is passed in `aa` and the modulus used in `IntP`
  * is assumed to be the correct one.
  */
 template<typename Int>
-static void polyToVecMRG(const NTL::Vec<Int> &xx, typename FlexModInt<Int>::IntVecP aaP,
+static void polyToVecMRG(const NTL::Vec<Int> &vstate, typename FlexModInt<Int>::IntVecP aaP,
       typename FlexModInt<Int>::PolX &f);
 
 /**
@@ -179,27 +217,37 @@ bool isPrimitiveElement(const Int &a, const IntFactorization<Int> &fac, const In
 }
 
 template<typename Int>
-static bool isPrimitive(const NTL::Vec<Int> &aa, const Int &m, const IntFactorization<Int> &fm,
+static bool isPrimitive(typename FlexModInt<Int>::PolX &f, const Int &m, const IntFactorization<Int> &fm,
       const IntFactorization<Int> &fr) {
-   int64_t k = aa.length() - 1;
-   Int ak = aa[k];
-   if ((k & 1) == 1) ak = -ak;
-   if (!isPrimitiveElement(ak, fm, m)) return false;
-   return isPrimitive23(aa, m, fr);
+   Int ak;
+   NTL::conv(ak, rep(ConstTerm(f)));
+   if (!isPrimitiveElement(-ak, fm, m)) return false;
+   return isPrimitive23(f, m, fr);
 }
 
 template<typename Int>
-static bool isPrimitive23(const NTL::Vec<Int> &aa, const Int &m,
+static bool isPrimitive(const NTL::Vec<Int> &aa, const Int &m, const IntFactorization<Int> &fm,
+      const IntFactorization<Int> &fr) {
+   typename FlexModInt<Int>::PolX f;
+   getCharacPoly<Int>(f, aa);
+   return isPrimitive(f, m, fm, fr);
+}
+
+template<typename Int>
+static bool isPrimitive(const NTL::Mat<Int> &A, const Int &m, const IntFactorization<Int> &fm,
+      const IntFactorization<Int> &fr) {
+   typename FlexModInt<Int>::PolX f;
+   getCharacPoly<Int>(f, A);
+   return isPrimitive(f, m, fm, fr);
+}
+
+template<typename Int>
+static bool isPrimitive23(typename FlexModInt<Int>::PolX &f, const Int &m,
       const IntFactorization<Int> &fr) {
    // First, we make sure that IntP is using the correct modulus m.
    if (m != FlexModInt<Int>::IntP::modulus()) setModulusIntP<Int>(m);
-   static typename FlexModInt<Int>::PolX f;
-   setCharacPoly(f, aa);
-   static int64_t k;
-   k = deg(f);
+   int64_t k = deg(f);
    if (k == 1) return true;
-   // First check irreducibility, which is faster.
-   //  if (0 == DetIrredTest(Q))   // medium slow
    if (0 == IterIrredTest(f))   // fastest
    return false;
 
@@ -231,7 +279,25 @@ static bool isPrimitive23(const NTL::Vec<Int> &aa, const Int &m,
 }
 
 template<typename Int>
-static void setCharacPoly(typename FlexModInt<Int>::PolX &f, const NTL::Vec<Int> &aa) {
+static bool isPrimitive23(const NTL::Vec<Int> &aa, const Int &m,
+      const IntFactorization<Int> &fr) {
+   typename FlexModInt<Int>::PolX f;
+   getCharacPoly<Int>(f, aa);
+   // std::cout << "Charact. poly f = " << f << "\n";
+   return isPrimitive23<Int>(f, m, fr);
+}
+
+template<typename Int>
+static bool isPrimitive23(const NTL::Mat<Int> &A, const Int &m,
+      const IntFactorization<Int> &fr) {
+   typename FlexModInt<Int>::PolX f;
+   getCharacPoly<Int>(f, A);
+   // std::cout << "Charact. poly f = " << f << "\n";
+   return isPrimitive23<Int>(f, m, fr);
+}
+
+template<typename Int>
+static void getCharacPoly(typename FlexModInt<Int>::PolX &f, const NTL::Vec<Int> &aa) {
    typename FlexModInt<Int>::IntVecP aaP;  // The coefficients `aa` must be converted to Z_p type.
    conv(aaP, aa);
    int64_t k = aaP.length() - 1;
@@ -241,7 +307,7 @@ static void setCharacPoly(typename FlexModInt<Int>::PolX &f, const NTL::Vec<Int>
 }
 
 template<typename Int>
-static void setCharacPoly(typename FlexModInt<Int>::PolX &f,
+static void getCharacPoly(typename FlexModInt<Int>::PolX &f,
       typename FlexModInt<Int>::IntVecP aaP) {
    int64_t k = aaP.length() - 1;
    SetCoeff(f, k, 1);  // c_k = 1.
@@ -250,31 +316,52 @@ static void setCharacPoly(typename FlexModInt<Int>::PolX &f,
 }
 
 template<typename Int>
+static void getCharacPoly(typename FlexModInt<Int>::PolX &f,
+      const typename FlexModInt<Int>::IntMatP &Ap) {
+   NTL::CharPoly(f, Ap);
+}
+
+template<typename Int>
+static void getCharacPoly(typename FlexModInt<Int>::PolX &f,
+      const IntMat &A) {
+   int64_t k = A.NumRows();
+   typename FlexModInt<Int>::IntMatP Ap;
+   Ap.SetDims(k, k);
+   for (int64_t i = 0; i < k; i++)
+      for (int64_t j = 0; j < k; j++) {
+         Int temp = (A[i][j]);
+         Ap[i][j] = conv<typename FlexModInt<Int>::IntP>(temp);
+         //Ap[i][j] = conv<IntP>(temp);
+      }
+   NTL::CharPoly(f, Ap);
+}
+
+template<typename Int>
 static void vecMRGToPoly(typename FlexModInt<Int>::PolX &f, typename FlexModInt<Int>::IntVecP aaP,
-      const NTL::Vec<Int> &xx) {
+      const NTL::Vec<Int> &vstate) {
    int64_t k = aaP.length() - 1;
-   // We have xx[j] = x_{n-k+1+j].
-   SetCoeff(f, k - 1, xx[0]);
+   // We have vstate[j] = x_{n-k+1+j].
+   SetCoeff(f, k - 1, vstate[0]);
    typename FlexModInt<Int>::IntP sum;
    for (int64_t j = 1; j < k; j++) {
-      sum = xx[j];
+      sum = vstate[j];
       for (int64_t i = 1; i <= j; i++)
-         sum -= aaP[i] * xx[j - i];
+         sum -= aaP[i] * vstate[j - i];
       SetCoeff(f, k - j, sum);
    }
 }
 
 template<typename Int>
-static void polyToVecMRG(const NTL::Vec<Int> &xx, typename FlexModInt<Int>::IntVecP aaP,
+static void polyToVecMRG(const NTL::Vec<Int> &vstate, typename FlexModInt<Int>::IntVecP aaP,
       typename FlexModInt<Int>::PolX &f) {
    int64_t k = aaP.length() - 1;
-   Getcoeff(xx[0], f, k - 1);
+   Getcoeff(vstate[0], f, k - 1);
    typename FlexModInt<Int>::IntP sum;
    for (int64_t j = 1; j < k; j++) {
       Getcoeff(sum, f, k - j);
       for (int64_t i = 1; i <= j; i++)
          sum += aaP[i] * coeff(f, j - i);
-      xx[j] = sum;
+      vstate[j] = sum;
    }
 }
 

@@ -6,9 +6,6 @@
 #include "latticetester/EnumTypes.h"
 #include "latticetester/FlexTypes.h"
 #include "latticetester/IntLatticeExt.h"
-//#include "latticetester/MRGLattice.h"
-//#include "latmrg/FlexModInt.h"
-//#include "Primitivity.h"
 
 namespace LatMRG {
 
@@ -125,20 +122,19 @@ public:
 
    /**
     * Builds a basis for the projection of this `MLCGLattice` onto the coordinates
-    * in `proj` and puts it as the `m_basis` of `projLattice`.
+    * in `coordSet` and puts it as the `m_basis` of `projLattice`.
     * The largest coordinate of the projection must not exceed `m_maxDim` and
     * the number of coordinates must not exceed `m_maxDimProj`.
     */
-   virtual void buildProjection(IntLattice<Int, Real> &projLattice, const Coordinates &proj)
+   virtual void buildProjection(IntLattice<Int, Real> &projLattice, const Coordinates &coordSet)
          override;
 
    /**
     * Similar to `buildProjection`, but builds a basis for the m-dual of the projection and puts it
     * as the `m_dualbasis` in `projLattice`.
     */
-   virtual void buildProjectionDual(IntLattice<Int, Real> &projLattice, const Coordinates &proj)
+   virtual void buildProjectionDual(IntLattice<Int, Real> &projLattice, const Coordinates &coordSet)
          override;
-
 
 protected:
 
@@ -321,7 +317,7 @@ void MLCGLattice<Int, Real>::buildBasis(int64_t dim) {
             // m_BpowA = m_B * m_powA % this->m_modulo;
             Int sum = Int(0);
             for (l = 0; l < m_k; l++)
-               sum += m_B[i][l] * m_powersOfA[i][l + (j/m_w)*m_k];
+               sum += m_B[i][l] * m_powersOfA[i][l + (j / m_w) * m_k];
             this->m_basis[i][j] = sum % this->m_modulo;
          }
       }
@@ -401,15 +397,64 @@ void MLCGLattice<Int, Real>::incDimDualBasis() {
 
 template<typename Int, typename Real>
 void MLCGLattice<Int, Real>::buildProjection(IntLattice<Int, Real> &projLattice,
-      const Coordinates &proj) {
+      const Coordinates &coordSet) {
+   assert(!m_withB);   // Implemented only for B=I for now.
+   int64_t d = coordSet.size();
+   assert(d <= m_maxDimProj);
+   assert(*coordSet.end() <= uint64_t(this->m_maxDim));
+   projLattice.setDim(d);
+   IntMat & pbasis = projLattice.getBasis();  // Reference to basis of projection.
+   int64_t i, j;
+   int64_t k = this->m_k;
+   bool projCase1 = true; // This holds if the first m_k coordinates are all in `coordSet`.
+   // Check if we are in case 1.
+   // This assumes that the coordinates of each projection are always in increasing order!  ***
+   if (d < (unsigned) k) projCase1 = false;
+   else {
+      j = 1;
+      for (auto it = coordSet.begin(); it != coordSet.end(), j <= k; it++, j++) {
+         if (*it != unsigned(j)) {
+            projCase1 = false;
+            break;
+         }
+      }
+   }
+   int64_t iadd = 0;
+   if (!projCase1) {
+      iadd = k;  // We will have k more rows in pbasis.
+      pbasis = m_genTemp;  // Will be a set of gen vectors.
+   }
+   // We first copy the selected coordinates for first k rows.
+   j = 0;
+   for (auto it = coordSet.begin(); it != coordSet.end(); it++, j++)
+      for (i = 0; i < k; i++)
+         pbasis[i][j] = m_powersOfA[i][*it - 1];
+   // Then the other rows.
+   for (i = k; i < d + iadd; i++)
+      for (j = 0; j < d; j++)
+         pbasis[i][j] = this->m_modulo * (i == j+iadd);
+   // If not case1, we must reduce the set of gen vectors.
+   if (!projCase1)
+      // std::cout << " Generating vectors: \n" << m_genTemp << "\n";
+      upperTriangularBasis(projLattice.getBasis(), m_genTemp, this->m_modulo, this->m_dim, d);
 }
 
-//===========================================================================
+//============================================================================
 
 template<typename Int, typename Real>
 void MLCGLattice<Int, Real>::buildProjectionDual(IntLattice<Int, Real> &projLattice,
-      const Coordinates &proj) {
+      const Coordinates &coordSet) {
+   assert(!m_withB);
+   int64_t d = coordSet.size();     // The dimension of this projection.
+   assert(d <= m_maxDimProj);
+   assert(*coordSet.end() <= uint64_t(this->m_maxDim));
+   projLattice.setDimDual(d);
+   // We build a basis for the projection and we compute its m-dual.
+   this->buildProjection(projLattice, coordSet);
+   mDualUpperTriangular(projLattice.getDualBasis(), projLattice.getBasis(), this->m_modulo, d);
 }
+
+//===========================================================================
 
 }   // End namespace LatMRG
 #endif

@@ -135,18 +135,18 @@ public:
 
    /**
     * Builds a basis for the projection of the current `LCGLatticeLac` onto the coordinates
-    * in `proj` and puts it as the `m_basis` of `projLattice`.
+    * in `coordSet` and puts it as the `m_basis` of `projLattice`.
     * This is done simply by projecting the current `m_basis`, as in the default
     * implementation in `IntLattice`.
     */
-   virtual void buildProjection(IntLattice<Int, Real> &projLattice, const Coordinates &proj)
+   virtual void buildProjection(IntLattice<Int, Real> &projLattice, const Coordinates &coordSet)
          override;
 
    /**
     * Similar to `buildProjection`, but builds a basis for the m-dual of the projection and puts it
     * as the `m_dualbasis` in `projLattice`.  Also done as the default in `IntLattice`.
     */
-   virtual void buildProjectionDual(IntLattice<Int, Real> &projLattice, const Coordinates &proj)
+   virtual void buildProjectionDual(IntLattice<Int, Real> &projLattice, const Coordinates &coordSet)
          override;
 
 
@@ -326,13 +326,13 @@ void LCGLatticeLac<Int, Real>::incDimDualBasis() {
 
 template<typename Int, typename Real>
 void LCGLatticeLac<Int, Real>::buildProjection(IntLattice<Int, Real> &projLattice,
-      const Coordinates &proj) {
+      const Coordinates &coordSet) {
    myExit("LCGLatticeLac::buildProjection not yet implemented.");
 }
 
 template<typename Int, typename Real>
 void LCGLatticeLac<Int, Real>::buildProjectionDual(IntLattice<Int, Real> &projLattice,
-      const Coordinates &proj) {
+      const Coordinates &coordSet) {
    myExit("LCGLatticeLac::buildProjectionDual not yet implemented.");
 }
 

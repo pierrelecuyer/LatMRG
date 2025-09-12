@@ -12,8 +12,10 @@
 #include "latticetester/FlexTypes.h"
 #include "latmrg/EnumTypes.h"
 #include "latmrg/IntFactorization.h"
+#include "latmrg/Primitivity.h"
 #include "latmrg/LCGComponent.h"
 #include "latmrg/MRGComponent.h"
+#include "latmrg/MLCGComponent.h"
 
 using namespace LatMRG;
 
@@ -59,6 +61,18 @@ static void TestPeriodMRG (const Int &m, int k, const NTL::Vec<Int> &aa, DecompT
    std::cout << "Max period: " << boolYN[maxper] << "\n\n";
 }
 
+/*
+// Constructs an `MLCGComponent` object and tests if it has maximal period.
+template<typename Int>
+static void TestPeriodMLCG (const Int &m, int k, const NTL::Mat<Int> &A, DecompType decompm1, const char *filem1, DecompType decompr,
+      const char *filer) {
+   MLCGComponent<Int> mlcg(m, k, decompm1, filem1, decompr, filer);
+   std::cout << "TestPeriodMRG for m = " << mlcg.getModulus() << ",\n A = " << A << "\n";
+   bool maxper = mlcg.maxPeriod(A);
+   std::cout << "Max period: " << boolYN[maxper] << "\n\n";
+}
+*/
+
 int main() {
    typedef NTL::ZZ Int;
    std::cout << "\nTestPeriod with Int = ZZ  \n\n";
@@ -103,11 +117,37 @@ int main() {
    NTL::Vec<Int> aa;
    aa.SetLength(k+1);
    Int mm(9223372036854773561);
+   setModulusIntP<Int>(mm);
    aa[0] = 1;
    aa[1] = 1145902849652723;
    aa[2] = 0;
    aa[3] = -1184153554609676;
    TestPeriodMRG<Int> (mm, 3, aa, DECOMP, NULL, DECOMP_PRIME, NULL);
+
+   //PolX f;
+   typename FlexModInt<Int>::PolX f;
+   // bool maxper;
+   // maxper = isPrimitive ()
+/*
+   m = 101;
+   setModulusIntP<Int>(m);
+   aa[0] = 1;
+   aa[1] = 7;
+   aa[2] = 1;
+   aa[3] = 21;
+*/
+   getCharacPoly<Int>(f, aa);
+   std::cout << "Charact. poly f = " << f << "\n";
+
+   NTL::Mat<Int> A;
+   A.SetDims(k, k);
+   A[0][0] = 0;  A[0][1] = 1;  A[0][2] = 0;
+   A[1][0] = 0;  A[1][1] = 0;  A[1][2] = 1;
+   A[2][0] = aa[3];  A[2][1] = aa[2];  A[2][2] = aa[1];
+   // typename FlexModInt<Int>::PolX f;
+   getCharacPoly<Int>(f, A);
+   std::cout << "Charact. poly f = " << f << "\n";
+
 
    return 0;
 }

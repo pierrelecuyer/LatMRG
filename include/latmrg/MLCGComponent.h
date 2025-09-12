@@ -1,9 +1,8 @@
-#ifndef	LATMRG_MRGCOMPONENT_H
-#define	LATMRG_MRGCOMPONENT_H
+#ifndef	LATMRG_MLCGCOMPONENT_H
+#define	LATMRG_MLCGCOMPONENT_H
 
 #include <NTL/mat_poly_ZZ.h>
 #include <string>
-#include "latticetester/FlexTypes.h"
 #include "latmrg/EnumTypes.h"
 #include "latmrg/IntFactorization.h"
 #include "latmrg/Primitivity.h"
@@ -13,25 +12,22 @@ namespace LatMRG {
 using namespace LatMRG;
 
 /**
- * This class offers tools to verify if an MRG recurrence or order \f$k\f$ modulo \f$m\f$,
- * of the form
+ * This class offers tools to verify if an MLCG recurrence or the form
  * \f[
- *   x_n = (a_1 x_{n-1} + \cdots+ a_k x_{n-k}) \mbox{ mod } m,
+ *   \mathbb{x}_n = \mathbb{A} \mathbb{x}_{n-1} \mod m
  * \f]
- * has full period or not.  The object is constructed for given values of
- * \f$k\f$ and \f$m\f$, and can be used for several values of the
- * coefficients \f$a_1,\dots,a_k\f$, via the function `maxPeriod`.
- * It stores information such as the factorizations of
- * \f$m-1\f$ and of \f$r = (m^k-1)/(m-1)\f$, which are needed to check for the full period
- * conditions.  It does not look at the lattice structure.
+ * has full period or not. This depends on \f$m\f$ and on the characteristic
+ * polynomial of the \f$k\times k\f$ transition matrix \f$\mathbb{A}\f$,
+ * and it requires the factorizations of \f$m-1\f$ and of \f$r = (m^k-1)/(m-1)\f$,
+ * which can be done once for all if we want to examine several matrices \f$\mathbb{A}\f$.
  */
-template<typename Int> class MRGComponent {
+template<typename Int> class MLCGComponent {
 
 public:
 
    /**
-    * Constructor for modulus \f$m\f$ and order \f$k\f$.
-    * The vector of multipliers must be set separately by `setaa`.
+    * Constructor for modulus \f$m\f$ and \f$k\times k\f$ transition matrices.
+    * The matrix \f$\mathbb{A}\f$ must be set separately by `setA`.
     * The Arguments `decom1` and `decor` specify the type of the prime factor
     * decomposition of \f$m-1\f$ and \f$r=(m^k-1)/(m-1)\f$, respectively.
     * The type `DecompType` is defined in `EnumTypes` and offers the
@@ -45,48 +41,49 @@ public:
     * The given files must be accessible by the program.
     * The format for the factorization in these files is described in class `IntFactorization`.
     */
-   MRGComponent(const Int &m, int64_t k, DecompType decompm1, const char *filem1, DecompType decompr,
+   MLCGComponent(const Int &m, int64_t k, DecompType decompm1, const char *filem1, DecompType decompr,
          const char *filer);
 
    /**
     * Same as the previous constructor, but with \f$m = b^e + c\f$.
     */
-   MRGComponent(Int b, int64_t e, Int c, int64_t k, DecompType decompm1, const char *filem1,
+   MLCGComponent(Int b, int64_t e, Int c, int64_t k, DecompType decompm1, const char *filem1,
          DecompType decompr, const char *filer);
 
    /**
     * Destructor.
     */
-   ~MRGComponent();
+   ~MLCGComponent();
 
    /**
-    * Sets the vector of multipliers to `aa`, with `aa[j]` containing \f$a_j\f$.
-    * The order \f$k\f$ of the MRG is set equal to the length of this vector, plus 1.
-    * If we only want to call `maxPeriod`, there is no need to call `setaa` before.
+    * Sets the matrix \f$\mathbb{A}\f$ to `A`, which must be a \f$k\times k\f$ matrix
+    * that contains the elements of \f$\mathbb{A}\f$,
+    * If we only want to call `maxPeriod(A)`, we can just pass it \f$\mathbb{A}\f$ and
+    * there is no need to call `setA` before.
     */
-   void setaa(const IntVec &aa);
+   void setA(const IntMat &A);
 
    /**
-    * Returns the vector of multipliers of the recurrence, in same format as `aa` above.
+    * Returns the matrix \f$\mathbb{A}\f$ of the recurrence, in same format as in `setA` above.
     */
-   IntVec getaa() const {
-      return m_aa;
+   IntMat getA() const {
+      return m_A;
    }
 
    /**
-    * Returns `true` if the coefficients in `aa` give an MRG with maximal
+    * Returns `true` if `A` give an MLCG with maximal
     * period; returns `false` otherwise.
-    * The internal vector of multipliers is set to this `aa`.
+    * The internal matrix \f$\mathbb{A}\f$ is also set to this `A`.
     */
-   bool maxPeriod(const IntVec &aa);
+   bool maxPeriod(const IntMat &A);
 
    /**
     * Assumes that the maximal-period condition (1) holds and checks only for
     * conditions 2 and 3. Returns `true` iff these two conditions hold for the
-    * vector of coefficients \f$aa\f$.
-    * The internal vector of multipliers is set to this `aa`.
+    * matrix \f$\mathbb{A}\f$.
+    * The internal matrix \f$\mathbb{A}\f$ is also set to this `A`.
     */
-   bool maxPeriod23(const IntVec &aa);
+   bool maxPeriod23(const IntMat &A);
 
    /**
     * Returns the value of the modulus \f$m\f$ of the recurrence.
@@ -96,9 +93,9 @@ public:
    }
 
    /**
-    * Returns the value of the order \f$k\f$ of the recurrence.
+    * Returns the value of \f$k\f$, the dimension of the matrix.
     */
-   int64_t getOrder() const {
+   int64_t getk() const {
       return m_k;
    }
 
@@ -133,19 +130,7 @@ public:
    /**
     * Returns a descriptor of this object as a string.
     */
-   std::string toString();
-
-   /**
-    * Sets the type of this generator component.    ??????
-    void setType(GenType type) {
-    m_type = type;
-    }
-    * Gets the type of this component.
-    *
-    GenType getType() {
-    return m_type;
-    }
-    */
+   // std::string toString();
 
 private:
 
@@ -208,14 +193,10 @@ private:
    int64_t m_k = 1;
 
    /**
-    * The multipliers \f$a_i\f$ of the recurrence, \f$i = 1, ..., k\f$.
+    * The transition matrix \f$\mathbf{A}\f$.
     */
-   IntVec m_aa;
+   IntMat m_A;
 
-   /**
-    * The generator matrix \f$A\f$ of the recurrence for MMRG   ******  ???
-    */
-   // IntMat m_A;    // Want it here?
    /**
     * Basis `b` with `b^e+c = m`.
     * */
@@ -257,13 +238,6 @@ private:
     */
    Int nj;     // Not sure if we need this here.   ***************
 
-   /**
-    * Contains the initial state of the cycle we want to analyze when the
-    * lattice type is `ORBIT`. It is made of \f$k\f$ numbers.
-    *                            *********   But this class does not look at lattices!
-    */
-   //  IntVec orbitSeed;
-
 };
 // End class declaration
 
@@ -273,7 +247,7 @@ private:
 //=============================================================================
 // Main constructor.
 template<typename Int>
-MRGComponent<Int>::MRGComponent(const Int &m, int64_t k, DecompType decompm1, const char *filem1,
+MLCGComponent<Int>::MLCGComponent(const Int &m, int64_t k, DecompType decompm1, const char *filem1,
       DecompType decompr, const char *filer) {
    m_b = m;
    m_e = 1;
@@ -285,7 +259,7 @@ MRGComponent<Int>::MRGComponent(const Int &m, int64_t k, DecompType decompm1, co
 
 // Constructor with alternative format for m.
 template<typename Int>
-MRGComponent<Int>::MRGComponent(Int b, int64_t e, Int c, int64_t k, DecompType decompm1, const char *filem1,
+MLCGComponent<Int>::MLCGComponent(Int b, int64_t e, Int c, int64_t k, DecompType decompm1, const char *filem1,
       DecompType decompr, const char *filer) {
    Int m = NTL::power(b, e) + c;
    m_b = b;
@@ -296,12 +270,12 @@ MRGComponent<Int>::MRGComponent(Int b, int64_t e, Int c, int64_t k, DecompType d
 
 //============================================================================
 template<typename Int>
-void MRGComponent<Int>::init(const Int &m, int64_t k, DecompType decompm1, const char *filem1,
+void MLCGComponent<Int>::init(const Int &m, int64_t k, DecompType decompm1, const char *filem1,
       DecompType decompr, const char *filer) {
    m_m = m;
    setModulusIntP<Int>(m_m);
    m_k = k;
-   m_aa.SetLength(m_k);
+   m_A.SetDims(k, k);
    // orbitSeed.SetLength(m_k);   // Used ???
    Int mm1;  // m-1
    mm1 = m - 1;
@@ -315,7 +289,7 @@ void MRGComponent<Int>::init(const Int &m, int64_t k, DecompType decompm1, const
 
 //===========================================================================
 template<typename Int>
-MRGComponent<Int>::~MRGComponent() {
+MLCGComponent<Int>::~MLCGComponent() {
    //a.kill();
    //orbitSeed.kill();
 }
@@ -323,45 +297,29 @@ MRGComponent<Int>::~MRGComponent() {
 //===========================================================================
 
 template<typename Int>
-void MRGComponent<Int>::setaa(const IntVec &aa) {
-   assert(aa.length() == m_k+1);
-   m_aa = aa;
+void MLCGComponent<Int>::setA(const IntMat &A) {
+   assert(A.NumRows() == m_k);
+   m_A = A;
 }
 
 //===========================================================================
 
 template<typename Int>
-bool MRGComponent<Int>::maxPeriod(const IntVec &aa) {
-   setaa(aa);
-   return isPrimitive(aa, m_m, ifm1, ifr);
+bool MLCGComponent<Int>::maxPeriod(const IntMat &A) {
+   setA(A);
+   return isPrimitive(A, m_m, ifm1, ifr);
 }
 
 //===========================================================================
 // Must be rewritten!
 template<typename Int>
-bool MRGComponent<Int>::maxPeriod23(const IntVec &aa) {
-   setaa(aa);
-   return isPrimitive23(aa, m_m, ifr);
+bool MLCGComponent<Int>::maxPeriod23(const IntMat &A) {
+   setA(A);
+   return isPrimitive23(A, m_m, ifr);
 }
 
-//===========================================================================
-
-template<typename Int>
-std::string MRGComponent<Int>::toString() {
-   std::ostringstream os;
-   os << "MRGComponent:";
-   os << "\n   m = " << m_m << " = " << m_b << "^" << m_e << " + " << m_c;
-   os << "\n   k = " << m_k;
-   os << "\n   aa = ";
-   std::string str(os.str());
-   std::string sa = LatticeTester::toString(m_aa, m_k);
-   str += sa;
-   str += "\n";
-   return str;
-}
-
-template class MRGComponent<std::int64_t> ;
-template class MRGComponent<NTL::ZZ> ;
+template class MLCGComponent<std::int64_t> ;
+template class MLCGComponent<NTL::ZZ> ;
 
 } // End namespace LatMRG
 #endif
