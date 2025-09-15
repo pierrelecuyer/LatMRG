@@ -6,7 +6,7 @@
 #include "latticetester/IntLatticeExt.h"
 #include "latmrg/MLCGLattice.h"
 #include "latmrg/FlexModInt.h"
-//#include "Primitivity.h"
+#include "Primitivity.h"
 
 namespace LatMRG {
 
@@ -54,18 +54,20 @@ public:
    MLCGLatticeLac(const Int &m, int64_t k, int64_t maxDim, int64_t maxDimProj, NormType norm =
          L2NORM);
 
-   MLCGLatticeLac(const Int &m, const IntMat &A, int maxDim, LatticeTester::NormType norm =
-         LatticeTester::L2NORM, LatticeType lat = FULL);
-
    /**
     * Destructor.
     */
-   ~MLCGLatticeLac();
+   virtual ~MLCGLatticeLac();
 
    /**
     * Cleans and releases memory used by this object.
     */
-   void kill();
+   virtual void kill();
+
+   /**
+    * Sets the matrix `A` and assumes that `B` is the `k x k` identity matrix.
+    */
+   virtual void setA(const IntMat &A);
 
    /**
     * Sets the vector of lacunary indices to `lac`, whose length should be at least `k` and
@@ -91,9 +93,9 @@ public:
     * This function is called internally when needed, when we build a basis.
     * The first version computes powers of `A` directly, the second uses polynomial arithmetic.
     */
-   void computeVIksMatrix(int64_t dim = 0);
+   virtual void computeVIks(int64_t dim = 0);
 
-   void computeVIksPoly(int64_t dim = 0);
+   // void computeVIksPoly(int64_t dim = 0);
 
    /**
     * Builds an initial upper-triangular primal basis in `dim` dimensions.
@@ -144,8 +146,7 @@ protected:
    /**
     * Initializes some of the local variables.
     */
-   void init();
-
+   // void init();
    /**
     * Builds an initial upper-triangular basis in `dim` dimensions and puts it in `basis`.
     */
@@ -203,6 +204,13 @@ protected:
     */
    typename FlexModInt<Int>::PolX m_Pz;
 
+   /**
+    * Matrices used to compute `m_VIks`.
+    */
+   //typename FlexModInt<Int>::IntMatP m_Am;   // Matrix A in mod m.
+   //typename FlexModInt<Int>::IntMatP m_powA; // Matrix A to some power, in mod m.
+   typename FlexModInt<Int>::IntMatP m_Ym;   // Matrix Y in mod m.
+
 };
 // End class declaration
 
@@ -211,48 +219,49 @@ protected:
 
 //===========================================================================
 
-
 template<typename Int, typename Real>
-MLCGLatticeLac<Int, Real>::MLCGLatticeLac(const Int &m, int64_t k, int64_t w, int64_t maxDim, int64_t maxDimProj,
-      NormType norm) :
+MLCGLatticeLac<Int, Real>::MLCGLatticeLac(const Int &m, int64_t k, int64_t w, int64_t maxDim,
+      int64_t maxDimProj, NormType norm) :
       MLCGLattice<Int, Real>(m, k, w, maxDim, maxDimProj, norm) {
    m_VIks.SetDims(k, maxDim);
+   this->m_genTemp.SetDims(maxDim + k, maxDim);
    m_basisOriginal.SetDims(maxDim, maxDim);
    m_dualbasisOriginal.SetDims(maxDim, maxDim);
    m_M.SetDims(maxDim, maxDim);
-   FlexModInt<Int>::mod_init(this->m_modulo);  // Sets `m` for polynomial arithmetic.
+   FlexModInt<Int>::mod_init(this->m_modulo);  // Set `m` for modular arithmetic.
 }
 
 template<typename Int, typename Real>
-MLCGLatticeLac<Int, Real>::MLCGLatticeLac(const Int &m, int64_t k, int64_t maxDim, int64_t maxDimProj, NormType norm) :
-      MLCGLatticeLac<Int, Real>(m, k, 0, maxDim, maxDim, norm) {
-}
-
-template<typename Int, typename Real>
-MLCGLatticeLac<Int, Real>::MLCGLatticeLac(const Int &m, const IntMat &A, const IntMat &B, int64_t maxDim,
+MLCGLatticeLac<Int, Real>::MLCGLatticeLac(const Int &m, int64_t k, int64_t maxDim,
       int64_t maxDimProj, NormType norm) :
+      MLCGLatticeLac<Int, Real>(m, k, 0, maxDim, maxDimProj, norm) {
+}
+
+template<typename Int, typename Real>
+MLCGLatticeLac<Int, Real>::MLCGLatticeLac(const Int &m, const IntMat &A, const IntMat &B,
+      int64_t maxDim, int64_t maxDimProj, NormType norm) :
       MLCGLatticeLac<Int, Real>(m, A.NumRows(), B.NumRows(), maxDim, maxDimProj, norm) {
    this->setAB(A, B);
 }
 
 template<typename Int, typename Real>
 MLCGLatticeLac<Int, Real>::MLCGLatticeLac(const Int &m, const IntMat &A, int64_t maxDim,
-      NormType norm) :
-      MLCGLatticeLac<Int, Real>(m, A.NumRows(), maxDim, maxDim, norm) {
+      int64_t maxDimProj, NormType norm) :
+      MLCGLatticeLac<Int, Real>(m, A.NumRows(), maxDim, maxDimProj, norm) {
    this->setA(A);
 }
 
 //===========================================================================
 
 template<typename Int, typename Real>
-MLCGLattice<Int, Real>::~MLCGLattice() {
+MLCGLatticeLac<Int, Real>::~MLCGLatticeLac() {
    kill();
 }
 
 //===========================================================================
 
 template<typename Int, typename Real>
-void MLCGLattice<Int, Real>::kill() {
+void MLCGLatticeLac<Int, Real>::kill() {
 }
 
 //============================================================================
@@ -269,6 +278,7 @@ void MLCGLatticeLac<Int, Real>::setLac(const IntVec &lac) {
    // Check if set I contains {1,...,k} (case1 is true).
    if (lac[k - 1] == k) this->m_case1 = true;
    else this->m_case1 = false;
+   // std::cout << "Are we in case 1? " << m_case1 << "\n";
 }
 
 //============================================================================
@@ -281,7 +291,8 @@ void MLCGLatticeLac<Int, Real>::setA(const IntMat &A) {
    this->m_dim = 0;  // Current basis is now invalid.
    this->m_dimdual = 0;
    // Set the characteristic polynomial P(z) of the recurrence in NTL.
-   getCharacPoly(m_Pz, A);
+   this->m_Am = conv<typename FlexModInt<Int>::IntMatP>(A);
+   getCharacPoly<Int>(m_Pz, this->m_Am);
    FlexModInt<Int>::PolE::init(m_Pz);
 }
 
@@ -292,87 +303,34 @@ void MLCGLatticeLac<Int, Real>::setA(const IntMat &A) {
 // If some columns were already computed, it computes only the missing ones.
 // By default, `dim` is set to the number of lacunary indices.
 template<typename Int, typename Real>
-void MLCGLatticeLac<Int, Real>::computeVIksMatrix(int64_t dim) {
+void MLCGLatticeLac<Int, Real>::computeVIks(int64_t dim) {
    assert(dim <= min(this->m_maxDim, m_s));  // Upper bound on `dim`.
    if (dim == 0) dim = m_s;
    if (dim <= m_dimVIks) return;     // Nothing to do.
    int64_t k = this->m_k;
-   int64_t i, j;
-   IntVec col;
-
-   ......
-
-   typename FlexModInt<Int>::PolE polz, polPower;  // polynomials z and z^{\nu-1} mod P(z).
-   std::string str = "[0 1]";
-   std::istringstream in(str);
-   in >> polz;
-
-   // Fill the rows of VIks, column by column.
+   int64_t i, j, r;
+   Int n;
+   Int nprev = Int(0);  // Current and previous power n.
+   ident(m_Ym, k);
+   // std::cout << "First m_Yp = \n" << m_Yp << "\n";
    for (j = m_dimVIks; j < dim; j++) {
-      if (m_case1 && j < k) for (i = 0; i < k; i++)
-         m_VIks[i][j] = (i == j);
-      // If index j has just increased by 1, the new column is easy to compute.
-      else if ((j > 0) && (m_lac[j] == m_lac[j - 1] + 1)) {
-         for (i = 1; i < k; i++)
-            m_VIks[i][j] = m_VIks[i - 1][j - 1];
-         m_VIks[0][j] = 0;
-         for (int64_t jj = 1; jj <= k; jj++)
-            m_VIks[0][j] += this->m_aa[jj] * m_VIks[jj - 1][j - 1] % this->m_modulo;
+      // std::cout << "Inside computeVIks, j = " << j << "\n";
+      n = (m_lac[j] - 1) / k;
+      r = (m_lac[j] - 1) % k;
+      // std::cout << "  n = " << n << ", r = " << r << "\n";
+      if (n > nprev) {
+         // std::cout << "  n - nprev = " << n - nprev << "\n";
+         power(this->m_powA, this->m_Am, n - nprev);
+         mul(m_Ym, this->m_powA, m_Ym);
+         // std::cout << "New m_Yp = \n" << m_Yp << "\n";
+         nprev = n;
       }
-      // Otherwise compute the polynomial power.
-      else {
-         power(polPower, polz, m_lac[j] - 1);
-         this->polyToColumn(col, polPower);
-         for (i = 0; i < k; i++) {
-            m_VIks[i][j] = col[i];
-         }
-      }
+      // std::cout << "Inside computeVIks, m_Ym = \n" << m_Ym << "\n";
+      for (i = 0; i < k; i++)
+         m_VIks[i][j] = conv<Int>(m_Ym[r][i]);
    }
    m_dimVIks = dim;
-}
-
-//============================================================================
-
-// This function computes the polynomials z^{\mu-1} mod P(z) for \mu in the set of
-// lacunary indices and use them to compute the first `dim` columns of the matrix `m_VIks`,
-// as in Section 3.1.9 of the guide.
-// If some columns were already computed, it computes only the missing ones.
-// By default, `dim` is set to the number of lacunary indices.
-template<typename Int, typename Real>
-void MLCGLatticeLac<Int, Real>::computeVIksPoly(int64_t dim) {
-   assert(dim <= min(this->m_maxDim, m_s));  // Upper bound on `dim`.
-   if (dim == 0) dim = m_s;
-   if (dim <= m_dimVIks) return;     // Nothing to do.
-   int64_t k = this->m_order;
-   int64_t i, j;
-   IntVec col;
-   typename FlexModInt<Int>::PolE polz, polPower;  // polynomials z and z^{\nu-1} mod P(z).
-   std::string str = "[0 1]";
-   std::istringstream in(str);
-   in >> polz;
-
-   // Fill the rows of VIks, column by column.
-   for (j = m_dimVIks; j < dim; j++) {
-      if (m_case1 && j < k) for (i = 0; i < k; i++)
-         m_VIks[i][j] = (i == j);
-      // If index j has just increased by 1, the new column is easy to compute.
-      else if ((j > 0) && (m_lac[j] == m_lac[j - 1] + 1)) {
-         for (i = 1; i < k; i++)
-            m_VIks[i][j] = m_VIks[i - 1][j - 1];
-         m_VIks[0][j] = 0;
-         for (int64_t jj = 1; jj <= k; jj++)
-            m_VIks[0][j] += this->m_aa[jj] * m_VIks[jj - 1][j - 1] % this->m_modulo;
-      }
-      // Otherwise compute the polynomial power.
-      else {
-         power(polPower, polz, m_lac[j] - 1);
-         this->polyToColumn(col, polPower);
-         for (i = 0; i < k; i++) {
-            m_VIks[i][j] = col[i];
-         }
-      }
-   }
-   m_dimVIks = dim;
+   // std::cout << "Finished computeVIks: m_VIks = \n" << m_VIks << "\n";
 }
 
 //============================================================================
@@ -380,27 +338,31 @@ void MLCGLatticeLac<Int, Real>::computeVIksPoly(int64_t dim) {
 // Builds an upper-triangular `basis` in `dim` dimensions, using `m_VIks`.
 template<typename Int, typename Real>
 void MLCGLatticeLac<Int, Real>::buildBasisOriginal(IntMat &basis, int64_t dim) {
-   int64_t k = this->m_order;
+   int64_t k = this->m_k;
    assert(dim >= k);
    assert(dim <= min(this->m_maxDim, m_s));
-   if (dim > m_dimVIks) computeVIks(dim);
+   if (dim > m_dimVIks) this->computeVIks(dim);
    int64_t i, j;
    // Fill the first k rows using m_VIks.
    IntMat & pbasis = basis;      // reference to a basis.
-   if (!m_case1) pbasis = this->m_genTemp;  // Should be rare.
+   // std::cout << "buildBasisOriginal1, pbasis = \n" << pbasis << "\n";
+   if (!m_case1) pbasis = this->m_genTemp;
    for (i = 0; i < k; i++)
       for (j = 0; j < dim; j++)
          pbasis[i][j] = m_VIks[i][j];
    // Fill the other rows.
-   if (m_case1) for (i = k; i < dim; i++)
-      for (j = 0; j < dim; j++)
-         pbasis[i][j] = (i == j) * this->m_modulo;
-   else {
+   if (m_case1) {
+      for (i = k; i < dim; i++)
+         for (j = 0; j < dim; j++)
+            pbasis[i][j] = (i == j) * this->m_modulo;
+   } else {
       for (i = 0; i < dim; i++)
          for (j = 0; j < dim; j++)
             pbasis[i + k][j] = (i == j) * this->m_modulo;
-      upperTriangularBasis(this->m_basis, pbasis, this->m_modulo, dim + k, dim);
+      // std::cout << "buildBasisOriginal2, gen vectors = \n" << pbasis << "\n";
+      upperTriangularBasis(m_basisOriginal, pbasis, this->m_modulo, dim + k, dim);
    }
+   //std::cout << "buildBasisOriginal4, basis = \n" << m_basisOriginal << "\n";
 }
 
 //============================================================================
@@ -409,7 +371,7 @@ void MLCGLatticeLac<Int, Real>::buildBasisOriginal(IntMat &basis, int64_t dim) {
 template<typename Int, typename Real>
 void MLCGLatticeLac<Int, Real>::buildBasis(int64_t dim) {
    this->setDim(dim);
-   if (m_dimVIks < this->m_maxDim) computeVIks(this->m_maxDim);
+   // if (m_dimVIks < this->m_maxDim) computeVIks(this->m_maxDim);
    buildBasisOriginal(m_basisOriginal, this->m_maxDim);
    for (int64_t i = 0; i < dim; i++)
       for (int64_t j = 0; j < dim; j++)
@@ -433,12 +395,11 @@ void MLCGLatticeLac<Int, Real>::buildDualBasis(int64_t dim) {
 //============================================================================
 
 // Increases the dimension of given basis from d-1 to d dimensions.
-// The algorithm described in Section 3.1.9 of the guide is implemented.
-
+// Same as in `MRGLatticeLac`.
 template<typename Int, typename Real>
 void MLCGLatticeLac<Int, Real>::incDimBasis() {
    int64_t i, j, l;
-   assert(this->m_case1);  // This works only for case1.
+   // assert(this->m_case1);  // This works only for case1.
    int64_t d = this->m_dim;
    if (m_dimM <= d) {
       m_M.SetDims(this->m_maxDim, this->m_maxDim);
@@ -453,10 +414,6 @@ void MLCGLatticeLac<Int, Real>::incDimBasis() {
          m_M[i][j] = m_M[i][j] / m_basisOriginal[j][j];
       }
    }
-   // Calculate the new last column by applying M to the last column of the stored primal basis.
-   //IntMat copy_curr_column, new_last_column;
-   //copy_curr_column.SetDims(d-1,1);  // Again another matrix creation!
-
    for (i = 0; i < d; i++) {
       this->m_basis[i][d] = 0;
       for (j = 0; j < d; j++)
@@ -466,29 +423,21 @@ void MLCGLatticeLac<Int, Real>::incDimBasis() {
    for (j = 0; j <= d; j++)
       this->m_basis[d][j] = m_basisOriginal[d][j];
    this->m_dim++;
+   // std::cout << "m_basis after incDimBasis = \n" << this->m_basis << "\n";
 }
 
 //============================================================================
 
-// Very similar to the implementation in 'MLCGLattice' except that the copy
-// of the dual basis has already been built upon creation of the object.
-
+// Same as in 'MLCGLatticeLac'.
 template<typename Int, typename Real>
 void MLCGLatticeLac<Int, Real>::incDimDualBasis() {
    int64_t d = this->m_dimdual;
-   // Put zeros in new column and add a new row.
    for (int i = 0; i < d; i++)
       this->m_dualbasis[i][d] = 0;
    for (int j = 0; j <= d; j++)
       this->m_dualbasis[d][j] = m_dualbasisOriginal[d][j];
    this->m_dimdual++;
 }
-
-
-
-
-
-
 
 template<typename Int, typename Real>
 void MLCGLatticeLac<Int, Real>::buildProjection(IntLattice<Int, Real> &projLattice,

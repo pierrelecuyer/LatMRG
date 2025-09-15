@@ -6,6 +6,7 @@
 #include "latticetester/EnumTypes.h"
 #include "latticetester/FlexTypes.h"
 #include "latticetester/IntLatticeExt.h"
+#include "latmrg/FlexModInt.h"
 
 namespace LatMRG {
 
@@ -67,22 +68,22 @@ public:
    /**
     * Destructor.
     */
-   ~MLCGLattice();
+   virtual ~MLCGLattice();
 
    /**
     * Cleans and releases memory used by this object.
     */
-   void kill();
+   virtual void kill();
 
    /**
     * Sets the matrices `A` and `B`. They must be of the right sizes.
     */
-   void setAB(const IntMat &A, const IntMat &B);
+   virtual void setAB(const IntMat &A, const IntMat &B);
 
    /**
     * Sets only the matrix `A` and assumes that `B` is the `k x k` identity matrix.
     */
-   void setA(const IntMat &A);
+   virtual void setA(const IntMat &A);
 
    /**
     * Returns a non-mutable copy of the generator matrix `A`.
@@ -136,14 +137,15 @@ public:
    virtual void buildProjectionDual(IntLattice<Int, Real> &projLattice, const Coordinates &coordSet)
          override;
 
-protected:
-
    /**
     *  Compute and store the powers of `A` mod m, from 0 to `numPow-1`,
     *  and put the transposed powers in a matrix.
     *  These powers are used to build a basis or m-dual basis.
+    *  When some powers have been computed already, the function computes only the missing ones.
     */
    void computePowersOfA(int64_t numPow);
+
+protected:
 
    /**
     * True iff `B` is not the identity.
@@ -161,13 +163,15 @@ protected:
    IntMat m_A, m_B;
 
    /**
-    * These objects store A^p, B A^p, and a temporary matrix to compute them,
-    * where p = m_pow is the highest power of A computed so far
+    * These objects store A^p and B A^p,
+    * where p = m_pow is the highest power of A computed so far.
+    * This power is updated when we call `computePowersOfA`.
     */
-   IntMat m_powA;
-   // IntMat m_BpowA;
-   IntMat m_tempA;
+   typename FlexModInt<Int>::IntMatP m_Am;    // Matrix A in Z_m.
+   typename FlexModInt<Int>::IntMatP m_powA;  // Matrix A^p in Z_m.
    int64_t m_pow = 0;
+   // IntMat m_BpowA;
+   // IntMat m_tempA;
 
    /**
     * Maximal number of coordinates allowed in a projection.
@@ -201,6 +205,7 @@ protected:
 // IMPLEMENTTION
 
 //=============================================================================
+
 // Main constructor.
 template<typename Int, typename Real>
 MLCGLattice<Int, Real>::MLCGLattice(const Int &m, int64_t k, int64_t w, int64_t maxDim,
@@ -214,13 +219,13 @@ MLCGLattice<Int, Real>::MLCGLattice(const Int &m, int64_t k, int64_t w, int64_t 
       m_withB = true;
       m_w = w;
    }
-   std::cout << "maxDim = " << maxDim << ", k = " << k << ", m_w = " << m_w << "\n";
+   FlexModInt<Int>::mod_init(this->m_modulo);  // Set `m` for modular arithmetic.
    assert(((maxDim % m_w) == 0) && "maxDim must be a multiple of m_w");
    m_maxDimProj = maxDimProj;
    m_genTemp.SetDims(maxDimProj + k, maxDimProj);
    m_pow = 0;
-   m_powA.SetDims(k, k);
-   m_tempA.SetDims(k, k);
+   // m_powA.SetDims(k, k);
+   // m_tempA.SetDims(k, k);
    m_powersOfA.SetDims(k, maxDim);
 }
 
@@ -234,15 +239,14 @@ template<typename Int, typename Real>
 MLCGLattice<Int, Real>::MLCGLattice(const Int &m, const IntMat &A, const IntMat &B, int64_t maxDim,
       int64_t maxDimProj, NormType norm) :
       MLCGLattice<Int, Real>(m, A.NumRows(), B.NumRows(), maxDim, maxDimProj) {
-   m_A = A;
-   m_B = B;
+   setAB(A, B);
 }
 
 template<typename Int, typename Real>
 MLCGLattice<Int, Real>::MLCGLattice(const Int &m, const IntMat &A, int64_t maxDim,
       int64_t maxDimProj, NormType norm) :
       MLCGLattice<Int, Real>(m, A.NumRows(), 0, maxDim, maxDimProj, norm) {
-   m_A = A;
+   setA(A);
 }
 
 //===========================================================================
@@ -256,7 +260,35 @@ MLCGLattice<Int, Real>::~MLCGLattice() {
 
 template<typename Int, typename Real>
 void MLCGLattice<Int, Real>::kill() {
-// To do...
+   m_A.kill();
+   m_B.kill();
+   m_Am.kill();
+   m_powA.kill();
+   m_powersOfA.kill();
+   m_genTemp.kill();
+   // m_bV0.kill();
+}
+
+//============================================================================
+
+template<typename Int, typename Real>
+void MLCGLattice<Int, Real>::setA(const IntMat &A) {
+   assert(A.NumRows() == this->m_k);  // `A` must have the right size.
+   this->m_A = A;
+   m_Am = conv<typename FlexModInt<Int>::IntMatP>(m_A);
+   this->m_dim = 0;  // Current basis is now invalid.
+   this->m_dimdual = 0;
+   m_pow = 0;
+}
+
+//============================================================================
+
+template<typename Int, typename Real>
+void MLCGLattice<Int, Real>::setAB(const IntMat &A, const IntMat &B) {
+   setA(A);
+   assert(B.NumCols() == this->m_k);  // `B` must have the right size.
+   assert(B.NumRows() == this->m_w);
+   this->m_B = B;
 }
 
 //===========================================================================
@@ -270,19 +302,64 @@ void MLCGLattice<Int, Real>::computePowersOfA(int64_t numPow) {
    assert(numPow > 0);                      // At least w dimensions.
    assert(numPow * m_w <= this->m_maxDim);  // No more than maxDim dimensions.
    int64_t i, j;
-   m_pow = 0;
-   NTL::ident(m_powA, m_k);   // For first block, must be identity matrix = A^0.
-   // IntMat & pA = m_powA;      // Reference to a matrix, either m_powA or m_BpowA.
-   // if (m_withB) pBA = m_B;     // There is a B matrix.
-
-   // Put identity in the upper left block.
-   for (i = 0; i < m_k; i++) {
-      for (j = 0; j < m_k; j++) {
-         m_powersOfA[i][j] = (i == j);
+   if (numPow <= m_pow) return;  // Nothing to do.
+   if (m_pow == 0) {
+      NTL::ident(m_powA, m_k);   // For first block, must be identity matrix = A^0.
+      // if (m_withB) pBA = m_B;     // There is a B matrix.
+      // Put identity in the upper left block.
+      for (i = 0; i < m_k; i++) {
+         for (j = 0; j < m_k; j++) {
+            m_powersOfA[i][j] = (i == j);
+         }
       }
+      m_pow = 1;
    }
    // Compute the blocks in the first row, in succession.
-   for (int64_t p = 1; p < numPow; p++) {
+   for (int64_t p = m_pow; p < numPow; p++) {
+/*
+       for (i = 0; i < m_k; i++) {
+         for (j = 0; j < m_k; j++) {
+            m_tempA[i][j] = 0;
+            for (int64_t l = 0; l < m_k; l++)
+               m_tempA[i][j] += m_A[i][l] * m_powA[l][j];
+            m_tempA[i][j] = m_tempA[i][j] % this->m_modulo;
+         }
+      }
+      m_powA = m_tempA;
+*/
+      m_powA = m_powA * m_Am;
+      for (i = 0; i < m_k; i++)
+         for (j = 0; j < m_w; j++)
+            m_powersOfA[i][p * m_k + j] = conv<Int>(m_powA[j][i]); // transposed.
+   }
+   m_pow = numPow;
+}
+/*
+//===========================================================================
+// Computes the first `k` rows of the initial basis in up to `numPow * k` dimensions,
+// under the assumption that B = I.  This is (I, Y_1^\tr, ..., Y_{n-1}^\tr).
+// This matrix is used by `buildBasis`, `buildBasisDual`, `incDimDualBasis`,
+// but not by`incDimBasis`.
+template<typename Int, typename Real>
+void MLCGLattice<Int, Real>::computePowersOfA(int64_t numPow) {
+   assert(!m_withB);
+   assert(numPow > 0);                      // At least w dimensions.
+   assert(numPow * m_w <= this->m_maxDim);  // No more than maxDim dimensions.
+   int64_t i, j;
+   if (numPow <= m_pow) return;  // Nothing to do.
+   if (m_pow == 0) {
+      NTL::ident(m_powA, m_k);   // For first block, must be identity matrix = A^0.
+      // if (m_withB) pBA = m_B;     // There is a B matrix.
+      // Put identity in the upper left block.
+      for (i = 0; i < m_k; i++) {
+         for (j = 0; j < m_k; j++) {
+            m_powersOfA[i][j] = (i == j);
+         }
+      }
+      m_pow = 1;
+   }
+   // Compute the blocks in the first row, in succession.
+   for (int64_t p = m_pow; p < numPow; p++) {
       for (i = 0; i < m_k; i++) {
          for (j = 0; j < m_k; j++) {
             m_tempA[i][j] = 0;
@@ -298,10 +375,11 @@ void MLCGLattice<Int, Real>::computePowersOfA(int64_t numPow) {
    }
    m_pow = numPow;
 }
+*/
 
 //===========================================================================
 
-// up to now: implementation works only for B = I.
+// Up to now: implementation works only for B = I.
 template<typename Int, typename Real>
 void MLCGLattice<Int, Real>::buildBasis(int64_t dim) {
    assert(!m_withB);
@@ -328,6 +406,7 @@ void MLCGLattice<Int, Real>::buildBasis(int64_t dim) {
          this->m_basis[i][j] = (i == j) * this->m_modulo;
       }
    }
+   // std::cout << "buildBasis, basis = \n" << this->m_basis << "\n";
 }
 
 //===========================================================================
@@ -339,13 +418,14 @@ void MLCGLattice<Int, Real>::incDimBasis() {
    int64_t p = d / m_k - 1;         // Previous block number, starts at 0.
    int64_t r = d - m_k * (p + 1);   // Position in block, starts  at 0.
    Int sum;
-   // Add a new zero coordinate to each basis vector.
+   // Add a new coordinate to each basis vector.
    for (int64_t i = 0; i < d; i++) {
       sum = Int(0);
       for (int64_t j = 0; j < m_k; j++)
          sum += this->m_basis[i][p * m_k + j] * m_A[r][j];
       this->m_basis[i][d] = sum;
    }
+   // Then add a new row vector.
    for (int64_t j = 0; j < d; j++) {
       this->m_basis[d][j] = 0;
    }
@@ -432,10 +512,9 @@ void MLCGLattice<Int, Real>::buildProjection(IntLattice<Int, Real> &projLattice,
    // Then the other rows.
    for (i = k; i < d + iadd; i++)
       for (j = 0; j < d; j++)
-         pbasis[i][j] = this->m_modulo * (i == j+iadd);
+         pbasis[i][j] = this->m_modulo * (i == j + iadd);
    // If not case1, we must reduce the set of gen vectors.
    if (!projCase1)
-      // std::cout << " Generating vectors: \n" << m_genTemp << "\n";
       upperTriangularBasis(projLattice.getBasis(), m_genTemp, this->m_modulo, this->m_dim, d);
 }
 
@@ -456,5 +535,5 @@ void MLCGLattice<Int, Real>::buildProjectionDual(IntLattice<Int, Real> &projLatt
 
 //===========================================================================
 
-}   // End namespace LatMRG
+}// End namespace LatMRG
 #endif

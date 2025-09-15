@@ -27,6 +27,8 @@
 #include "latmrg/MRGLatticeLac.h"
 #include "latmrg/LCGLattice.h"
 #include "latmrg/LCGLatticeLac.h"
+#include "latmrg/MLCGLattice.h"
+#include "latmrg/MLCGLatticeLac.h"
 
 using namespace LatticeTester;
 

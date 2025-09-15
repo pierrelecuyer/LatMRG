@@ -23,6 +23,7 @@
 #include "latticetester/IntLatticeExt.h"
 #include "latmrg/MRGLattice.h"
 #include "latmrg/FlexModInt.h"
+#include "latmrg/Primitivity.h"
 
 namespace LatMRG {
 
@@ -175,7 +176,7 @@ protected:
    void buildBasisOriginal(IntMat &basis, int64_t dim);
 
    /**
-    * Stores the set \f$I\f$ of lacunary indices and its length \f$s\f$.
+    * Stores the set \f$I\f$ of lacunary indices `m_lac[j-1] = i_j` and its length \f$s\f$..
     */
    IntVec m_lac;
 
@@ -183,7 +184,7 @@ protected:
 
    /**
     * This variable will be true iff if the set I contains {1,...,k}.
-    * It is set when we set the lacunary indices and used when we
+    * It is set when we set the lacunary indices in `setLac` and used when we
     * compute `m_VIks` or build a basis.
     */
    bool m_case1 = true;
@@ -227,7 +228,6 @@ protected:
 
 //===========================================================================
 
-
 template<typename Int, typename Real>
 MRGLatticeLac<Int, Real>::MRGLatticeLac(const Int &m, int64_t k, int64_t maxDim, int64_t maxDimProj,
       NormType norm) :
@@ -241,6 +241,7 @@ MRGLatticeLac<Int, Real>::MRGLatticeLac(const Int &m, int64_t k, int64_t maxDim,
    m_dualbasisOriginal.SetDims(maxDim, maxDim);
    m_M.SetDims(maxDim, maxDim);
    FlexModInt<Int>::mod_init(this->m_modulo);  // Sets `m` for polynomial arithmetic.
+   // FlexModInt<Int>::IntP.init(this->m_modulo);  // Sets `m` for polynomial arithmetic.
 }
 
 template<typename Int, typename Real>
@@ -275,6 +276,7 @@ void MRGLatticeLac<Int, Real>::setLac(const IntVec &lac) {
    // Check if set I contains {1,...,k} (case1 is true).
    if (lac[k - 1] == k) this->m_case1 = true;
    else this->m_case1 = false;
+   // std::cout << "Are we in case 1? " << m_case1 << "\n";
 }
 
 //============================================================================
@@ -287,12 +289,17 @@ void MRGLatticeLac<Int, Real>::setaa(const IntVec &aa) {
    this->m_dim = 0;  // Current basis is now invalid.
    this->m_dimdual = 0;
    // Set the characteristic polynomial of the recurrence in NTL.
+   typename FlexModInt<Int>::IntVecP aaP;  // The coefficients `aa` in Z_p type.
+   conv(aaP, aa);
    typename FlexModInt<Int>::PolX m_Pz;
-   for (int j = 1; j < this->m_aa.length(); j++) {
-      SetCoeff(m_Pz, this->m_aa.length() - j - 1, FlexModInt<Int>::to_Int_p(-this->m_aa[j]));
-   }
-   SetCoeff(m_Pz, this->m_aa.length() - 1, 1);
+   getCharacPoly(m_Pz, aaP);
+   //for (int j = 1; j < this->m_aa.length(); j++) {
+   //   SetCoeff(m_Pz, this->m_aa.length() - j - 1, FlexModInt<Int>::to_Int_p(-this->m_aa[j]));
+   //}
+   //SetCoeff(m_Pz, this->m_aa.length() - 1, 1);
    FlexModInt<Int>::PolE::init(m_Pz);
+   //std::cout << "\nMRG with aa = " << aa << "\n";
+   //std::cout << "Modulo P(z) = " << m_Pz << "\n";
 }
 
 //============================================================================
@@ -315,10 +322,13 @@ void MRGLatticeLac<Int, Real>::computeVIks(int64_t dim) {
    std::istringstream in(str);
    in >> polz;
 
-   // Fill the rows of VIks, column by column.
+   // Fill the k rows of VIks, column by column.
    for (j = m_dimVIks; j < dim; j++) {
-      if (m_case1 && j < k) for (i = 0; i < k; i++)
-         m_VIks[i][j] = (i == j);
+      if ((j == 0) && (m_lac[j] == 1)) {
+         m_VIks[0][j] = 1;
+         for (i = 1; i < k; i++)
+            m_VIks[i][j] = 0;
+      }
       // If index j has just increased by 1, the new column is easy to compute.
       else if ((j > 0) && (m_lac[j] == m_lac[j - 1] + 1)) {
          for (i = 1; i < k; i++)
@@ -329,6 +339,7 @@ void MRGLatticeLac<Int, Real>::computeVIks(int64_t dim) {
       }
       // Otherwise compute the polynomial power.
       else {
+         // std::cout << "Polynomial power, j = \n" << j << "\n";
          power(polPower, polz, m_lac[j] - 1);
          this->polyToColumn(col, polPower);
          for (i = 0; i < k; i++) {
@@ -337,6 +348,7 @@ void MRGLatticeLac<Int, Real>::computeVIks(int64_t dim) {
       }
    }
    m_dimVIks = dim;
+   // std::cout << "Finished computeVIks: m_VIks = \n" << m_VIks << "\n";
 }
 
 //============================================================================
@@ -363,8 +375,10 @@ void MRGLatticeLac<Int, Real>::buildBasisOriginal(IntMat &basis, int64_t dim) {
       for (i = 0; i < dim; i++)
          for (j = 0; j < dim; j++)
             pbasis[i + k][j] = (i == j) * this->m_modulo;
-      upperTriangularBasis(this->m_basis, pbasis, this->m_modulo, dim + k, dim);
+      // std::cout << "buildBasisOriginal3, basis = \n" << pbasis << "\n";
+      upperTriangularBasis(basis, pbasis, this->m_modulo, dim + k, dim);
    }
+   // std::cout << "buildBasisOriginal4, basis = \n" << basis << "\n";
 }
 
 //============================================================================

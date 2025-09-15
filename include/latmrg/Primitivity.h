@@ -9,20 +9,23 @@
 #include "NTL/ZZ.h"
 #include "NTL/ZZ_p.h"
 #include "NTL/ZZ_pX.h"
-#include "NTL/ZZ_pXFactoring.h"
 #include "NTL/ZZ_pE.h"
-#include "NTL/lzz_p.h"
-#include "NTL/lzz_pE.h"
-#include "NTL/lzz_pX.h"
-#include "NTL/lzz_pXFactoring.h"
+#include "NTL/ZZ_pXFactoring.h"
 #include "NTL/mat_poly_ZZ_p.h"
+#include "NTL/mat_ZZ_p.h"
+
+#include "NTL/lzz_p.h"
+#include "NTL/lzz_pX.h"
+#include "NTL/lzz_pE.h"
+#include "NTL/lzz_pXFactoring.h"
 #include "NTL/mat_poly_lzz_p.h"
+#include "NTL/mat_lzz_p.h"
 
 #include "latticetester/FlexTypes.h"
 #include "latticetester/Util.h"
 #include "latmrg/FlexModInt.h"
 #include "latmrg/EnumTypes.h"
-#include "latmrg/IntFactor.h"
+#include "latmrg/IntFactorization.h"
 
 namespace LatMRG {
 
@@ -155,7 +158,7 @@ static void getCharacPoly(typename FlexModInt<Int>::PolX &f, const NTL::Vec<Int>
  */
 template<typename Int>
 static void getCharacPoly(typename FlexModInt<Int>::PolX &f,
-      typename FlexModInt<Int>::IntVecP &aaP);
+      const typename FlexModInt<Int>::IntVecP &aaP);
 
 /**
  * Computes and returns in `f` the characteristic polynomial of the matrix `A`.
@@ -163,8 +166,16 @@ static void getCharacPoly(typename FlexModInt<Int>::PolX &f,
 template<typename Int>
 static void getCharacPoly(typename FlexModInt<Int>::PolX &f, const NTL::Mat<Int> &A);
 
+/**
+ * Computes and returns in `f` the characteristic polynomial of the matrix `A`.
+ */
+template<typename Int>
+static void getCharacPoly(typename FlexModInt<Int>::PolX &f,
+      const typename FlexModInt<Int>::IntMatP &AP);
+
+
 //template<typename Int>
-//static void getCharacPoly(typename FlexModInt<Int>::PolX &f, const typename FlexModInt<Int>::IntMatP &A);
+//static void getCharacPoly(typename FlexModInt<Int>::PolX &f, const typename FlexModInt<Int>::IntMatP &Ap);
 
 /**
  * Converts the vector state `vstate` of an MRG to its polynomial representation in `f`.
@@ -299,16 +310,19 @@ static bool isPrimitive23(const NTL::Mat<Int> &A, const Int &m,
 template<typename Int>
 static void getCharacPoly(typename FlexModInt<Int>::PolX &f, const NTL::Vec<Int> &aa) {
    typename FlexModInt<Int>::IntVecP aaP;  // The coefficients `aa` must be converted to Z_p type.
+   // aaP.SetLength()
    conv(aaP, aa);
-   int64_t k = aaP.length() - 1;
+   // std::cout << "\n\nMRG with aaP = " << aaP << "\n";
+   // Primitivity<Int>::getCharacPoly(f, aaP);
+   int64_t k = aa.length() - 1;
    SetCoeff(f, k, 1);  // c_k = 1.
    for (int64_t j = 0; j < k; j++)
       SetCoeff(f, j, -aaP[k - j]);    // c_j = -a_{k-j} for j < k.
-}
+   }
 
 template<typename Int>
 static void getCharacPoly(typename FlexModInt<Int>::PolX &f,
-      typename FlexModInt<Int>::IntVecP aaP) {
+      const typename FlexModInt<Int>::IntVecP aaP) {
    int64_t k = aaP.length() - 1;
    SetCoeff(f, k, 1);  // c_k = 1.
    for (int64_t j = 0; j < k; j++)
@@ -327,12 +341,7 @@ static void getCharacPoly(typename FlexModInt<Int>::PolX &f,
    int64_t k = A.NumRows();
    typename FlexModInt<Int>::IntMatP Ap;
    Ap.SetDims(k, k);
-   for (int64_t i = 0; i < k; i++)
-      for (int64_t j = 0; j < k; j++) {
-         Int temp = (A[i][j]);
-         Ap[i][j] = conv<typename FlexModInt<Int>::IntP>(temp);
-         //Ap[i][j] = conv<IntP>(temp);
-      }
+   Ap = conv<typename FlexModInt<Int>::IntMatP>(A);
    NTL::CharPoly(f, Ap);
 }
 

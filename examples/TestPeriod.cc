@@ -61,7 +61,6 @@ static void TestPeriodMRG (const Int &m, int k, const NTL::Vec<Int> &aa, DecompT
    std::cout << "Max period: " << boolYN[maxper] << "\n\n";
 }
 
-/*
 // Constructs an `MLCGComponent` object and tests if it has maximal period.
 template<typename Int>
 static void TestPeriodMLCG (const Int &m, int k, const NTL::Mat<Int> &A, DecompType decompm1, const char *filem1, DecompType decompr,
@@ -71,7 +70,6 @@ static void TestPeriodMLCG (const Int &m, int k, const NTL::Mat<Int> &A, DecompT
    bool maxper = mlcg.maxPeriod(A);
    std::cout << "Max period: " << boolYN[maxper] << "\n\n";
 }
-*/
 
 int main() {
    typedef NTL::ZZ Int;

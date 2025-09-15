@@ -77,14 +77,6 @@ public:
 
    MRGLattice(const Int &m, int64_t k, int64_t maxDim, NormType norm = L2NORM);
 
-   /*
-    * Copy constructor.
-    */
-   // MRGLattice(const MRGLattice<Int, Real> &Lat);
-   /**
-    * Assigns `Lat` to this object.
-    */
-   // MRGLattice& operator=(const MRGLattice<Int, Real> &Lat);
    /**
     * Destructor.
     */
@@ -234,7 +226,6 @@ MRGLattice<Int, Real>::MRGLattice(const Int &m, int64_t k, int64_t maxDim, int64
    m_maxDimProj = maxDimProj;
    m_maxCoord = maxCoord;
    m_y.SetLength(maxCoord + k - 1);
-   // m_genTemp.SetDims(maxDim, maxDim);    //  No!!!
    m_genTemp.SetDims(maxDimProj + k, maxDimProj);
    m_bV0.SetDims(k, maxDim);
 }
@@ -327,10 +318,7 @@ template<typename Int, typename Real>
 void MRGLattice<Int, Real>::buildBasis(int64_t d) {
    int64_t k = m_order;
    assert((d >= k) && (d <= this->m_maxDim) && (d <= m_maxCoord));
-   // if (getDimy() < d + m_order - 1)
-   //   buildy(d + m_order - 1);   // This recomputes y completely!
    this->setDim(d);
-   // int64_t dk = min(d, k);
    int64_t i, j;  // Row i and column j.
    for (i = 0; i < k; i++) {
       for (j = 0; j < d; j++)
@@ -340,7 +328,7 @@ void MRGLattice<Int, Real>::buildBasis(int64_t d) {
       for (j = 0; j < d; j++)
          this->m_basis[i][j] = (i == j) * this->m_modulo;
    }
-   // this->setNegativeNorm();
+   // std::cout << "buildBasis, basis = \n" << this->m_basis << "\n";
 }
 
 //============================================================================
@@ -350,7 +338,6 @@ void MRGLattice<Int, Real>::buildDualBasis(int64_t d) {
    int64_t k = this->m_order;
    assert((d >= k) && (d <= this->m_maxDim) && (d <= m_maxCoord));
    this->setDimDual(d);
-   // m_dimbV0 = 0;   Not needed if `m_aa` did not change.
    int64_t i, j;
    if (k == 1) {
       // Fill first column.
@@ -399,7 +386,7 @@ void MRGLattice<Int, Real>::incDimDualBasis() {
    this->setDimDual(d);
    int64_t i;
    // If this is the first time we call `incDimDualBasis` for this basis,
-   // we need to compute the initial part of m_bV0, otherwise we add one column.
+   // we need to compute the initial part of m_bV0, otherwise we just add one column.
    if (m_dimbV0 < d - 1) buildV0(d);
    else if (m_dimbV0 == d - 1) {
       // Compute a new column of m_bV0.
@@ -443,8 +430,6 @@ void MRGLattice<Int, Real>::buildProjection(IntLattice<Int, Real> &projLattice,
    // Note that we do not have direct access to coordinate `k` to check if it equals `k`.
    if (d < (unsigned) m_order) projCase1 = false;
    else {
-      // auto it = coordSet.begin() += uint64_t(k-1);  // Does not work.
-      // if (*it != unsigned(k)) projCase1 = false;
       j = 1;
       for (auto it = coordSet.begin(); it != coordSet.end(), j <= k; it++, j++) {
          // if (j <= k) {
@@ -456,10 +441,10 @@ void MRGLattice<Int, Real>::buildProjection(IntLattice<Int, Real> &projLattice,
    }
    int64_t iadd = 0;
    if (!projCase1) {
-      iadd = k;  // We will have k more rows in pbasis.
+      iadd = k;            // We will have k more rows in pbasis.
       pbasis = m_genTemp;  // Will be a set of gen vectors.
    }
-   // We first copy the selected coordinates for first k rows.
+   // We first copy the selected coordinates for the first k rows.
    j = 0;
    for (auto it = coordSet.begin(); it != coordSet.end(); it++, j++)
       for (i = 0; i < k; i++)
@@ -470,7 +455,6 @@ void MRGLattice<Int, Real>::buildProjection(IntLattice<Int, Real> &projLattice,
          pbasis[i][j] = this->m_modulo * (i == j+iadd);
    // If not case1, we must reduce the set of gen vectors.
    if (!projCase1)
-   // std::cout << " Generating vectors: \n" << m_genTemp << "\n";
       upperTriangularBasis(projLattice.getBasis(), m_genTemp, this->m_modulo, this->m_dim, d);
 }
 
@@ -549,7 +533,6 @@ void MRGLattice<Int, Real>::buildV0(int64_t d) {
       }
    }
    m_dimbV0 = d;
-   // std::cout << "MRGLattice, buildV0, d = " << d << "\n";
 }
 
 //============================================================================
