@@ -65,18 +65,18 @@ int main() {
    lac.SetLength(highDim);
    WeightsUniform weights(1.0);
    NormaBestLat norma(log(m), k, highDim, L2NORM);
+   NormaBestLat normaDual(-log(m), k, highDim, L2NORM);
+   ReducerBB<Int, Real> red(highDim);
+   FigureOfMeritM<Int, Real> fom(t, weights, norma, &red);
+   FigureOfMeritDualM<Int, Real> fomdual(t, weights, normaDual, &red);
+   fom.setVerbosity(3);
+   fomdual.setVerbosity(3);
 
    // Using MRG
    LatMRG::MRGLattice<Int, Real> mrg(m, aa, highDim);
-   ReducerBB<Int, Real> red(mrg);
-   FigureOfMeritM<Int, Real> fom(t, weights, norma, &red);
-   fom.setVerbosity(3);
+   red.setIntLattice(mrg);
    std::cout << "\nUsing MRGLattice: \n";
    fom.computeMeritSucc(mrg, lowDim, highDim);
-
-   NormaBestLat normaDual(-log(m), k, highDim, L2NORM);
-   FigureOfMeritDualM<Int, Real> fomdual(t, weights, normaDual, &red);
-   fomdual.setVerbosity(3);
    std::cout << "\nUsing MRGLattice, dual: \n";
    fomdual.computeMeritSucc(mrg, lowDim, highDim);
 
@@ -85,44 +85,16 @@ int main() {
    LatMRG::MLCGLattice<Int, Real> mlcg(m, Ak, highDim, k);
    red.setIntLattice(mlcg);
    std::cout << "\nUsing MLCGLattice with A^k: \n";
-   mlcg.buildBasis(highDim);
    fom.computeMeritSucc(mlcg, lowDim, highDim);
    std::cout << "\nUsing MLCGLattice with A^k, dual: \n";
    fomdual.computeMeritSucc(mlcg, lowDim, highDim);
 
-
-/*
-   // Using MRG Lac
-   LatMRG::MRGLatticeLac<Int, Real> mrglac(m, aa, highDim);
-   for (int64_t i = 0; i < highDim; i++)
-      lac[i] = i+1;
-   mrglac.setLac(lac);
-   red.setIntLattice(mrglac);
-   std::cout << "\nUsing MRGLatticeLac, i_j=j: \n";
-   mrglac.buildBasis(highDim);
-   fom.computeMeritSucc(mrglac, lowDim, highDim);
-   std::cout << "\nUsing MRGLatticeLac, dual: \n";
-   fomdual.computeMeritSucc(mrglac, lowDim, highDim);
-
-   // Using MLCG Lac with A^k
-   LatMRG::MLCGLatticeLac<Int, Real> mlcglac3(m, Ak, highDim, 3);
-   for (int64_t i = 0; i < highDim; i++)
-      lac[i] = i + 1;
-   mlcglac3.setLac(lac);
-   red.setIntLattice(mlcglac3);
-   std::cout << "\nUsing MLCGLatticeLac with Ak, i_j=j: \n";
-   fom.computeMeritSucc(mlcglac3, lowDim, highDim);
-   std::cout << "\nUsing MLCGLatticeLac dual: \n";
-   fomdual.computeMeritSucc(mlcglac3, lowDim, highDim);
-*/
-
-
    // Using MLCG Lac with A
-   LatMRG::MLCGLatticeLac<Int, Real> mlcglac(m, k, highDim, k);
    for (int64_t i = 0; i < k; i++)
       lac[i] = i + 1;
    for (int64_t i = k; i < highDim; i++)
       lac[i] = k * (i - k + 2);
+   LatMRG::MLCGLatticeLac<Int, Real> mlcglac(m, k, highDim, k);
    mlcglac.setLac(lac);
    mlcglac.setA(A);
    red.setIntLattice(mlcglac);
@@ -137,4 +109,27 @@ int main() {
    fom.computeMeritSucc(mrg, lowDim, highDim);
    std::cout << "\nUsing MRGLattice, dual: \n";
    fomdual.computeMeritSucc(mrg, lowDim, highDim);
+
+   /*
+      // Using MRG Lac
+      for (int64_t i = 0; i < highDim; i++)
+         lac[i] = i+1;
+      LatMRG::MRGLatticeLac<Int, Real> mrglac(m, aa, highDim);
+      mrglac.setLac(lac);
+      red.setIntLattice(mrglac);
+      std::cout << "\nUsing MRGLatticeLac, i_j=j: \n";
+      fom.computeMeritSucc(mrglac, lowDim, highDim);
+      std::cout << "\nUsing MRGLatticeLac, dual: \n";
+      fomdual.computeMeritSucc(mrglac, lowDim, highDim);
+
+      // Using MLCG Lac with A^k
+      LatMRG::MLCGLatticeLac<Int, Real> mlcglac3(m, Ak, highDim, k);
+      mlcglac3.setLac(lac);
+      red.setIntLattice(mlcglac3);
+      std::cout << "\nUsing MLCGLatticeLac with A^k, i_j=j: \n";
+      fom.computeMeritSucc(mlcglac3, lowDim, highDim);
+      std::cout << "\nUsing MLCGLatticeLac dual: \n";
+      fomdual.computeMeritSucc(mlcglac3, lowDim, highDim);
+   */
+
 }
