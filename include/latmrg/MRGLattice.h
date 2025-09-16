@@ -98,6 +98,11 @@ public:
    virtual void setaa(const IntVec &aa);
 
    /**
+    * Returns the vector of multipliers `aa`.
+    */
+   virtual IntVec getaa();
+
+   /**
     * Compute the entries of \f$(y_0, y_1, ..., y_{t+k-2})\f$, where \f$\t=\f$`maxCoord` is the largest
     * coordinate index that we want to use for the lattice or for a projection.
     * If `maxCoord` is given, `m_maxCoord` is updated to this new value, otherwise the old
@@ -307,8 +312,11 @@ void MRGLattice<Int, Real>::setaa(const IntVec &aa) {
    m_dimbV0 = 0;    // This one is also invalid.
 }
 
-// template<typename Int, typename Real>
-// IntVec MRGLattice<Int, Real>::gety() { return m_y; }
+//============================================================================
+template<typename Int, typename Real>
+IntVec MRGLattice<Int, Real>::getaa() {
+   return m_aa;
+}
 
 //============================================================================
 

@@ -6,7 +6,7 @@
 #include "latticetester/Util.h"
 
 #include "latmrg/MRGLattice.h"
-#include "latmrg/MRGPeriod.h"
+#include "latmrg/MRGComponent.h"
 #include "MWCComponent.h"
 
 namespace LatMRG {

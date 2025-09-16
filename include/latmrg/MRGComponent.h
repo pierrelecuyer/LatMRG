@@ -44,6 +44,7 @@ public:
     * <tt>DECOMP_WRITE</tt> or <tt>DECOMP_READ</tt> is used.
     * The given files must be accessible by the program.
     * The format for the factorization in these files is described in class `IntFactorization`.
+    * The file name can be `NULL` when no file is needed.
     */
    MRGComponent(const Int &m, int64_t k, DecompType decompm1, const char *filem1, DecompType decompr,
          const char *filer);

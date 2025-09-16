@@ -44,27 +44,17 @@ public:
     * The given files must be accessible by the program.
     * The format for the factorization in these files is described in class `IntFactorization`.
     */
-   LCGComponent(const Int &m, DecompType decomp, const char *filename, bool increment = false);
+   LCGComponent(const Int &m, DecompType decomp = DECOMP, const char *filename = NULL, bool increment = false);
 
    /**
     * Same as the previous constructor, but with `m=b^e+c`.
     */
-   LCGComponent(const Int &b, int e, const Int &c, DecompType decomp, const char *filename, bool increment = false);
+   LCGComponent(const Int &b, int e, const Int &c, DecompType decomp = DECOMP, const char *filename = NULL, bool increment = false);
 
    /**
     * Destructor.
     */
    ~LCGComponent();
-
-   /**
-    * Returns `true` iff the LCG has full period. If there is no increment \f$c_0\f$,
-    * the function checks if f$a\f$ is a primitive element modulo \f$m\f$.
-    * If there is an increment, this increment is assumed to be
-    * relatively prime with \f$m\f$ and this function checks the two conditions:
-    * (1) Every prime divisor \f$q\f$ of \f$m\f$ must divide \f$a-1\f$;
-    * (2) If 4 divides \f$m\f$, then it must divide \f$a-1\f$.
-    */
-   bool maxPeriod(const Int &a);
 
    /**
     * Returns the value of the modulus \f$m\f$.
@@ -93,6 +83,29 @@ public:
    Int& getc() {
       return m_c;
    }
+
+   /**
+    * Sets the multiplier to `a`.
+    */
+   void seta(const Int &a);
+
+   /**
+    * Returns the multiplier `a`.
+    */
+   Int geta() const {
+      return m_a;
+   }
+
+   /**
+    * Sets the multiplier to `a` and returns `true` iff the LCG has full period.
+    * If there is no increment \f$c_0\f$,
+    * the function checks if f$a\f$ is a primitive element modulo \f$m\f$.
+    * If there is an increment, this increment is assumed to be
+    * relatively prime with \f$m\f$ and this function checks the two conditions:
+    * (1) Every prime divisor \f$q\f$ of \f$m\f$ must divide \f$a-1\f$;
+    * (2) If 4 divides \f$m\f$, then it must divide \f$a-1\f$.
+    */
+   bool maxPeriod(const Int &a);
 
    /**
     * Returns the factorization of `m` or `m-1`.
@@ -151,6 +164,11 @@ private:
     * Rest `c` when `m = b^e + c`.
     */
    Int m_c;
+
+   /**
+    * The multiplier `a`.
+    */
+   Int m_a;
 
    /**
     * Indicates if the LCG has an additive increment or not.
@@ -238,7 +256,15 @@ void LCGComponent<Int>::init(const Int &m, DecompType decomp, const char *filena
 //===========================================================================
 
 template<typename Int>
+void LCGComponent<Int>::seta(const Int &a) {
+   m_a = a;
+}
+
+//===========================================================================
+
+template<typename Int>
 bool LCGComponent<Int>::maxPeriod(const Int &a) {
+   seta(a);
    if (!m_increment)
       return isPrimitiveElement(a, m_fact, m_m);   // Here, m is assumed to be prime.
    else {
