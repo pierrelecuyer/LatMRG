@@ -17,7 +17,9 @@ using namespace LatMRG;
  * This class represents a combined LCG with two or more components.
  * Each component \f$c\f$ has its own modulus \f$m_c\f$ and multiplier \f$\{a}_c\f$,
  * and is represented internally as a `LCGComponent` object.
- * These components can be added or removed one by one as objects in a list.
+ * These components can be added one by one as objects in a vector,
+ * or their parameters can be given in C-syle arrays to the constructor
+ * who creates new component objects itself.
  * The main tasks are to compute the modulus \f$m\f$, the coefficient
  * \f$a\f$, and the period length of the combined LCG.
  */
@@ -26,9 +28,16 @@ template<typename Int> class LCGCombined {
 public:
 
    /**
-    * Constructor of a combined LCG.
+    * Simplest constructor of a combined LCG.
     */
    LCGCombined();
+
+   /**
+    * This constructor takes the number of LCC components in `numComp`, then two arrays
+    * of length `numComp` that contain the moduli \f$m_c\f$ and the multipliers
+    * \f$\{a}_c\f$  of the components.
+    */
+   LCGCombined(int64_t numComp, Int mm[], Int aa[]);
 
    /**
     * Destructor.
@@ -114,6 +123,17 @@ private:
 // Main constructor.
 template<typename Int>
 LCGCombined<Int>::LCGCombined() {}
+
+//=============================================================================
+// Other constructor.
+template<typename Int>
+LCGCombined<Int>::LCGCombined(int64_t numComp, Int mm[], Int aa[]) {
+   for (int64_t c = 0; c < numComp; c++) {
+      LCGComponent<Int> comp = LCGComponent<Int>(mm[c]);
+      comp.seta(aa[c]);
+      m_vcomp.push_back(comp);
+   }
+}
 
 //===========================================================================
 template<typename Int>

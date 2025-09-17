@@ -16,13 +16,7 @@ using namespace LatMRG;
 
 template<typename Int>
 static void computeCombinedLCG(int64_t numcomp, Int mm[], Int aa[]) {
-   LCGCombined<Int> lcgcomb;   // The combination.
-   std::vector<LCGComponent<Int>> vcomp;  // Vector of components.
-   for (int64_t c = 0; c < numcomp; c++) {
-      LCGComponent<Int> comp = LCGComponent<Int>(mm[c]);
-      comp.seta(aa[c]);
-      lcgcomb.addComponent(comp);
-   }
+   LCGCombined<Int> lcgcomb(numcomp, mm, aa);
    lcgcomb.computeCombination();
    std::cout << "Parameters of the combined LCG:\n";
    std::cout << "Modulo m = " << lcgcomb.getModulus() << "\n";

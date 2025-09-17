@@ -4,10 +4,8 @@
 #include "latticetester/EnumTypes.h"
 #include "latticetester/Lacunary.h"
 #include "latticetester/IntLatticeExt.h"
-
 #include "latmrg/EnumTypes.h"
-#include "latmrg/MRGComponent.h"
-
+#include "latmrg/LCGComponent.h"
 #include <string>
 
 /**
@@ -48,7 +46,10 @@ NTL::vector<Int> LCGCoeff(const Int &b, const NTL::vector<Int> &e) {
 
 //====================================================================
 
+
 namespace LatMRG {
+
+using namespace LatMRG;
 
 /**
  * This class represents the lattice associated to a Multiply-with-carry (MWC)

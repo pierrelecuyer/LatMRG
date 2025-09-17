@@ -28,31 +28,17 @@ using namespace LatMRG;
 
 int main() {
 
+   // We first compute the MRG that is equivalent to the combined MRG32k3a generator.
    int64_t k = 3;
-   Int m1(4294967087);
-   Int m2(4294944443);
-   IntVec aa1, aa2, aa;
-   aa1.SetLength(4);
-   aa2.SetLength(4);
-   aa.SetLength(4);
-   aa1[1] = 0;   aa1[2] = 1403580;  aa1[3] = -810728;
-   aa2[1] = 527612.0;  aa2[2] = 0;  aa2[3] = -1370589;
-
-   std::cout << "\n======================================================================\n";
-   std::cout << "TestMRG32k3a running. We construct the combined MRG from the components.\n\n";
-   LatMRG::MRGComponent<Int> mrg1(m1, k, DECOMP, NULL, DECOMP_PRIME, NULL);
-   LatMRG::MRGComponent<Int> mrg2(m2, k, DECOMP, NULL, DECOMP_PRIME, NULL);
-   mrg1.setaa(aa1);
-   mrg2.setaa(aa2);
-   LatMRG::MRGCombined<Int> mrgcomb(k);
-   mrgcomb.addComponent(mrg1);
-   mrgcomb.addComponent(mrg2);
+   Int mrgmm[2] = { Int(4294967087), Int(4294944443) };
+   Int mrgaa[6] = { Int(0), Int(1403580), Int(-810728), Int(527612), Int(0), Int(-1370589) };
+   LatMRG::MRGCombined<Int> mrgcomb(k, 2, mrgmm, mrgaa);
    mrgcomb.computeCombination();
    Int m = mrgcomb.getModulus();
-   for (int j = 1; j <= k; j++)  aa[j] = mrgcomb.getaa()[j];
+   IntVec aa = mrgcomb.getaa();
    std::cout << "Parameters for the combined MRG:\n";
    std::cout << "Modulo m = " << m << "\n";
-   std::cout << "Multipliers aa = \n  " << aa << "\n\n";
+   std::cout << "Multipliers aa = \n  " << mrgcomb.getaa() << "\n\n";
 
    // Note how large ZZ integers can be initialized in NTL.
    //Int m = to_ZZ("18446645023178547541");
@@ -60,6 +46,7 @@ int main() {
    //aa[2] = to_ZZ("3186860506199273833");
    //aa[3] = to_ZZ("8738613264398222622");
 
+   // We now apply the spectral test to the combined MRG.
    int64_t maxdim(48);  // Maximum dimension of the lattice.  ***
    NTL::Vec <int64_t> t; // The t-vector for the FOM.
    t.SetLength(3);

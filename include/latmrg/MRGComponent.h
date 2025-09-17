@@ -46,14 +46,14 @@ public:
     * The format for the factorization in these files is described in class `IntFactorization`.
     * The file name can be `NULL` when no file is needed.
     */
-   MRGComponent(const Int &m, int64_t k, DecompType decompm1, const char *filem1, DecompType decompr,
-         const char *filer);
+   MRGComponent(const Int &m, int64_t k, DecompType decompm1 = DECOMP, const char *filem1 = NULL,
+         DecompType decompr = DECOMP,  const char *filer = NULL);
 
    /**
     * Same as the previous constructor, but with \f$m = b^e + c\f$.
     */
-   MRGComponent(Int b, int64_t e, Int c, int64_t k, DecompType decompm1, const char *filem1,
-         DecompType decompr, const char *filer);
+   MRGComponent(Int b, int64_t e, Int c, int64_t k, DecompType decompm1 = DECOMP, const char *filem1 = NULL,
+         DecompType decompr = DECOMP, const char *filer = NULL);
 
    /**
     * Destructor.
@@ -239,31 +239,9 @@ private:
     * \f[
     *   \rho= m^k - 1
     * \f]
-    * This value is calculated by `MRGLatticeFactory` and stored here for
-    * simplicity.                     Used?   *****************
+    * NOT IMPLEMENTED.
     */
    Int rho;
-
-   /**
-    * Value needed for the calculation of the multipliers of a combined
-    * MRG. It is defined by
-    * \f[
-    *   n_j = (m/m_j)^{-1} \mbox{ mod } m_j \qquad\mbox{ for } j = 1,…,J,
-    * \f]
-    * where \f$n_j = \f$ `nj`, \f$m_j\f$ is this object’s modulus `m`,
-    * \f$m\f$ is the calculated modulus for the combined MRG (see class
-    * <tt>MRGLatticeFactory</tt>), and \f$(m/m_j)^{-1} \mbox{ mod } m_j\f$
-    * is the inverse of \f$m/m_j\f$ modulo \f$m_j\f$. This value is
-    * calculated by `MRGLatticeFactory` and stored here for simplicity.
-    */
-   Int nj;     // Not sure if we need this here.   ***************
-
-   /**
-    * Contains the initial state of the cycle we want to analyze when the
-    * lattice type is `ORBIT`. It is made of \f$k\f$ numbers.
-    *                            *********   But this class does not look at lattices!
-    */
-   //  IntVec orbitSeed;
 
 };
 // End class declaration

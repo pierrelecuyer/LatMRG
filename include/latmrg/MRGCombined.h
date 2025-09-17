@@ -26,6 +26,11 @@ template<typename Int> class MRGCombined {
 public:
 
    /**
+    * Constructs an `MRGCombined` object for components of order `k`.
+    */
+   MRGCombined(int64_t k);
+
+   /**
     * Constructor for a combined MRG with components of order `k`
     * given in a vector of `MRGComponent` objects.
     * They must be all of the same order `k`.
@@ -33,9 +38,13 @@ public:
    MRGCombined(int64_t k, std::vector<MRGComponent<Int>> &vcomp);
 
    /**
-    * Constructs an `MRGCombined` object for components of order `k`.
+    * This constructor takes the order `k`, number `numComp` of MRG components,
+    * an array `mm` of length `numComp` that contains the moduli \f$m_c\f$,
+    * and an array `aa` of size \f$k\times\f$`numComp` that contains the `k`
+    * multipliers \f$a_{1,1},\dots,a_{1,k}\f$ of the first component,
+    * followed by the `k` multipliers of the second component, etc.
     */
-   MRGCombined(int64_t k);
+   MRGCombined(int64_t k, int64_t numComp, Int mm[], Int aa[]);
 
    /**
     * Destructor.
@@ -129,6 +138,22 @@ template<typename Int>
 MRGCombined<Int>::MRGCombined(int64_t k) {
    m_k = k;
    m_aa.SetLength(k+1);
+}
+
+//===========================================================================
+template<typename Int>
+MRGCombined<Int>::MRGCombined(int64_t k, int64_t numComp, Int mm[], Int aa[]) {
+   m_k = k;
+   m_aa.SetLength(k+1);
+   IntVec aac;
+   aac.SetLength(k+1);
+   aac[0] = -1;
+   for (int64_t c = 0; c < numComp; c++) {
+      MRGComponent<Int> comp = MRGComponent<Int>(mm[c], k);
+      for (int64_t j = 0; j < k; j++)  aac[j+1] = aa[c * k + j];
+      comp.setaa(aac);
+      m_vcomp.push_back(comp);
+   }
 }
 
 //===========================================================================
