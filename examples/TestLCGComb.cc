@@ -11,6 +11,8 @@
 #include "latmrg/EnumTypes.h"
 #include "latmrg/MRGCombined.h"
 #include "latmrg/LCGCombined.h"
+#include "latmrg/MWCComponent.h"
+// #include "latmrg/MWCComponentPow2.h"
 
 using namespace LatMRG;
 

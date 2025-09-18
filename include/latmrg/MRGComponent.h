@@ -25,7 +25,8 @@ using namespace LatMRG;
  * \f$m-1\f$ and of \f$r = (m^k-1)/(m-1)\f$, which are needed to check for the full period
  * conditions.  It does not look at the lattice structure.
  */
-template<typename Int> class MRGComponent {
+template<typename Int>
+class MRGComponent {
 
 public:
 

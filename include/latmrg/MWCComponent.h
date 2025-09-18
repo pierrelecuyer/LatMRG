@@ -2,49 +2,11 @@
 #define LATMRG_MWCCOMPONENT_H
 
 #include "latticetester/EnumTypes.h"
-#include "latticetester/Lacunary.h"
 #include "latticetester/IntLatticeExt.h"
 #include "latmrg/EnumTypes.h"
+#include "latmrg/IntFactor.h"
 #include "latmrg/LCGComponent.h"
 #include <string>
-
-/**
- * Small functions that give the modulo and the coefficient of the LCG generator
- * equivalent to a MWC generator with modulo b and coefficients e.
- * */
-namespace MWCEquiv {
-
-/**
- * Returns the modulo for an MWC with coefficients in `e` and
- * modulo `b`.  Returns m = sum_i e_i b^i.
- */
-template<typename Int>
-Int LCGMod(const Int &b, const NTL::vector<Int> &e) {
-   Int m(0);
-   for (int i = 0; i < e.length(); i++) {
-      m += e[i] * NTL::power(b, i);
-   }
-   return m;
-}
-
-//==============================================================
-
-/**
- * Returns the coefficient `a` of the equivalent LCG for a MWC with
- * coefficients in `e` and modulo `b`.
- * */
-template<typename Int>
-NTL::vector<Int> LCGCoeff(const Int &b, const NTL::vector<Int> &e) {
-   Int mult = LCGMod(b, e);
-   Int a = NTL::InvMod(b, mult);
-   NTL::vector<Int> coeff;
-   coeff.SetLength(2);
-   coeff[1] = a;
-   return coeff;
-}
-}
-
-//====================================================================
 
 
 namespace LatMRG {
@@ -52,58 +14,45 @@ namespace LatMRG {
 using namespace LatMRG;
 
 /**
- * This class represents the lattice associated to a Multiply-with-carry (MWC)
- * random number generator. A MWC generator is defined by a recurrence of the
- * form
+ * This class represents a Multiply-with-carry (MWC) random number generator,
+ * defined as in the guide by the recurrence:
  * \f{align}{
- *    x_n & = (e_1 x_{n-1} + \cdots + e_k x_{n-k} + c_{n-1})d\ \mathrm{mod} \ b \\
-   *    c_n & = \lfloor (e_0 x_n + e_1 x_{n-1} + \cdots + e_k x_{n-k} + c_{n-1} )/b \rfloor \\
-   *    u_n & = \sum_{i=1}^\infty x_{n+i-1} b^{-i}
+ *    \tau_n & = (a_1 x_{n-1} + \cdots + a_k x_{n-k} + c_{n-1}), \\
+ *    x_n & = a_0^* \tau_n \bmod b, \\
+ *    c_n & = \lfloor (\tau_n - a_0 x_n) / b \rfloor, \\
  * \f}
- * This generator can then be reprensented as an LCG and this class simply
- * builds the correct MRGLattice object corresponding to a specific MWC
- * generator. All the functions and attributes inherited by this class
- * work as they would be expected to work on the lattice corresponding to that
- * MRGLattice. For example, this means that the vector m_aCoef stores the
- * coefficient of the LCG instead of the coefficients of the MWC generator.
- *
- * This class simply implements a constructor and and the functions to compute
- * the LCG equivalent to the MRG.
+ * where gcd\f$(a_0, b)=1\f$, with the output
+ * \f{align}{
+ *    u_n & = \sum_{\ell=1}^\infty x_{n+\ell-1} b^{-\ell}.
+ * \f}
+ * In practice, the latter sum is truncated to just a few terms,
+ * often just a single term.
+ * This MCW generator has been shown to be equivalent to an LCG
+ * with modulus \f$m = -a_0 + \sum_{j=1}^k a_j b^j $\f and multiplier
+ * \f$b^*\f$, where \f$b^*\f$ is the multiplicative inverse of \f$b\f$
+ * modulo \f$m\f$. This is the same as an LCG with multiplier \f $b\f$
+ * with the outputs generated in reverse order.  The period length and
+ * lattice structure are the same for both.
+ * The aim of the present class is mainly to compute the parameters of the
+ * corresponding LCG and also the period length of the MWC generator.
+ * One can then analyze the lattice structure via `LCGLattice`.
  */
-template<typename Int, typename Real>
-class MWCComponent: public MRGComponent<Int, Real> {
+template<typename Int>
+class MWCComponent {
+
 public:
-   typedef NTL::vector<Int> IntVec;
-   typedef NTL::matrix<Int> IntMat;
 
    /**
-    * b is the modulo.
-    * e is the vector of coefficients.
-    * k is the order of the recurrence.
-    *
-    * It is recommended to verify that the parameters passed to this
-    * constructor work before using it, because the program will crash of
-    * `validate(b, e) != 0`.
+    * Constructs a `MWCComponent` with order `k`, modulus `b`, and vector of coefficients
+    * `aa` of size `k+1` for which `a[j]` contains \f$a_j\f$ for \f$j=0,\dots,k\f$.
+    * When not given, the modulus `b` and/or the vector `aa` must be set later via
+    * `setb` or setbPow2, and `setaa`.  The order `k` cannot be changed.
     */
-   MWCComponent(const Int &b, const IntVec &e, int k, int maxDim = 1);
+   MWCComponent(const int64_t k, const Int &b, const IntVec &aa);
 
-   /**
-    * Another constructor with just `b` and `m`. Of course, `b` and `m`
-    * have to be valid.
-    * */
-   MWCComponent(const Int &b, const Int &m, int maxDim = 1);
+   MWCComponent(const int64_t k, const Int &b);
 
-   /**
-    * Copy constructor. The maximal dimension of the created basis is set
-    * equal to <tt>Lat</tt>’s current dimension.
-    */
-   MWCComponent(const MWCComponent<Int, Real> &Lat);
-
-   /**
-    * Assigns `Lat` to this object. The maximal dimension of this basis is
-    * set equal to <tt>Lat</tt>’s current dimension.
-    */
-   MWCComponent<Int, Real>& operator=(const MWCComponent<Int, Real> &Lat);
+   MWCComponent(const int64_t k);
 
    /**
     * Destructor.
@@ -116,202 +65,208 @@ public:
    void kill();
 
    /**
-    * Gets the coefficients of the MRG that spawns the lattice in a string.
+    * Sets the vector of multipliers to `aa`, with `aa[j]` containing \f$a_j\f$.
+    * The length of this vector must be the order \f$k\f$ of the MWC plus 1.
     */
-   std::string toStringCoef() const;
+   void setaa(const IntVec &aa);
 
    /**
-    * Gets all the information on the lattice in a string. This contains
-    * the type of generator and the coefficients.
+    * Returns the vector of multipliers of the recurrence, in same format as `aa` above.
     */
-   std::string toString() const override;
-
-   /**
-    * The modulo of the MWC generator this object represents.
-    * */
-   const Int& getMWCmod() const {
-      return this->m_MWCmod;
+   IntVec getaa() const {
+      return m_aa;
    }
 
    /**
-    * The order of the MWC generator. An order of `k` means that the
-    * generator has `k+1` coefficients.
-    * */
-   int getMWCorder() const {
-      return this->m_MWCorder;
+    * Sets the modulus `b`.
+    */
+   void setb(const Int &b);
+
+   /**
+    * Sets the modulus `b` to \f$b = 2^e\f$ and retain that it is a power of 2.
+    */
+   void setbPow2(const int64_t e);
+
+   /**
+    * Returns `true` iff `b` was set as a power of 2.
+    */
+   bool bIsPow2() { return (m_e > 0); }
+
+   /**
+    * Returns the modulus `b`.
+    */
+   Int getb() const {
+      return m_b;
    }
 
    /**
-    * The coefficients of the MWC generator. We have that
-    * `m_eCoef[i] = e_i`. The MWC equations mean that if the order is `k`,
-    * the generator has `k+1` coefficients.
-    * */
-   const IntVec& geteCoef() const {
-      return this->m_eCoef;
-   }
+    * Computes the parameters \f$m\f$ and \f$b^*\f$ of the corresponding LCG.
+    * They can be recovered via `getLCGm` and `getLCGa`.
+    */
+   void computeInvb();
 
    /**
-    * This checks if `b` and `e` are suitable parameters for a MWC
-    * generator.
-    * It is recommended to call this function before building a MWCComponent
-    * object because the program will exit if the condition verified here
-    * is not met.
-    *
-    * This basically just checks that `gcd(b, e[0]) = 1` and returns `1` if
-    * it is `false` and `0` if it checks out.
-    * */
-   static int validate(const Int &b, const IntVec &e) {
-      if (NTL::GCD(b, e[0]) != 1) return 1;
-      return 0;
-   }
+    * Computes the parameters \f$m\f$ and \f$b^*\f$ of the corresponding LCG.
+    * They can be recovered via `getLCGm` and `getLCGa`.
+    */
+   void computeLCGModulus();
 
    /**
-    * This is a basic method to check if the MWC generator described by
-    * `b` and `e` has full period.
-    *
-    * \todo finish this
-    * */
-   static int fullPeriod(const Int &b, const IntVec &e) {
-      if (MWCComponent<Int, Real>::validate(b, e)) return 1;
-      return 0;
-   }
+    * Check if we have the maximal period of \f$(m-1)/2\f$ in case where \f$a_0=1\f$ and
+    * \f$b\f$ is a power of 2.  This holds if both \f$m\f and \f$(m-1)/2\f are prime.
+    * `RMtrials` is the number of Robbins-Miller trials for primality testing.
+    */
+   bool maxPeriod1Pow2(const int64_t RMtrials = 100);
 
 private:
 
    /**
+    * The order `k` of the MWC generator.
+    */
+   int m_k;
+
+   /**
     * The modulo of the MWC generator this object represents.
-    * */
-   Int m_MWCmod;
+    */
+   Int m_b;
 
    /**
-    * The order of the MWC generator. An order of `k` means that the
-    * generator has `k+1` coefficients.
-    * */
-   int m_MWCorder;
+    * Used when `b = 2^e` is a power of 2.  Otherwise, `m_e = 0`.
+    */
+   int64_t m_e = 0;
 
    /**
-    * The coefficients of the MWC generator. We have that
-    * `m_eCoef[i] = e_i`. The MWC equations mean that if the order is `k`,
-    * the generator has `k+1` coefficients.
-    * */
-   IntVec m_eCoef;
+    * The powers of `b`, from \f$b^0=1\f$ to \f$b^k\f$, precomputed
+    * because we use them often.
+    */
+   IntVec m_powb;
+
+   /**
+    * The vector of coefficients \f$a_j\f$ of the MWC generator.
+    * We should have `m_aa[j]`\f$a_j\f$, for \f$j\ge 0\f$.
+    */
+   IntVec m_aa;
+
+   /**
+    * The modulus of the corresponding LCG.
+    */
+   Int m_LCGm;
+
+   /**
+    * The multiplier of the corresponding LCG, which is `a = b^*`.
+    */
+   Int m_LCGa;
 
 };
 // End class declaration
 
 //===========================================================================
+// IMPLEMENTTION
 
-template<typename Int, typename Real>
-MWCComponent<Int, Real>::MWCComponent(const Int &b, const IntVec &e, int k, int maxDim) :
-      MRGLattice<Int, Real>(MWCEquiv::LCGMod(b, e), MWCEquiv::LCGCoeff(b, e), maxDim, 1, FULL) {
-   m_MWCmod = b;
-   m_MWCorder = k;
-   m_eCoef.SetLength(k + 1);
-   for (int i = 0; i < k + 1; i++)
-      m_eCoef[i] = e[i];
+//=============================================================================
+// Main constructor.
+
+template<typename Int>
+MWCComponent<Int>::MWCComponent(const int64_t k, const Int &b, const IntVec &aa) :
+      MWCComponent<Int>(k, b) {
+   setaa(aa);
 }
 
-//===========================================================================
-
-template<typename Int, typename Real>
-MWCComponent<Int, Real>::MWCComponent(const Int &b, const Int &m, int maxDim) :
-      MRGLattice<Int, Real>(m, NTL::InvMod(b, m), maxDim, FULL) {
-   m_MWCmod = Int(b);
-   // This is not needed in reality, but this tries to compute the coefficients
-   // of the MWC generator. This is imperfect because we do not know if the
-   // coefficients are negative.
-   Int modulo(m);
-   int k = -1;
-   m_eCoef.SetLength(0);
-   while (modulo != 0) {
-      k++;
-      Int rest = modulo % b;
-      if (rest > b / 2) rest = rest - b;
-      m_eCoef.append(rest);
-      modulo -= rest;
-      modulo /= b;
-   }
-   m_MWCorder = k;
+template<typename Int>
+MWCComponent<Int>::MWCComponent(const int64_t k, const Int &b) :
+      MWCComponent<Int>(k) {
+   setb(b);
 }
 
-//===========================================================================
-
-template<typename Int, typename Real>
-MWCComponent<Int, Real>::MWCComponent(const MWCComponent<Int, Real> &lat) :
-      MRGLattice<Int, Real>(lat) {
-   m_MWCmod = Int(lat.getMWCmod());
-   m_MWCorder = lat.getMWCorder();
-   m_eCoef.SetLength(m_MWCorder + 1);
-   for (int i = 0; i < m_MWCorder + 1; i++)
-      m_eCoef[i] = Int(lat.geteCoef()[i]);
-}
-
-//===========================================================================
-
-template<typename Int, typename Real>
-MWCComponent<Int, Real>& MWCComponent<Int, Real>::operator=(const MWCComponent<Int, Real> &lat) {
-   if (this == &lat) return *this;
-   (MRGLattice<Int, Real> ) * this = (MRGLattice<Int, Real> ) lat;
-   m_MWCmod = lat.getMWCmod();
-   m_MWCorder = lat.getMWCorder();
-   m_eCoef.SetLength(m_MWCorder + 1);
-   for (int i = 0; i < m_MWCorder + 1; i++)
-      m_eCoef[i] = lat.geteCoef()[i];
-   return *this;
+template<typename Int>
+MWCComponent<Int>::MWCComponent(const int64_t k) {
+   m_k = k;
+   m_aa.SetLength(k + 1);
+   m_powb.SetLength(k + 1);
 }
 
 //============================================================================
 
-template<typename Int, typename Real>
-MWCComponent<Int, Real>::~MWCComponent() {
+template<typename Int>
+MWCComponent<Int>::~MWCComponent() {
    kill();
 }
 
 //===========================================================================
 
-template<typename Int, typename Real>
-void MWCComponent<Int, Real>::kill() {
-   MRGComponent<Int, Real>::kill();
-   m_eCoef.kill();
+template<typename Int>
+void MWCComponent<Int>::kill() {
+   m_aa.kill();
+   m_powb.kill();
+}
+
+//===========================================================================
+
+template<typename Int>
+void MWCComponent<Int>::setaa(const IntVec &aa) {
+   assert(aa.length() == m_k + 1);
+   assert(NTL::GCD(aa[0], m_b) == 1);
+   m_aa = aa;
+}
+
+//===========================================================================
+
+template<typename Int>
+void MWCComponent<Int>::setb(const Int &b) {
+   m_b = b;
+   m_powb[0] = Int(1);
+   for (int64_t j = 1; j <= m_k; j++)
+      m_powb[j] = m_powb[j-1] * m_b;
+}
+
+//===========================================================================
+
+template<typename Int>
+void MWCComponent<Int>::setbPow2(const int64_t e) {
+   m_e = e;
+   m_b = NTL::power(Int(2), e);  //  ****
+}
+
+
+//============================================================================
+
+// Computes `b^*`, the inverse of `b` modulo `m`.
+template<typename Int>
+void MWCComponent<Int>::computeInvb() {
+   if (m_aa[0] == Int(1))
+      m_LCGa = (m_LCGm + 1) / m_b;
+   else
+      m_LCGa = NTL::InvMod(m_b, m_LCGm);
 }
 
 //============================================================================
 
-template<typename Int, typename Real>
-std::string MWCComponent<Int, Real>::toStringCoef() const {
-   std::ostringstream out;
-   out << "LCG coefficient: ";
-   //out << "[ ";
-   for (int i = 0; i < this->m_order; i++)
-      out << this->m_aCoef[i] << "  ";
-   //out << "]";
-   out << "MWC coefficients: ";
-   for (int i = 0; i <= this->m_MWCorder; i++)
-      out << m_eCoef[i] << "  ";
-   return out.str();
-}
-
-//============================================================================
-
-template<typename Int, typename Real>
-std::string MWCComponent<Int, Real>::toString() const {
-   std::ostringstream out;
-   for (int i = 0; i <= this->m_MWCorder; i++) {
-      out << "a_" << i << " = " << m_eCoef[i];
-      out << "\n";
+template<typename Int>
+void MWCComponent<Int>::computeLCGModulus() {
+   m_LCGm = -Int(m_aa[0]);
+   for (int64_t j = 1; j <= m_k; j++) {
+      m_LCGm += m_aa[j] * m_powb[j];
    }
-   out << "\nLCG equivalent:\n";
-   out << "m = " << this->m_modulus << "\n";
-   out << "a = " << this->m_aCoef[0] << "\n";
-   return out.str();
+}
+
+//============================================================================
+
+template<typename Int>
+bool MWCComponent<Int>::maxPeriod1Pow2(const int64_t RMtrials) {
+   assert(m_e > 0);
+   assert(m_aa[0] == 1);
+   PrimeType ptype = IntFactor<Int>::isPrime(m_LCGm, RMtrials);
+   if ((ptype != PRIME) && (ptype != PROB_PRIME)) return false;
+   ptype = IntFactor<Int>::isPrime((m_LCGm-1)/2, RMtrials);
+   if ((ptype != PRIME) && (ptype != PROB_PRIME)) return false;
+   return true;
 }
 
 //============================================================================
 //The combinations of types supported in the library
 
-template class MWCComponent<std::int64_t, double> ;
-template class MWCComponent<NTL::ZZ, double> ;
-template class MWCComponent<NTL::ZZ, NTL::RR> ;
+template class MWCComponent<std::int64_t> ;
+template class MWCComponent<NTL::ZZ> ;
 
 } // End namespace LatMRG
 #endif
