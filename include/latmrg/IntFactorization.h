@@ -93,14 +93,16 @@ public:
 
    /**
     * Makes a decomposition of the current integer according to the selected value of `decomp`.
-    * The type `DecompType` is defined in `EnumTypes`..
+    * The type `DecompType` is defined in `EnumTypes`.  The choices are
+    * DECOMP, DECOMP_WRITE, DECOMP_READ, DECOMP_PRIME, NO_DECOMP'.
     * Unless this value is `NO_DECOMP`, the prime factors as well as the inverse factors
     * are put in the `fact` object.
     * The string `filename` is the name of the file where the factors are read or written
     * when `decomp` is <tt>DECOMP_WRITE</tt> or <tt>DECOMP_READ</tt>.
     * This file must be accessible by the program.
+    * Returns true if successful.
     */
-   void decompToFactorsInv(DecompType decomp, const char *file);
+   bool decompToFactorsInv(DecompType decomp, const char *file = NULL);
 
    /**
     * Adds the factor `p` with multiplicity `mult` and prime status `status`
@@ -119,8 +121,9 @@ public:
     * in increasing order in a private list.  Then calls `makeUnique`.
     * If the number is prime, there is a single factor in the list.
     * This function works only if Yafu is installed.
+    * Returns true if successful.
     */
-   void factorize();
+   bool factorize();
 
    /**
     * Given the list of prime factors \f$p\f$ of the integer \f$x\f$ in this object,
@@ -128,13 +131,15 @@ public:
     * sorted in increasing order.
     * For example, if \f$x = 24\f$, the prime factorization is \f$24 = 2^3 \cdot 3\f$
     * and the list on inverse factors is \f$[24/3, 24/2] = [8, 12]\f$.
+    * Returns true if successful.
     */
-   void calcInvFactors();
+   bool calcInvFactors();
 
    /**
     * Same as calling `factorize` and `calcInvFactors` in a single function call.
+    * Returns true if successful.
     */
-   void factorizePlus();
+   bool factorizePlus();
 
    /**
     * Checks that the integer in this object is equal to the product of its factors.
@@ -296,22 +301,6 @@ IntFactorization<Int>::~IntFactorization() {
 //===========================================================================
 
 template<typename Int>
-void IntFactorization<Int>::decompToFactorsInv(DecompType decomp, const char *filename) {
-   // fact.setNumber(x);
-   if (decomp != NO_DECOMP) {
-      if (decomp == DECOMP_READ) read(filename);
-      else factorize();
-      if (decomp == DECOMP_WRITE) {
-         std::ofstream fout(filename);
-         fout << toString();
-      }
-      calcInvFactors();
-   }
-}
-
-//===========================================================================
-
-template<typename Int>
 void IntFactorization<Int>::read(const char *name) {
    // std::cout << "Reading file of factors " << name << "\n";
    std::ifstream in(name);
@@ -370,6 +359,141 @@ void IntFactorization<Int>::addFactor(const Int &x, int64_t mult, PrimeType st) 
 //===========================================================================
 
 template<typename Int>
+bool IntFactorization<Int>::decompToFactorsInv(DecompType decomp, const char *filename) {
+   // fact.setNumber(x);
+   bool ok = true;
+   if (decomp != NO_DECOMP) {
+      if (decomp == DECOMP_READ) read(filename);
+      else ok = factorize();
+      if ((decomp == DECOMP_WRITE) && (ok)) {
+         std::ofstream fout(filename);
+         fout << toString();
+      }
+      if (ok) return calcInvFactors();
+      else return false;
+   }
+   return true;
+}
+
+//===========================================================================
+
+template<typename Int>
+bool IntFactorization<Int>::factorize() {
+#ifdef USE_YAFU
+   std::cout << "  Start factorize with Yafu " << "\n";
+   // std::string S("./data/yafu -s ");
+   std::string S("yafu -s ");  // yafu must be accessible from the PATH.
+   std::ostringstream num;
+   num << m_number;
+   S += num.str();
+
+   // Choose a name for a temporary file for yafu.
+   const char *filename = "temp938573291";
+   S += " > ";
+   S += filename;
+
+   std::cout << "  start factorize with output to file " << "\n";
+   // factorize and set output to filename
+   int systemRet = system(S.c_str());
+   if (systemRet == -1) {
+      std::cout << "An error occurred while running YAFU! Exiting! \n\n";
+      exit(1);
+   }
+   // Now read the result file and extract the prime factors from the
+   // lines PRIME FACTOR xxx
+   std::cout << "  now open the file to read " << "\n";
+   std::ifstream in(filename);
+   if (!(in.is_open())) {
+      std::cerr << "Error:   cannot open file   filename\n";
+      exit(8);
+   }
+   std::string line;
+   //std::string::size_type pos;
+   Int z;
+   std::cout << "  now read the file, line by line " << "\n";
+   while (getline(in, line)) {
+      S = line;
+      /*
+       * If the integer to be factored is not a prime number then
+       * the yafu output contains one of its factors per line.
+       * If it is a prime number then the first line of the output contains the
+       * number itself and the second line is 'this is a prime number'.
+       * We want to skip this second line when reading back the factors.
+       * For this, we skip the line when its first character is 't'.
+       */
+      if (S.substr(0, 4) != "this") {
+         if (S.substr(0, 1) == "&") {
+            std::cout << "factorize: Could not get all the factors. \n";
+            std::cout << "  we got a line S = " << S << "\n\n";
+            return false;
+         }
+         NTL::conv(z, S.c_str());
+         if (z != 0) addFactor(z, 1, PRIME);
+         std::cout << "  we have a prime factor z = " << z << "\n";
+      }
+   }
+   std::cout << "  the factors are now in m_factorList " << "\n";
+   if (m_factorList.size() == 1) m_status = PRIME;
+   makeUnique();
+   remove(filename);
+   return true;
+#else
+   std::cout << "IntFactorization: Yafu is not installed or not accessible.\n";
+   std::cout << "Exiting the program to avoid undefined behavior.";
+   exit(1);
+#endif
+}
+
+//===========================================================================
+
+template<typename Int>
+bool IntFactorization<Int>::factorizePlus() {
+   if (this->factorize())
+      return this->calcInvFactors();
+   else
+      return false;
+}
+
+//===========================================================================
+
+template<typename Int>
+bool IntFactorization<Int>::checkProduct() const {
+   Int temp;
+   temp = 1;
+   typename std::list<IntFactor<Int>>::const_iterator it = m_factorList.begin();
+   while (it != m_factorList.end()) {
+      for (int64_t j = it->getMultiplicity(); j > 0; --j) {
+         temp *= it->getFactor();
+      }
+      ++it;
+   }
+   if (temp != m_number) {
+      std::cout << "checkProduct: ERROR --> m_number = " << m_number << " != " << temp << std::endl;
+   }
+   return (temp == m_number);
+}
+
+//===========================================================================
+
+template<typename Int>
+bool IntFactorization<Int>::calcInvFactors() {
+   //   sort ();
+   uint64_t j = 0;
+   for (auto it = m_factorList.rbegin(); it != m_factorList.rend(); it++) {
+      if (it->getFactor() == Int(1)) continue;
+      ++j;
+      if (m_invFactorList.capacity() < j) {
+         m_invFactorList.clear();
+         m_invFactorList.reserve(j + 10);
+      }
+      m_invFactorList.push_back(m_number / it->getFactor());
+   }
+   return true;
+}
+
+//===========================================================================
+
+template<typename Int>
 void IntFactorization<Int>::makeUnique() {
    sort();
    int64_t j = 1;
@@ -409,107 +533,6 @@ std::string IntFactorization<Int>::toString() const {
     }
     */
    return out.str();
-}
-
-//===========================================================================
-
-template<typename Int>
-void IntFactorization<Int>::factorize() {
-#ifdef USE_YAFU
-   // std::string S("./data/yafu -s ");
-   std::string S("yafu -s ");  // yafu must be accessible from the PATH.
-   std::ostringstream num;
-   num << m_number;
-   S += num.str();
-
-   // Choose a name for a temporary file for yafu.
-   const char *filename = "temp938573291";
-   S += " > ";
-   S += filename;
-
-   // factorize and set output to filename
-   int systemRet = system(S.c_str());
-   if (systemRet == -1) {
-      std::cout << "An error occurred while running YAFU! Exiting! \n\n";
-      exit(1);
-   }
-   // Now read the result file and extract the prime factors from the
-   // lines PRIME FACTOR xxx
-   std::ifstream in(filename);
-   if (!(in.is_open())) {
-      std::cerr << "Error:   cannot open file   filename\n";
-      exit(8);
-   }
-   std::string line;
-   //std::string::size_type pos;
-   Int z;
-   while (getline(in, line)) {
-      S = line;
-      /*
-       * If the integer to be factored is not a prime number then
-       * the yafu output contains one of its factors per line.
-       * If it is a prime number then the first line of the output contains the
-       * number itself and the second line is 'this is a prime number'.
-       * We want to skip this second line when reading back the factors.
-       * For this, we skip the line when its first character is 't'.
-       */
-      if (S.substr(0, 1) != "t") {
-         NTL::conv(z, S.c_str());
-         if (z != 0) addFactor(z, 1, PRIME);
-      }
-   }
-   if (m_factorList.size() == 1) m_status = PRIME;
-   makeUnique();
-   remove(filename);
-#else
-   std::cout << "IntFactorization: Yafu is not installed or not accessible.\n";
-   std::cout << "Exiting the program to avoid undefined behavior.";
-   exit(1);
-#endif
-}
-
-//===========================================================================
-
-template<typename Int>
-void IntFactorization<Int>::factorizePlus() {
-   this->factorize();
-   this->calcInvFactors();
-}
-
-//===========================================================================
-
-template<typename Int>
-bool IntFactorization<Int>::checkProduct() const {
-   Int temp;
-   temp = 1;
-   typename std::list<IntFactor<Int>>::const_iterator it = m_factorList.begin();
-   while (it != m_factorList.end()) {
-      for (int64_t j = it->getMultiplicity(); j > 0; --j) {
-         temp *= it->getFactor();
-      }
-      ++it;
-   }
-   if (temp != m_number) {
-      std::cout << "checkProduct: ERROR --> m_number = " << m_number << " != " << temp << std::endl;
-   }
-   return (temp == m_number);
-}
-
-//===========================================================================
-
-template<typename Int>
-void IntFactorization<Int>::calcInvFactors() {
-   //   sort ();
-   uint64_t j = 0;
-   for (auto it = m_factorList.rbegin(); it != m_factorList.rend(); it++) {
-      if (it->getFactor() == Int(1)) continue;
-      ++j;
-      if (m_invFactorList.capacity() < j) {
-         m_invFactorList.clear();
-         m_invFactorList.reserve(j + 10);
-      }
-      m_invFactorList.push_back(m_number / it->getFactor());
-   }
 }
 
 // template class IntFactorization<std::int64_t> ;

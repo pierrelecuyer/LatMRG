@@ -65,6 +65,13 @@ public:
    void kill();
 
    /**
+    * Returns the order `k` of the recurrence.
+    */
+   int64_t getOrder() const {
+      return m_k;
+   }
+
+   /**
     * Sets the vector of multipliers to `aa`, with `aa[j]` containing \f$a_j\f$.
     * The length of this vector must be the order \f$k\f$ of the MWC plus 1.
     */
@@ -100,23 +107,59 @@ public:
    }
 
    /**
-    * Computes the parameters \f$m\f$ and \f$b^*\f$ of the corresponding LCG.
-    * They can be recovered via `getLCGm` and `getLCGa`.
+    * Returns the inverse \f$b^*\f$, if it was computed before.
     */
-   void computeInvb();
+   Int getLCGa() const {
+      return m_LCGa;
+   }
 
    /**
-    * Computes the parameters \f$m\f$ and \f$b^*\f$ of the corresponding LCG.
-    * They can be recovered via `getLCGm` and `getLCGa`.
+    * Returns the modulus \f$m\f$ of the corresponding LCG, if it was computed before.
     */
-   void computeLCGModulus();
+   Int getLCGm() const {
+      return m_LCGm;
+   }
+
+   /**
+    * Computes and returns the inverse \f$b^*\f$.
+    */
+   Int computeInvb();
+
+   /**
+    * Computes and returns the modulus \f$m\f$ of the corresponding LCG.
+    */
+   Int computeLCGModulus();
+
+   /**
+    * Returns `true` if \f$m\f is prime or probably prime.
+    * `RMtrials` is the number of Robbins-Miller trials for primality testing.
+    */
+   bool mIsPrime(const int64_t RMtrials = 100);
+
+   /**
+    * Returns `true` if \f$m\f is prime or probably prime and if \f$b\f$
+    * is a primitive root modulo \f$m\f$ (so the period is \f$m-1\f$.
+    * `RMtrials` is the number of Robbins-Miller trials for primality testing.
+    */
+   bool maxPeriod(const int64_t RMtrials = 100);
 
    /**
     * Check if we have the maximal period of \f$(m-1)/2\f$ in case where \f$a_0=1\f$ and
-    * \f$b\f$ is a power of 2.  This holds if both \f$m\f and \f$(m-1)/2\f are prime.
+    * \f$b\f$ is a power of 2.  This holds if \f$m\f is prime and 2 is a primitive
+    * root modulo  \f$m\f$.
     * `RMtrials` is the number of Robbins-Miller trials for primality testing.
     */
    bool maxPeriod1Pow2(const int64_t RMtrials = 100);
+
+   /**
+    * Check if both \f$m\f and \f$(m-1)/2\f are prime.
+    * This implies a maximal period of \f$(m-1)/2\f$ in case where
+    * \f$a_0=1\f$ and \f$b\f$ is a power of 2,
+    * `RMtrials` is the number of Robbins-Miller trials for primality testing.
+    */
+   bool mIsSafePrimePow2(const int64_t RMtrials = 100);
+
+
 
 private:
 
@@ -215,8 +258,9 @@ template<typename Int>
 void MWCComponent<Int>::setb(const Int &b) {
    m_b = b;
    m_powb[0] = Int(1);
-   for (int64_t j = 1; j <= m_k; j++)
-      m_powb[j] = m_powb[j-1] * m_b;
+   for (int64_t j = 1; j <= m_k; j++) {
+      m_powb[j] = m_powb[j-1] * b;
+   }
 }
 
 //===========================================================================
@@ -224,7 +268,7 @@ void MWCComponent<Int>::setb(const Int &b) {
 template<typename Int>
 void MWCComponent<Int>::setbPow2(const int64_t e) {
    m_e = e;
-   m_b = NTL::power(Int(2), e);  //  ****
+   setb(NTL::power(Int(2), e));
 }
 
 
@@ -232,27 +276,78 @@ void MWCComponent<Int>::setbPow2(const int64_t e) {
 
 // Computes `b^*`, the inverse of `b` modulo `m`.
 template<typename Int>
-void MWCComponent<Int>::computeInvb() {
+Int MWCComponent<Int>::computeInvb() {
    if (m_aa[0] == Int(1))
       m_LCGa = (m_LCGm + 1) / m_b;
    else
       m_LCGa = NTL::InvMod(m_b, m_LCGm);
+   return m_LCGa;
 }
 
 //============================================================================
 
 template<typename Int>
-void MWCComponent<Int>::computeLCGModulus() {
+Int MWCComponent<Int>::computeLCGModulus() {
    m_LCGm = -Int(m_aa[0]);
    for (int64_t j = 1; j <= m_k; j++) {
       m_LCGm += m_aa[j] * m_powb[j];
+      //std::cout << "m_aa[j] = " << m_aa[j] << "\n";
    }
+   return m_LCGm;
 }
 
 //============================================================================
 
 template<typename Int>
+bool MWCComponent<Int>::mIsPrime(const int64_t RMtrials) {
+   PrimeType ptype = IntFactor<Int>::isPrime(m_LCGm, RMtrials);
+   if (ptype <= 1) return true;
+   else return false;
+}
+
+/**
+ * Returns `true` if \f$m\f is prime or probably prime and if \f$b\f$
+ * is a primitive root modulo \f$m\f$ (so the period is \f$m-1\f$.
+ * `RMtrials` is the number of Robbins-Miller trials for primality testing.
+ */
+template<typename Int>
+bool MWCComponent<Int>::maxPeriod(const int64_t RMtrials) {
+   PrimeType ptype = IntFactor<Int>::isPrime(m_LCGm, RMtrials);
+   if (ptype > 1) return false;
+   IntFactorization<Int> m_fact(m_LCGm-1);
+   bool factok = m_fact.decompToFactorsInv (DECOMP);
+   if (factok) return isPrimitiveElement(m_b, m_fact, m_LCGm);
+   else return false;
+}
+
+/**
+ * Check if we have the maximal period of \f$(m-1)/2\f$ in case where \f$a_0=1\f$ and
+ * \f$b\f$ is a power of 2.  This holds if \f$m\f is prime and 2 is a primitive
+ * root modulo  \f$m\f$.
+ * `RMtrials` is the number of Robbins-Miller trials for primality testing.
+ */
+template<typename Int>
 bool MWCComponent<Int>::maxPeriod1Pow2(const int64_t RMtrials) {
+   //std::cout << "maxPeriod1Pow2 start \n";
+   PrimeType ptype = IntFactor<Int>::isPrime(m_LCGm, RMtrials);
+   std::cout << "  ptype = " << ptype << "\n";
+   if (ptype > 1) return false;
+   IntFactorization<Int> m_fact(m_LCGm-1);
+   std::cout << "  m_fact created " << "\n";
+   bool factok = m_fact.decompToFactorsInv (DECOMP, NULL);
+   std::cout << "  decomp done " << "\n";
+   if (factok) return isPrimitiveElement(Int(2), m_fact, m_LCGm);
+   else return false;
+}
+
+/**
+ * Check if both \f$m\f and \f$(m-1)/2\f are prime.
+ * This implies a maximal period of \f$(m-1)/2\f$ in case where
+ * \f$a_0=1\f$ and \f$b\f$ is a power of 2,
+ * `RMtrials` is the number of Robbins-Miller trials for primality testing.
+ */
+template<typename Int>
+bool MWCComponent<Int>::mIsSafePrimePow2(const int64_t RMtrials) {
    assert(m_e > 0);
    assert(m_aa[0] == 1);
    PrimeType ptype = IntFactor<Int>::isPrime(m_LCGm, RMtrials);
