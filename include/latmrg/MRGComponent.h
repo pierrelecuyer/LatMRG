@@ -48,13 +48,13 @@ public:
     * The file name can be `NULL` when no file is needed.
     */
    MRGComponent(const Int &m, int64_t k, DecompType decompm1 = DECOMP, const char *filem1 = NULL,
-         DecompType decompr = DECOMP,  const char *filer = NULL);
+         DecompType decompr = DECOMP, const char *filer = NULL);
 
    /**
     * Same as the previous constructor, but with \f$m = b^e + c\f$.
     */
-   MRGComponent(Int b, int64_t e, Int c, int64_t k, DecompType decompm1 = DECOMP, const char *filem1 = NULL,
-         DecompType decompr = DECOMP, const char *filer = NULL);
+   MRGComponent(Int b, int64_t e, Int c, int64_t k, DecompType decompm1 = DECOMP,
+         const char *filem1 = NULL, DecompType decompr = DECOMP, const char *filer = NULL);
 
    /**
     * Destructor.
@@ -126,12 +126,25 @@ public:
    }
 
    /**
+    * Returns the factorization of \f$m-1\f$.
+    */
+   IntFactorization<Int>& getFactmm1() {
+      return ifm1;
+   }
+
+   /**
+    * Returns the factorization of \f$r = (m^k-1)/(m-1)\f$.
+    */
+   IntFactorization<Int>& getFactr() {
+      return ifr;
+   }
+
+   /**
     * Returns a const reference to the initial state `orbitSeed`, when available.
     * */
 //   IntVec& getOrbitSeed() {
 //      return orbitSeed;
 //   }
-
    /**
     * Returns a descriptor of this object as a string.
     */
@@ -162,7 +175,6 @@ private:
     * default value is LCG.
     */
    // GenType m_type = LCG;   // This should not be here, but should depend on the subclass, it seems.
-
    /**
     * The prime factor decomposition of \f$m-1\f$.
     */
@@ -180,7 +192,6 @@ private:
     * of the matrix since it is already implemented.
     */
    // IntFactorization<NTL::ZZ> ifm2;
-
    /**
     * The prime factor decomposition of \f$r=(m^k-1)/(m-1)\f$, where
     * \f$k\f$ is the order of the recurrence.
@@ -265,8 +276,8 @@ MRGComponent<Int>::MRGComponent(const Int &m, int64_t k, DecompType decompm1, co
 
 // Constructor with alternative format for m.
 template<typename Int>
-MRGComponent<Int>::MRGComponent(Int b, int64_t e, Int c, int64_t k, DecompType decompm1, const char *filem1,
-      DecompType decompr, const char *filer) {
+MRGComponent<Int>::MRGComponent(Int b, int64_t e, Int c, int64_t k, DecompType decompm1,
+      const char *filem1, DecompType decompr, const char *filer) {
    Int m = NTL::power(b, e) + c;
    m_b = b;
    m_e = e;
@@ -286,11 +297,11 @@ void MRGComponent<Int>::init(const Int &m, int64_t k, DecompType decompm1, const
    Int mm1;  // m-1
    mm1 = m - 1;
    ifm1 = IntFactorization<Int>(mm1);
-   ifm1.decompToFactorsInv (decompm1, filem1);
+   ifm1.decompToFactorsInv(decompm1, filem1);
    Int r;
    r = (NTL::power(m, m_k) - 1) / (m - 1);
    ifr = IntFactorization<Int>(r);
-   ifr.decompToFactorsInv (decompr, filer);
+   ifr.decompToFactorsInv(decompr, filer);
 }
 
 //===========================================================================
@@ -304,7 +315,7 @@ MRGComponent<Int>::~MRGComponent() {
 
 template<typename Int>
 void MRGComponent<Int>::setaa(const IntVec &aa) {
-   assert(aa.length() == m_k+1);
+   assert(aa.length() == m_k + 1);
    m_aa = aa;
 }
 
@@ -340,8 +351,8 @@ std::string MRGComponent<Int>::toString() {
    return str;
 }
 
-template class MRGComponent<std::int64_t> ;
-template class MRGComponent<NTL::ZZ> ;
+// template class MRGComponent<std::int64_t> ;
+// template class MRGComponent<NTL::ZZ> ;
 
 } // End namespace LatMRG
 #endif

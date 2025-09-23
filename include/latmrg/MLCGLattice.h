@@ -26,9 +26,11 @@ namespace LatMRG {
  * simplifies most of the functions.
  * There are constructors that do not take \f$A\f$ and/or \f$B\f$ as inputs,
  * but only their sizes, so the same `MLCGLattice` object can be used for
- * several different choices of matrices, set by `setAB`.
+ * several different choices of matrices, set by `setAB` or `setA`.
  * Note that an MRG is a special case of a MLCG for which \f$A\f$ has a
  * special form, \f$w=1\f$, and \f$B\f$ is just a unit row vector.
+ *
+ * *The current implementation works only for \f$B = I\f$.*
  */
 template<typename Int, typename Real>
 class MLCGLattice: public LatticeTester::IntLatticeExt<Int, Real> {
@@ -78,7 +80,7 @@ public:
    /**
     * Sets the matrices `A` and `B`. They must be of the right sizes.
     */
-   virtual void setAB(const IntMat &A, const IntMat &B);
+   // virtual void setAB(const IntMat &A, const IntMat &B);
 
    /**
     * Sets only the matrix `A` and assumes that `B` is the `k x k` identity matrix.
@@ -239,7 +241,8 @@ template<typename Int, typename Real>
 MLCGLattice<Int, Real>::MLCGLattice(const Int &m, const IntMat &A, const IntMat &B, int64_t maxDim,
       int64_t maxDimProj, NormType norm) :
       MLCGLattice<Int, Real>(m, A.NumRows(), B.NumRows(), maxDim, maxDimProj) {
-   setAB(A, B);
+   // setAB(A, B);
+   assert((false) && "The constructor with a matrix `B` is not implemented");
 }
 
 template<typename Int, typename Real>
@@ -282,7 +285,7 @@ void MLCGLattice<Int, Real>::setA(const IntMat &A) {
 }
 
 //============================================================================
-
+/*
 template<typename Int, typename Real>
 void MLCGLattice<Int, Real>::setAB(const IntMat &A, const IntMat &B) {
    setA(A);
@@ -290,7 +293,7 @@ void MLCGLattice<Int, Real>::setAB(const IntMat &A, const IntMat &B) {
    assert(B.NumRows() == this->m_w);
    this->m_B = B;
 }
-
+*/
 //===========================================================================
 // Computes the first `k` rows of the initial basis in up to `numPow * k` dimensions,
 // under the assumption that B = I.  This is (I, Y_1^\tr, ..., Y_{n-1}^\tr).

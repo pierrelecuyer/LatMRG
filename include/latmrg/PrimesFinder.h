@@ -36,8 +36,8 @@
  * for which the integer \f$r = (m^k-1)/(m-1)\f$ is also prime for a given
  * \f$k\f$, and possibly for which \f$(m-1)/2\f$ is also prime.
  * For \f$k=1\f$, we have \f$r=1\f$, so the first condition is removed.
- * These functions use solely Rabin-Miller probabilistic primality tests with `RMtrials` trials.
- * If `facto` is `true`, the factorization of \f$m-1\f$ is also computed and returned.
+ * These functions use solely Miller-Rabin probabilistic primality tests with `numtrials` trials.
+ * If `factomm1` is `true`, the factorization of \f$m-1\f$ is also computed and returned.
  * Each function writes its results on the given stream `fout`.
  *
  * We could possibly use deterministic primality tests when \f$m\f$ and \f$k\f$ are small, because it is possible
@@ -54,15 +54,15 @@ namespace LatMRG {
  * Finds and prints the \f$s\f$ largest prime integers \f$m < 2^e\f$.
  */
 template<typename Int>
-static void findPrime(int64_t e, int64_t s, bool facto, std::ostream &fout, const int64_t RMtrials =
-      200);
+static void findPrime(int64_t e, int64_t s, bool factomm1, std::ostream &fout,
+      const int64_t numtrials = 200);
 /**
  * Finds the \f$s\f$ largest prime integers \f$m<2^e\f$ for which \f$r = (m^k-1)/(m-1)\f$ is also prime.
  * If `safe` is `true`, \f$(m-1)/2\f$ is also required to be prime.
  */
 template<typename Int>
-static void findPrime(int64_t k, int64_t e, int64_t s, bool safe, bool facto, std::ostream &fout,
-      const int64_t RMtrials = 200);
+static void findPrime(int64_t k, int64_t e, int64_t s, bool safe, bool factomm1, std::ostream &fout,
+      const int64_t numtrials = 200);
 
 /**
  * Finds all integers \f$m\f$, in \f$2^e + c_1 \le m \le 2^e + c_2\f$,
@@ -70,8 +70,8 @@ static void findPrime(int64_t k, int64_t e, int64_t s, bool safe, bool facto, st
  * is `true`, \f$(m-1)/2\f$ is also required to be prime.
  */
 template<typename Int>
-static void findPrime(int64_t k, int64_t e, int64_t c1, int64_t c2, bool safe, bool facto,
-      std::ostream &fout, const int64_t RMtrials = 200);
+static void findPrime(int64_t k, int64_t e, int64_t c1, int64_t c2, bool safe, bool factomm1,
+      std::ostream &fout, const int64_t numtrials = 200);
 
 /**
  * This is the general purpose function, called by the other ones.
@@ -79,14 +79,13 @@ static void findPrime(int64_t k, int64_t e, int64_t c1, int64_t c2, bool safe, b
  */
 template<typename Int>
 static void findPrime(int64_t k, int64_t e, int64_t s, const Int &S1, const Int &S2, bool safe,
-      bool facto, std::ostream &fout, const int64_t RMtrials = 200);
+      bool factomm1, std::ostream &fout, const int64_t numtrials = 200);
 
 /**
  * Writes the search parameters to the stream `fout`.
  */
-static void writeHeader (int64_t k, int64_t e, int64_t c1, int64_t c2, bool safe, bool facto,
-      std::ostream & fout, const int64_t RMtrials = 200);
-
+static void writeHeader(int64_t k, int64_t e, int64_t c1, int64_t c2, bool safe, bool factomm1,
+      std::ostream &fout, const int64_t numtrials = 200);
 
 //============================================================================
 // Implementation
@@ -96,12 +95,13 @@ template<typename Int>
 static void nextM(Int &m) {
    m -= 2;
    if (0 == m % 5) m -= 2;
-};
+}
+;
 
 // This implements the general case.
 template<typename Int>
-void findPrime(int64_t k, int64_t e, int64_t s, const Int &S1, const Int &S2,
-      bool safe, bool facto, std::ostream &fout, const int64_t RMtrials) {
+void findPrime(int64_t k, int64_t e, int64_t s, const Int &S1, const Int &S2, bool safe,
+      bool factomm1, std::ostream &fout, const int64_t numtrials) {
    Chrono timer;
    timer.init();
    Int m;
@@ -109,9 +109,9 @@ void findPrime(int64_t k, int64_t e, int64_t s, const Int &S1, const Int &S2,
    else m = S2 - Int(1);
    int64_t i = 0;
    while (i < s && m >= S1) {
-      PrimeType status = IntFactor < Int > ::isPrime(m, RMtrials);
+      PrimeType status = IntFactor<Int>::isPrime(m, numtrials);
       if (status == PRIME || status == PROB_PRIME) {
-         if (facto) fout << "----------------\n";
+         if (factomm1) fout << "----------------\n";
          Int m1 = m - Int(1);
          if (safe) {
             if (1 == m % 4) {
@@ -119,7 +119,7 @@ void findPrime(int64_t k, int64_t e, int64_t s, const Int &S1, const Int &S2,
                continue;
             }
             Int m1s2 = m1 / Int(2);
-            status = IntFactor < Int > ::isPrime(m1s2, RMtrials);
+            status = IntFactor<Int>::isPrime(m1s2, numtrials);
             if (status != PRIME && status != PROB_PRIME) {
                nextM(m);
                continue;
@@ -131,7 +131,7 @@ void findPrime(int64_t k, int64_t e, int64_t s, const Int &S1, const Int &S2,
             r = NTL::power(m, k);
             --r;
             r = r / m1;
-            status = IntFactor < Int > ::isPrime(r, RMtrials);
+            status = IntFactor<Int>::isPrime(r, numtrials);
          }
          if (k == 1 || status == PRIME || status == PROB_PRIME) {
             i++;
@@ -145,8 +145,8 @@ void findPrime(int64_t k, int64_t e, int64_t s, const Int &S1, const Int &S2,
                fout << " - ";
                fout << (-Sdiff) << "\n";
             }
-            if (facto) {
-               IntFactorization < Int > ifac;
+            if (factomm1) {
+               IntFactorization<Int> ifac;
                ifac.clear();
                ifac.setNumber(m1);
                ifac.factorize();
@@ -163,56 +163,55 @@ void findPrime(int64_t k, int64_t e, int64_t s, const Int &S1, const Int &S2,
 //===========================================================================
 
 template<typename Int>
-void findPrime(int64_t e, int64_t s, bool facto, std::ostream &fout,
-      const int64_t RMtrials) {
+void findPrime(int64_t e, int64_t s, bool factomm1, std::ostream &fout, const int64_t numtrials) {
    Int Sm1, Sm2;
    Sm2 = (Int(1) << e) - 1;
    Sm1 = 2;
-   writeHeader(1, e, INT_MAX, INT_MAX, false, facto, fout);
-   findPrime(1, e, s, Sm1, Sm2, false, facto, fout, RMtrials);
+   writeHeader(1, e, INT_MAX, INT_MAX, false, factomm1, fout);
+   findPrime(1, e, s, Sm1, Sm2, false, factomm1, fout, numtrials);
 }
 
 //===========================================================================
 
 template<typename Int>
-void findPrime(int64_t k, int64_t e, int64_t s, bool safe, bool facto,
-      std::ostream &fout, const int64_t RMtrials) {
+void findPrime(int64_t k, int64_t e, int64_t s, bool safe, bool factomm1, std::ostream &fout,
+      const int64_t numtrials) {
    Int Sm1, Sm2;
    Sm2 = (Int(1) << e) - 1;
    Sm1 = 2;
-   writeHeader(k, e, INT_MAX, INT_MAX, safe, facto, fout);
-   findPrime(k, e, s, Sm1, Sm2, safe, facto, fout, RMtrials);
+   writeHeader(k, e, INT_MAX, INT_MAX, safe, factomm1, fout);
+   findPrime(k, e, s, Sm1, Sm2, safe, factomm1, fout, numtrials);
 }
 
 //===========================================================================
 
 template<typename Int>
-void findPrime(int64_t k, int64_t e, int64_t c1, int64_t c2, bool safe,
-      bool facto, std::ostream &fout, const int64_t RMtrials) {
+void findPrime(int64_t k, int64_t e, int64_t c1, int64_t c2, bool safe, bool factomm1,
+      std::ostream &fout, const int64_t numtrials) {
    Int Sm1, Sm2;
    Sm1 = (Int(1) << e) + c1;
    Sm2 = (Int(1) << e) + c2;
-   writeHeader(k, e, c1, c2, safe, facto, fout);
-   findPrime(k, e, INT_MAX, Sm1, Sm2, safe, facto, fout, RMtrials);
+   writeHeader(k, e, c1, c2, safe, factomm1, fout);
+   findPrime(k, e, INT_MAX, Sm1, Sm2, safe, factomm1, fout, numtrials);
 }
 
 //===========================================================================
 
-void writeHeader(int64_t k, int64_t e, int64_t c1, int64_t c2, bool safe,
-      bool facto, std::ostream &fout, const int64_t RMtrials) {
+void writeHeader(int64_t k, int64_t e, int64_t c1, int64_t c2, bool safe, bool factomm1,
+      std::ostream &fout, const int64_t numtrials) {
    fout << "//=============================================================\n";
    fout << "Largest values of m such that m";
    if (safe) fout << ", (m-1)/2,";
    if (k > 1) fout << " and (m^k-1)/(m-1) are prime with\n";
    else fout << " is prime with\n";
    if (k > 1) fout << "k  = " << k << ", and\n";
-   if (c1 < INT_MAX || c2 < INT_MAX) fout << "2^e + c1 < m < 2^e + c2, for e = " << e <<
-         ", c1 = " << c1 << ", c2 = " << c2 << "\n";
+   if (c1 < INT_MAX || c2 < INT_MAX) fout << "2^e + c1 < m < 2^e + c2, for e = " << e << ", c1 = "
+         << c1 << ", c2 = " << c2 << "\n";
    else fout << "m < 2^e and e = " << e << "\n";
    fout << "Search parameters:\n";
    fout << "  safe = " << std::boolalpha << safe;
-   fout << ",  facto = " << facto;
-   fout << ",  RMtrials = " << RMtrials << "\n\n";
+   fout << ",  factomm1 = " << factomm1;
+   fout << ",  numtrials = " << numtrials << "\n\n";
 }
 
 } // end namespace LatMRG

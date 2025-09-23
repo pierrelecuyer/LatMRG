@@ -12,6 +12,7 @@
 
 // #include "latticetester/EnumTypes.h"
 #include "latticetester/Util.h"
+#include "latmrg/EnumTypes.h"
 #include "latmrg/IntFactor.h"
 
 namespace LatMRG {
@@ -34,6 +35,17 @@ namespace LatMRG {
  * large integers, it may not be possible to find all the prime factors
  * within a reasonable amount of time. In that case, a similar decomposition
  * to the above may be used with some of the factors composite.
+ *
+ * The functions that perform a decomposition and return a `PrimeType` will return
+ * `PRIME` if all factors are known to be prime,
+ * `PROB_PRIME` if they are all prime or probably prime,
+ * `COMPOSITE` if at least one factor is known to be composite and could not be decomposed,
+ * and `UNKNOWN` in other cases.
+ * This returned type is called the *status of the factorization*, and is also returned by
+ * the function `getFactStatus`. A `PROB_PRIME` status means that we have a correct factorization
+ * into prime numbers with high probability, not that the number \f$n\f$ itself is prime with
+ * high probability.  For the latter, there is the function `getNumberStatus` which returns
+ * `PRIME` if \f$n\f$ is known to be prime, `PROB_PRIME` if it is probably prime, etc.
  */
 template<typename Int>
 class IntFactorization {
@@ -41,9 +53,9 @@ class IntFactorization {
 public:
 
    /**
-    * Constructs a factorization for the integer \f$x\f$.
+    * Constructs a factorization for the natural integer \f$n\f$.
     */
-   explicit IntFactorization(const Int &x);
+   explicit IntFactorization(const Int &n);
 
    /**
     * Constructs a factorization object by reading the factorization from file `fname`
@@ -92,19 +104,6 @@ public:
    void read(const char *f);
 
    /**
-    * Makes a decomposition of the current integer according to the selected value of `decomp`.
-    * The type `DecompType` is defined in `EnumTypes`.  The choices are
-    * DECOMP, DECOMP_WRITE, DECOMP_READ, DECOMP_PRIME, NO_DECOMP'.
-    * Unless this value is `NO_DECOMP`, the prime factors as well as the inverse factors
-    * are put in the `fact` object.
-    * The string `filename` is the name of the file where the factors are read or written
-    * when `decomp` is <tt>DECOMP_WRITE</tt> or <tt>DECOMP_READ</tt>.
-    * This file must be accessible by the program.
-    * Returns true if successful.
-    */
-   bool decompToFactorsInv(DecompType decomp, const char *file = NULL);
-
-   /**
     * Adds the factor `p` with multiplicity `mult` and prime status `status`
     * to this object.
     */
@@ -114,41 +113,56 @@ public:
     * Replaces repeated equal factors in the factor list of this object by one factor with
     * its multiplicity, and sorts the factors in increasing order.
     */
-   void makeUnique();
+   void makeUniqueAndSort();
 
    /**
     * Tries to find all the prime factors of this integer and stores all the factors
-    * in increasing order in a private list.  Then calls `makeUnique`.
+    * in increasing order in a private list.  Then calls `makeUniqueAndSort`.
     * If the number is prime, there is a single factor in the list.
     * This function works only if Yafu is installed.
-    * Returns true if successful.
+    * Returns the status of the factorization, which is
+    * `PRIME` if all factors are known to be prime,
+    * `PROB_PRIME` if they are all prime or probably prime,
+    * `COMPOSITE` if at least one factor is known to be composite and could not be decomposed,
+    * and `UNKNOWN` in other cases.
     */
-   bool factorize();
+   PrimeType factorize();
 
    /**
-    * Given the list of prime factors \f$p\f$ of the integer \f$x\f$ in this object,
-    * this function computes the internal list of the inverse factors \f$x/p\f$,
+    * Given the list of prime factors \f$p\f$ of the integer \f$n\f$ in this object,
+    * this function computes the internal list of the inverse factors \f$n/p\f$,
     * sorted in increasing order.
-    * For example, if \f$x = 24\f$, the prime factorization is \f$24 = 2^3 \cdot 3\f$
+    * For example, if \f$n = 24\f$, the prime factorization is \f$24 = 2^3 \cdot 3\f$
     * and the list on inverse factors is \f$[24/3, 24/2] = [8, 12]\f$.
-    * Returns true if successful.
     */
-   bool calcInvFactors();
+   void calcInvFactors();
+
+   /**
+    * Makes a decomposition of the current integer according to the selected value of `decomp`.
+    * The type `DecompType` is defined in `EnumTypes`.  The choices are
+    * DECOMP, DECOMP_WRITE, DECOMP_READ, DECOMP_PRIME, NO_DECOMP'.
+    * Unless this value is `NO_DECOMP`, the prime factors as well as the inverse factors
+    * are stored in the current object.
+    * The string `filename` is the name of the file where the factors are read or written
+    * when `decomp` is <tt>DECOMP_WRITE</tt> or <tt>DECOMP_READ</tt>.
+    * This file must be accessible by the program.
+    * Return is like in `factorize`.
+    */
+   PrimeType decompToFactorsInv(DecompType decomp, const char *file = NULL);
 
    /**
     * Same as calling `factorize` and `calcInvFactors` in a single function call.
-    * Returns true if successful.
+    * Return is like in `factorize`.
     */
-   bool factorizePlus();
+   PrimeType factorizePlus();
 
    /**
     * Checks that the integer in this object is equal to the product of its factors.
-    * Returns `true` if it is, otherwise `false`.
     */
    bool checkProduct() const;
 
    /**
-    * Returns the main integer in this object.
+    * Returns the main integer \f$n\f$ in this object.
     */
    Int getNumber() const {
       return m_number;
@@ -162,31 +176,45 @@ public:
    }
 
    /**
-    * Returns the list of the inverse factors, assuming that they have been computed.
+    * Returns the vector of the inverse factors, assuming that they have been computed.
     */
    const std::vector<Int>& getInvFactorList() const {
       return m_invFactorList;
    }
 
    /**
-    * Sets to \f$x\f$ the value of the integer to be factored.
+    * Sets to \f$n\f$ the value of the integer to be factored.
     */
-   void setNumber(const Int &x) {
-      m_number = x;
+   void setNumber(const Int &n) {
+      m_number = n;
    }
 
    /**
     * Returns the status of this number.
     */
-   PrimeType getStatus() const {
-      return m_status;
+   PrimeType getNumberStatus() const {
+      return m_numberStatus;
    }
 
    /**
     * Sets the status of this number to `status`.
     */
-   void setStatus(PrimeType status) {
-      m_status = status;
+   void setNumberStatus(PrimeType status) {
+      m_numberStatus = status;
+   }
+
+   /**
+    * Returns the status of this factorization.
+    */
+   PrimeType getFactStatus() const {
+      return m_factStatus;
+   }
+
+   /**
+    * Sets the status of this factorization to `status`.
+    */
+   void setFactStatus(PrimeType status) {
+      m_factStatus = status;
    }
 
    /**
@@ -203,10 +231,15 @@ private:
    Int m_number;
 
    /**
-    * The status of this number, i.e. whether it is prime, composite, ...
-    * NOTE:  This variable is not properly maintained !!!!                 ********
+    * The status of the natural integer \f$n\f$.
     */
-   PrimeType m_status;
+   PrimeType m_numberStatus;
+
+   /**
+    * The status of the current decomposition of this number, i.e. the `PrimeType`
+    * that was returned by the function that decomposed it for the last time.
+    */
+   PrimeType m_factStatus;
 
    /**
     * The list of factors in the decomposition of number.
@@ -214,8 +247,8 @@ private:
    std::list<IntFactor<Int>> m_factorList;
 
    /**
-    * Given the list of factors \f$p\f$ of this integer \f$x\f$, `m_invFactorList`
-    * contains all the sorted values \f$x/p\f$ (indexing starts at 0),
+    * Given the list of factors \f$p\f$ of this integer \f$x\f$, the `m_invFactorList`
+    * vector contains all the sorted values \f$x/p\f$ (indexing starts at 0),
     * if the function `calcInvFactors` has been called beforehand.
     */
    std::vector<Int> m_invFactorList;
@@ -235,7 +268,7 @@ private:
    /**
     * Sorts the list of factors in increasing order.
     */
-   void sort() {
+   void sortFactors() {
       CompareFactors comp;
       m_factorList.sort(comp);
    }
@@ -248,7 +281,7 @@ private:
 
 template<typename Int>
 IntFactorization<Int>::IntFactorization(const char *name) :
-      m_status(UNKNOWN) {
+      m_factStatus(UNKNOWN) {
    if (name != 0) read(name);
    else m_number = 0;
 }
@@ -256,16 +289,16 @@ IntFactorization<Int>::IntFactorization(const char *name) :
 //===========================================================================
 
 template<typename Int>
-IntFactorization<Int>::IntFactorization(const Int &x) :
-      m_number(x), m_status(UNKNOWN) {
+IntFactorization<Int>::IntFactorization(const Int &n) :
+      m_number(n), m_factStatus(UNKNOWN) {
 }
 
 //===========================================================================
 
 template<typename Int>
 IntFactorization<Int>::IntFactorization(const IntFactorization &f) :
-      m_number(f.m_number), m_status(f.m_status), m_factorList(f.m_factorList), m_invFactorList(
-            f.m_invFactorList) {
+      m_number(f.m_number), m_numberStatus(f.m_numberStatus), m_factStatus(f.m_factStatus), m_factorList(
+            f.m_factorList), m_invFactorList(f.m_invFactorList) {
 }
 
 //===========================================================================
@@ -276,7 +309,8 @@ IntFactorization<Int>& IntFactorization<Int>::operator=(const IntFactorization &
       m_factorList = f.m_factorList;
       m_invFactorList = f.m_invFactorList;
       m_number = f.m_number;
-      m_status = f.m_status;
+      m_numberStatus = f.m_numberStatus;
+      m_factStatus = f.m_factStatus;
    }
    return *this;
 }
@@ -285,7 +319,8 @@ IntFactorization<Int>& IntFactorization<Int>::operator=(const IntFactorization &
 
 template<typename Int>
 void IntFactorization<Int>::clear() {
-   m_status = UNKNOWN;
+   m_numberStatus = UNKNOWN;
+   m_factStatus = UNKNOWN;
    m_number = 0;
    m_factorList.clear();
    m_invFactorList.clear();
@@ -311,11 +346,12 @@ void IntFactorization<Int>::read(const char *name) {
    }
    std::string tampon;
    // This should be modified to ignore the entire line because right now
-   // we are limited if the number is too big.                             *********
+   // we are limited if the number is too big.   ?????
    // in.ignore(256, '\n'); // drop rest of line
    int64_t vsize = 0;
    in >> m_number;
    // std::cout << "Number: " << m_number << "\n";
+   m_factStatus = PRIME;
    while (in >> tampon) {
       Int x;
       int64_t k;
@@ -340,9 +376,11 @@ void IntFactorization<Int>::read(const char *name) {
          status = UNKNOWN;
       }
       addFactor(x, k, status);
+      m_factStatus = max(status, m_factStatus);
+      m_numberStatus = UNKNOWN;
       ++vsize;
    }
-   // makeUnique ();
+   // makeUniqueAndSort ();
    assert(checkProduct());
    m_invFactorList.reserve(vsize);
 }
@@ -353,46 +391,46 @@ template<typename Int>
 void IntFactorization<Int>::addFactor(const Int &x, int64_t mult, PrimeType st) {
    IntFactor<Int> f(x, mult, st);
    m_factorList.push_back(f);
-   if (m_factorList.size() > 1) m_status = COMPOSITE;
+   m_factStatus = max(st, m_factStatus);
+   if (m_factorList.size() > 1) m_numberStatus = COMPOSITE;
 }
 
 //===========================================================================
 
 template<typename Int>
-bool IntFactorization<Int>::decompToFactorsInv(DecompType decomp, const char *filename) {
-   // fact.setNumber(x);
-   bool ok = true;
-   if (decomp != NO_DECOMP) {
-      if (decomp == DECOMP_READ) read(filename);
-      else ok = factorize();
-      if ((decomp == DECOMP_WRITE) && (ok)) {
-         std::ofstream fout(filename);
-         fout << toString();
-      }
-      if (ok) return calcInvFactors();
-      else return false;
+PrimeType IntFactorization<Int>::decompToFactorsInv(DecompType decomp, const char *filename) {
+   if (decomp == NO_DECOMP) return m_factStatus = UNKNOWN;
+   if (decomp == DECOMP_READ) {
+      read(filename);
+      m_factStatus = PRIME;
+   } else m_factStatus = factorize();
+   if ((decomp == DECOMP_WRITE) && (m_factStatus <= 1)) {
+      std::ofstream fout(filename);
+      fout << toString();
    }
-   return true;
+   if (m_factStatus <= 1) calcInvFactors();
+   return m_factStatus;
 }
 
 //===========================================================================
 
 template<typename Int>
-bool IntFactorization<Int>::factorize() {
+PrimeType IntFactorization<Int>::factorize() {
 #ifdef USE_YAFU
-   std::cout << "  Start factorize with Yafu " << "\n";
+   // std::cout << "  Start factorize with Yafu " << "\n";
    // std::string S("./data/yafu -s ");
+   // std::string S("factor ");  // yafu must be accessible from the PATH.
    std::string S("yafu -s ");  // yafu must be accessible from the PATH.
    std::ostringstream num;
    num << m_number;
    S += num.str();
 
    // Choose a name for a temporary file for yafu.
-   const char *filename = "temp938573291";
+   const char *filename = "tempFactorsYafu";
    S += " > ";
    S += filename;
 
-   std::cout << "  start factorize with output to file " << "\n";
+   // std::cout << "  start factorize with output to file " << "\n";
    // factorize and set output to filename
    int systemRet = system(S.c_str());
    if (systemRet == -1) {
@@ -401,7 +439,7 @@ bool IntFactorization<Int>::factorize() {
    }
    // Now read the result file and extract the prime factors from the
    // lines PRIME FACTOR xxx
-   std::cout << "  now open the file to read " << "\n";
+   // std::cout << "  now open the file to read " << "\n";
    std::ifstream in(filename);
    if (!(in.is_open())) {
       std::cerr << "Error:   cannot open file   filename\n";
@@ -410,7 +448,8 @@ bool IntFactorization<Int>::factorize() {
    std::string line;
    //std::string::size_type pos;
    Int z;
-   std::cout << "  now read the file, line by line " << "\n";
+   // std::cout << "  now read the file, line by line " << "\n";
+   m_factStatus = PROB_PRIME;
    while (getline(in, line)) {
       S = line;
       /*
@@ -424,19 +463,24 @@ bool IntFactorization<Int>::factorize() {
       if (S.substr(0, 4) != "this") {
          if (S.substr(0, 1) == "&") {
             std::cout << "factorize: Could not get all the factors. \n";
+            std::cout << "  number = " << m_number << "\n";
             std::cout << "  we got a line S = " << S << "\n\n";
-            return false;
+            // assert(false);
+            return m_factStatus = COMPOSITE;
          }
          NTL::conv(z, S.c_str());
-         if (z != 0) addFactor(z, 1, PRIME);
-         std::cout << "  we have a prime factor z = " << z << "\n";
+         if (z != 0) addFactor(z, 1, PROB_PRIME);
+         // std::cout << "  we have a prime factor z = " << z << "\n";
       }
+      // std::cout << "factorize inside while: m_factStatus = " << m_factStatus << "\n";
    }
-   std::cout << "  the factors are now in m_factorList " << "\n";
-   if (m_factorList.size() == 1) m_status = PRIME;
-   makeUnique();
+   // std::cout << "  the factors are now in m_factorList " << "\n";
+   if (m_factorList.size() == 1) m_numberStatus = PROB_PRIME;
+   else m_numberStatus = COMPOSITE;
+   makeUniqueAndSort();
    remove(filename);
-   return true;
+   // std::cout << "factorize: m_factStatus = " << m_factStatus << "\n";
+   return m_factStatus;
 #else
    std::cout << "IntFactorization: Yafu is not installed or not accessible.\n";
    std::cout << "Exiting the program to avoid undefined behavior.";
@@ -447,11 +491,30 @@ bool IntFactorization<Int>::factorize() {
 //===========================================================================
 
 template<typename Int>
-bool IntFactorization<Int>::factorizePlus() {
-   if (this->factorize())
-      return this->calcInvFactors();
-   else
-      return false;
+PrimeType IntFactorization<Int>::factorizePlus() {
+   m_factStatus = this->factorize();
+   // std::cout << "factorizePlus: m_factStatus = " << m_factStatus << "\n";
+   if (m_factStatus <= 1) calcInvFactors();
+   // std::cout << "factorizePlus: after calcInvFactors, size = " << m_invFactorList.size() << "\n";
+   return m_factStatus;
+}
+
+//===========================================================================
+
+template<typename Int>
+void IntFactorization<Int>::calcInvFactors() {
+   //   sortFactors ();
+   if (m_invFactorList.capacity() < m_factorList.size()) {
+      m_invFactorList.clear();
+      m_invFactorList.reserve(m_factorList.size());
+   }
+   uint64_t j = 0;
+   for (auto it = m_factorList.rbegin(); it != m_factorList.rend(); it++) {
+      if (it->getFactor() == Int(1)) continue;
+      ++j;
+      m_invFactorList.push_back(m_number / it->getFactor());
+   }
+   // std::cout << "Inside calcInvFactors, size = " << m_invFactorList.size() << "\n";
 }
 
 //===========================================================================
@@ -476,26 +539,8 @@ bool IntFactorization<Int>::checkProduct() const {
 //===========================================================================
 
 template<typename Int>
-bool IntFactorization<Int>::calcInvFactors() {
-   //   sort ();
-   uint64_t j = 0;
-   for (auto it = m_factorList.rbegin(); it != m_factorList.rend(); it++) {
-      if (it->getFactor() == Int(1)) continue;
-      ++j;
-      if (m_invFactorList.capacity() < j) {
-         m_invFactorList.clear();
-         m_invFactorList.reserve(j + 10);
-      }
-      m_invFactorList.push_back(m_number / it->getFactor());
-   }
-   return true;
-}
-
-//===========================================================================
-
-template<typename Int>
-void IntFactorization<Int>::makeUnique() {
-   sort();
+void IntFactorization<Int>::makeUniqueAndSort() {
+   sortFactors();
    int64_t j = 1;
    typename std::list<IntFactor<Int>>::iterator it = m_factorList.begin();
    typename std::list<IntFactor<Int>>::iterator it2 = m_factorList.begin();
@@ -524,19 +569,16 @@ std::string IntFactorization<Int>::toString() const {
       ++it;
    }
    out << std::endl;
-   /*
-    if (!m_invFactorList.empty()) {
-    out << "the inverse factors:\n";
-    for (unsigned int64_t i = 0; i < m_invFactorList.size(); ++i) {
-    out << m_invFactorList[i] << std::endl;
-    }
-    }
-    */
+   if (!m_invFactorList.empty()) {
+      out << "the inverse factors:\n";
+      for (uint64_t i = 0; i < m_invFactorList.size();  ++i)
+            out << m_invFactorList[i] << std::endl;
+   }
    return out.str();
 }
 
 // template class IntFactorization<std::int64_t> ;
 // template class IntFactorization<NTL::ZZ> ;
 
-}
+   }
 #endif

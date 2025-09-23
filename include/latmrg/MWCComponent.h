@@ -1,7 +1,7 @@
 #ifndef LATMRG_MWCCOMPONENT_H
 #define LATMRG_MWCCOMPONENT_H
 
-#include "latticetester/EnumTypes.h"
+// #include "latticetester/EnumTypes.h"
 #include "latticetester/IntLatticeExt.h"
 #include "latmrg/EnumTypes.h"
 #include "latmrg/IntFactor.h"
@@ -131,34 +131,34 @@ public:
    Int computeLCGModulus();
 
    /**
-    * Returns `true` if \f$m\f is prime or probably prime.
-    * `RMtrials` is the number of Robbins-Miller trials for primality testing.
+    * Returns the prime type of \f$m\f.
+    * `numtrials` is the number of Miller-Rabin trials for probabilistic
+    * primality testing.
     */
-   bool mIsPrime(const int64_t RMtrials = 100);
-
-   /**
-    * Returns `true` if \f$m\f is prime or probably prime and if \f$b\f$
-    * is a primitive root modulo \f$m\f$ (so the period is \f$m-1\f$.
-    * `RMtrials` is the number of Robbins-Miller trials for primality testing.
-    */
-   bool maxPeriod(const int64_t RMtrials = 100);
-
-   /**
-    * Check if we have the maximal period of \f$(m-1)/2\f$ in case where \f$a_0=1\f$ and
-    * \f$b\f$ is a power of 2.  This holds if \f$m\f is prime and 2 is a primitive
-    * root modulo  \f$m\f$.
-    * `RMtrials` is the number of Robbins-Miller trials for primality testing.
-    */
-   bool maxPeriod1Pow2(const int64_t RMtrials = 100);
+   PrimeType mIsPrime(const int64_t numtrials = 100);
 
    /**
     * Check if both \f$m\f and \f$(m-1)/2\f are prime.
     * This implies a maximal period of \f$(m-1)/2\f$ in case where
     * \f$a_0=1\f$ and \f$b\f$ is a power of 2,
-    * `RMtrials` is the number of Robbins-Miller trials for primality testing.
+    * `numtrials` is the number of Miller-Rabin trials for primality testing.
     */
-   bool mIsSafePrimePow2(const int64_t RMtrials = 100);
+   PrimeType mIsSafePrimePow2(const int64_t numtrials = 100);
 
+   /**
+    * Returns `true` if \f$m\f is prime or probably prime and if \f$b\f$
+    * is a primitive root modulo \f$m\f$ (so the period is \f$m-1\f$.
+    * `numtrials` is the number of Miller-Rabin trials for primality testing.
+    */
+   bool maxPeriod(const int64_t numtrials = 100);
+
+   /**
+    * Check if we have the maximal period of \f$(m-1)/2\f$ in case where \f$a_0=1\f$ and
+    * \f$b\f$ is a power of 2.  This holds if \f$m\f is prime and 2 is a primitive
+    * root modulo  \f$m\f$.
+    * `numtrials` is the number of Miller-Rabin trials for primality testing.
+    */
+   bool maxPeriod1Pow2(const int64_t numtrials = 100);
 
 
 private:
@@ -299,66 +299,42 @@ Int MWCComponent<Int>::computeLCGModulus() {
 //============================================================================
 
 template<typename Int>
-bool MWCComponent<Int>::mIsPrime(const int64_t RMtrials) {
-   PrimeType ptype = IntFactor<Int>::isPrime(m_LCGm, RMtrials);
-   if (ptype <= 1) return true;
-   else return false;
+PrimeType MWCComponent<Int>::mIsPrime(const int64_t numtrials) {
+   return IntFactor<Int>::isPrime(m_LCGm, numtrials);
 }
 
-/**
- * Returns `true` if \f$m\f is prime or probably prime and if \f$b\f$
- * is a primitive root modulo \f$m\f$ (so the period is \f$m-1\f$.
- * `RMtrials` is the number of Robbins-Miller trials for primality testing.
- */
 template<typename Int>
-bool MWCComponent<Int>::maxPeriod(const int64_t RMtrials) {
-   PrimeType ptype = IntFactor<Int>::isPrime(m_LCGm, RMtrials);
-   if (ptype > 1) return false;
-   IntFactorization<Int> m_fact(m_LCGm-1);
-   bool factok = m_fact.decompToFactorsInv (DECOMP);
-   if (factok) return isPrimitiveElement(m_b, m_fact, m_LCGm);
-   else return false;
-}
-
-/**
- * Check if we have the maximal period of \f$(m-1)/2\f$ in case where \f$a_0=1\f$ and
- * \f$b\f$ is a power of 2.  This holds if \f$m\f is prime and 2 is a primitive
- * root modulo  \f$m\f$.
- * `RMtrials` is the number of Robbins-Miller trials for primality testing.
- */
-template<typename Int>
-bool MWCComponent<Int>::maxPeriod1Pow2(const int64_t RMtrials) {
-   //std::cout << "maxPeriod1Pow2 start \n";
-   PrimeType ptype = IntFactor<Int>::isPrime(m_LCGm, RMtrials);
-   std::cout << "  ptype = " << ptype << "\n";
-   if (ptype > 1) return false;
-   IntFactorization<Int> m_fact(m_LCGm-1);
-   std::cout << "  m_fact created " << "\n";
-   bool factok = m_fact.decompToFactorsInv (DECOMP, NULL);
-   std::cout << "  decomp done " << "\n";
-   if (factok) return isPrimitiveElement(Int(2), m_fact, m_LCGm);
-   else return false;
-}
-
-/**
- * Check if both \f$m\f and \f$(m-1)/2\f are prime.
- * This implies a maximal period of \f$(m-1)/2\f$ in case where
- * \f$a_0=1\f$ and \f$b\f$ is a power of 2,
- * `RMtrials` is the number of Robbins-Miller trials for primality testing.
- */
-template<typename Int>
-bool MWCComponent<Int>::mIsSafePrimePow2(const int64_t RMtrials) {
+PrimeType MWCComponent<Int>::mIsSafePrimePow2(const int64_t numtrials) {
    assert(m_e > 0);
    assert(m_aa[0] == 1);
-   PrimeType ptype = IntFactor<Int>::isPrime(m_LCGm, RMtrials);
-   if ((ptype != PRIME) && (ptype != PROB_PRIME)) return false;
-   ptype = IntFactor<Int>::isPrime((m_LCGm-1)/2, RMtrials);
-   if ((ptype != PRIME) && (ptype != PROB_PRIME)) return false;
-   return true;
+   return IntFactor<Int>::isSafePrime(m_LCGm, numtrials);
+}
+
+template<typename Int>
+bool MWCComponent<Int>::maxPeriod(const int64_t numtrials) {
+   PrimeType ptype = IntFactor<Int>::isPrime(m_LCGm, numtrials);
+   if (ptype > 1) return false;
+   IntFactorization<Int> m_fact(m_LCGm-Int(1));
+   ptype = m_fact.decompToFactorsInv (DECOMP);
+   if (ptype <= 1) return isPrimitiveElement(m_b, m_fact, m_LCGm);
+   else return false;
+}
+
+template<typename Int>
+bool MWCComponent<Int>::maxPeriod1Pow2(const int64_t numtrials) {
+   //std::cout << "maxPeriod1Pow2 start \n";
+   PrimeType ptype = IntFactor<Int>::isPrime(m_LCGm, numtrials);
+   // std::cout << "  ptype = " << ptype << "\n";
+   if (ptype > 1) return false;
+   IntFactorization<Int> m_fact(m_LCGm-Int(1));
+   // std::cout << "  m_fact created " << "\n";
+   ptype = m_fact.decompToFactorsInv (DECOMP, NULL);
+   // std::cout << "  decomp done, num factors: " <<  (m_fact.getFactorList()).size() << "\n";
+   if (ptype <= 1) return isPrimitiveElement(Int(2), m_fact, m_LCGm);
+   else return false;
 }
 
 //============================================================================
-//The combinations of types supported in the library
 
 template class MWCComponent<std::int64_t> ;
 template class MWCComponent<NTL::ZZ> ;

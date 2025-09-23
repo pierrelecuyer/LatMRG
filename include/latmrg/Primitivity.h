@@ -219,14 +219,14 @@ bool isPrimitiveElement(const Int &a, const IntFactorization<Int> &fac, const In
    if (t1 < 0) t1 += m;
    const std::vector<Int> invList = fac.getInvFactorList();
    assert(!(invList.empty()));
-   std::cout << "We got an invList.\n";
+   // std::cout << "We got an invList.\n";
    for (auto it = invList.begin(); it != invList.end(); it++) {
       if (*it == (m - 1)) continue;
       t2 = NTL::PowerMod(t1, *it, m);  // Works for either ZZ or int64_t.
-      std::cout << "  t2 = " << t2 << " \n";
+      // std::cout << "  t2 = " << t2 << " \n";
       if (t2 == 1) return false;
    }
-   std::cout << "We have a primitive element!!! \n";
+   // std::cout << "We have a primitive element!!! \n";
    return true;
 }
 
@@ -280,7 +280,7 @@ static bool isPrimitive23(typename FlexModInt<Int>::PolX &f, const Int &m,
 
    // Test Condition 3
    std::cout << "Testing Condition 3 \n";
-   if (fr.getStatus() == PRIME) return true;
+   if (fr.getNumberStatus() <= 1) return true;  // Prime or prob. prime.
    std::vector<Int> invFactorList = fr.getInvFactorList();
    assert(!invFactorList.empty());
    typename std::vector<Int>::const_iterator it = invFactorList.begin();

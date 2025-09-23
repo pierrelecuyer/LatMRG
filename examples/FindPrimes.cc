@@ -16,6 +16,6 @@ int main() {
 
    // Find special prime numbers m, for which `(m-1)/2` and `(m^k-1)/(m-1)` are also prime.
    findPrime<Int>(5, 63, 3, true, false, cout);
-   cout << "These same three values are also given in Table 1 of `rLEC99b`.\n";
+   cout << "The three values should be the same as in Table 1 of `rLEC99b`.\n";
    return 0;
 }
