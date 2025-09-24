@@ -209,7 +209,7 @@ static void polyToVecMRG(const NTL::Vec<Int> &vstate, typename FlexModInt<Int>::
 // IMPLEMENTTION
 
 template<typename Int>
-bool isPrimitiveElement(const Int &a, const IntFactorization<Int> &fac, const Int &p, long e) {
+static bool isPrimitiveElement(const Int &a, const IntFactorization<Int> &fac, const Int &p, long e) {
    if (0 == p) throw std::range_error("PrimitiveInt::isPrimitiveElement: p = 0");
    if (0 == a) return false;
    Int t1, t2;
