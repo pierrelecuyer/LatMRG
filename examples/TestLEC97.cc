@@ -50,7 +50,7 @@ static void FOMSuccLattice(Int &m, IntVec &aa, int64_t lowDim, int64_t highDim) 
    std::cout << "lowDim = " << lowDim << ", highDim = " << highDim << "\n";
    fomdual.computeMeritSucc(mrg, lowDim, highDim);
    if (k == 1) {
-      LatMRG::LCGLattice<Int, Real> lcg(m, aa[1], highDim);
+      LatMRG::LCGLattice<Int, Real> lcg(m, aa[1], highDim, 1, highDim);
       red.setIntLattice(lcg);
       std::cout << "\nUsing LCGLattice: \n";
       std::cout << "lowDim = " << lowDim << ", highDim = " << highDim << "\n";

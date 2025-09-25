@@ -78,6 +78,14 @@ public:
    MRGLattice(const Int &m, int64_t k, int64_t maxDim, NormType norm = L2NORM);
 
    /**
+    * Here the modulus `m` is not specified. It must be set later via `setModulus`.
+    */
+   MRGLattice(int64_t k, int64_t maxDim, int64_t maxDimProj, int64_t maxCoord,
+         NormType norm = L2NORM);
+
+   MRGLattice(int64_t k, int64_t maxDim, NormType norm = L2NORM);
+
+   /**
     * Destructor.
     */
    ~MRGLattice();
@@ -223,9 +231,9 @@ protected:
 //============================================================================
 
 template<typename Int, typename Real>
-MRGLattice<Int, Real>::MRGLattice(const Int &m, int64_t k, int64_t maxDim, int64_t maxDimProj,
+MRGLattice<Int, Real>::MRGLattice(int64_t k, int64_t maxDim, int64_t maxDimProj,
       int64_t maxCoord, NormType norm) :
-      IntLatticeExt<Int, Real>(m, maxDim, norm) {
+      IntLatticeExt<Int, Real>(maxDim, norm) {
    this->m_order = k;
    m_aa.SetLength(k + 1);
    m_maxDimProj = maxDimProj;
@@ -233,6 +241,22 @@ MRGLattice<Int, Real>::MRGLattice(const Int &m, int64_t k, int64_t maxDim, int64
    m_y.SetLength(maxCoord + k - 1);
    m_genTemp.SetDims(maxDimProj + k, maxDimProj);
    m_bV0.SetDims(k, maxDim);
+}
+
+//============================================================================
+
+template<typename Int, typename Real>
+MRGLattice<Int, Real>::MRGLattice(int64_t k, int64_t maxDim, NormType norm) :
+      MRGLattice<Int, Real>(k, maxDim, maxDim, maxDim, norm) {
+}
+
+//============================================================================
+
+template<typename Int, typename Real>
+MRGLattice<Int, Real>::MRGLattice(const Int &m, int64_t k, int64_t maxDim, int64_t maxDimProj,
+      int64_t maxCoord, NormType norm) :
+      MRGLattice<Int, Real>(k, maxDim,  maxDimProj, maxCoord, norm) {
+   this->setModulus(m);
 }
 
 //============================================================================

@@ -39,9 +39,9 @@ public:
          NormType norm = L2NORM);
 
    /**
-    * This version takes `maxCoord = maxDimProj = maxDim'.
+    * This version takes `maxCoord = maxDimProj = maxDim'.  This one leads to ambiguity!
     */
-   LCGLattice(const Int &m, const Int &a, int64_t maxDim, NormType norm = L2NORM);
+   // LCGLattice(const Int &m, const Int &a, int64_t maxDim, NormType norm = L2NORM);
 
    /**
     * Same as the first constructor, except that `a` is not given.  It must be set afterwards via `seta`.
@@ -50,6 +50,13 @@ public:
          L2NORM);
 
    LCGLattice(const Int &m, int64_t maxDim, NormType norm = L2NORM);
+
+   /**
+    * Here, `m` is not given and must be set afterwards. This permits one to use the same object with different `m`.
+    */
+   LCGLattice(int64_t maxDim, int64_t maxDimProj, int64_t maxCoord, NormType norm = L2NORM);
+
+   LCGLattice(int64_t maxDim, NormType norm = L2NORM);
 
    /**
     * Copy constructor.
@@ -137,6 +144,21 @@ protected:
 //============================================================================
 
 template<typename Int, typename Real>
+LCGLattice<Int, Real>::LCGLattice(int64_t maxDim, int64_t maxDimProj,
+      int64_t maxCoord, NormType norm) :
+      LatMRG::MRGLattice<Int, Real>::MRGLattice(1, maxDim, maxDimProj, maxCoord, norm) {
+}
+
+//===========================================================================
+
+template<typename Int, typename Real>
+LCGLattice<Int, Real>::LCGLattice(int64_t maxDim, NormType norm) :
+      LCGLattice<Int, Real>::LCGLattice(maxDim, maxDim, maxDim, norm) {
+}
+
+//============================================================================
+
+template<typename Int, typename Real>
 LCGLattice<Int, Real>::LCGLattice(const Int &m, int64_t maxDim, int64_t maxDimProj,
       int64_t maxCoord, NormType norm) :
       LatMRG::MRGLattice<Int, Real>::MRGLattice(m, 1, maxDim, maxDimProj, maxCoord, norm) {
@@ -156,13 +178,6 @@ LCGLattice<Int, Real>::LCGLattice(const Int &m, const Int &a, int64_t maxDim, in
       int64_t maxCoord, NormType norm) :
       LCGLattice<Int, Real>(m, maxDim, maxDimProj, maxCoord, norm) {
    seta(a);
-}
-
-//============================================================================
-
-template<typename Int, typename Real>
-LCGLattice<Int, Real>::LCGLattice(const Int &m, const Int &a, int64_t maxDim, NormType norm) :
-      LCGLattice<Int, Real>(m, a, maxDim, maxDim, maxDim, norm) {
 }
 
 //===========================================================================
@@ -206,6 +221,7 @@ void LCGLattice<Int, Real>::buildBasis(int64_t d) {
 
 template<typename Int, typename Real>
 void LCGLattice<Int, Real>::buildDualBasis(int64_t d) {
+   // std::cout << "Start buildDualBasis, d = " << d << ",  maxdim = " << this->m_maxDim << "\n";
    assert((d > 0) && (d <= this->m_maxDim) && (d <= this->m_maxCoord));
    this->setDimDual(d);
    int64_t i, j;
@@ -242,6 +258,7 @@ template<typename Int, typename Real>
 void LCGLattice<Int, Real>::incDimDualBasis() {
    assert((this->m_dimdual < min(this->m_maxDim, this->m_maxCoord)));
    int64_t d = this->getDimDual();  // The current (old) dimension.
+   // std::cout << "Start inDimDualBasis, d = " << d << "\n";
    this->setDimDual(d + 1);
    int64_t i;
    // Add one extra 0 coordinate to each vector of the m-dual basis.
