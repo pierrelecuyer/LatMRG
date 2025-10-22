@@ -183,9 +183,10 @@ public:
    }
 
    /**
-    * Sets to \f$n\f$ the value of the integer to be factored.
+    * Sets to \f$n\f$ the value of the integer to be factored, and clears the list of factors.
     */
    void setNumber(const Int &n) {
+      clear();
       m_number = n;
    }
 
@@ -568,7 +569,7 @@ std::string IntFactorization<Int>::toString() const {
       out << (*it).toString() << std::endl;
       ++it;
    }
-   out << std::endl;
+   // out << std::endl;
    if (!m_invFactorList.empty()) {
       out << "the inverse factors:\n";
       for (uint64_t i = 0; i < m_invFactorList.size();  ++i)

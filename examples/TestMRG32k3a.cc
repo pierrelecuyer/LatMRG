@@ -48,14 +48,14 @@ int main() {
 
    // We now apply the spectral test to the combined MRG.
    int64_t maxdim(48);  // Maximum dimension of the lattice.  ***
-   NTL::Vec <int64_t> t; // The t-vector for the FOM.
-   t.SetLength(3);
-   t[0] = maxdim;  t[1] = 0;  t[2] = 0;
+   // NTL::Vec <int64_t> t; // The t-vector for the FOM.
+   // t.SetLength(3);
+   // t[0] = maxdim;  t[1] = 0;  t[2] = 0;
    MRGLattice<Int, Real> mrgc = MRGLattice<Int, Real>(m, aa, maxdim, 0, maxdim);
    WeightsUniform weights(1.0);
    NormaRogers normaDual(-log(m), 3, maxdim);  // Normalization for m-dual: Roger's bounds as in rLEC99b.
    ReducerBB<Int, Real> red(maxdim);           // Single ReducerBB.
-   FigureOfMeritDualM<Int, Real> fom(t, weights, normaDual, &red, true); // FoM for dual lattice.
+   FigureOfMeritDualM<Int, Real> fom(weights, normaDual, &red); // FoM for dual lattice.
    fom.setVerbosity(3);
    std::cout << "\nResults from TestMRG32k3a.cc \n";
 

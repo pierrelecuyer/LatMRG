@@ -2,6 +2,7 @@
 #define	LATMRG_LCGCOMPONENT_H
 
 #include <string>
+#include "NTL/ZZ.h"
 #include "latmrg/EnumTypes.h"
 #include "latmrg/IntFactorization.h"
 #include "latmrg/Primitivity.h"
@@ -94,6 +95,13 @@ public:
     */
    Int geta() const {
       return m_a;
+   }
+
+   /**
+    * Returns `a^nu mod m`, the multiplier used to jump by `nu` steps.
+    */
+   Int getaJump(Int &jumpSize) {
+      return NTL::PowerMod (m_a, jumpSize, m_m);
    }
 
    /**
@@ -266,7 +274,8 @@ template<typename Int>
 bool LCGComponent<Int>::maxPeriod(const Int &a) {
    seta(a);
    if (!m_increment)
-      return isPrimitiveElement(a, m_fact, m_m);   // Here, m is assumed to be prime.
+      // From Primitivity.h.  Here, m is assumed to be prime.
+      return isPrimitiveElement(a, m_fact, m_m);
    else {
       auto list = m_fact.getFactorList();
       for (auto iter = list.begin(); iter != list.end(); iter++) {

@@ -1,9 +1,7 @@
 /**
- * In this example, we show that the results of the new LatMRG version
+ * In this example, we check that the results of the new LatMRG version
  * are consistent with the examples reported in the the article [rLEC97c].
- * It is important that there are either no difference or, if they appear,
- * it needs to be shown that the calculations in the current version
- * are correct.
+ * We found no discrepancy.  We can also compare the timings.
  */
 #define TYPES_CODE  ZD     // Int = ZZ, Real = double
 
@@ -76,13 +74,13 @@ static void FOMSuccLatticeLac(Int &m, IntVec &aa, IntVec lac, int64_t lowDim, in
    std::cout << "lowDim = " << lowDim << ", highDim = " << highDim << "\n";
    fomdual.computeMeritSucc(mrg, lowDim, highDim);
    if (k == 1) {
-    LatMRG::LCGLatticeLac<Int, Real> lcg(m, aa[1], highDim);
-    lcg.setLac(lac);
-    red.setIntLattice(lcg);
-    std::cout << "\nUsing LCGLatticeLac: \n";
-    std::cout << "lowDim = " << lowDim << ", highDim = " << highDim << "\n";
-    fomdual.computeMeritSucc(lcg, lowDim, highDim);
-    }
+      LatMRG::LCGLatticeLac<Int, Real> lcg(m, aa[1], highDim);
+      lcg.setLac(lac);
+      red.setIntLattice(lcg);
+      std::cout << "\nUsing LCGLatticeLac: \n";
+      std::cout << "lowDim = " << lowDim << ", highDim = " << highDim << "\n";
+      fomdual.computeMeritSucc(lcg, lowDim, highDim);
+   }
 }
 
 int main() {
