@@ -35,7 +35,8 @@ public:
    /**
     * This constructor takes the number of LCC components in `numComp`, then two arrays
     * of length `numComp` that contain the moduli \f$m_c\f$ and the multipliers
-    * \f$\{a}_c\f$  of the components.
+    * \f$\{a}_c\f$  of the components. Here, a new `LCGComponent` object is created
+    * under the hood for each component.
     */
    LCGCombined(int64_t numComp, Int mm[], Int aa[]);
 
@@ -53,6 +54,11 @@ public:
     * Adds component `comp` to the vector of components.
     */
    void addComponent(LCGComponent<Int> &comp);
+
+   /**
+    * Creates and adds a new LCG component with the given parameters.
+    */
+   void addComponent(Int m, Int a);
 
    /**
     * Returns component `c`.
@@ -142,6 +148,14 @@ LCGCombined<Int>::~LCGCombined() {}
 //===========================================================================
 template<typename Int>
 void LCGCombined<Int>::addComponent(LCGComponent<Int> &comp) {
+   m_vcomp.push_back(comp);
+}
+
+//===========================================================================
+template<typename Int>
+void LCGCombined<Int>::addComponent(Int m, Int a) {
+   LCGComponent<Int> comp = LCGComponent<Int>(m);
+   comp.seta(a);
    m_vcomp.push_back(comp);
 }
 

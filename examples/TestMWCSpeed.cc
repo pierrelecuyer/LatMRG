@@ -88,6 +88,7 @@ uint64_t inline mwc64k3one() {
 uint64_t inline mwc64k3two() {
    const uint64_t out = x1;
    //__uint128_t
+   // tau = (((__uint128_t)x2 << 32)
    tau = (0x14d45f35679075f * (__uint128_t)x2
        + 0xcd7f660abc3db5bf * (__uint128_t)x3) + c;
    x3 = x2;
