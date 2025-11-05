@@ -118,7 +118,7 @@ protected:
 
    Int m_b;  // The MWC modulus.
 
-   // Int m_aa;  // The multiplier.
+   // Int m_aa;  // The vector of multipliers, defined in `MRGLattice.h`.
 
 };
 
@@ -290,7 +290,7 @@ void MWCLattice<Int, Real>::buildProjectionDual(IntLattice<Int, Real> &projLatti
    projLattice.setDimDual(s);
    IntMat & pdualBasis = projLattice.getDualBasis();   // Ref to m-dual basis.
    int64_t i, j = 0;
-   // First column. The first entry will be overwrtten after.
+   // First column. The first entry will be overwritten afterwards.
    for (auto it = coordSet.begin(); it != coordSet.end(); it++, j++)
       pdualBasis[j][0] = -this->m_y[*it - 1];
    pdualBasis[0][0] = this->m_modulo;

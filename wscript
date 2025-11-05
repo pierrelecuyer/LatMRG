@@ -32,8 +32,10 @@ def configure(ctx):
     build_platform = Utils.unversioned_sys_platform()
     ctx.msg("Build platform", build_platform)
 
-    cxxflags     = ['-O3']
-
+    cxxflags     = ['-O3', '-fext-numeric-literals']
+    CXX_EXTENSIONS = YES
+    # -fext-numeric-literals
+    
     ctx.load('compiler_c compiler_cxx gnu_dirs waf_unit_test')
     ctx.check(features='cxx', cxxflags='-std=c++14')
     ctx.env.append_unique('CXXFLAGS', ['-std=c++14', '-O3', '-Wall'])

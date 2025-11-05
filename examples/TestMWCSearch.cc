@@ -26,8 +26,10 @@ using namespace LatticeTester;
 using namespace LatMRG;
 
 int64_t maxdim = 8;
+int64_t maxdimproj = 5;
 LCGLattice<Int, Real> lcg(maxdim);
 MWCLattice<Int, Real> mwc(maxdim);
+IntLattice<Int, Real> proj(maxdimproj);  // For the projections.
 ReducerBB<Int, Real> red(mwc);
 WeightsUniform weights(1.0);
 NormaBestLat normaDual(maxdim);
@@ -35,14 +37,23 @@ FigureOfMeritDualM<Int, Real> fomdual(weights, normaDual, &red);
 double bestmerit = 0.0;   // Best merit value so far.
 
 
+// Tests a given set of parameters for which `m` is a safe prime,
+// for successive values in up to `maxdim` dimensions, and prints info on it.
+// If `nonsucc`, also tests for non-successive projections.
 template<typename Int, typename Real>
-static double testSafePrime(Int m, Int b, IntVec aa) {
+static double testSafePrime(Int m, Int b, IntVec aa, bool nonsucc) {
    int64_t k = aa.length()-1;
    std::cout << "Coefficients aa = " << aa << "\n";
    std::cout << " in hexadecimal = ";
-   for (int64_t j = 0; j <= k; j++)
+   std::cout << " " << "- 0x" << std::hex << conv<uint64_t>(-aa[0]);
+   for (int64_t j = 1; j <= k; j++)
       std::cout << " " << "0x" << std::hex << conv<uint64_t>(aa[j]);
-   std::cout << std::dec << "\n";
+   Int a0inv = InvMod(-aa[0], b);
+   cout << "\nInverse of " << -aa[0] << " mod b is " << a0inv << " = 0x"
+         << std::hex << conv<uint64_t>(a0inv) << endl;
+   if (((-aa[0] * a0inv) % b) != 1)
+      std::cout << "Error: This inverse is wrong! \n";
+   // std::cout << std::dec << "\n";
    std::cout << "b - a_k = " << b - aa[k] << "\n";
    Int sum = b;
    for (int64_t j = 1; j <= k; j++)
@@ -61,56 +72,56 @@ static double testSafePrime(Int m, Int b, IntVec aa) {
    std::cout << "a_0^2 + ... + a_k^2 = " << conv<double>(suma2) << "\n";
    std::cout << "bound 2 dim: (b^2 + 1)^{-1/2} = " << 1.0 / sqrt(conv<double>(b*b + 1)) << "\n";
    std::cout << "bound k+1 dim: (a_0^2 + ... + a_k^2)^{-1/2} = " << 1.0 / sqrt(conv<double>(suma2)) << "\n";
-   std::cout << "spectral test in dual lattice:\n";
-   // lcg.setModulus(m);
-   // lcg.seta(b, maxdim);
+   std::cout << "spectral test in dual lattice:\n\n";
+   lcg.setModulus(m);
+   lcg.seta(b, maxdim);
    normaDual.computeBounds(-log(m), 1);
    // fomdual.computeMeritSucc(lcg, k+1, maxdim);  // Start in k+1 dim.
-
-   mwc.setb(b);
-   mwc.setaa(aa, maxdim);
-   double merit = fomdual.computeMeritSucc(mwc, k+1, maxdim);  // Start in k+1 dim.
+   //mwc.setb(b);
+   //mwc.setaa(aa, maxdim);   // must implement buildProjection  ****************
+   double merit = fomdual.computeMeritSucc(lcg, k+1, maxdim);  // Start in k+1 dim.
    //mwc.buildDualBasis(k+2);
    //std::cout << " Initial dual basis:\n " << mwc.getDualBasis() << "\n";
+   if (nonsucc) {
+      std::cout << "\n";
+      merit = min(merit, fomdual.computeMeritNonSucc(lcg, proj));
+   }
    std::cout << "\n";
    return merit;
 }
 
 // Order k, b=2^e, er random bits for the a_j.
+// Tries `numMult` random vectors of parameters for a MWC with given constraints.
+// Tests all those for which `m` is a safe prime, and finally prints the best FOM.
+// One can play with the code below to change the constraints.
 template<typename Int, typename Real>
-static void tryMultipliers(int64_t k, int64_t e, int64_t er, int64_t numMult) {
+static void tryMultipliers(int64_t k, int64_t e, int64_t ek, int64_t ej, int64_t numMult, bool nonsucc) {
    double merit;
    double bestmerit = 0.0;
    IntVec bestaa;
    bestaa.SetLength(k + 1);
-
    Int b = NTL::power(Int(2), e);
    // Int sqrtb = NTL::power(Int(2), e/2);
    std::cout << "Order k = " << k << ",  modulo b = 2^" << e << " = " << b << "\n";
-   std::cout << "We want b - a_k < 2^{er}, with er = " << er << "\n";
+   std::cout << "Random bits for coefficients, e_k = " << ek << ",  e_j = " << ej << "\n";
    std::cout << "We try " << numMult << " random vectors of coefficient.\n";
    std::cout << "We found the following candidates: \n\n";
    Int m;
    IntVec aa;
    aa.SetLength(k + 1);
-   // aa[0] = -1;
-   aa[0] = -Int(1) - NTL::power(Int(2), 31);
-   // aa[0] = conv<Int>(LatticeTester::RandBits(60));
+   aa[0] = -1;
    for (int64_t j = 1; j < k-1; j++) aa[j] = 0;
    // fomdual.setVerbosity(4);
    clock_t tmp;      // To measure computing time.
    tmp = clock();
    for (int64_t i = 1; i <= numMult; i++) {
+      // aa[0] = -conv<Int>(LatticeTester::RandBits(60));
+      if ((aa[0] % 2) == 0) aa[0] += 1;
       // aa[k] = b - conv<Int>(i);
-      aa[k] = conv<Int>(LatticeTester::RandBits(62));
       //aa[k] = b - NTL::power(Int(2), 60) + conv<Int>(LatticeTester::RandBits(58));
-      // aa[k-1] = conv<Int>(LatticeTester::RandBits(58));
-      // aa[k-2] = conv<Int>(LatticeTester::RandBits(58));
-      // aa[k-2] = b - NTL::power(Int(2), er) + conv<Int>(LatticeTester::RandBits(er));
-      // aa[k] = b/3 + conv<Int>(LatticeTester::RandBits(e-1));
-         // aa[j] = b - sqrtb + conv<Int>(LatticeTester::RandBits(e/2-1));
-         //aa[j] = b/2 + conv<Int>(LatticeTester::RandBits(e-1));
-         // aa[j] = (1 << (alpha-1)) + conv<Int>(LatticeTester::RandBits(alpha-1));
+      aa[k] = conv<Int>(LatticeTester::RandBits(ek));
+      // aa[k-1] = conv<Int>(LatticeTester::RandBits(ej));
+      // aa[k-2] = conv<Int>(LatticeTester::RandBits(ej));
       // aa[k-1] = aa[k];
       // aa[k-2] = aa[k-1];
       m = computeLCGModulusMWC(b, aa);
@@ -119,7 +130,8 @@ static void tryMultipliers(int64_t k, int64_t e, int64_t er, int64_t numMult) {
          // std::cout << "  vector aa = " << aa << "\n";
          if (mIsSafePrime(m, 50) <= 1) {
             std::cout << "i = " << i << "\n";
-            merit = testSafePrime<Int, Real>(m, b, aa);
+            merit = testSafePrime<Int, Real>(m, b, aa, false);
+            // merit = testSafePrime<Int, Real>(m, b, aa, nonsucc);
             if (merit > bestmerit) {
                bestmerit = merit;
                bestaa = aa;
@@ -127,12 +139,17 @@ static void tryMultipliers(int64_t k, int64_t e, int64_t er, int64_t numMult) {
          }
       }
    }
+   if (bestmerit == 0.0) {
+      std::cout << "No candidate with `m` safe prime was found. \n\n\n";
+      return;
+   }
+   // Prints info on the best candidate.
    std::cout << "\n\n";
    std::cout << "----------------------------------------------------------------\n";
    std::cout << "Best FOM: " << bestmerit << "\n";
    std::cout << "Best aa: " << bestaa << "\n\n";
    m = computeLCGModulusMWC(b, bestaa);
-   merit = testSafePrime<Int, Real>(m, b, bestaa);
+   merit = testSafePrime<Int, Real>(m, b, bestaa, nonsucc);
    std::cout << "Merit = " << merit << "\n";
    std::cout << "----------------------------------------------------------------\n\n";
 
@@ -149,11 +166,21 @@ int main() {
          << "period length (m-1)/2, and we apply the spectral test (in dual) to the retained ones.\n\n";
    fomdual.setVerbosity(4, 0.01);
 
-   int64_t k = 3;
+   NTL::Vec<int64_t> t; // The t-vector for the FOM.
+   t.SetLength(5);
+   t[0] = 8;    // We look at successive coordinates in up to t[0] dimensions.
+   t[1] = 0;    // Then pairs and triples up to coord. 5.
+   t[2] = 6;
+   t[3] = 6;
+   t[4] = 5;
+   fomdual.setTVector(t, true);
+
+   int64_t k = 2;
    int64_t e = 64;  // b = 2^{64}
-   int64_t er = 64;   // Number of random bits for the random coefficients.
+   int64_t ek = 62;   // Number of random bits for a_k.
+   int64_t ej = 58;   // Number of random bits for other a_j's.
    // int64_t maxdim = 12;  // Max dimension for lattice.
-   tryMultipliers<Int, Real>(k, e, er, 1000000);
+   tryMultipliers<Int, Real>(k, e, ek, ej, 1000 * 10000, true);
 
    return 0;
 
