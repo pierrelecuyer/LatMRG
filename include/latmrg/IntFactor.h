@@ -22,6 +22,7 @@
 #include <iomanip>
 #include <cstdint>
 #include <sstream>
+#include <cassert>
 #include <NTL/ZZ.h>
 
 // #include "latticetester/EnumTypes.h"
@@ -191,8 +192,10 @@ inline std::string IntFactor<Int>::toString(PrimeType status) {
 
 template<typename Int>
 PrimeType IntFactor<Int>::isPrime(const Int &y, std::int64_t numtrials) {
+   assert (y > 0);
    Int NbPrem(2);
    NTL::ZZ LIM = NTL::conv<NTL::ZZ>(4295098369);  // A bit more than 2^{32}.
+   // std::cout << " isPrime:  y  = " << y << "\n";
    Int ys = NTL::SqrRoot(y);
    uint64_t i = 1;
    while (i < NB_PRIMES && (NbPrem <= ys)) {

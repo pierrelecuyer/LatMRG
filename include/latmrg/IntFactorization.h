@@ -338,20 +338,21 @@ IntFactorization<Int>::~IntFactorization() {
 
 template<typename Int>
 void IntFactorization<Int>::read(const char *name) {
-   // std::cout << "Reading file of factors " << name << "\n";
+   std::cout << "Reading file of factors " << name << "\n";
    std::ifstream in(name);
    if (!(in.is_open())) {
       std::string str("IntFactorization::read: Unable to open input file  ");
       str += name;
       throw std::invalid_argument(str);
    }
+   std::cout << "Declaring string `tampon` \n";
    std::string tampon;
    // This should be modified to ignore the entire line because right now
    // we are limited if the number is too big.   ?????
    // in.ignore(256, '\n'); // drop rest of line
    int64_t vsize = 0;
    in >> m_number;
-   // std::cout << "Number: " << m_number << "\n";
+   std::cout << "Number: " << m_number << "\n";
    m_factStatus = PRIME;
    while (in >> tampon) {
       Int x;
@@ -453,13 +454,19 @@ PrimeType IntFactorization<Int>::factorize() {
    m_factStatus = PROB_PRIME;
    while (getline(in, line)) {
       S = line;
+      // std::cout << "  Line " << S << "\n";
+      //if (S.substr(0, 12) == "MIRACL error") {
+      if (S == "") {
+         std::cout << "Error while reading the file of factors in `factorize`; perhaps one factor is too large. \n";
+         std::cout << "Look for a message in the file " << filename << "\n";
+      }
       /*
        * If the integer to be factored is not a prime number then
        * the yafu output contains one of its factors per line.
        * If it is a prime number then the first line of the output contains the
        * number itself and the second line is 'this is a prime number'.
        * We want to skip this second line when reading back the factors.
-       * For this, we skip the line when its first character is 't'.
+       * For this, we skip the line when its first character is 'this'.
        */
       if (S.substr(0, 4) != "this") {
          if (S.substr(0, 1) == "&") {

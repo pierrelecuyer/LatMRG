@@ -52,11 +52,35 @@ static void testMWCProposal(std::string name, int64_t k, int64_t e, IntVec aa, i
    Int m = computeLCGModulusMWC(b, aa);
    std::cout << "Modulo m = " << m << "\n";
    std::cout << "Log_2(m) = " << Lg(m) << "\n";
-   if (mIsPrime<Int>(m) <= 1) std::cout << " m is prime.\n";
+   PrimeType mprime = IntFactor<Int>::isPrime(m);
+   if (mprime <= 1) std::cout << " m is prime.\n";
    else std::cout << " m is NOT prime.\n";
-   if (IntFactor<Int>::isPrime((m - Int(1)) / Int(2)) <= 1) std::cout << " (m=1)/2 = "
-         << (m - 1) / 2 << " is prime.\n";
-   else std::cout << " (m=1)/2 = " << (m - 1) / 2 << " is NOT prime.\n";
+   Int p = (m - Int(1)) / Int(2);
+   PrimeType pprime = IntFactor<Int>::isPrime(p);
+   if (pprime <= 1) std::cout << " (m=1)/2 = " << p << "\n (m-1)/2 is prime.\n";
+   else std::cout << " (m=1)/2 = " << p << "\n (m-1)/2 is NOT prime.\n";
+
+   if (mprime <= 1) {
+      IntFactorization<Int> fact(m - Int(1));
+      LatMRG::PrimeType ptype;
+      if (pprime) {
+         fact.addFactor(Int(2), 1, PRIME);
+         fact.addFactor(p, 1, PRIME);
+         fact.calcInvFactors();
+         ptype = PRIME;
+      } else {
+         ptype = fact.decompToFactorsInv(DECOMP, NULL);
+         if (ptype > 1) std::cout << "  Factorization failed. " << "\n";
+      }
+      bool prim2 = isPrimitiveElement(Int(2), fact, m);
+      std::cout << "Is 2 primitive mod m? " << prim2 << "\n";
+      std::cout << "2^p mod m = " << NTL::PowerMod(Int(2), p, m) << "\n";
+      bool primb = isPrimitiveElement(b, fact, m);
+      std::cout << "Is b primitive mod m? " << primb << "\n";
+      // Int powp = NTL::PowerMod(b, p, m);
+      std::cout << "b^p mod m = " << NTL::PowerMod(b, p, m) << "\n\n";
+   }
+
    Int suma2 = aa[0] * aa[0];
    for (int64_t j = 1; j <= k; j++)
       suma2 += aa[j] * aa[j];
@@ -314,29 +338,25 @@ int main() {
    Int b = NTL::power(Int(2), e);
    m = computeLCGModulusMWC(b, aa);
    IntVec xx;
-   xx.SetLength(k);
-   Int c;
-   Int s0;
+   xx.SetLength(k + 1);
+   Int y0;
 
    std::cout << "____________________________________________________\n";
    std::cout << "MWC to LCG to MWC \n\n";
    std::cout << "MWC of order k = " << k << ",  modulo b = 2^" << e << " = " << b << "\n";
    std::cout << "Coefficients aa = " << aa << "\n";
 
-   c = 12345;
-   xx[0] = 123456789;
-   MWCtoLCGState<Int>(s0, b, aa, xx, c);
+   xx[0] = xx[1] = 123456789;
+   MWCtoLCGState<Int>(y0, b, aa, xx);
    std::cout << "xx = " << xx << "\n";
-   std::cout << "c = " << c << "\n";
-   std::cout << "State s0 = " << s0 << "\n\n";
+   std::cout << "State y0 = " << y0 << "\n\n";
 
    // s0 = conv<Int>("1234567890");
-   LCGtoMWCState<Int>(xx, c, b, aa, s0);
-   std::cout << "State s0 = " << s0 << "\n";
+   LCGtoMWCState<Int>(xx, b, aa, y0);
+   std::cout << "State y0 = " << y0 << "\n";
    std::cout << "xx = " << xx << "\n";
-   std::cout << "c = " << c << "\n";
-   MWCtoLCGState<Int>(s0, b, aa, xx, c);
-   std::cout << "State s0 = " << s0 << "\n";
+   MWCtoLCGState<Int>(y0, b, aa, xx);
+   std::cout << "State y0 = " << y0 << "\n";
 
    return 0;
 }

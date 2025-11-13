@@ -101,36 +101,49 @@ template<typename Int>
 static bool maxPeriod1Pow2MWC(const Int &m, const int64_t numtrials = 100);
 
 /**
- * Returns in `y` the LCG state that corresponds to the MWC state `(xx[0..k-1], c)`,
- * where `c` is the carry, `xx[j]`\f$ = x_{-k+j+1}\f$, and `aa` and `b` the MWC parameters.
+ * Returns in `y` the LCG state that corresponds to the MWC state `(xx[0..k])` that
+ * contains \f$(x_0,\dots,x_{k-1},c)\f$, and `aa` and `b` the MWC parameters.
  * The order `k` is determined by the length of `aa`.
  */
 template<typename Int>
-static void MWCtoLCGState(Int &y, const Int &b, const IntVec &aa, const IntVec &xx, const Int &c);
+static void MWCtoLCGState(Int &y, const Int &b, const IntVec &aa, const IntVec &xx);
 
 /**
- * Returns in `xx` and `c` the MWC state that corresponds to the LCG state `y`,
+ * Returns in `xx` the MWC state \f$(x_0,\dots,x_{k-1},c)\f$ that corresponds to the LCG state `y`,
  * for a MWC with parameters `aa` and `b`, where `a0inv` is the inverse of
  * `aa[0]` modulo `b`. This is the reverse of the previous function.
  * When `a0inv` is not given, it is computed by the function.
  */
 template<typename Int>
-static void LCGtoMWCState(IntVec &xx, Int &c, const Int &b, const IntVec &aa, Int &a0inv, Int &y);
+static void LCGtoMWCState(IntVec &xx, const Int &b, const IntVec &aa, Int &a0inv, Int &y);
 
 template<typename Int>
-static void LCGtoMWCState(IntVec &xx, Int &c, const Int &b, const IntVec &aa, Int &y);
-
+static void LCGtoMWCState(IntVec &xx, const Int &b, const IntVec &aa, Int &y);
 
 /**
- * Returns in `xx2` and `c2` the MWC state which is `jumpSize` steps ahead of the current state in `xx` and `c`.
- * for a MWC with parameters `b`, `aa`, `m`, where `a0inv` is the inverse of `aa[0]` modulo `b`.
+ * Returns the multiplier `jumpMult` required to jump ahead by `jumpSize` steps with the LCG.
+ * The multiplier of this LCG is the inverse of b modulo m.
  */
 template<typename Int>
-static void jumpAhead(IntVec &xx2, Int &c2, const Int &b, const IntVec &aa, const Int &m,
-      const Int &a0inv, IntVec &xx, Int &c, Int &jumpMult);
-
-template<typename Int>
 static void getJumpMult(Int &jumpMult, const Int &b, Int &m, Int &jumpSize);
+
+/**
+ * Returns the multiplier `jumpMult` required to jump *backwards* by `jumpSize` steps with the LCG.
+ * The multiplier to make one step backwards is `b`.
+ */
+template<typename Int>
+static void getJumpMultBack(Int &jumpMult, const Int &b, Int &m, Int &jumpSize);
+
+/**
+ * Returns in `xx2` the MWC state which is `jumpSize` steps ahead of the current state in `xx` and `c`.
+ * for a MWC with parameters `b`, `aa`, `m`, where `a0inv` is the inverse of `aa[0]` modulo `b`.
+ * The vectors `xx` and `xx2` must have size `k+1` and contain a state \f$(x_0,\dots,x_{k-1},c)\f$.
+ * This will jump ahead (using the inverse of `b`) if `jumpMult` was obtained via `getJumpMult`,
+ * otherwise this will jump backwards.
+ */
+template<typename Int>
+static void jumpAhead(IntVec &xx2, const Int &b, const IntVec &aa, const Int &m,
+      const Int &a0inv, IntVec &xx, Int &jumpMult);
 
 
 // End class declaration
@@ -180,12 +193,12 @@ static Int computeLCGModulusMWC(const Int &b, const IntVec &aa) {
 
 template<typename Int>
 static PrimeType mIsPrime(const Int &m, const int64_t numtrials) {
-   return IntFactor < Int > ::isPrime(m, numtrials);
+   return IntFactor<Int>::isPrime(m, numtrials);
 }
 
 template<typename Int>
 static PrimeType mIsSafePrime(const Int &m, const int64_t numtrials) {
-   return IntFactor < Int > ::isSafePrime(m, numtrials);
+   return IntFactor<Int>::isSafePrime(m, numtrials);
 }
 
 template<typename Int>
@@ -213,7 +226,7 @@ static bool maxPeriod1Pow2MWC(const Int &m, const int64_t numtrials) {
 }
 
 template<typename Int>
-static void MWCtoLCGState(Int &y, const Int &b, const IntVec &aa, const IntVec &xx, const Int &c) {
+static void MWCtoLCGState(Int &y, const Int &b, const IntVec &aa, const IntVec &xx) {
    int64_t k = aa.length() - 1;
    Int bj = b;  // b^j
    Int dj;      // d_j
@@ -225,16 +238,11 @@ static void MWCtoLCGState(Int &y, const Int &b, const IntVec &aa, const IntVec &
       y += dj * bj;
       bj *= b;
    }
-   y += c * bj;
+   y += xx[k] * bj;
 }
 
-/**
- * Returns in `xx` and `c` the state of the MWC that corresponds to the LCG
- * state `s`, for a MWC with parameters `aa` and `b`.
- * This is the reverse of the previous function.
- */
 template<typename Int>
-static void LCGtoMWCState(IntVec &xx, Int &c, const Int &b, const IntVec &aa, Int &a0inv, Int &y) {
+static void LCGtoMWCState(IntVec &xx, const Int &b, const IntVec &aa, Int &a0inv, Int &y) {
    int64_t k = aa.length() - 1;
    Int dj;
    Int sigma = y;
@@ -250,36 +258,39 @@ static void LCGtoMWCState(IntVec &xx, Int &c, const Int &b, const IntVec &aa, In
          dj -= aa[i] * xx[j-i];
       sigma = (sigma - dj) / b;
    }
-   c = sigma;
+   xx[k] = sigma;
 }
 
 template<typename Int>
-static void LCGtoMWCState(IntVec &xx, Int &c, const Int &b, const IntVec &aa,
+static void LCGtoMWCState(IntVec &xx, const Int &b, const IntVec &aa,
       Int &y) {
    Int a0inv;
    if (aa[0] == 1) a0inv = 1;
    else if (aa[0] == -1) a0inv = -1;
    else if (aa[0] < 0) a0inv = -NTL::InvMod(-aa[0], b);
    else a0inv = NTL::InvMod(aa[0], b);
-   LCGtoMWCState(xx, c, b, aa, a0inv, y);
-}
-
-
-template<typename Int>
-static void jumpAhead(IntVec &xx2, Int &c2, const Int &b, const IntVec &aa, Int &m,
-       Int &a0inv, IntVec &xx, Int &c, Int &jumpMult) {
-   Int y, y2;
-   MWCtoLCGState(y, b, aa, xx, c);
-   // y2 = y;
-   NTL::MulMod(y2, jumpMult, y, m);
-   LCGtoMWCState(xx2, c2, b, aa, a0inv, y2);
+   LCGtoMWCState(xx, b, aa, a0inv, y);
 }
 
 template<typename Int>
 static void getJumpMult(Int &jumpMult, const Int &b, Int &m, Int &jumpSize) {
+   Int invb = computeInvb(m, b);
+   NTL::PowerMod (jumpMult, invb, jumpSize, m);
+}
+
+template<typename Int>
+static void getJumpMultBack(Int &jumpMult, const Int &b, Int &m, Int &jumpSize) {
    NTL::PowerMod (jumpMult, b, jumpSize, m);
 }
 
+template<typename Int>
+static void jumpAhead(IntVec &xx2, const Int &b, const IntVec &aa, Int &m,
+       Int &a0inv, IntVec &xx, Int &jumpMult) {
+   Int y, y2;
+   MWCtoLCGState(y, b, aa, xx);
+   NTL::MulMod(y2, jumpMult, y, m);
+   LCGtoMWCState(xx2, b, aa, a0inv, y2);
+}
 
 //============================================================================
 

@@ -1,6 +1,6 @@
 /**
  * TestMWCSpeed: compares speed of various MWC generators implemented in ZZ.
- * This is used to check correctness of uint128_t implementations.
+ * This is mostly used to check the correctness of uint128_t implementations.
  */
 #define TYPES_CODE  ZD     // Int = ZZ, Real = double
 
