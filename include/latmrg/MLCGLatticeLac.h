@@ -2,7 +2,7 @@
 #define LATMRG_MLCGLATTICELAC_H
 
 #include "latticetester/EnumTypes.h"
-#include "latticetester/Types.h"
+// #include "latticetester/Types.h"
 #include "latticetester/IntLatticeExt.h"
 #include "latmrg/MLCGLattice.h"
 #include "latmrg/FlexModInt.h"
@@ -453,3 +453,4 @@ void MLCGLatticeLac<Int, Real>::buildProjectionDual(IntLattice<Int, Real> &projL
 
 } // End namespace LatMRG
 #endif
+
