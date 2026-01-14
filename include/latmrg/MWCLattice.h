@@ -2,8 +2,6 @@
 #define LATMRG_MWCLATTICE_H
 
 #include <cassert>
-// #include "latticetester/FlexTypes.h"
-// #include "latticetester/Util.h"
 #include "latticetester/EnumTypes.h"
 // #include "latticetester/BasisConstruction.h"
 #include "latmrg/LCGLattice.h"
@@ -12,12 +10,11 @@
 namespace LatMRG {
 
 /**
- * This subclass represents a special case of an MRG for which the order `k` is `.
- * Some of the functions can be simplified and/or more efficient in this case.
- * The state of the LCG evolves as \f$$x_n = a x_{n-1} \bmod m\f$$,
- * for a modulus \f$m\f$ and a multiplier \f$\a\f$.
- * The lattices in this class are also special cases of the `Rank1Lattice` objects
- * in Lattice Tester.
+ * This subclass provides tools to build the lattice associated with a MWC generator.
+ * of order `k`, modulus `b`, and vector of multipliers `aa`.
+ * The initial bases constructed here differ from the ones obtained by making
+ * the usual constructions via `LCGLattice` with the associated LCG.
+ * They are typically made of shorter vectors.
  */
 template<typename Int, typename Real>
 class MWCLattice: public LCGLattice<Int, Real> {
@@ -28,13 +25,14 @@ public:
     * This constructor takes as input the modulus `b`, the vector of multipliers `aa`,
     * the maximal dimension allowed for the full lattice, for a projection, and for a coordinate index,
     * and the norm used to measure the vector lengths.
+    * The order `k` is deduced from the vector `aa`.
     * The parameters `maxDim`,  `maxDimProj`, and`maxCoord` are the same as in `LCGLattice`.
     * They give the maximal dimension of a basis (primal or m-dual),
     * the maximal dimension of a projection (for `buildProjection`),
     * and the maximal coordinate index that we may consider for the lattice and for any projection.
     * These values are used by the constructor to allocate space for matrix bases and for the vector
     * \f$\mathbf{y}\f$, which is recomputed each time we set of change the vector `aa`.
-    * The constructors do not build a basis.
+    * The constructor does not build a basis.
     */
    MWCLattice(const Int &b, const IntVec &aa, int64_t maxDim, int64_t maxDimProj, int64_t maxCoord,
          NormType norm = L2NORM);
@@ -45,6 +43,10 @@ public:
    MWCLattice(const Int &b, int64_t maxDim, int64_t maxDimProj, int64_t maxCoord, NormType norm =
          L2NORM);
 
+   /**
+    * In these simplified variants, some variables are not given. When `maxDimProj` and `maxCoord`
+    * are not given, they are set to `maxDim`. When `b` is not given, it must be set afterwards via `setb`.
+    */
    MWCLattice(const Int &b, int64_t maxDim, NormType norm = L2NORM);
 
    MWCLattice(int64_t maxDim, int64_t maxDimProj, int64_t maxCoord, NormType norm = L2NORM);
@@ -57,16 +59,16 @@ public:
    ~MWCLattice();
 
    /**
-    * Sets the vector of multipliers to `aa`.
-    * If `maxCoord` is given, `m_maxCoord` is changed to this new value,
-    * otherwise its current value is taken.
+    * Sets the vector of multipliers to `aa` and recomputes the corresponding modulus `m`,
+    * which can be recovered by `getModulus` from the parent class `IntLattice`.
+    * If `maxCoord` is given, this new value will be used, otherwise the old value is kept.
     */
    virtual void setaa(const IntVec &aa, int64_t maxCoord);
 
    virtual void setaa(const IntVec &aa);
 
    /**
-    * Sets the value of vector of `b`.
+    * Sets the value of `b`.
     */
    virtual void setb(const Int &b) {
       m_b = b;
@@ -97,7 +99,7 @@ public:
    virtual void incDimDualBasis() override;
 
    /**
-    * Builds a basis for the projection of this `MRGLattice` onto the coordinates
+    * Builds a basis for the projection of this `MWCLattice` onto the coordinates
     * in `coordSet` and puts it as the `m_basis` of `projLattice`.
     * The construction uses the vector \f$\mathbf{y}\f$, as explained in the guide.
     * The largest coordinate of the projection must not exceed `m_maxCoord` and
@@ -118,7 +120,7 @@ protected:
 
    Int m_b;  // The MWC modulus.
 
-   // Int m_aa;  // The vector of multipliers, defined in `MRGLattice.h`.
+   // Int m_aa;  // The vector of multipliers is already defined in `MRGLattice.h`.
 
 };
 

@@ -51,7 +51,7 @@ public:
     * When the vector `aa` is given, the order `k` is deduced its length via `k = aa.length()-1`,
     * and the MRG coefficients are set to \f$a_j=\f$`aa[j]` for \f$j=1,...,k\f$.
     * This vector `aa` can be set or changed separately (several times) by `setaa`,
-    * but the order `k` and the other parameters cannot be changed.
+    * but the order `k` cannot be changed.  The modulus `m` can be changed via `setModulus` from `IntLattice.
     * The parameters `maxDim`,  `maxDimProj`, and`maxCoord` give the maximal dimension of a basis (primal or m-dual),
     * the maximal dimension of a projection (for `buildProjection`),
     * and the maximal coordinate index that we may consider for the lattice and for any projection.
