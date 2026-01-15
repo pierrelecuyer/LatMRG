@@ -17,6 +17,12 @@ __uint128_t tau, sum3 = 0;
 uint64_t sum = 0;
 // State (x_{n-1},...,x_{n-k},c) = (x1,...,xk,c).
 // State xx = (x_0,...,x_{k-1},c) = (xk,...,x1,c).
+const double twom53 = 1.0 / (double) ((uint64_t) 1 << 53);
+const double twom55 = 1.0 / (double) ((uint64_t) 1 << 55);
+const double twom63 = 1.0 / (double) ((uint64_t) 1 << 63);
+const double twom64 = 0.5 / (double) ((uint64_t) 1 << 63);
+clock_t tmp;      // To measure computing time.
+clock_t tottmp;   // Total computing time.
 
 // Function to print a __uint128_t in decimal.
 std::string uint128_dec_str(unsigned __int128 val) {
@@ -32,13 +38,21 @@ std::string uint128_dec_str(unsigned __int128 val) {
    return s;
 }
 
+// Called at the beginning of a speed test.
+static void inline init() {
+   x1 = x2 = x3 = c = 12345;
+   sum = 0;
+   tmp = clock();
+}
+
 static void printState() {
    std::cout << "sum = " << sum << "\n";
    std::cout << "c   = " << c << "\n";
    std::cout << "tau   = " << uint128_dec_str(tau) << "\n";
 }
 
-static void printResults(const std::string &rngName, clock_t tmp, uint64_t sum) {
+static void inline printResults(const std::string &rngName, clock_t tmp, uint64_t sum) {
+   // tmp = clock() - tmp;
    std::cout << std::setw(16) << rngName << std::fixed << std::setw(13)
          << (double) tmp / (CLOCKS_PER_SEC) << "    " << std::setw(18) << sum << "\n";
 }
@@ -63,7 +77,7 @@ uint64_t inline MWC128() {
 // k = 1, a_0 = -1.
 uint64_t inline mwc64k1() {
    x2 = x1;
-   tau = (0xffebb71d94fcdaf9 * (__uint128_t ) x1) + c;
+   tau = (0x87eac24b8adc9 * (__uint128_t ) x1) + c;
    c = tau >> 64;
    x1 = tau;
    return x2;
@@ -83,10 +97,9 @@ uint64_t inline MWC192() {
 
 // ****************************************************************
 // From MWC1k2-0-62.res   Here, a_0=-1 and a_1=0.
-// -0x1 0x0 0x7c309ee45ade
-uint64_t inline mwc64k2one() {
+uint64_t inline mwc64k2a1() {
    x3 = x1;
-   tau = (0x7c309ee45ade * (__uint128_t ) x2) + c;
+   tau = (0x4b740f53265d * (__uint128_t) x2) + c;
    x2 = x1;
    x1 = tau;
    c = tau >> 64;
@@ -94,10 +107,41 @@ uint64_t inline mwc64k2one() {
 }
 
 // From MWC1k2-62-58.res   a_0=-1
-// - 0x1 0x2ae390b92740f6d 0x6fcce264fcc37
-uint64_t inline mwc64k2two() {
+uint64_t inline mwc64k2a2() {
    const uint64_t out = x1;
-   tau = (0x2ae390b92740f6d * (__uint128_t ) x1 + 0x6fcce264fcc37 * (__uint128_t ) x2) + c;
+   tau = (0x2ae390b92740f6d * (__uint128_t) x1 + 0x6fcce264fcc37 * (__uint128_t) x2) + c;
+   x2 = x1;
+   x1 = tau;
+   c = tau >> 64;
+   return out;
+}
+
+// From MWC1k2-62-58.res   a_0=-1
+uint64_t inline mwc64k2a2Xor() {
+   const uint64_t out = x1 ^ x2;
+   tau = (0x2ae390b92740f6d * (__uint128_t) x1 + 0x6fcce264fcc37 * (__uint128_t) x2) + c;
+   x2 = x1;
+   x1 = tau;
+   c = tau >> 64;
+   return out;
+}
+
+// a_0=-1
+uint64_t inline mwc64k2a2eq() {
+   const uint64_t out = x1;
+   tau = 0xc45ec2462f86 * ((__uint128_t) x1 + (__uint128_t) x2) + c;
+   x2 = x1;
+   x1 = tau;
+   c = tau >> 64;
+   return out;
+}
+
+// a_0=-1
+uint64_t inline mwc64k2a2eq2() {
+   const uint64_t out = x1;
+   // Note: swapping these two lines would be wrong!
+   sum3 = (__uint128_t) x1 + (__uint128_t) x2;
+   tau = 0xc45ec2462f86 * sum3 + c;
    x2 = x1;
    x1 = tau;
    c = tau >> 64;
@@ -105,9 +149,7 @@ uint64_t inline mwc64k2two() {
 }
 
 // From MWCa0k2-0-62-58.res    a_0 general, a_1=0
-// - 0xe4e1b5e445c2a65 0x0 0x6595a0b6737e
-// inv = 0xba1485699989776d
-uint64_t inline mwc64k2a0one() {
+uint64_t inline mwc64k2a1gk() {
    tau = 0x6595a0b6737e * (__uint128_t ) x2 + c;
    x2 = x1;
    x1 = 0xba1485699989776d * (uint64_t) tau;
@@ -116,14 +158,12 @@ uint64_t inline mwc64k2a0one() {
 }
 
 // From MWCa0k2-60-58.res   a_0 general
-// - 0xb52048b94ffe40b 0x27612f107be7335 0x11716b6421c7e3
-//  inv = 0xa206661c217087a3
-uint64_t inline mwc64k2a0two() {
+uint64_t inline mwc64k2a2gk() {
    const uint64_t out = x1;
-   tau = (0x27612f107be7335 * (__uint128_t ) x1 + 0x11716b6421c7e3 * (__uint128_t ) x2) + c;
+   tau = (0x22ddf8545f51c3d * (__uint128_t) x1 + 0x3b4ba2cc0eb83d39 * (__uint128_t) x2) + c;
    x2 = x1;
-   x1 = 0xa206661c217087a3 * (uint64_t) tau;
-   c = (tau - 0xb52048b94ffe40b * (__uint128_t ) x1) >> 64;
+   x1 = 0x5a9b2e257b3e1d95 * (uint64_t) tau;
+   c = (tau - 0xf0cdf98a7bf45bd * (__uint128_t ) x1) >> 64;
    return out;
 }
 
@@ -140,6 +180,148 @@ uint64_t inline MWC256() {
    return result;
 }
 
+// ****************************************************************
+// From MWC1k3-00-62.res    a_0 = -1, a_1 = a_2 = 0.
+uint64_t inline mwc64k3a1() {
+   const uint64_t out = x1;
+   tau = (0x14fabef33841d * (__uint128_t ) x3) + c;
+   x3 = x2;
+   x2 = x1;
+   x1 = tau;
+   c = tau >> 64;
+   //return x1;
+   return out;
+}
+
+// From MWC1k3-0-60-58.res    a_0 = -1, a_1 = 0.
+uint64_t inline mwc64k3a2() {
+   const uint64_t out = x1;
+   tau = (0x2902ebc31ec3683 * (__uint128_t) x2 + 0x57baa090037 * (__uint128_t) x3) + c;
+   x3 = x2;
+   x2 = x1;
+   x1 = tau;
+   c = tau >> 64;
+   //return x1;
+   return out;
+}
+
+// From MWC1k3-60-58.res      a_0 = -1.
+uint64_t inline mwc64k3a3() {
+   const uint64_t out = x1;
+   tau = (0x979f3660cbaca4 * (__uint128_t) x1 + 0x31dcb74b96510a8 * (__uint128_t) x2
+   + 0x5194d4649dcd * (__uint128_t) x3) + c;
+   x3 = x2;
+   x2 = x1;
+   x1 = tau;
+   c = tau >> 64;
+   return out;
+}
+
+// Two coefficients are equal.  a_0 =-1,  a_2 = a_3.
+uint64_t inline mwc64k3a2eq() {
+   const uint64_t out = x1;
+   sum3 = (__uint128_t ) x2 + (__uint128_t ) x3;
+   tau = 0x1d0710107d5d * sum3 + c;
+   x3 = x2;
+   x2 = x1;
+   x1 = tau;
+   c = tau >> 64;
+   return out;
+}
+
+// Three coefficients are equal.  a_0 =-1,  a_1 = a_2 = a_3.
+uint64_t inline mwc64k3a3eq() {
+   const uint64_t out = x1;
+   sum3 = (__uint128_t ) x1 + (__uint128_t ) x2 + (__uint128_t ) x3;
+   tau = 0x1d495210185c * sum3 + c;
+   x3 = x2;
+   x2 = x1;
+   x1 = tau;
+   c = tau >> 64;
+   return out;
+}
+
+// From MWC1k3-0-60-58.res    a_0 = -1, a_1 = a_2 = 0.
+uint64_t inline mwc64k3a1Xor() {
+   const uint64_t out = x1 ^ x3;
+   tau = (0x14fabef33841d * (__uint128_t ) x3) + c;
+   x3 = x2;
+   x2 = x1;
+   x1 = tau;
+   c = tau >> 64;
+   return out;
+}
+
+// From MWC1k3-0-60-58.res    a_0 = -1, a_1 = 0.
+uint64_t inline mwc64k3a2Xor() {
+   const uint64_t out = x1 ^ x3;
+   tau = (0x2902ebc31ec3683 * (__uint128_t) x2 + 0x57baa090037 * (__uint128_t) x3) + c;
+   x3 = x2;
+   x2 = x1;
+   x1 = tau;
+   c = tau >> 64;
+   return out;
+}
+
+// From MWC1k3-60-58.res      a_0 = -1.
+uint64_t inline mwc64k3a3Xor() {
+   const uint64_t out = x1 ^ x2;
+   tau = (0x979f3660cbaca4 * (__uint128_t) x1 + 0x31dcb74b96510a8 * (__uint128_t) x2
+   + 0x5194d4649dcd * (__uint128_t) x3) + c;
+   x3 = x2;
+   x2 = x1;
+   x1 = tau;
+   c = tau >> 64;
+   return out;
+}
+
+// ****************************************************************
+// This version never returns 0, uses a while
+uint64_t inline mwc64k3a2No0w() {
+   uint64_t out = mwc64k3a2();
+   while (out == 0)
+      out = mwc64k3a2();
+   return out;
+}
+
+// This version never returns 0, uses a if.
+uint64_t inline mwc64k3a2No0i() {
+   uint64_t out = mwc64k3a2();
+   if (out == 0) out = mwc64k3a2No0i();
+   return out;
+}
+
+// This version never returns 0
+uint64_t inline mwc64k3a2No0a() {
+   uint64_t out = mwc64k3a2();
+   out += (out == 0) * mwc64k3a2();
+   return out;
+}
+
+// This version never returns 0, uses while.
+uint64_t inline mwc64k3a3No0w() {
+   uint64_t out = mwc64k3a3();
+   while (out == 0)
+      out = mwc64k3a3();
+   return out;
+}
+
+// This version never returns 0.
+uint64_t inline mwc64k3a3No0i() {
+   uint64_t out = mwc64k3a3();
+   if (out == 0) out = mwc64k3a3No0i();
+   return out;
+}
+
+// This version never returns 0.
+uint64_t inline mwc64k3a3No0a() {
+   uint64_t out = mwc64k3a3();
+   out += (out == 0) * mwc64k3a3();
+   return out;
+}
+
+// **************************************************************
+
 // Parameters from Vigna 2021.
 #define GMWC_MINUSA0 0x54c3da46afb70f
 #define GMWC_A0INV 0xbbf397e9a69da811
@@ -155,125 +337,152 @@ uint64_t inline GMWC256() {
    return z;
 }
 
-// ****************************************************************
-// From MWC1k3-00-62.res    a_0 = -1, a_1 = a_2 = 0.
-//  -0x1 0x0 0x0 0x19e24ee5997a
-uint64_t inline mwc64k3one() {
-   const uint64_t out = x1;
-   tau = (0x19e24ee5997a * (__uint128_t ) x3) + c;
-   x3 = x2;
-   x2 = x1;
-   x1 = tau;
-   c = tau >> 64;
-   //return x1;
-   return out;
-}
-
-// From MWC1k3-0-60-58.res    a_0 = -1, a_1 = 0.
-//  - 0x1 0x0 0x13294296084b09e 0x43dfe9959abe
-uint64_t inline mwc64k3two() {
-   const uint64_t out = x1;
-   tau = (0x13294296084b09e * (__uint128_t ) x2 + 0x43dfe9959abe * (__uint128_t ) x3) + c;
-   x3 = x2;
-   x2 = x1;
-   x1 = tau;
-   c = tau >> 64;
-   //return x1;
-   return out;
-}
-
-// From MWC1k3-60-58.res      a_0 = -1.
-// - 0x1 0x2df69b79a87ec31 0x3c9789537bf2185 0xf8611733381c
-uint64_t inline mwc64k3three() {
-   const uint64_t out = x1;
-   tau = (0x2df69b79a87ec31 * (__uint128_t ) x1 + 0x3c9789537bf2185 * (__uint128_t ) x2
-         + 0xf8611733381c * (__uint128_t ) x3) + c;
-   x3 = x2;
-   x2 = x1;
-   x1 = tau;
-   c = tau >> 64;
-   return out;
-}
-
-// Three coefficients are equal.  a_0 =-1,  a_1 = a_2 = a_3.
-uint64_t inline mwc64k3equal() {
-   const uint64_t out = x1;
-   //const __uint128_t
-   tau = 0x1C2A54C95D8F833B * sum3 + c;
-   sum3 = (__uint128_t ) x1 + (__uint128_t ) x2 + (__uint128_t ) x3;
-   // tau = (0x1C2A54C95D8F833B * ((__uint128_t ) x1 + (__uint128_t ) x2 + (__uint128_t ) x3)) + c;
-   x3 = x2;
-   x2 = x1;
-   x1 = tau;
-   c = tau >> 64;
-   return out;
-}
-
-// From MWC1k3-0-60-58.res    a_0 = -1, a_1 = 0.
-uint64_t inline mwc64k3twoXor() {
-   const uint64_t out = x1 ^ x3;
-   tau = (0x13294296084b09e * (__uint128_t ) x2 + 0x43dfe9959abe * (__uint128_t ) x3) + c;
-   x3 = x2;
-   x2 = x1;
-   x1 = tau;
-   c = tau >> 64;
-   return out;
-}
-
-// From MWC1k3-60-58.res      a_0 = -1.
-// 0x25c95c0f8e357bf 0x3ffaf09909ce57a 0xaeced5e89bc93
-uint64_t inline mwc64k3threeXor() {
-   const uint64_t out = x1 ^ x2;
-   tau = (0x2df69b79a87ec31 * (__uint128_t ) x1 + 0x3c9789537bf2185 * (__uint128_t ) x2
-         + 0xf8611733381c * (__uint128_t ) x3) + c;
-   x3 = x2;
-   x2 = x1;
-   x1 = tau;
-   c = tau >> 64;
-   return out;
-}
-
-// **************************************************************
-
 // From MWCa0k3-00-62.res       a_0 general, a_1 = a_2 = 0.
-// - 0xb0aa144f79aaced 0x0 0x0 0x2bc396ccf289
-// inv = 0x3093058f991690e5
-uint64_t inline mwc64k3a0one() {
+uint64_t inline mwc64k3a1gk() {
    const uint64_t out = x1;
    // const __uint128_t
-   tau = 0x2bc396ccf289 * (__uint128_t ) x3 + c;
+   tau = 0xf53334560d * (__uint128_t ) x3 + c;
    x3 = x2;
    x2 = x1;
-   x1 = 0x3093058f991690e5 * (uint64_t) tau;
-   c = (tau - 0xb0aa144f79aaced * (__uint128_t ) x1) >> 64;
+   x1 = 0xa55ad7c337410603 * (uint64_t) tau;
+   c = (tau - 0x2ce8eef308854ab * (__uint128_t ) x1) >> 64;
    return out;
 }
 
 // From MWCa0k3-0-60-58.res      a_0 general, a_1 = 0.
-// - 0xec1c85e684758cd 0x0 0x32411d0d7063217 0x67235523e93e
-// inv = 0xe39b835e23585405
-uint64_t inline mwc64k3a0two() {
+uint64_t inline mwc64k3a2gk() {
    const uint64_t out = x1;
-   tau = (0x32411d0d7063217 * (__uint128_t ) x2 + 0x67235523e93e * (__uint128_t ) x3) + c;
+   tau = (0x1a43e76662f692c * (__uint128_t) x2 + 0x5a888e5764193 * (__uint128_t) x3) + c;
    x3 = x2;
    x2 = x1;
-   x1 = 0xe39b835e23585405 * (uint64_t) tau;
-   c = (tau - 0xec1c85e684758cd * (__uint128_t ) x1) >> 64;
+   x1 = 0x9772ec11e3b050c5 * (uint64_t) tau;
+   c = (tau - 0xe6f81c49aeeae0d * (__uint128_t ) x1) >> 64;
    return out;
 }
 
 // From MWCa0k3-60-58.res      a_0 general.
-// - 0xc9071286719f83b 0x453c969a880a60 0x3a79cceaaf5b155 0x114f867f357a7
-// 0x9b6e12f406d620f3
-uint64_t inline mwc64k3a0three() {
+uint64_t inline mwc64k3a3gk() {
    const uint64_t out = x1;
-   tau = (0x453c969a880a60 * (__uint128_t ) x1 + 0x3a79cceaaf5b155 * (__uint128_t ) x2
-         + 0x114f867f357a7 * (__uint128_t ) x3) + c;
+   tau = (0x1427e7f2aedfa9c * (__uint128_t) x1 + 0x373ad6944cfb8d0 * (__uint128_t) x2
+   + 0xf2125fd7e3997 * (__uint128_t) x3) + c;
    x3 = x2;
    x2 = x1;
-   x1 = 0x9b6e12f406d620f3 * (uint64_t) tau;
-   c = (tau - 0xc9071286719f83b * (__uint128_t ) x1) >> 64;
+   x1 = 0xdd3034dd040dab6b * (uint64_t) tau;
+   c = (tau - 0xea08673f5e82943 * (__uint128_t ) x1) >> 64;
    return out;
+}
+
+// ****************************************************************
+// U(0,1) generators
+
+uint64_t block53;
+
+// This version may return 0
+double inline mwc64k2a2U01() {
+   return (mwc64k2a2() >> 11) * twom53;
+}
+
+// This version never returns 0, uses a while
+double inline mwc64k2a2U01w() {
+   block53 = (mwc64k2a2() >> 11);
+   while (block53 == 0)
+      block53 = (mwc64k2a2() >> 11);
+   return block53 * twom53;
+}
+
+// This version never returns 0, uses a if.
+double inline mwc64k2a2U01i() {
+   block53 = (mwc64k2a2() >> 11);
+   if (block53 == 0) return mwc64k2a2U01i();
+   return block53 * twom53;
+}
+
+double inline mwc64k2a2XorU01() {
+   return (mwc64k2a2Xor() >> 11) * twom53;
+}
+
+// This version never returns 0, uses a if.
+double inline mwc64k2a2XorU01i() {
+   block53 = (mwc64k2a2Xor() >> 11);
+   if (block53 == 0) return mwc64k2a2XorU01i();
+   return block53 * twom53;
+}
+
+// This version may return 0
+double inline mwc64k3a1U01() {
+   return (mwc64k3a1() >> 11) * twom53;
+}
+
+// This version never returns 0, uses a while
+double inline mwc64k3a1U01w() {
+   block53 = (mwc64k3a1() >> 11);
+   while (block53 == 0)
+      block53 = (mwc64k3a1() >> 11);
+   return block53 * twom53;
+}
+
+// This version never returns 0, uses a if.
+double inline mwc64k3a1U01i() {
+   block53 = (mwc64k3a1() >> 11);
+   if (block53 == 0) return mwc64k3a1U01i();
+   return block53 * twom53;
+}
+
+double inline mwc64k3a1XorU01() {
+   return (mwc64k3a1Xor() >> 11) * twom53;
+}
+
+// This version never returns 0, uses a if.
+double inline mwc64k3a1XorU01i() {
+   block53 = (mwc64k3a1Xor() >> 11);
+   if (block53 == 0) return mwc64k3a1XorU01i();
+   return block53 * twom53;
+}
+
+// This version may return 0
+double inline mwc64k3a2U01() {
+   return (mwc64k3a2() >> 11) * twom53;
+}
+
+// This version never returns 0, uses a while
+double inline mwc64k3a2U01w() {
+   block53 = (mwc64k3a2() >> 11);
+   while (block53 == 0)
+      block53 = (mwc64k3a2() >> 11);
+   return block53 * twom53;
+}
+
+// This version never returns 0, uses a if.
+double inline mwc64k3a2U01i() {
+   block53 = (mwc64k3a2() >> 11);
+   if (block53 == 0) return mwc64k3a2U01i();
+   return block53 * twom53;
+}
+
+double inline mwc64k3a2XorU01() {
+   return (mwc64k3a2Xor() >> 11) * twom53;
+}
+
+// This version never returns 0, uses a if.
+double inline mwc64k3a2XorU01i() {
+   block53 = (mwc64k3a2Xor() >> 11);
+   if (block53 == 0) return mwc64k3a2XorU01i();
+   return block53 * twom53;
+}
+
+// This version never returns 0, uses a while
+double inline mwc64k3a3U01w() {
+   block53 = (mwc64k3a3() >> 11);
+   while (block53 == 0)
+      block53 = (mwc64k3a3() >> 11);
+   return block53 * twom53;
+}
+
+// This version never returns 0, uses a if.
+double inline mwc64k3a3U01i() {
+   block53 = (mwc64k3a3() >> 11);
+   if (block53 == 0) return mwc64k3a3U01i();
+   return block53 * twom53;
 }
 
 // *************************************************************************
@@ -302,20 +511,22 @@ static void testLoop(const std::string &rngName, rngFunc func, int64_t n) {
 int main() {
    // int64_t n = 4;
    // int64_t n = 1000*1000; // One million
-   int64_t n = 1000 * 1000 * 1000; // One billion
+    int64_t n = 1000 * 1000 * 1000; // One billion
+   //int64_t n = 1000 * 1000 * (int64_t) 10000; // Ten billions
    std::cout << "\n=============================================================\n";
    std::cout << "Time to generate n = " << n << " = " << std::scientific << (double) n
          << " numbers.\n";
    std::cout << "    Generator     Time (seconds)      Sum mod 2^{64} \n";
-   clock_t tmp;      // To measure computing time.
+   tottmp = clock();
 
    // *******   k = 1  *********************************************
    std::cout << "k = 1 \n";
 
    // Using this `testLoop` function is much simpler than the other code that follows
    // with all the repetitions, but it is much slower.
-   testLoop("MWC128 as param", MWC128, n);
-   testLoop("mwc64k1 as param", mwc64k1, n);
+   testLoop("MWC128 given as a parameter to testLoop    ", MWC128, n);
+   testLoop("mwc64k1 given as a parameter to testLoop   ", mwc64k1, n);
+   testLoop("mwc64k3a2 given as a parameter to testLoop ", mwc64k3a2, n);
    std::cout << "\n";
 
    x = c = 12345;
@@ -352,37 +563,55 @@ int main() {
    sum = 0;
    tmp = clock();
    for (int64_t i = 0; i < n; i++) {
-      sum += mwc64k2one();
+      sum += mwc64k2a1();
    }
    tmp = clock() - tmp;
-   printResults("mwc64k2one", tmp, sum);
+   printResults("mwc64k2a1", tmp, sum);
 
    x1 = x2 = c = 12345;
    sum = 0;
    tmp = clock();
    for (int64_t i = 0; i < n; i++) {
-      sum += mwc64k2two();
+      sum += mwc64k2a2();
    }
    tmp = clock() - tmp;
-   printResults("mwc64k2two", tmp, sum);
+   printResults("mwc64k2a2", tmp, sum);
 
    x1 = x2 = c = 12345;
    sum = 0;
    tmp = clock();
    for (int64_t i = 0; i < n; i++) {
-      sum += mwc64k2a0one();
+      sum += mwc64k2a2eq();
    }
    tmp = clock() - tmp;
-   printResults("mwc64k2a0one", tmp, sum);
+   printResults("mwc64k2a2eq", tmp, sum);
 
    x1 = x2 = c = 12345;
    sum = 0;
    tmp = clock();
    for (int64_t i = 0; i < n; i++) {
-      sum += mwc64k2a0two();
+      sum += mwc64k2a2eq2();
    }
    tmp = clock() - tmp;
-   printResults("mwc64k2a0two", tmp, sum);
+   printResults("mwc64k2a2eq2", tmp, sum);
+
+   x1 = x2 = c = 12345;
+   sum = 0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      sum += mwc64k2a1gk();
+   }
+   tmp = clock() - tmp;
+   printResults("mwc64k2a1gk", tmp, sum);
+
+   x1 = x2 = c = 12345;
+   sum = 0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      sum += mwc64k2a2gk();
+   }
+   tmp = clock() - tmp;
+   printResults("mwc64k2a2gk", tmp, sum);
 
    // *******   k = 3  *********************************************
    std::cout << "k = 3 \n";
@@ -400,55 +629,73 @@ int main() {
    sum = 0;
    tmp = clock();
    for (int64_t i = 0; i < n; i++) {
-      sum += mwc64k3one();
+      sum += mwc64k3a1();
    }
    tmp = clock() - tmp;
-   printResults("mwc64k3one", tmp, sum);
+   printResults("mwc64k3a1", tmp, sum);
 
    x1 = x2 = x3 = c = 12345;
    sum = 0;
    tmp = clock();
    for (int64_t i = 0; i < n; i++) {
-      sum += mwc64k3two();
+      sum += mwc64k3a2();
    }
    tmp = clock() - tmp;
-   printResults("mwc64k3two", tmp, sum);
+   printResults("mwc64k3a2", tmp, sum);
 
    x1 = x2 = x3 = c = 12345;
    sum = 0;
    tmp = clock();
    for (int64_t i = 0; i < n; i++) {
-      sum += mwc64k3three();
+      sum += mwc64k3a3();
    }
    tmp = clock() - tmp;
-   printResults("mwc64k3three", tmp, sum);
+   printResults("mwc64k3a3", tmp, sum);
 
    x1 = x2 = x3 = c = 12345;
    sum = 0;
    tmp = clock();
    for (int64_t i = 0; i < n; i++) {
-      sum += mwc64k3equal();
+      sum += mwc64k3a2eq();
    }
    tmp = clock() - tmp;
-   printResults("mwc64k3equal", tmp, sum);
+   printResults("mwc64k3a2eq", tmp, sum);
 
    x1 = x2 = x3 = c = 12345;
    sum = 0;
    tmp = clock();
    for (int64_t i = 0; i < n; i++) {
-      sum += mwc64k3twoXor();
+      sum += mwc64k3a3eq();
    }
    tmp = clock() - tmp;
-   printResults("mwc64k3twoXor", tmp, sum);
+   printResults("mwc64k3a3eq", tmp, sum);
 
    x1 = x2 = x3 = c = 12345;
    sum = 0;
    tmp = clock();
    for (int64_t i = 0; i < n; i++) {
-      sum += mwc64k3threeXor();
+      sum += mwc64k3a1Xor();
    }
    tmp = clock() - tmp;
-   printResults("mwc64k3threeXor", tmp, sum);
+   printResults("mwc64k3a1Xor", tmp, sum);
+
+   x1 = x2 = x3 = c = 12345;
+   sum = 0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      sum += mwc64k3a2Xor();
+   }
+   tmp = clock() - tmp;
+   printResults("mwc64k3a2Xor", tmp, sum);
+
+   x1 = x2 = x3 = c = 12345;
+   sum = 0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      sum += mwc64k3a3Xor();
+   }
+   tmp = clock() - tmp;
+   printResults("mwc64k3a3Xor", tmp, sum);
    std::cout << "\n";
 
    // ************************************************************
@@ -467,93 +714,409 @@ int main() {
    sum = 0;
    tmp = clock();
    for (int64_t i = 0; i < n; i++) {
-      sum += mwc64k3a0one();
+      sum += mwc64k3a1gk();
    }
    tmp = clock() - tmp;
-   printResults("mwc64k3a0one", tmp, sum);
+   printResults("mwc64k3a1gk", tmp, sum);
 
    x1 = x2 = x3 = c = 12345;
    sum = 0;
    tmp = clock();
    for (int64_t i = 0; i < n; i++) {
-      sum += mwc64k3a0two();
+      sum += mwc64k3a2gk();
    }
    tmp = clock() - tmp;
-   printResults("mwc64k3a0two", tmp, sum);
+   printResults("mwc64k3a2gk", tmp, sum);
 
    x1 = x2 = x3 = c = 12345;
    sum = 0;
    tmp = clock();
    for (int64_t i = 0; i < n; i++) {
-      sum += mwc64k3a0three();
+      sum += mwc64k3a3gk();
    }
    tmp = clock() - tmp;
-   printResults("mwc64k3a0three", tmp, sum);
+   printResults("mwc64k3a3gk", tmp, sum);
 
    // ******************************************************
    std::cout << "\nUniform over (0,1) \n";
-
-   x1 = x2 = x3 = c = 12345;
-   const double twom53 = 1.0 / (double) ((uint64_t) 1 << 53);
-   const double twom63 = 1.0 / (double) ((uint64_t) 1 << 63);
-   const double twom64 = 0.5 / (double) ((uint64_t) 1 << 63);
    // onem53 = ldexp(1, -53);
-   std::cout << "twom53 = " << std::hexfloat << std::setprecision(16) << twom53 << std::fixed
-         << "\n";
-   std::cout << "twom63 = " << std::hexfloat << std::setprecision(16) << twom63 << std::fixed
-         << "\n";
-   std::cout << "twom64 = " << std::hexfloat << std::setprecision(16) << twom64 << std::fixed
-         << "\n";
-   std::cout << "standard deviation = (4n)^{-1/2} =   " << std::setprecision(8)
+   /*
+    std::cout << "twom53 = " << std::hexfloat << std::setprecision(16) << twom53 << std::fixed
+    << "\n";
+    std::cout << "twom63 = " << std::hexfloat << std::setprecision(16) << twom63 << std::fixed
+    << "\n";
+    std::cout << "twom64 = " << std::hexfloat << std::setprecision(16) << twom64 << std::fixed
+    << "\n";
+    */
+   std::cout << "standard dev. for average = (4n)^{-1/2} =    " << std::setprecision(8)
          << 1.0 / sqrt(2.0 * n) << "\n";
-   std::cout << "We repeat the tests three times.\n\n";
-   std::cout << "    Generator        Time (seconds)   Average \n";
+   std::cout << "      Generator              Time (seconds)    Average \n";
    double dsum = 0.0;
+   //   for (int64_t r = 0; r < 3; r++) {
+
+   // k = 2
+
    x1 = x2 = x3 = c = 12345;
-
-   for (int64_t r = 0; r < 3; r++) {
-
-      dsum = 0.0;
-      tmp = clock();
-      for (int64_t i = 0; i < n; i++) {
-         dsum += (mwc64k3two() >> 11) * twom53;
-      }
-      tmp = clock() - tmp;
-      printResultsDouble("mwc64k3two U(0,1)   ", tmp, dsum / n);
-
-      dsum = 0.0;
-      tmp = clock();
-      for (int64_t i = 0; i < n; i++) {
-         dsum += (mwc64k3three() >> 11) * twom53;
-      }
-      tmp = clock() - tmp;
-      printResultsDouble("mwc64k3three U(0,1) ", tmp, dsum / n);
-
-      dsum = 0.0;
-      tmp = clock();
-      for (int64_t i = 0; i < n; i++) {
-         dsum += (mwc64k3twoXor() >> 11) * twom53;
-      }
-      tmp = clock() - tmp;
-      printResultsDouble("mwc64k3twoXor U(0,1)", tmp, dsum / n);
-
-      dsum = 0.0;
-      tmp = clock();
-      for (int64_t i = 0; i < n; i++) {
-         dsum += (mwc64k3two() >> 1) * twom63;
-      }
-      tmp = clock() - tmp;
-      printResultsDouble("mwc64k3two U(0,1) 63", tmp, dsum / n);
-
-      dsum = 0.0;
-      tmp = clock();
-      for (int64_t i = 0; i < n; i++) {
-         dsum += (mwc64k3two()) * twom64;
-      }
-      tmp = clock() - tmp;
-      printResultsDouble("mwc64k3two U(0,1) 64", tmp, dsum / n);
-      std::cout << "\n";
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += mwc64k2a2U01();
    }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k2a2U01    53           ", tmp, dsum / n);
 
+   x1 = x2 = x3 = c = 12345;
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += (mwc64k2a2() >> 1) * twom63;
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k2a2 U(0,1) 63          ", tmp, dsum / n);
+
+   x1 = x2 = x3 = c = 12345;
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += (mwc64k2a2() >> 11) * twom53 + twom55;
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k2a2 U(0,1) 53, + twom55", tmp, dsum / n);
+
+   x1 = x2 = x3 = c = 12345;
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += mwc64k2a2U01i();
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k2a2U01i U(0,1) 53      ", tmp, dsum / n);
+
+   x1 = x2 = x3 = c = 12345;
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += mwc64k2a2XorU01();
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k2a2XorU01 U(0,1) 53    ", tmp, dsum / n);
+
+   x1 = x2 = x3 = c = 12345;
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += mwc64k2a2XorU01i();
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k2a2XorU01i U(0,1) 53   ", tmp, dsum / n);
+
+   std::cout << "\n";
+
+   // k = 3
+
+   // Important: We do not want the block of 53 bits to be 0.
+   x1 = x2 = x3 = c = 12345;
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += (mwc64k3a1() >> 11) * twom53;
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a1 U(0,1) 53          ", tmp, dsum / n);
+
+   x1 = x2 = x3 = c = 12345;
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += mwc64k3a1U01();
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a1U01 U(0,1) 53       ", tmp, dsum / n);
+
+   x1 = x2 = x3 = c = 12345;
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += mwc64k3a1U01w();
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a1U01w U(0,1) 53      ", tmp, dsum / n);
+
+   x1 = x2 = x3 = c = 12345;
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += mwc64k3a1U01i();
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a1U01i U(0,1) 53      ", tmp, dsum / n);
+
+   x1 = x2 = x3 = c = 12345;
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += mwc64k3a1XorU01();
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a1XorU01 U(0,1) 53    ", tmp, dsum / n);
+
+   x1 = x2 = x3 = c = 12345;
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += mwc64k3a1XorU01i();
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a1XorU01i U(0,1) 53   ", tmp, dsum / n);
+
+   // *************************************
+   std::cout << "\n";
+
+   // Important: We do not want the block of 53 bits to be 0.
+   x1 = x2 = x3 = c = 12345;
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += (mwc64k3a2() >> 11) * twom53;
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a2 U(0,1) 53          ", tmp, dsum / n);
+
+   x1 = x2 = x3 = c = 12345;
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += mwc64k3a2U01();
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a2U01 U(0,1) 53       ", tmp, dsum / n);
+
+   x1 = x2 = x3 = c = 12345;
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += mwc64k3a2U01w();
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a2U01w U(0,1) 53      ", tmp, dsum / n);
+
+   x1 = x2 = x3 = c = 12345;
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += mwc64k3a2U01i();
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a2U01i U(0,1) 53      ", tmp, dsum / n);
+
+   x1 = x2 = x3 = c = 12345;
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += mwc64k3a2XorU01();
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a2XorU01 U(0,1) 53    ", tmp, dsum / n);
+
+   x1 = x2 = x3 = c = 12345;
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += mwc64k3a2XorU01i();
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a2XorU01i U(0,1) 53   ", tmp, dsum / n);
+
+   // *************************************
+   std::cout << "\n";
+
+   x1 = x2 = x3 = c = 12345;
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += (mwc64k3a3() >> 11) * twom53;
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a3 U(0,1) 53          ", tmp, dsum / n);
+
+   x1 = x2 = x3 = c = 12345;
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += mwc64k3a3U01w();
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a3U01w U(0,1) 53      ", tmp, dsum / n);
+
+   x1 = x2 = x3 = c = 12345;
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += mwc64k3a3U01i();
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a3U01i U(0,1) 53      ", tmp, dsum / n);
+
+   return 0;  // ******************************************************************
+
+   x1 = x2 = x3 = c = 12345;
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += (mwc64k2a2()) * twom64;
+   }
+   // tmp = clock() - tmp;
+   printResultsDouble("mwc64k2a2 U(0,1) 64", clock() - tmp, dsum / n);
+
+   x1 = x2 = x3 = c = 12345;
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += (mwc64k2a2Xor() >> 11) * twom53;
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k2a2Xor U(0,1) 53", tmp, dsum / n);
+
+   x1 = x2 = x3 = c = 12345;
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += (mwc64k2a2Xor() >> 1) * twom63;
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k2a2Xor U(0,1) 63", tmp, dsum / n);
+
+   x1 = x2 = x3 = c = 12345;
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += mwc64k2a2Xor() * twom64;
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k2a2Xor U(0,1) 64", tmp, dsum / n);
+
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += (mwc64k3a1() >> 11) * twom53;
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a1 U(0,1) 53", tmp, dsum / n);
+
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += (mwc64k3a1() >> 1) * twom63;
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a1 U(0,1) 63", tmp, dsum / n);
+
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += (mwc64k3a1()) * twom64;
+   }
+   // tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a1 U(0,1) 64", clock() - tmp, dsum / n);
+
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += (mwc64k3a1Xor() >> 11) * twom53;
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a1Xor U(0,1)", tmp, dsum / n);
+
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += (mwc64k3a1Xor() >> 1) * twom63;
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a1Xor U(0,1) 63", tmp, dsum / n);
+
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += (mwc64k3a1Xor()) * twom64;
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a1Xor U(0,1) 64", tmp, dsum / n);
+
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += (mwc64k3a2() >> 11) * twom53;
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a2 U(0,1)   ", tmp, dsum / n);
+
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += (mwc64k3a2() >> 1) * twom63;
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a2 U(0,1) 63", tmp, dsum / n);
+
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += (mwc64k3a2()) * twom64;
+   }
+   // tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a2 U(0,1) 64", clock() - tmp, dsum / n);
+
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += (mwc64k3a2Xor() >> 11) * twom53;
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a2Xor U(0,1) 53", tmp, dsum / n);
+
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += (mwc64k3a2Xor() >> 1) * twom63;
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a2Xor U(0,1) 63", tmp, dsum / n);
+
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += (mwc64k3a2Xor()) * twom64;
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a2Xor U(0,1) 64", tmp, dsum / n);
+
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += (mwc64k3a3() >> 11) * twom53;
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a3 U(0,1) 53 ", tmp, dsum / n);
+
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += (mwc64k3a3() >> 1) * twom63;
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a3 U(0,1) 63 ", tmp, dsum / n);
+
+   dsum = 0.0;
+   tmp = clock();
+   for (int64_t i = 0; i < n; i++) {
+      dsum += mwc64k3a3() * twom64;
+   }
+   tmp = clock() - tmp;
+   printResultsDouble("mwc64k3a3 U(0,1) 64 ", tmp, dsum / n);
+
+   std::cout << "\n";
+
+   printResultsDouble("Total computing time: ", clock() - tottmp, 0);
    return 0;
 }

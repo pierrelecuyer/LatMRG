@@ -97,9 +97,22 @@ namespace LatMRG {
  * where \f$p\f$ is assumed to be a prime number.
  * The prime factor decomposition of \f$p-1\f$ must be given in `fac`,
  * and the list of inverse factors in `fac` must be up to date.
+ * This is a special case of the next function with `minOrder`\f$=p^e-1\f$.
  */
 template<typename Int>
 static bool isPrimitiveElement(const Int &a, const IntFactorization<Int> &fac, const Int &p,
+      long e = 1);
+
+/**
+ * Returns `true` iff the order of `a` modulo \f$p^e\f$ is at least `minOrder`.
+ * Here, \f$p\f$ is assumed to be a prime number,
+ * the prime factor decomposition of \f$p-1\f$ must be given in `fac`,
+ * and the list of inverse factors in `fac` must be up to date.
+ * The function returns `true` iff \f$a^i \bmod p^e \not= 1\f$ for all
+ * inverse factors \f$i\f$ smaller than `minOrder`.
+ */
+template<typename Int>
+static bool isHighOrder(const Int &a, const Int &minOrder, const IntFactorization<Int> &fac, const Int &p,
       long e = 1);
 
 /**
@@ -229,6 +242,26 @@ static bool isPrimitiveElement(const Int &a, const IntFactorization<Int> &fac, c
    // std::cout << "We have a primitive element!!! \n";
    return true;
 }
+
+template<typename Int>
+static bool isHighOrder(const Int &a, const Int &minOrder, const IntFactorization<Int> &fac, const Int &p,
+      long e) {
+   Int t1;
+   Int m;
+   m = NTL::power(p, e);
+   t1 = a;
+   if (t1 < 0) t1 += m;
+   const std::vector<Int> invList = fac.getInvFactorList();
+   assert(!(invList.empty()));
+   for (auto it = invList.begin(); it != invList.end(); it++) {
+      if (*it < minOrder)
+         if (NTL::PowerMod(t1, *it, m) == 1) return false;
+   }
+   return true;
+}
+
+
+
 
 template<typename Int>
 static bool isPrimitive(typename FlexModInt<Int>::PolX &f, const Int &m, const IntFactorization<Int> &fm,

@@ -38,7 +38,7 @@ int main() {
    IntVec aa = mrgcomb.getaa();
    std::cout << "Parameters for the combined MRG:\n";
    std::cout << "Modulo m = " << m << "\n";
-   std::cout << "Multipliers aa = \n  " << mrgcomb.getaa() << "\n\n";
+   std::cout << "Multipliers aa = " << mrgcomb.getaa() << "\n\n";
 
    // Note how large ZZ integers can be initialized in NTL.
    //Int m = to_ZZ("18446645023178547541");
@@ -47,7 +47,7 @@ int main() {
    //aa[3] = to_ZZ("8738613264398222622");
 
    // We now apply the spectral test to the combined MRG.
-   int64_t maxdim(48);  // Maximum dimension of the lattice.  ***
+   int64_t maxdim(45);    // Maximum dimension of the lattice.  ***
    // NTL::Vec <int64_t> t; // The t-vector for the FOM.
    // t.SetLength(3);
    // t[0] = maxdim;  t[1] = 0;  t[2] = 0;
@@ -56,27 +56,27 @@ int main() {
    NormaRogers normaDual(-log(m), 3, maxdim);  // Normalization for m-dual: Roger's bounds as in rLEC99b.
    ReducerBB<Int, Real> red(maxdim);           // Single ReducerBB.
    FigureOfMeritDualM<Int, Real> fom(weights, normaDual, &red); // FoM for dual lattice.
-   fom.setVerbosity(3);
-   std::cout << "\nResults from TestMRG32k3a.cc \n";
+   fom.setVerbosity(4);
+   std::cout << "Results from TestMRG32k3a.cc \n";
 
    // We first compute the FOM in successive dimensions up to maxdim, with the default BKZ + BB.
    // It uses delta = 0.99999 and blocksize = 10.
    fom.setBKZ(0.99999, 10);
    std::cout << "\n=============================================\n";
    std::cout << "MRG32k3a, with BKZ+BB with default parameters \n";
-   fom.computeMeritSucc(mrgc);
+   fom.computeMeritSucc(mrgc, k+1, maxdim);
 
    // Again BKZ + BB, but with delta = 0.99999 and blocksize k = 20.
    fom.setBKZ(0.99999, 20);
    std::cout << "\n=============================================\n";
    std::cout << "MRG32k3a, with BKZ+BB with delta = 0.99999 and block size = 20 \n";
-   fom.computeMeritSucc(mrgc);
+   fom.computeMeritSucc(mrgc, k+1, maxdim);
 
    // Again BKZ + BB, but with delta = 0.99999999 and blocksize k = 50.
    fom.setBKZ(0.99999999, 50);
    std::cout << "\n=============================================\n";
    std::cout << "MRG32k3a, with BKZ+BB with delta = 0.99999999 and block size = 50 \n";
-   fom.computeMeritSucc(mrgc);
+   fom.computeMeritSucc(mrgc, k+1, maxdim);
 
    // Here we apply only LLL with delta = 0.9, no BB.
    fom.setBB(false);
@@ -84,19 +84,19 @@ int main() {
    fom.setLLL(0.9);
    std::cout << "\n===========================================\n";
    std::cout << "MRG32k3a, only LLL with delta = 0.9, no BB \n";
-   fom.computeMeritSucc(mrgc);
+   fom.computeMeritSucc(mrgc, k+1, maxdim);
 
    // Here we apply only the default BKZ, no BB.
    fom.setBKZ(0.99999);
    std::cout << "\n===========================================\n";
    std::cout << "MRG32k3a, only BKZ with block size k = 10, no BB \n";
-   fom.computeMeritSucc(mrgc);
+   fom.computeMeritSucc(mrgc, k+1, maxdim);
 
    // Here we apply only BKZ, but with delta = 0.99999999 and blocksize k = 50.
    fom.setBKZ(0.99999999, 50);
    std::cout << "\n===========================================\n";
    std::cout << "MRG32k3a, only BKZ with delta = 0.99999999 and k = 50, no BB \n";
-   fom.computeMeritSucc(mrgc);
+   fom.computeMeritSucc(mrgc, k+1, maxdim);
 
    // Here we rebuild the basis from scratch each time we increase the dimension,
    // with the default BKZ + BB.
@@ -105,7 +105,7 @@ int main() {
    fom.setBB(true);
    std::cout << "\n===========================================\n";
    std::cout << "MRG32k3a, default BKZ+BB, rebuild basis at each step \n";
-   fom.computeMeritSuccRebuild(mrgc);
+   fom.computeMeritSuccRebuild(mrgc, k+1, maxdim);
 
    // Rebuild basis from scratch and use only LLL with delta = 0.9.
    fom.setLLL(0.9);
@@ -113,7 +113,7 @@ int main() {
    fom.setBB(false);
    std::cout << "\n===========================================\n";
    std::cout << "MRG32k3a, only LLL with delta = 0.9, rebuild basis at each step \n";
-   fom.computeMeritSuccRebuild(mrgc);
+   fom.computeMeritSuccRebuild(mrgc, k+1, maxdim);
 
    return 0;
 }

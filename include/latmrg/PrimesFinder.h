@@ -108,9 +108,9 @@ void findPrime(int64_t k, int64_t e, int64_t s, const Int &S1, const Int &S2, bo
    if (NTL::IsOdd(S2)) m = S2;
    else m = S2 - Int(1);
    int64_t i = 0;
+   bool rprime;
    while (i < s && m >= S1) {
-      PrimeType status = IntFactor<Int>::isPrime(m, numtrials);
-      if (status == PRIME || status == PROB_PRIME) {
+      if (IntFactor<Int>::isPrime(m, numtrials)) {
          if (factomm1) fout << "----------------\n";
          Int m1 = m - Int(1);
          if (safe) {
@@ -119,21 +119,21 @@ void findPrime(int64_t k, int64_t e, int64_t s, const Int &S1, const Int &S2, bo
                continue;
             }
             Int m1s2 = m1 / Int(2);
-            status = IntFactor<Int>::isPrime(m1s2, numtrials);
-            if (status != PRIME && status != PROB_PRIME) {
+            if (!IntFactor<Int>::isPrime(m1s2, numtrials)) {
                nextM(m);
                continue;
             }
          }
          Int r;
          NTL::set(r);
+         if (k == 1) rprime = true;
          if (k > 1) {
             r = NTL::power(m, k);
             --r;
             r = r / m1;
-            status = IntFactor<Int>::isPrime(r, numtrials);
+            rprime = IntFactor<Int>::isPrime(r, numtrials);
          }
-         if (k == 1 || status == PRIME || status == PROB_PRIME) {
+         if (rprime) {
             i++;
             fout << "m = " << m;
             Int Sdiff = m - (Int(1) << e);

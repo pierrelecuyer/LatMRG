@@ -33,12 +33,12 @@ namespace LatMRG {
 static constexpr uint64_t NB_PRIMES = 6543;
 const std::array<uint64_t, NB_PRIMES> PRIMES_ARRAY = {
 #include "../data/primes.dat"
-      };
+};
 
 /**
  * An object of this class represents a factor in the decomposition of a positive integer.
  * It is usually a prime factor, but not always.
- * The class also contains basic functions to test whether an integer is prime,
+ * The file also contains basic static functions to test whether an integer is prime,
  * probably prime, or composite. The primality is tested by first checking a list of
  * small prime factors, and then invoking the `NTL::ProbPrime` function.
  */
@@ -96,34 +96,42 @@ public:
    }
 
    /**
-    * Tests whether \f$y\f$ is prime or not. First tests whether \f$y\f$ is
-    * divisible by all small primes \f$p\f$ (\f$p < 2^{16}\f$) that are
-    * kept in file `prime.dat`. If no factor is found, the Miller-Rabin probability
-    * test from NTL is applied with `numtrials` trials.
+    * Same as `typePrime (y, numtrials)` with the current object in place of `y`.
     */
-   static PrimeType isPrime(const Int &y, std::int64_t numtrials = 100);
+   PrimeType typePrime(std::int64_t numtrials = 100);
 
    /**
     * Same as `isPrime (y, numtrials)` with the current object in place of `y`.
     */
-   PrimeType isPrime(std::int64_t numtrials = 100);
+   bool isPrime(std::int64_t numtrials = 100);
+
+   /**
+    * Tests whether \f$y\f$ is prime or not, via `NTL::ProbPrime`.
+    * The latter first tests whether \f$y\f$ is divisible by small primes.
+    * If no factor is found, it applies the Miller-Rabin probability
+    * test with `numtrials` trials.  Returns a `PrimeType`, NOT a boolean.
+    */
+   static PrimeType typePrime(const Int &y, std::int64_t numtrials = 100);
+
+   /**
+    * Tests whether \f$y\f$ is prime or not, via `NTL::ProbPrime`.
+    * If no small factor is found, the Miller-Rabin probability
+    * test from NTL is applied with `numtrials` trials.
+    * Returns `true` iff \f$y\f$ is prime or probably prime.
+    */
+   static bool isPrime(const Int &y, std::int64_t numtrials = 100);
+
+   /**
+    * Same as `isPrime`.
+    */
+   static bool isProbPrime(const Int &y, std::int64_t numtrials = 100);
 
    /**
     * Similar to `isPrime`, but tests whether \f$y\f$ is a safe prime or not.
     * This means that  \f$y\f$ is prime and  \f$(y-1)/2\f$ is also prime.
     * In this case, we also say that \f$(y-1)/2\f$ is a Sophie Germain prime number.
     */
-   static PrimeType isSafePrime(const Int &y, std::int64_t numtrials= 100);
-
-   /**
-    * Same as `isSafePrime (y, numtrials)` with the current object in place of `y`.
-    */
-   PrimeType isSafePrime(std::int64_t numtrials = 100);
-
-   /**
-    * Applies the Miller-Rabin probability test to \f$y\f$ with `numtrials` trials.
-    */
-   static PrimeType isProbPrime(const Int &y, std::int64_t numtrials = 100);
+   static bool isSafePrime(const Int &y, std::int64_t numtrials= 100);
 
    /**
     * Transforms the status `status` to a string and returns it.
@@ -134,6 +142,8 @@ public:
     * Returns a string that represents this object.
     */
    std::string toString() const;
+
+
 
    //===========================================================================
 
@@ -191,55 +201,59 @@ inline std::string IntFactor<Int>::toString(PrimeType status) {
 //===========================================================================
 
 template<typename Int>
-PrimeType IntFactor<Int>::isPrime(const Int &y, std::int64_t numtrials) {
-   assert (y > 0);
-   Int NbPrem(2);
-   NTL::ZZ LIM = NTL::conv<NTL::ZZ>(4295098369);  // A bit more than 2^{32}.
-   // std::cout << " isPrime:  y  = " << y << "\n";
-   Int ys = NTL::SqrRoot(y);
-   uint64_t i = 1;
-   while (i < NB_PRIMES && (NbPrem <= ys)) {
-      if (y % NbPrem == 0) return COMPOSITE;
-      NbPrem = PRIMES_ARRAY[i];
-      i++;
+PrimeType IntFactor<Int>::typePrime(std::int64_t numtrials) {
+   if (isPrime(m_factor, numtrials)) {
+      return m_status = PROB_PRIME;
    }
-   if (y <= LIM) return PRIME;   // We tested all prime factors < 2^16.
-   return isProbPrime(y, numtrials);
-}
-
-//===========================================================================
-
-template<typename Int>
-PrimeType IntFactor<Int>::isSafePrime(std::int64_t numtrials) {
-   return isSafePrime(m_factor, numtrials);
-}
-
-//===========================================================================
-
-template<typename Int>
-PrimeType IntFactor<Int>::isSafePrime(const Int &y, std::int64_t numtrials) {
-   PrimeType ptype = isPrime(y, numtrials);
-   if (ptype <= 1) return max(ptype, isPrime((y-Int(1))/Int(2), numtrials));
-   else return ptype;
-}
-
-//===========================================================================
-
-template<typename Int>
-PrimeType IntFactor<Int>::isProbPrime(const Int &y, std::int64_t numtrials) {
-   PrimeType status;
-   std::int64_t res = NTL::ProbPrime(y, numtrials);
-   switch (res) {
-   case 0:
-      status = COMPOSITE;
-      break;
-   case 1:
-      status = PROB_PRIME;
-      break;
-   default:
-      status = UNKNOWN;
+   else {
+      return m_status = COMPOSITE;
    }
-   return status;
+}
+
+//===========================================================================
+
+template<typename Int>
+bool IntFactor<Int>::isPrime(std::int64_t numtrials) {
+   if (isPrime(m_factor, numtrials)) {
+      m_status = PROB_PRIME;
+      return true;
+   }
+   else {
+      m_status = COMPOSITE;
+      return false;
+   }
+}
+
+//===========================================================================
+
+template<typename Int>
+PrimeType IntFactor<Int>::typePrime(const Int &y, std::int64_t numtrials) {
+   if (isPrime(y, numtrials))
+      return PROB_PRIME;
+   else
+      return COMPOSITE;
+}
+
+//===========================================================================
+
+template<typename Int>
+inline bool IntFactor<Int>::isPrime(const Int &y, std::int64_t numtrials) {
+   return NTL::ProbPrime(y, numtrials);    // Returns 1 if prob. prime.
+}
+
+//===========================================================================
+
+template<typename Int>
+inline bool IntFactor<Int>::isProbPrime(const Int &y, std::int64_t numtrials) {
+   return NTL::ProbPrime(y, numtrials);    // Returns 1 if prob. prime.
+}
+
+//===========================================================================
+
+template<typename Int>
+inline bool IntFactor<Int>::isSafePrime(const Int &y, std::int64_t numtrials) {
+   if (!isPrime(y, numtrials)) return false;
+   return isPrime((y-Int(1))/Int(2), numtrials);
 }
 
 // template class IntFactor<NTL::ZZ> ;
