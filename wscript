@@ -33,7 +33,6 @@ def configure(ctx):
     ctx.msg("Build platform", build_platform)
 
     cxxflags     = ['-O3', '-fext-numeric-literals']
-    CXX_EXTENSIONS = YES
     # -fext-numeric-literals
     
     ctx.load('compiler_c compiler_cxx gnu_dirs waf_unit_test')
