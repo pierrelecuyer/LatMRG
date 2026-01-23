@@ -454,12 +454,15 @@ void MRGLattice<Int, Real>::buildProjection(IntLattice<Int, Real> &projLattice,
    assert(*coordSet.end() <= uint64_t(m_maxCoord));  // Vector y is large enough.
    projLattice.setDim(d);
    IntMat & pbasis = projLattice.getBasis();  // Reference to basis of projection.
+   // This `pbasis` will refer to either the basis of projLattice or to `m_genTemp`,
+   // depending on the value of `projCase1`. This is to avoid copying.
    int64_t i, j;
    int64_t k = this->m_order;
    bool projCase1 = true; // This holds if the first m_order coordinates are all in `coordSet`.
    // Check if we are in case 1.
    // This assumes that the coordinates of each projection are always in increasing order!  ***   
    // Note that we do not have direct access to coordinate `k` to check if it equals `k`.
+   // This is why we need to loop over the coordinates.
    if (d < (unsigned) m_order) projCase1 = false;
    else {
       j = 1;
@@ -473,9 +476,12 @@ void MRGLattice<Int, Real>::buildProjection(IntLattice<Int, Real> &projLattice,
    }
    int64_t iadd = 0;
    if (!projCase1) {
-      iadd = k;            // We will have k more rows in pbasis.
+      // In this case, we make `pbasis` point to `m_genTemp`, in which we will put
+      // a set of generating vectors that will be reduced to a triangular basis.
       pbasis = m_genTemp;  // Will be a set of gen vectors.
+      iadd = k;            // We will have k more rows in pbasis.
    }
+   // Recall that if (projCase1), pbasis points to the basis of `projLattice`.
    // We first copy the selected coordinates for the first k rows.
    j = 0;
    for (auto it = coordSet.begin(); it != coordSet.end(); it++, j++)
