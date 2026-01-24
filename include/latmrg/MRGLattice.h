@@ -453,12 +453,13 @@ void MRGLattice<Int, Real>::buildProjection(IntLattice<Int, Real> &projLattice,
    assert(d <= m_maxDimProj);
    assert(*coordSet.end() <= uint64_t(m_maxCoord));  // Vector y is large enough.
    projLattice.setDim(d);
-   IntMat & pbasis = projLattice.getBasis();  // Reference to basis of projection.
+   IntMat* pbasis = &projLattice.getBasis(); // Pointer to basis of projection.
    // This `pbasis` will refer to either the basis of projLattice or to `m_genTemp`,
    // depending on the value of `projCase1`. This is to avoid copying.
    int64_t i, j;
    int64_t k = this->m_order;
    bool projCase1 = true; // This holds if the first m_order coordinates are all in `coordSet`.
+   
    // Check if we are in case 1.
    // This assumes that the coordinates of each projection are always in increasing order!  ***   
    // Note that we do not have direct access to coordinate `k` to check if it equals `k`.
@@ -478,7 +479,7 @@ void MRGLattice<Int, Real>::buildProjection(IntLattice<Int, Real> &projLattice,
    if (!projCase1) {
       // In this case, we make `pbasis` point to `m_genTemp`, in which we will put
       // a set of generating vectors that will be reduced to a triangular basis.
-      pbasis = m_genTemp;  // Will be a set of gen vectors.
+      pbasis = &m_genTemp;  // Pointer will point a set of gen vectors.
       iadd = k;            // We will have k more rows in pbasis.
    }
    // Recall that if (projCase1), pbasis points to the basis of `projLattice`.
@@ -486,14 +487,16 @@ void MRGLattice<Int, Real>::buildProjection(IntLattice<Int, Real> &projLattice,
    j = 0;
    for (auto it = coordSet.begin(); it != coordSet.end(); it++, j++)
       for (i = 0; i < k; i++)
-         pbasis[i][j] = m_y[*it - i + k - 2];
+         (*pbasis)[i][j] = m_y[*it - i + k - 2];
    // Then the other rows.
    for (i = k; i < d + iadd; i++)
       for (j = 0; j < d; j++)
-         pbasis[i][j] = this->m_modulo * (i == j+iadd);
+         (*pbasis)[i][j] = this->m_modulo * (i == j+iadd);
    // If not case1, we must reduce the set of gen vectors.
    if (!projCase1)
+   {
       upperTriangularBasis(projLattice.getBasis(), m_genTemp, this->m_modulo, this->m_dim, d);
+   }
 }
 
 //============================================================================
