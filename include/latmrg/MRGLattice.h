@@ -494,9 +494,7 @@ void MRGLattice<Int, Real>::buildProjection(IntLattice<Int, Real> &projLattice,
          (*pbasis)[i][j] = this->m_modulo * (i == j+iadd);
    // If not case1, we must reduce the set of gen vectors.
    if (!projCase1)
-   {
       upperTriangularBasis(projLattice.getBasis(), m_genTemp, this->m_modulo, this->m_dim, d);
-   }
 }
 
 //============================================================================
