@@ -504,7 +504,6 @@ void MLCGLattice<Int, Real>::buildProjection(IntLattice<Int, Real> &projLattice,
    }
    int64_t iadd = 0;
    if (!projCase1) {
-      std::cout << "Not Case 1" << "\n";
       iadd = k;  // We will have k more rows in pbasis.
       pbasis = &m_genTemp;  // Pointer will point a set of gen vectors.
    }
