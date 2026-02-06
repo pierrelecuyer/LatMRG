@@ -105,14 +105,14 @@ public:
    }
 
    /**
-    * Returns the value of `b` for which `b^e+r = m`, when available.
+    * Returns the value of `b` for which `b^e+c = m`, when available.
     */
    Int& getb() {
       return m_b;
    }
 
    /**
-    * Returns the value of `e` for which `b^e+r = m`, when available.
+    * Returns the value of `e` for which `b^e+c = m`, when available.
     */
    int64_t& gete() {
       return m_e;
