@@ -344,23 +344,23 @@ void MLCGLatticeLac<Int, Real>::buildBasisOriginal(IntMat &basis, int64_t dim) {
    if (dim > m_dimVIks) this->computeVIks(dim);
    int64_t i, j;
    // Fill the first k rows using m_VIks.
-   IntMat & pbasis = basis;      // reference to a basis.
+   IntMat* pbasis = &basis;      // reference to a basis.
    // std::cout << "buildBasisOriginal1, pbasis = \n" << pbasis << "\n";
-   if (!m_case1) pbasis = this->m_genTemp;
+   if (!m_case1) pbasis = &this->m_genTemp;
    for (i = 0; i < k; i++)
       for (j = 0; j < dim; j++)
-         pbasis[i][j] = m_VIks[i][j];
+         (*pbasis)[i][j] = m_VIks[i][j];
    // Fill the other rows.
    if (m_case1) {
       for (i = k; i < dim; i++)
          for (j = 0; j < dim; j++)
-            pbasis[i][j] = (i == j) * this->m_modulo;
+            (*pbasis)[i][j] = (i == j) * this->m_modulo;
    } else {
       for (i = 0; i < dim; i++)
          for (j = 0; j < dim; j++)
-            pbasis[i + k][j] = (i == j) * this->m_modulo;
+            (*pbasis)[i + k][j] = (i == j) * this->m_modulo;
       // std::cout << "buildBasisOriginal2, gen vectors = \n" << pbasis << "\n";
-      upperTriangularBasis(m_basisOriginal, pbasis, this->m_modulo, dim + k, dim);
+      upperTriangularBasis(m_basisOriginal, *pbasis, this->m_modulo, dim + k, dim);
    }
    //std::cout << "buildBasisOriginal4, basis = \n" << m_basisOriginal << "\n";
 }
