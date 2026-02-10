@@ -464,9 +464,9 @@ PrimeType IntFactorization<Int>::factorize() {
        * If the integer to be factored is not a prime number then
        * the yafu output contains one of its factors per line.
        * If it is a prime number then the first line of the output contains the
-       * number itself and the second line is 'this is a prime number'.
+       * number itself and the second line is 'this number is prime!'.
        * We want to skip this second line when reading back the factors.
-       * For this, we skip the line when its first character is 'this'.
+       * For this, we skip the line when its first characters are 'this'.
        */
       if (S.substr(0, 4) != "this") {
          if (S.substr(0, 1) == "&") {
@@ -475,6 +475,8 @@ PrimeType IntFactorization<Int>::factorize() {
             std::cout << "  we got a line S = " << S << "\n\n";
             // assert(false);
             return m_factStatus = COMPOSITE;
+            // We need to cut out the substring after "& "
+            S = S.substr(2);
          }
          NTL::conv(z, S.c_str());
          if (z != 0) addFactor(z, 1, PROB_PRIME);
