@@ -498,9 +498,6 @@ PrimeType IntFactorization<Int>::factorize() {
    // std::cout << "factorize: m_factStatus = " << m_factStatus << "\n";
    return m_factStatus;
 #elif defined(USE_MSIEVE)
-   // std::cout << "  Start factorize with Yafu " << "\n";
-   // std::string S("./data/yafu -s ");
-   // std::string S("factor ");  // yafu must be accessible from the PATH.
    std::string S("msieve -q ");  // yafu must be accessible from the PATH.
    std::ostringstream num;
    num << m_number;
