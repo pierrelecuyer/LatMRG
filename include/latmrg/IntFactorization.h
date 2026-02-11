@@ -498,7 +498,7 @@ PrimeType IntFactorization<Int>::factorize() {
    // std::cout << "factorize: m_factStatus = " << m_factStatus << "\n";
    return m_factStatus;
 #elif defined(USE_MSIEVE)
-   std::string S("msieve -q ");  // yafu must be accessible from the PATH.
+   std::string S("msieve -q ");  // msieve must be accessible from the PATH.
    std::ostringstream num;
    num << m_number;
    S += num.str();
@@ -508,8 +508,6 @@ PrimeType IntFactorization<Int>::factorize() {
    S += " > ";
    S += filename;
 
-   // std::cout << "  start factorize with output to file " << "\n";
-   // factorize and set output to filename
    int systemRet = system(S.c_str());
    
    if (systemRet == -1) {
@@ -519,16 +517,13 @@ PrimeType IntFactorization<Int>::factorize() {
    
    // Now read the result file and extract the prime factors from the
    // lines PRIME FACTOR xxx
-   // std::cout << "  now open the file to read " << "\n";
    std::ifstream in(filename);
    if (!(in.is_open())) {
       std::cerr << "Error:   cannot open file   filename\n";
       exit(8);
    }
    std::string line;
-   //std::string::size_type pos;
    Int z;
-   // std::cout << "  now read the file, line by line " << "\n";
    m_factStatus = PROB_PRIME;
    while (getline(in, line)) {
       S = line;
@@ -542,12 +537,10 @@ PrimeType IntFactorization<Int>::factorize() {
       NTL::conv(z, S.c_str());
       if (z != 0) addFactor(z, 1, PROB_PRIME);
    }
-   // std::cout << "  the factors are now in m_factorList " << "\n";
    if (m_factorList.size() == 1) m_numberStatus = PROB_PRIME;
    else m_numberStatus = COMPOSITE;
    makeUniqueAndSort();
    remove(filename); 
-   // std::cout << "factorize: m_factStatus = " << m_factStatus << "\n";
    return m_factStatus;
 #else
    std::cout << "IntFactorization: Yafu is not installed or not accessible.\n";
