@@ -475,8 +475,6 @@ PrimeType IntFactorization<Int>::factorize() {
             std::cout << "  we got a line S = " << S << "\n\n";
             // assert(false);
             return m_factStatus = COMPOSITE;
-            // We need to cut out the substring after "& "
-            S = S.substr(2);
          }
          NTL::conv(z, S.c_str());
          if (z != 0) addFactor(z, 1, PROB_PRIME);
@@ -592,3 +590,4 @@ std::string IntFactorization<Int>::toString() const {
 
    }
 #endif
+
