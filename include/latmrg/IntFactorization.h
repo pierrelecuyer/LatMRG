@@ -479,19 +479,17 @@ PrimeType IntFactorization<Int>::factorize() {
             NTL::conv(z, S.c_str());
             if (z != 0) addFactor(z, 1, COMPOSITE);
             m_factStatus = COMPOSITE;
-            m_numberStatus = COMPOSITE;
-            makeUniqueAndSort();
-            remove(filename);
-            return m_factStatus;
          }
-         NTL::conv(z, S.c_str());
-         if (z != 0) addFactor(z, 1, PROB_PRIME);
+         else {
+            NTL::conv(z, S.c_str());
+            if (z != 0) addFactor(z, 1, PROB_PRIME);
+         }
          // std::cout << "  we have a prime factor z = " << z << "\n";
       }
       // std::cout << "factorize inside while: m_factStatus = " << m_factStatus << "\n";
    }
    // std::cout << "  the factors are now in m_factorList " << "\n";
-   if (m_factorList.size() == 1) m_numberStatus = PROB_PRIME;
+   if (m_factorList.size() == 1 && m_factStatus != COMPOSITE) m_numberStatus = PROB_PRIME;
    else m_numberStatus = COMPOSITE;
    makeUniqueAndSort();
    remove(filename);
