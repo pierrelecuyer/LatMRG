@@ -470,9 +470,9 @@ PrimeType IntFactorization<Int>::factorize() {
        */
       if (S.substr(0, 4) != "this") {
          if (S.substr(0, 1) == "&") {
-            std::cout << "factorize: Could not get all the factors. \n";
-            std::cout << "  number = " << m_number << "\n";
-            std::cout << "  we got a line S = " << S << "\n\n";
+            // std::cout << "factorize: Could not get all the factors. \n";
+            // std::cout << "  number = " << m_number << "\n";
+            // std::cout << "  we got a line S = " << S << "\n\n";
             // assert(false);            
             // We need to cut out the substring after "& "
             S = S.substr(2);
