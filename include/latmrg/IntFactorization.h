@@ -418,7 +418,7 @@ PrimeType IntFactorization<Int>::decompToFactorsInv(DecompType decomp, const cha
 
 template<typename Int>
 PrimeType IntFactorization<Int>::factorize() {
-#ifdef USE_YAFU
+#if defined(USE_YAFU)
    // std::cout << "  Start factorize with Yafu " << "\n";
    // std::string S("./data/yafu -s ");
    // std::string S("factor ");  // yafu must be accessible from the PATH.
@@ -435,7 +435,7 @@ PrimeType IntFactorization<Int>::factorize() {
    // std::cout << "  start factorize with output to file " << "\n";
    // factorize and set output to filename
    int systemRet = system(S.c_str());
-   if (systemRet == -1) {
+   if (systemRet != 0) {
       std::cout << "An error occurred while running YAFU! Exiting! \n\n";
       exit(1);
    }
@@ -444,7 +444,7 @@ PrimeType IntFactorization<Int>::factorize() {
    // std::cout << "  now open the file to read " << "\n";
    std::ifstream in(filename);
    if (!(in.is_open())) {
-      std::cerr << "Error:   cannot open file   filename\n";
+      std::cerr << "Error:   cannot open file " << filename << "\n";
       exit(8);
    }
    std::string line;
@@ -459,35 +459,96 @@ PrimeType IntFactorization<Int>::factorize() {
       if (S == "") {
          std::cout << "Error while reading the file of factors in `factorize`; perhaps one factor is too large. \n";
          std::cout << "Look for a message in the file " << filename << "\n";
+         continue;
       }
       /*
        * If the integer to be factored is not a prime number then
        * the yafu output contains one of its factors per line.
        * If it is a prime number then the first line of the output contains the
-       * number itself and the second line is 'this is a prime number'.
+       * number itself and the second line is 'this number is prime!'.
        * We want to skip this second line when reading back the factors.
-       * For this, we skip the line when its first character is 'this'.
+       * For this, we skip the line when its first characters are 'this'.
        */
-      if (S.substr(0, 4) != "this") {
-         if (S.substr(0, 1) == "&") {
-            std::cout << "factorize: Could not get all the factors. \n";
-            std::cout << "  number = " << m_number << "\n";
-            std::cout << "  we got a line S = " << S << "\n\n";
-            // assert(false);
-            return m_factStatus = COMPOSITE;
+      if (S.rfind("this", 0) != 0) {
+         if (!S.empty() && S[0] == '&') {
+            // std::cout << "factorize: Could not get all the factors. \n";
+            // std::cout << "  number = " << m_number << "\n";
+            // std::cout << "  we got a line S = " << S << "\n\n";
+            // assert(false);            
+            // We need to cut out the substring after "& "
+            S = S.substr(2);
+            NTL::conv(z, S.c_str());
+            if (z != 0) addFactor(z, 1, COMPOSITE);
+            m_factStatus = COMPOSITE;
          }
-         NTL::conv(z, S.c_str());
-         if (z != 0) addFactor(z, 1, PROB_PRIME);
+         else {
+            NTL::conv(z, S.c_str());
+            if (z != 0) addFactor(z, 1, PROB_PRIME);
+         }
          // std::cout << "  we have a prime factor z = " << z << "\n";
       }
       // std::cout << "factorize inside while: m_factStatus = " << m_factStatus << "\n";
    }
    // std::cout << "  the factors are now in m_factorList " << "\n";
+   if (m_factorList.size() == 1 && m_factStatus != COMPOSITE) m_numberStatus = PROB_PRIME;
+   else m_numberStatus = COMPOSITE;
+   makeUniqueAndSort();
+   if (remove(filename) != 0) {
+     std::cerr << "Warning: could not delete " << filename << "\n";
+   }
+   // std::cout << "factorize: m_factStatus = " << m_factStatus << "\n";
+   return m_factStatus;
+#elif defined(USE_MSIEVE)
+   std::string S("msieve -q ");  // msieve must be accessible from the PATH.
+   std::ostringstream num;
+   num << m_number;
+   S += num.str();
+
+   // Choose a name for a temporary file for yafu.
+   const char *filename = "tempFactorsMsieve";
+   S += " > ";
+   S += filename;
+
+   int systemRet = system(S.c_str());
+   
+   if (systemRet != 0) {
+      std::cout << "An error occurred while running MSIEVE! Exiting! \n\n";
+      exit(1);
+   }
+   
+   // Now read the result file and extract the prime factors from the
+   // lines PRIME FACTOR xxx
+   std::ifstream in(filename);
+   if (!(in.is_open())) {
+       std::cerr << "Error:   cannot open file " << filename << "\n";
+      exit(8);
+   }
+   std::string line;
+   Int z;
+   m_factStatus = PROB_PRIME;
+   while (getline(in, line)) {
+      S = line;
+      if (S == num.str() || S.empty()) 
+         continue;
+      if(S[0] != 'p') {
+         std::cerr << "Error:  in the outpout of msieve! \n";
+         exit(8);
+      }
+      auto pos = S.find(": ");
+      if (pos == std::string::npos) {
+          std::cerr << "Unexpected msieve output format\n";
+          exit(8);
+     }
+      S = S.substr(pos + 2);
+      NTL::conv(z, S.c_str());
+      if (z != 0) addFactor(z, 1, PROB_PRIME);
+   }
    if (m_factorList.size() == 1) m_numberStatus = PROB_PRIME;
    else m_numberStatus = COMPOSITE;
    makeUniqueAndSort();
-   remove(filename);
-   // std::cout << "factorize: m_factStatus = " << m_factStatus << "\n";
+   if (remove(filename) != 0) {
+     std::cerr << "Warning: could not delete " << filename << "\n";
+   }
    return m_factStatus;
 #else
    std::cout << "IntFactorization: Yafu is not installed or not accessible.\n";
