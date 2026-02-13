@@ -435,7 +435,7 @@ PrimeType IntFactorization<Int>::factorize() {
    // std::cout << "  start factorize with output to file " << "\n";
    // factorize and set output to filename
    int systemRet = system(S.c_str());
-   if (systemRet == -1) {
+   if (systemRet != 0) {
       std::cout << "An error occurred while running YAFU! Exiting! \n\n";
       exit(1);
    }
@@ -444,7 +444,7 @@ PrimeType IntFactorization<Int>::factorize() {
    // std::cout << "  now open the file to read " << "\n";
    std::ifstream in(filename);
    if (!(in.is_open())) {
-      std::cerr << "Error:   cannot open file   filename\n";
+      std::cerr << "Error:   cannot open file " << filename << "\n";
       exit(8);
    }
    std::string line;
@@ -459,6 +459,7 @@ PrimeType IntFactorization<Int>::factorize() {
       if (S == "") {
          std::cout << "Error while reading the file of factors in `factorize`; perhaps one factor is too large. \n";
          std::cout << "Look for a message in the file " << filename << "\n";
+         continue;
       }
       /*
        * If the integer to be factored is not a prime number then
@@ -468,8 +469,8 @@ PrimeType IntFactorization<Int>::factorize() {
        * We want to skip this second line when reading back the factors.
        * For this, we skip the line when its first characters are 'this'.
        */
-      if (S.substr(0, 4) != "this") {
-         if (S.substr(0, 1) == "&") {
+      if (S.rfind("this", 0) != 0) {
+         if (!S.empty() && S[0] == '&') {
             // std::cout << "factorize: Could not get all the factors. \n";
             // std::cout << "  number = " << m_number << "\n";
             // std::cout << "  we got a line S = " << S << "\n\n";
@@ -492,7 +493,9 @@ PrimeType IntFactorization<Int>::factorize() {
    if (m_factorList.size() == 1 && m_factStatus != COMPOSITE) m_numberStatus = PROB_PRIME;
    else m_numberStatus = COMPOSITE;
    makeUniqueAndSort();
-   remove(filename);
+   if (remove(filename) != 0) {
+     std::cerr << "Warning: could not delete " << filename << "\n";
+   }
    // std::cout << "factorize: m_factStatus = " << m_factStatus << "\n";
    return m_factStatus;
 #elif defined(USE_MSIEVE)
@@ -508,7 +511,7 @@ PrimeType IntFactorization<Int>::factorize() {
 
    int systemRet = system(S.c_str());
    
-   if (systemRet == -1) {
+   if (systemRet != 0) {
       std::cout << "An error occurred while running MSIEVE! Exiting! \n\n";
       exit(1);
    }
@@ -517,7 +520,7 @@ PrimeType IntFactorization<Int>::factorize() {
    // lines PRIME FACTOR xxx
    std::ifstream in(filename);
    if (!(in.is_open())) {
-      std::cerr << "Error:   cannot open file   filename\n";
+       std::cerr << "Error:   cannot open file " << filename << "\n";
       exit(8);
    }
    std::string line;
@@ -525,20 +528,27 @@ PrimeType IntFactorization<Int>::factorize() {
    m_factStatus = PROB_PRIME;
    while (getline(in, line)) {
       S = line;
-      if (S == num.str() || S == "") 
+      if (S == num.str() || S.empty()) 
          continue;
-      else if(S[0] != "p") {
+      if(S[0] != 'p') {
          std::cerr << "Error:  in the outpout of msieve! \n";
          exit(8);
       }
-      S = S.substr(S.find(": ") + 2);
+      auto pos = S.find(": ");
+      if (pos == std::string::npos) {
+          std::cerr << "Unexpected msieve output format\n";
+          exit(8);
+     }
+      S = S.substr(pos + 2);
       NTL::conv(z, S.c_str());
       if (z != 0) addFactor(z, 1, PROB_PRIME);
    }
    if (m_factorList.size() == 1) m_numberStatus = PROB_PRIME;
    else m_numberStatus = COMPOSITE;
    makeUniqueAndSort();
-   remove(filename); 
+   if (remove(filename) != 0) {
+     std::cerr << "Warning: could not delete " << filename << "\n";
+   }
    return m_factStatus;
 #else
    std::cout << "IntFactorization: Yafu is not installed or not accessible.\n";
