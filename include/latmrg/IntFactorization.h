@@ -404,7 +404,7 @@ PrimeType IntFactorization<Int>::decompToFactorsInv(DecompType decomp, const cha
    if (decomp == NO_DECOMP) return m_factStatus = UNKNOWN;
    if (decomp == DECOMP_READ) {
       read(filename);
-      m_factStatus = PRIME;
+      // m_factStatus = PRIME; // Is already set in read(filename) - this must have been an error
    } else m_factStatus = factorize();
    if ((decomp == DECOMP_WRITE) && (m_factStatus <= 1)) {
       std::ofstream fout(filename);
