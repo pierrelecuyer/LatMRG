@@ -404,7 +404,7 @@ PrimeType IntFactorization<Int>::decompToFactorsInv(DecompType decomp, const cha
    if (decomp == NO_DECOMP) return m_factStatus = UNKNOWN;
    if (decomp == DECOMP_READ) {
       read(filename);
-      m_factStatus = PRIME;
+      // m_factStatus = PRIME; // Is already set in read(filename) - this must have been an error
    } else m_factStatus = factorize();
    if ((decomp == DECOMP_WRITE) && (m_factStatus <= 1)) {
       std::ofstream fout(filename);
@@ -418,75 +418,63 @@ PrimeType IntFactorization<Int>::decompToFactorsInv(DecompType decomp, const cha
 
 template<typename Int>
 PrimeType IntFactorization<Int>::factorize() {
-#ifdef USE_YAFU
+#if defined(USE_YAFU)
    // std::cout << "  Start factorize with Yafu " << "\n";
-   // std::string S("./data/yafu -s ");
-   // std::string S("factor ");  // yafu must be accessible from the PATH.
-   std::string S("yafu -s ");  // yafu must be accessible from the PATH.
    std::ostringstream num;
    num << m_number;
-   S += num.str();
+ 
+   std::string command = "yafu \"factor(" + num.str() + ")\"";
+   FILE* pipe = popen(command.c_str(), "r");
+   if (!pipe) throw std::runtime_error("Failed to start YAFU");
 
-   // Choose a name for a temporary file for yafu.
-   const char *filename = "tempFactorsYafu";
-   S += " > ";
-   S += filename;
-
-   // std::cout << "  start factorize with output to file " << "\n";
-   // factorize and set output to filename
-   int systemRet = system(S.c_str());
-   if (systemRet == -1) {
-      std::cout << "An error occurred while running YAFU! Exiting! \n\n";
-      exit(1);
-   }
-   // Now read the result file and extract the prime factors from the
-   // lines PRIME FACTOR xxx
-   // std::cout << "  now open the file to read " << "\n";
-   std::ifstream in(filename);
-   if (!(in.is_open())) {
-      std::cerr << "Error:   cannot open file   filename\n";
-      exit(8);
-   }
    std::string line;
-   //std::string::size_type pos;
+   std::string::size_type pos;
    Int z;
-   // std::cout << "  now read the file, line by line " << "\n";
    m_factStatus = PROB_PRIME;
-   while (getline(in, line)) {
-      S = line;
-      // std::cout << "  Line " << S << "\n";
-      //if (S.substr(0, 12) == "MIRACL error") {
-      if (S == "") {
-         std::cout << "Error while reading the file of factors in `factorize`; perhaps one factor is too large. \n";
-         std::cout << "Look for a message in the file " << filename << "\n";
+   bool foundMarker = false;
+   char buffer[4096];
+   
+    while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+      line = buffer;
+      // Delete "\n" if this is at the end of the string
+      if (!line.empty() && line.back() == '\n') line.pop_back(); 
+
+      // Check if we are in the relevant part of the yafu output
+      if (!foundMarker) {
+            if (line.find("***factors found***") != std::string::npos) {
+                foundMarker = true; 
+            } else {
+                continue; 
+            }
       }
-      /*
-       * If the integer to be factored is not a prime number then
-       * the yafu output contains one of its factors per line.
-       * If it is a prime number then the first line of the output contains the
-       * number itself and the second line is 'this is a prime number'.
-       * We want to skip this second line when reading back the factors.
-       * For this, we skip the line when its first character is 'this'.
-       */
-      if (S.substr(0, 4) != "this") {
-         if (S.substr(0, 1) == "&") {
-            std::cout << "factorize: Could not get all the factors. \n";
-            std::cout << "  number = " << m_number << "\n";
-            std::cout << "  we got a line S = " << S << "\n\n";
-            // assert(false);
-            return m_factStatus = COMPOSITE;
-         }
-         NTL::conv(z, S.c_str());
-         if (z != 0) addFactor(z, 1, PROB_PRIME);
-         // std::cout << "  we have a prime factor z = " << z << "\n";
+      // Only read out output lines which start with P (for prime) or C (for composite number)
+      if (!line.empty() && (line[0] == 'P' || line[0] == 'C')) {         
+          pos = line.find("= ");
+          if (pos == std::string::npos) {
+             throw std::runtime_error("Unexpected YAFU output format");
+          }
+          NTL::conv(z, line.substr(pos + 2).c_str());
+          if (z != 0 && line[0] == 'P') addFactor(z, 1, PROB_PRIME);
+          if (z != 0 && line[0] == 'C') {
+             addFactor(z, 1, COMPOSITE);
+             m_factStatus = COMPOSITE;
+          }
       }
-      // std::cout << "factorize inside while: m_factStatus = " << m_factStatus << "\n";
+      // The last relevant line of the yafu output starts with 'ans = '
+      if (line.rfind("ans = ", 0) == 0) break; 
+   }
+   // Check if the last line is 'ans = 1' which indicates that yafu found a correct decomposition.
+   pos = line.find("= ");
+   if (pos == std::string::npos || line.substr(pos + 2) != "1") {
+      std::cout << "yafu output indicates incomplete prime decomposition \n \n";
    }
    // std::cout << "  the factors are now in m_factorList " << "\n";
-   if (m_factorList.size() == 1) m_numberStatus = PROB_PRIME;
+   if (m_factorList.size() == 1 && m_factStatus != COMPOSITE) m_numberStatus = PROB_PRIME;
    else m_numberStatus = COMPOSITE;
    makeUniqueAndSort();
-   remove(filename);
+   if (pclose(pipe) != 0) {
+     std::cerr << "Warning: YAFU returned an error code\n \n";
+   }
    // std::cout << "factorize: m_factStatus = " << m_factStatus << "\n";
    return m_factStatus;
 #else
