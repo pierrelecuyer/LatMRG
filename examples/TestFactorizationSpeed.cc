@@ -27,6 +27,7 @@ const string names[numMeth] = { "msieve              ", "yafu                "};
 std::chrono::time_point<std::chrono::steady_clock> startTime, endTime;
 std::chrono::milliseconds elapsedTime[numMeth][numTestCases];
 
+// Function to print the results of the speed test
 void printResults(int64_t numSizes) {
    int64_t d;
    std::cout << "Timings for 'msieve' and 'yafu' to perform the factorization of 'n' numbers with 'd' digits (in milliseconds). \n \n";
@@ -47,6 +48,8 @@ void printResults(int64_t numSizes) {
    std::cout << "\n";
 }
 
+// The main part runs msieve and yafu to perform noFactorizations different factorizations of numbers 
+// with the number of digits according to startingNumbers.
 int main() {
     NTL::ZZ b;
     b = 1;
