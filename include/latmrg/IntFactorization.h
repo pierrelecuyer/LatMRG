@@ -126,7 +126,7 @@ public:
     * `COMPOSITE` if at least one factor is known to be composite and could not be decomposed,
     * and `UNKNOWN` in other cases.
     */
-   PrimeType factorize();
+   PrimeType factorize(bool use_yafu = true);
 
    /**
     * Given the list of prime factors \f$p\f$ of the integer \f$n\f$ in this object,
@@ -417,15 +417,22 @@ PrimeType IntFactorization<Int>::decompToFactorsInv(DecompType decomp, const cha
 //===========================================================================
 
 template<typename Int>
-PrimeType IntFactorization<Int>::factorize() {
-#if defined(USE_YAFU)
-   // std::cout << "  Start factorize with Yafu " << "\n";
+PrimeType IntFactorization<Int>::factorize(bool use_yafu) {
    std::ostringstream num;
+   // std::cout << "  Start factorize with Yafu " << "\n";
    num << m_number;
- 
-   std::string command = "yafu \"factor(" + num.str() + ")\"";
+   std::string command;
+   std::string tool;
+   if (use_yafu) {
+       command = "yafu \"factor(" + num.str() + ")\""; // yafu must be accessible from the PATH.
+       tool = "YAFU";
+   }
+   else {
+      command = "msieve -q " + num.str(); // msieve must be accessible from the PATH.
+      tool = "msieve";
+   }
    FILE* pipe = popen(command.c_str(), "r");
-   if (!pipe) throw std::runtime_error("Failed to start YAFU");
+   if (!pipe) throw std::runtime_error("Failed to start " + tool + "\n");
 
    std::string line;
    std::string::size_type pos;
@@ -441,21 +448,22 @@ PrimeType IntFactorization<Int>::factorize() {
 
       // Check if we are in the relevant part of the yafu output
       if (!foundMarker) {
-            if (line.find("***factors found***") != std::string::npos) {
+            if ((use_yafu && line.find("***factors found***") != std::string::npos) || (!use_yafu && line.find(num.str()) != std::string::npos)) {
                 foundMarker = true; 
             } else {
                 continue; 
             }
       }
       // Only read out output lines which start with P (for prime) or C (for composite number)
-      if (!line.empty() && (line[0] == 'P' || line[0] == 'C')) {         
-          pos = line.find("= ");
+      if (!line.empty() && (std::toupper(static_cast<unsigned char>(line[0])) == 'P' || std::toupper(static_cast<unsigned char>(line[0])) == 'C')) {         
+          if (use_yafu) pos = line.find("= ");
+          else pos = line.find(": ");
           if (pos == std::string::npos) {
-             throw std::runtime_error("Unexpected YAFU output format");
+             throw std::runtime_error("Unexpected " + tool + " output format");
           }
           NTL::conv(z, line.substr(pos + 2).c_str());
-          if (z != 0 && line[0] == 'P') addFactor(z, 1, PROB_PRIME);
-          if (z != 0 && line[0] == 'C') {
+          if (z != 0 && std::toupper(static_cast<unsigned char>(line[0])) == 'P') addFactor(z, 1, PROB_PRIME);
+          if (z != 0 && std::toupper(static_cast<unsigned char>(line[0])) == 'C') {
              addFactor(z, 1, COMPOSITE);
              m_factStatus = COMPOSITE;
           }
@@ -464,24 +472,20 @@ PrimeType IntFactorization<Int>::factorize() {
       if (line.rfind("ans = ", 0) == 0) break; 
    }
    // Check if the last line is 'ans = 1' which indicates that yafu found a correct decomposition.
+   
    pos = line.find("= ");
-   if (pos == std::string::npos || line.substr(pos + 2) != "1") {
-      std::cout << "yafu output indicates incomplete prime decomposition \n \n";
+   if (use_yafu && (pos == std::string::npos || line.substr(pos + 2) != "1")) {
+      std::cout << tool << " output indicates incomplete prime decomposition \n \n";
    }
    // std::cout << "  the factors are now in m_factorList " << "\n";
    if (m_factorList.size() == 1 && m_factStatus != COMPOSITE) m_numberStatus = PROB_PRIME;
    else m_numberStatus = COMPOSITE;
    makeUniqueAndSort();
    if (pclose(pipe) != 0) {
-     std::cerr << "Warning: YAFU returned an error code\n \n";
+     std::cerr << "Warning: " << tool << " returned an error code. Probably prime decomposition did not succeed. \n \n";
    }
    // std::cout << "factorize: m_factStatus = " << m_factStatus << "\n";
    return m_factStatus;
-#else
-   std::cout << "IntFactorization: Yafu is not installed or not accessible.\n";
-   std::cout << "Exiting the program to avoid undefined behavior.";
-   exit(1);
-#endif
 }
 
 //===========================================================================
