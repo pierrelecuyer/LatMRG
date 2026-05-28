@@ -4,6 +4,9 @@
 #include <ctime>
 #include <cstdlib>
 #include <list>
+#include <vector>
+#include <string>
+#include <cstdint>
 
 #include "latticetester/EnumTypes.h"
 #include "latticetester/Util.h"
@@ -11,9 +14,9 @@
 #include "latticetester/Random.h"
 #include "latticetester/ReducerStatic.h"
 
+#include "latmrg/EnumTypes.h"
 #include "latmrg/MWCLattice.h"
 #include "latmrg/MRGLattice.h"
-#include "latmrg/EnumTypes.h"
 #include "latmrg/MRGComponent.h"
 #include "latmrg/Projections.h"
 
@@ -29,56 +32,41 @@ using namespace LatticeTester::Random;
  */
 template<typename Int, typename Real> struct ConfigSeekComponent
 {
-   // Type of figure of merit
-   LatticeTester::NormaType normaType = LatticeTester::NONE;
-   LatticeTester::CriterionType criterion = LatticeTester::SPECTRAL;
-   LatticeTester::ReductionType reduction = LatticeTester::BB;
-   LatticeTester::NormType norm = LatticeTester::L2NORM;
+    virtual ~ConfigSeekComponent() = default;
 
-   std::int64_t nodesBB = 100000000000;
+    std::int64_t nodesBB = 100000000000;
 
-   bool use_dual = true;
-   #ifdef LATMRG_SEEK
-   bool best = true;
-   int num_gen = 0;
-   Dbl currentMerit = Dbl(0);
-   std::string construction = "RANDOM";
-   #endif
-   // Projection
-   Projections* proj; 
+    bool use_dual = true;
 
-   int max_gen = 10;
+    // Projection
+    Projections* proj = nullptr;
+    // Common component data
+    Int b;
 
-   // MWC Specific parameters
-   Int b; // modulo of MWC recurence
-
-   // MRGComponent stores the stuff we might want to know, such as the modulo
-   // the order and even the coefficients
-   int num_comp = 1;
-   std::vector<std::string> search_mode;
-   std::vector<bool> period;
-   std::vector<MRGComponent<Int>*> fact;
+    // MRGComponent stores the stuff we might want to know, such as the modulo
+    // the order and even the coefficients
+    int num_comp = 1;
+    std::vector<std::string> search_mode;
+    //std::vector<bool> period; // CW: was a vector - I do not think this is true since we the ConfigSeekComponent contains the individual components
+    bool period; // CW: new
+    std::vector<MRGComponent<Int>*> fact;
    // This is used to store the coefficients of a MRG and the information on how to
    // search for coefficients of a generator. This can have multiple different formats.
    std::vector<IntVec> coeff;
 
-   bool gen_set = false;
-   bool test_set = false;
-   bool proj_set = false;
-
-   // Program variables
-   double timeLimit = 600;
-   int detail = 1;
-   #ifdef LATMRG_SEEK
-   bool progress = true; // Prints the program progress between generators
-   #endif
-}; 
+    /**
+     * Factory function.
+     * Creates the correct subclass automatically.
+     */
+    static ConfigSeekComponent<Int, Real>* create(GenType type);
+};
 
 
 /**
- * This `struct` stores the information required for a seek for a MRG component.
+ * Configuration for a MRG component.
  */
-template<typename Int, typename Real> struct ConfigSeekMRG : ConfigSeekComponent<Int, Real> {
+template<typename Int, typename Real> struct ConfigSeekMRG : ConfigSeekComponent<Int, Real>
+{
     Int modulus;   // The modulus m = b^e + r
     Int base;      // The base b
     Int exponent;  // The exponent e
@@ -99,10 +87,13 @@ template<typename Int, typename Real> struct ConfigSeekMRG : ConfigSeekComponent
                        // Default is false
 };
 
+
 /**
- * This stores the information required for a seek for a MWC component.
+ * Configuration for a MWC component.
  */
-template<typename Int, typename Real> struct ConfigSeekMWC : ConfigSeekComponent<Int, Real> {
+template<typename Int, typename Real>
+struct ConfigSeekMWC : ConfigSeekComponent<Int, Real>
+{
     // Int modulus;   // The modulus m of the equivalent LCG (to be computed)
     long powMod;   // Value of e such that the modulus is b = 2^e
     long order;    // The order k
@@ -116,17 +107,67 @@ template<typename Int, typename Real> struct ConfigSeekMWC : ConfigSeekComponent
 
 
 /**
- * This stores the information required for a seek from a .gen file.
+ * Configuration for a seek from a .gen file.
  */
-template<typename Int, typename Real> struct ConfigSeekGenFile : ConfigSeekComponent<Int, Real> {
+template<typename Int, typename Real> struct ConfigSeekGenFile : ConfigSeekComponent<Int, Real>
+{
     string genFile;
 };
 
 
 /**
+ * Factory implementation.
+ */
+template<typename Int, typename Real> ConfigSeekComponent<Int, Real>* ConfigSeekComponent<Int, Real>::create(GenType type)
+{
+    switch(type)
+    {
+        case MRG:
+            return new ConfigSeekMRG<Int, Real>();
+
+        case MWC:
+            return new ConfigSeekMWC<Int, Real>();
+
+        case GEN:
+            return new ConfigSeekGenFile<Int, Real>();
+
+        default:
+            return nullptr;
+    }
+}
+
+
+/**
+ * Helper cast functions.
+ */
+template<typename Int, typename Real>
+ConfigSeekMRG<Int, Real>*
+asMRG(ConfigSeekComponent<Int, Real>* ptr)
+{
+    return dynamic_cast<ConfigSeekMRG<Int, Real>*>(ptr);
+}
+
+template<typename Int, typename Real>
+ConfigSeekMWC<Int, Real>*
+asMWC(ConfigSeekComponent<Int, Real>* ptr)
+{
+    return dynamic_cast<ConfigSeekMWC<Int, Real>*>(ptr);
+}
+
+template<typename Int, typename Real>
+ConfigSeekGenFile<Int, Real>*
+asGEN(ConfigSeekComponent<Int, Real>* ptr)
+{
+    return dynamic_cast<ConfigSeekGenFile<Int, Real>*>(ptr);
+}
+
+
+/**
  * This stores the information on the FOM that is used and how it is computed.
  */
-template<typename Int, typename Real> struct ConfigMerit {
+template<typename Int, typename Real>
+struct ConfigMerit
+{
     MeritType meritType;  // The type of FOM that is used.
     long meritd;   // value of d in the FOM.
     vector<long> meritDims;
@@ -145,13 +186,12 @@ template<typename Int, typename Real> struct ConfigMerit {
     long maxnodesBB = 1 << 8; // Max number of nodes to be examined by the BB.
 };
 
-/**
- * This `struct` stores all the information required for a seek operation.
- * The information is organized in the same way as in a XML file for a seek.
- * The variables names also correspond to the tag names.
- */
-template<typename Int, typename Real> struct ConfigSeek {
 
+/**
+ * This struct stores all the information required for a seek operation.
+ */
+template<typename Int, typename Real> struct ConfigSeek
+{
     GenType genType;   // Type of generator, currently MRG or MWC.
     long numComp;      // Number of components.  If > 1, we have a combined generator.
 
@@ -175,7 +215,7 @@ template<typename Int, typename Real> struct ConfigSeek {
     vector<long> sizeRegions; // The sizes of the regions to be examined.
     long rngSeed = 123456;    // A seed for the RNG used in the search.
     long numRetained = 1;     // Number of generators that we want to retain.
-    double timeLimit;         // CPU time limit in seconds.
+    double timeLimit = 600;         // CPU time limit in seconds.
 
     OutputType outType;       // Type of output. 
     long verboseLevel = 1;    // Level of verbosity in the output.  Integer from 0 to 3.
@@ -183,6 +223,59 @@ template<typename Int, typename Real> struct ConfigSeek {
     // string texFile;           // If present, the results will be printed in Latex in file `texFile.tex`.
     string genFile;           // If present, the results will be printed .gen format in file `genFile.gen`.
     bool showTimes = true;    // If true, prints CPU times for various operations.
+    
+   // Projection
+   Projections* proj = nullptr; 
+
+   // CW: Should be here but not in ConfigSeekComponent?
+
+    // Type of figure of merit
+    LatticeTester::NormaType normaType = LatticeTester::NONE;
+    LatticeTester::CriterionType criterion = LatticeTester::SPECTRAL;
+    LatticeTester::ReductionType reduction = LatticeTester::BB;
+    LatticeTester::NormType norm = LatticeTester::L2NORM;
+
+
+    //#ifdef LATMRG_SEEK // CW: Temporarilty deactivated -- needs to implemented correctly later on
+        bool best = true;
+        int num_gen = 0;
+        // Dbl currentMerit = Dbl(0); // CW: Temporarily deactivated
+        std::string construction = "RANDOM";
+    //#endif
+
+    int max_gen = 10;
+
+    
+    bool gen_set = false;
+    bool test_set = false;
+    bool proj_set = false;
+
+    // Program variables
+    int detail = 1;
+
+    
+
+    // #ifdef LATMRG_SEEK
+        bool progress = true; // Prints the program progress between generators
+    // #endif
+
+
+    // End inertion CW
+
+    /**
+     * Automatically creates the correct component
+     * from conf.genType.
+     */
+    ConfigSeekComponent<Int, Real>* createComponent()
+    {
+        return ConfigSeekComponent<Int, Real>::create(genType);
+    }
+
+    ~ConfigSeek()
+    {
+        for(auto* ptr : genComponents)
+            delete ptr;
+    }
 };
 
 #endif
