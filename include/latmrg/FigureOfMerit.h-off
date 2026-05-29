@@ -111,7 +111,7 @@ class FigureOfMerit {
       /**
        * Sets `m_merits` to `merits` and `m_vectors` to `vectors`.
        * */
-      void addMerit(std::vector<Real>& merits, std::vector<typename Lat::IntVec>& vectors) {
+      void addMerit(std::vector<Real>& merits, std::vector<IntVec>& vectors) {
         m_merits = merits;
         m_vectors = vectors;
       }
@@ -124,7 +124,7 @@ class FigureOfMerit {
       /**
        * Returns the shortest vector in the lattice for the worst projection.
        * */
-      typename Lat::IntVec worstVect() {return m_vectors[m_best_worst];}
+      IntVec worstVect() {return m_vectors[m_best_worst];} // CW
 
       /**
        * */
