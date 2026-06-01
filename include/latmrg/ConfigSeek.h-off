@@ -7,12 +7,15 @@
 #include <vector>
 #include <string>
 #include <cstdint>
+#include <memory>
 
 #include "latticetester/EnumTypes.h"
 #include "latticetester/Util.h"
 #include "latticetester/NormaBestLat.h"
 #include "latticetester/Random.h"
 #include "latticetester/ReducerStatic.h"
+#include "latticetester/ReducerBB.h"
+#include "latticetester/Weights.h"
 
 #include "latmrg/EnumTypes.h"
 #include "latmrg/MWCLattice.h"
@@ -50,9 +53,6 @@ template<typename Int, typename Real> struct ConfigSeekComponent
     //std::vector<bool> period; // CW: was a vector - I do not think this is true since we the ConfigSeekComponent contains the individual components
     bool period; // CW: new
     std::vector<MRGComponent<Int>*> fact;
-   // This is used to store the coefficients of a MRG and the information on how to
-   // search for coefficients of a generator. This can have multiple different formats.
-   std::vector<IntVec> coeff;
 
     /**
      * Factory function.
@@ -165,25 +165,31 @@ asGEN(ConfigSeekComponent<Int, Real>* ptr)
 /**
  * This stores the information on the FOM that is used and how it is computed.
  */
-template<typename Int, typename Real>
-struct ConfigMerit
+template<typename Int, typename Real> struct ConfigMerit
 {
-    MeritType meritType;  // The type of FOM that is used.
-    long meritd;   // value of d in the FOM.
-    vector<long> meritDims;
-    bool maximize = true;  // true iff we maximize the FOM.
-    double lowbound = 0.0;   // Lower bound on the FOM.  Default is 0.
-    double highbound = 1.0;   // Upper bound on the FOM.  Default is 1.
-    bool fomInDual = true; // True iff the FOM is based on the dual lattice.
-    NormType norm = L2NORM;  // The norm used to measure the vector lengths, Default is `L2Norm`.
-    NormaType normalizer = BESTLAT;  // Type of normalization that is used.
+    NTL::Vec<int64_t> t;
+    LatticeTester::Weights* weights = nullptr;
+    LatticeTester::Normalizer* norma = nullptr;
+    ReducerBB<Int, Real> *red = 0;
+    bool includeFirst = false;
+    bool dualLattice = false;  
 
-    ReductionType prered;  // Type of pre-reduction of the basis.
-    double delta = 0.999999;  // For LLL and BKZ.
-    int64_t blockSizeBKZ = 10;        // Block size for BKZ.
-	DecompTypeBB  decompBB;    // Type of decomposition for the BB algorithm (Cholesky or triangular)
-	ProjConstructType projConstruct;  // Method to construct the projections (LLL or triangular).
-    long maxnodesBB = 1 << 8; // Max number of nodes to be examined by the BB.
+    // CW: Taken from old version -- probably not needed anymore 
+    LatticeTester::NormaType normaType = LatticeTester::NONE;
+    LatticeTester::CriterionType criterion = LatticeTester::SPECTRAL;
+    LatticeTester::ReductionType reduction = LatticeTester::BB;
+    LatticeTester::NormType norm = LatticeTester::L2NORM;
+
+    // CW: Taken from old version -- maybe also not needed anymore
+    #ifdef LATMRG_SEEK
+        bool best = true;
+        int num_gen = 0;
+        double currentMerit = double(0);
+        std::string construction = "RANDOM";
+    #endif
+    
+    int max_gen = 10;
+
 };
 
 
@@ -225,39 +231,26 @@ template<typename Int, typename Real> struct ConfigSeek
     bool showTimes = true;    // If true, prints CPU times for various operations.
     
    // Projection
-   Projections* proj = nullptr; 
-
-   // CW: Should be here but not in ConfigSeekComponent?
-
-    // Type of figure of merit
-    LatticeTester::NormaType normaType = LatticeTester::NONE;
-    LatticeTester::CriterionType criterion = LatticeTester::SPECTRAL;
-    LatticeTester::ReductionType reduction = LatticeTester::BB;
-    LatticeTester::NormType norm = LatticeTester::L2NORM;
-
-
-    //#ifdef LATMRG_SEEK // CW: Temporarilty deactivated -- needs to implemented correctly later on
-        bool best = true;
-        int num_gen = 0;
-        // Dbl currentMerit = Dbl(0); // CW: Temporarily deactivated
-        std::string construction = "RANDOM";
-    //#endif
-
-    int max_gen = 10;
-
+   Projections* proj = nullptr;
+   
+   
+    #ifdef LATMRG_SEEK
+        bool progress = true; // Prints the program progress between generators
+    #endif
     
-    bool gen_set = false;
-    bool test_set = false;
-    bool proj_set = false;
-
-    // Program variables
+    // Program variables - CW: probably not needed
     int detail = 1;
 
-    
 
-    // #ifdef LATMRG_SEEK
-        bool progress = true; // Prints the program progress between generators
-    // #endif
+   // CW: Unclear what these variables are really used for    
+    bool gen_set = false;
+    bool test_set = false;
+    bool proj_set = false;    
+
+    
+   // This is used to store the coefficients of a MRG and the information on how to
+   // search for coefficients of a generator. This can have multiple different formats.
+   std::vector<IntVec> coeff;
 
 
     // End inertion CW
