@@ -20,14 +20,11 @@ namespace LatMRG {
         
         private:
 
-        
         ConfigSeek<Int, Real> conf;
-        Int modulus = Int(1021); 
         ReducerBB<Int, Real> red;
         WeightsUniform weights;
         FigureOfMeritM<Int, Real> fomPrimal;
         FigureOfMeritDualM<Int, Real> fomDual;
-
          
         public:
 
