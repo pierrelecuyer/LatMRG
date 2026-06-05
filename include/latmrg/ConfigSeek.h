@@ -198,8 +198,54 @@ template<typename Int, typename Real> struct ConfigMerit
  */
 template<typename Int, typename Real> struct ConfigSeek
 {
+    /* From the guide:
+    * A) Types of generators to be searched:
+    * Type => Variable genType
+    * generators with C ≥ 1 components => Variable numComp
+    * 
+    * B) MRG component:
+    * Type (MRG) => really necessary?
+    * modulus m => Variable?
+    * order k => Variable?
+    * Rectangular region b=(b_1,...,b_k), c = (c_1,...,c_k) for multipliers 
+    * Method: exhaustive or random
+    * additional constraints: To be added later on
+    * either search only for MRG components having maximal period, or ignore the period
+    * 
+    * C) MWC component
+    * Type (MWC)
+    * b
+    * Rectangular region b=(b_1,...,b_k), c = (c_1,...,c_k) for a_0
+    * maximal period
+    * 
+    * D) Matrix LCG component:
+    * Not yet implemented
+    * 
+    * E) Reading generators from a file:
+    * To be done later
+    * 
+    * F) Definition of output vectors and of the lattice Ls.    
+    * analyze the lattice structure for vectors formed by groups of s successive values starting d values apart
+    * 
+    * G) Figures of merit
+    * Set values necessary to define figure of Merit (currently only M is implemented)
+    * 
+    * H) Method of search
+    * When examining a vector a, the program first checks if the maximal period conditions are satisfied, if this is required.
+    * If a is not rejected by the maximal period test, then we move forward to the next MRG component and try all the vectors for that next 
+    * component (by exhaustive or random search) and examine their combination with the currently examined multipliers for the previous components.
+    * For each combined generator, we compute the FOM, but we interrupt the computation as soon as we find that this generator is not worth considering.
+    * For this, the program always keeps lower and upper bounds on the FOM. These bounds are initialized at MinMerit and MaxMerit, and are updated whenever we can.
+    * The current total execution (CPU) time is also checked before testing each new generator. When it exceeds the CPU time limit given in the data file, 
+    * the search is aborted and the partial results are printed. 
+    * One can provide a seed for the RNG that is used when the search is random. There is a default seed for when no seed is provided.
+    * 
+    * I) Output choices
+    */
+
     GenType genType;   // Type of generator, currently MRG or MWC.
     long numComp;      // Number of components.  If > 1, we have a combined generator.
+    int64_t maxdim;         // Maximal dimension of the lattice (new by CW: maybe not needed in the end)
 
     // List of configurations for the `numComp` components. They can be MRG or MWC.
     // The size of this list must be equal to numComp.
