@@ -34,7 +34,6 @@ namespace LatMRG {
         Seek(ConfigSeek<Int, Real>& conf) :     conf(conf), 
                                                 red(conf.maxdim), 
                                                 weights(1.0),
-                                                normLattice(log(modulus), 1, conf.maxdim, conf.configFOM.norm),
                                                 fomPrimal(conf.configFOM.t, weights, *conf.configFOM.norma, &red, true),
                                                 fomDual(conf.configFOM.t, weights, *conf.configFOM.norma, &red, true) { };// ,
                                                 // fomPrimal(t, weights, norm, &red, true) { };
