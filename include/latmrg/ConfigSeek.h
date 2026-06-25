@@ -312,8 +312,9 @@ template<typename Int, typename Real> struct ConfigSeek
 
     ~ConfigSeek()
     {
-        for(auto* ptr : genComponents)
-            delete ptr;
+        //CW
+        //for(auto* ptr : genComponents)
+        //    delete ptr;
     }
 };
 
