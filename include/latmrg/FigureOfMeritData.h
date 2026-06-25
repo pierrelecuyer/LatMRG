@@ -22,17 +22,17 @@ class FigureOfMeritData {
       /**
        * The lattice that is being tested.
        * */
-      Lat m_lattice;
+      Lat* m_lattice = nullptr;
 
       /*
        * Used to store the merit of the lattice
       */
-     Real m_merit;
+     Real m_merit = 0;
 
      /*
       * Used to store the minimal squared vector length
      */
-     double m_minMeritSqlen;
+     double m_minMeritSqlen = 0.0;
 
       /* 
        * CW: Projection for which the worst FoM is achieved
@@ -42,26 +42,26 @@ class FigureOfMeritData {
       /**
        * Index of the best or worst value in `m_merits`.
        * */
-      long m_best_worst;
+      long m_best_worst = 0;
 
       // Some variables are missing.  For example, we need beta_1, we need a normalizer, etc.   *********
 
    public:
-    
+
       /**
-       * Returns `m_merit`.
+       * get and set functions for the relevant variables.
        * */
-      Real getMerit(){
-        return m_merit;
-      }
+      Real getMerit() const { return m_merit; }
 
-      double getMeritSqlen(){
-        return m_minMeritSqlen;
-      }
+      void setMerit(Real m) { m_merit = m; }
 
-      Coordinates getMeritProj(){
-        return m_minMeritProj;
-      }
+      double getMeritSqlen() const { return m_minMeritSqlen;}
+
+      void setMeritSqlen(double len) {m_minMeritSqlen = len;} 
+
+      Coordinates getMeritProj() const { return m_minMeritProj;}
+
+      void setMeritProj(Coordinates coord) {m_minMeritProj = coord;}
 
       /**
        * Returns a string containing the merit of the generator,  the projection
@@ -77,7 +77,11 @@ class FigureOfMeritData {
 
       /// Returns the string associated with this test.
       std::string getLattice() {
-        return m_lattice.toString();}
+        return m_lattice->toString();}
+
+      void setLattice(Lat* lattice) { m_lattice = lattice;}
+
+        
 
 
     };
@@ -105,7 +109,7 @@ class MeritList{
        * higher (lower) merit.
        * */
       void add(FigureOfMeritData<Lat> test) {
-        if ((m_tests.size() >= m_max) && !(m_best ^ (test.getMerit() > m_tests.back()))) {
+        if ((m_tests.size() >= m_max) && !(m_best ^ (test.getMerit() > m_tests.back().getMerit()))) {
           m_tests.pop_back();
         } else if (m_tests.size() >= m_max) return;
         posInsert(test);
@@ -153,13 +157,13 @@ class MeritList{
         }
         for (auto rit = m_tests.crbegin(); rit != m_tests.crend(); rit++) {
           if (m_best) {
-            if ((test.getMerit() < rit->getMerit())) {
+            if (test.getMerit() < rit->getMerit()) {
               m_tests.insert(rit.base(), test);
               if (rit == m_tests.crbegin() && m_tests.size() == m_max) m_merit = test.getMerit();
               return;
             }
           } else {
-            if ((test.getMerit() > rit->getMerit())) {
+            if (test.getMerit() > rit->getMerit()) {
               m_tests.insert(rit.base(), test);
               if (rit == m_tests.crbegin() && m_tests.size() == m_max) m_merit = test.getMerit();
               return;
