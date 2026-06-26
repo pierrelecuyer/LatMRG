@@ -5,7 +5,6 @@
 
 #include "latmrg/PrimesFinder.h"
 #include "latmrg/ConfigSeek.h"
-#include "latmrg/Projections.h"
 #include "latmrg/FigureOfMeritData.h"
 #include "latticetester/FigureOfMeritM.h"
 #include "latticetester/FigureOfMeritDualM.h"

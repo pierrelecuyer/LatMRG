@@ -5,7 +5,6 @@
 #include <sstream>
 #include <iomanip>
 
-#include "latmrg/Projections.h"
 #include "latticetester/Coordinates.h"
 
 namespace LatMRG {

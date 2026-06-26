@@ -21,7 +21,6 @@
 #include "latmrg/MWCLattice.h"
 #include "latmrg/MRGLattice.h"
 #include "latmrg/MRGComponent.h"
-#include "latmrg/Projections.h"
 
 using LatticeTester::IntLatticeExt;
 using LatticeTester::Normalizer;
@@ -41,8 +40,6 @@ template<typename Int, typename Real> struct ConfigSeekComponent
 
     bool use_dual = true;
 
-    // Projection
-    Projections* proj = nullptr;
     // Common component data
     Int b;
 
@@ -275,11 +272,7 @@ template<typename Int, typename Real> struct ConfigSeek
     // string texFile;           // If present, the results will be printed in Latex in file `texFile.tex`.
     string genFile;           // If present, the results will be printed .gen format in file `genFile.gen`.
     bool showTimes = true;    // If true, prints CPU times for various operations.
-    
-   // Projection
-   Projections* proj = nullptr;
-   
-   
+       
     #ifdef LATMRG_SEEK
         bool progress = true; // Prints the program progress between generators
     #endif
