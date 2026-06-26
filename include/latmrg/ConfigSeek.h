@@ -40,15 +40,10 @@ template<typename Int, typename Real> struct ConfigSeekComponent
 
     bool use_dual = true;
 
-    // Common component data
-    Int b;
-
     // MRGComponent stores the stuff we might want to know, such as the modulo
     // the order and even the coefficients
-    int num_comp = 1;
     std::vector<std::string> search_mode;
-    //std::vector<bool> period; // CW: was a vector - I do not think this is true since we the ConfigSeekComponent contains the individual components
-    bool period; // CW: new
+    bool period;
     std::vector<MRGComponent<Int>*> fact;
 
     /**
@@ -56,6 +51,9 @@ template<typename Int, typename Real> struct ConfigSeekComponent
      * Creates the correct subclass automatically.
      */
     static ConfigSeekComponent<Int, Real>* create(GenType type);
+
+    virtual Int getModulus() const { return Int(0); }
+
 };
 
 
@@ -82,14 +80,24 @@ template<typename Int, typename Real> struct ConfigSeekMRG : ConfigSeekComponent
     IntVec factorsr;      // The factors of r, repeated according to multiplicity, when known
     bool permaxPow2;   // True iff m is a power of 2, b=2, r=0, k=1, and we want max period for the LCG
                        // Default is false
+
+    Int getModulus() const override { return modulus; }
+
+    Int getNoMultipliers() {
+      Int total;
+      total = 1;
+      for (int i = 1; i <= order; i++) {
+          total *= (highBoundaries[i] - lowBoundaries[i] + 1);
+      }
+      return total;
+    }
 };
 
 
 /**
  * Configuration for a MWC component.
  */
-template<typename Int, typename Real>
-struct ConfigSeekMWC : ConfigSeekComponent<Int, Real>
+template<typename Int, typename Real> struct ConfigSeekMWC : ConfigSeekComponent<Int, Real>
 {
     // Int modulus;   // The modulus m of the equivalent LCG (to be computed)
     long powMod;   // Value of e such that the modulus is b = 2^e
@@ -125,9 +133,6 @@ template<typename Int, typename Real> ConfigSeekComponent<Int, Real>* ConfigSeek
         case MWC:
             return new ConfigSeekMWC<Int, Real>();
 
-        case GEN:
-            return new ConfigSeekGenFile<Int, Real>();
-
         default:
             return nullptr;
     }
@@ -137,23 +142,17 @@ template<typename Int, typename Real> ConfigSeekComponent<Int, Real>* ConfigSeek
 /**
  * Helper cast functions.
  */
-template<typename Int, typename Real>
-ConfigSeekMRG<Int, Real>*
-asMRG(ConfigSeekComponent<Int, Real>* ptr)
+template<typename Int, typename Real> ConfigSeekMRG<Int, Real>* asMRG(ConfigSeekComponent<Int, Real>* ptr)
 {
     return dynamic_cast<ConfigSeekMRG<Int, Real>*>(ptr);
 }
 
-template<typename Int, typename Real>
-ConfigSeekMWC<Int, Real>*
-asMWC(ConfigSeekComponent<Int, Real>* ptr)
+template<typename Int, typename Real> ConfigSeekMWC<Int, Real>* asMWC(ConfigSeekComponent<Int, Real>* ptr)
 {
     return dynamic_cast<ConfigSeekMWC<Int, Real>*>(ptr);
 }
 
-template<typename Int, typename Real>
-ConfigSeekGenFile<Int, Real>*
-asGEN(ConfigSeekComponent<Int, Real>* ptr)
+template<typename Int, typename Real> ConfigSeekGenFile<Int, Real>* asGEN(ConfigSeekComponent<Int, Real>* ptr)
 {
     return dynamic_cast<ConfigSeekGenFile<Int, Real>*>(ptr);
 }
@@ -167,17 +166,11 @@ template<typename Int, typename Real> struct ConfigMerit
     NTL::Vec<int64_t> t;
     LatticeTester::Weights* weights = nullptr;
     LatticeTester::Normalizer* norma = nullptr;
-    ReducerBB<Int, Real> *red = 0;
-    bool includeFirst = false;
-    bool dualLattice = false;  
-
-    // CW: Taken from old version -- probably not needed anymore 
-    LatticeTester::NormaType normaType = LatticeTester::NONE;
-    LatticeTester::CriterionType criterion = LatticeTester::SPECTRAL;
-    LatticeTester::ReductionType reduction = LatticeTester::BB;
+    ReducerBB<Int, Real> *red = nullptr;
+    bool includeFirst = true;
+    bool dualLattice = false; 
     LatticeTester::NormType norm = LatticeTester::L2NORM;
-
-    // CW: Taken from old version -- maybe also not needed anymore
+    
     #ifdef LATMRG_SEEK
         bool best = true;
         int num_gen = 0;
@@ -185,7 +178,7 @@ template<typename Int, typename Real> struct ConfigMerit
         std::string construction = "RANDOM";
     #endif
     
-    int max_gen = 10;
+    int max_gen = 10; // Maximal number of generators to be tested
 
 };
 
@@ -242,7 +235,7 @@ template<typename Int, typename Real> struct ConfigSeek
 
     GenType genType;   // Type of generator, currently MRG or MWC.
     long numComp;      // Number of components.  If > 1, we have a combined generator.
-    int64_t maxdim;         // Maximal dimension of the lattice (new by CW: maybe not needed in the end)
+    int64_t maxdim;    // Maximal dimension of the lattice
 
     // List of configurations for the `numComp` components. They can be MRG or MWC.
     // The size of this list must be equal to numComp.
@@ -276,23 +269,10 @@ template<typename Int, typename Real> struct ConfigSeek
     #ifdef LATMRG_SEEK
         bool progress = true; // Prints the program progress between generators
     #endif
-    
-    // Program variables - CW: probably not needed
-    int detail = 1;
 
-
-   // CW: Unclear what these variables are really used for    
-    bool gen_set = false;
-    bool test_set = false;
-    bool proj_set = false;    
-
-    
    // This is used to store the coefficients of a MRG and the information on how to
    // search for coefficients of a generator. This can have multiple different formats.
    std::vector<IntVec> coeff;
-
-
-    // End inertion CW
 
     /**
      * Automatically creates the correct component
@@ -300,12 +280,15 @@ template<typename Int, typename Real> struct ConfigSeek
      */
     ConfigSeekComponent<Int, Real>* createComponent()
     {
-        return ConfigSeekComponent<Int, Real>::create(genType);
+        genComponents.resize(numComp);
+        for (int i = 0; i < numComp; i++) {
+            genComponents[i] = ConfigSeekComponent<Int, Real>::create(genType);
+        }
+        return genComponents[0];
     }
 
     ~ConfigSeek()
     {
-        //CW
         //for(auto* ptr : genComponents)
         //    delete ptr;
     }

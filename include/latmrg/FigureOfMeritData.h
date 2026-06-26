@@ -34,7 +34,7 @@ class FigureOfMeritData {
      double m_minMeritSqlen = 0.0;
 
       /* 
-       * CW: Projection for which the worst FoM is achieved
+       * Projection for which the worst FoM is achieved
       */
      Coordinates m_minMeritProj;
 
@@ -78,10 +78,7 @@ class FigureOfMeritData {
       std::string getLattice() {
         return m_lattice->toString();}
 
-      void setLattice(Lat* lattice) { m_lattice = lattice;}
-
-        
-
+      void setLattice(Lat* lattice) { m_lattice = lattice;}      
 
     };
 

@@ -20,22 +20,16 @@ namespace LatMRG {
 
         Lat* lat = 0;
         ConfigSeek<Int, Real> conf;
-        ReducerBB<Int, Real> red;
-        WeightsUniform weights;
         FigureOfMeritM<Int, Real> fomPrimal;
         FigureOfMeritDualM<Int, Real> fomDual;
         Chrono timer; // program timer
-
-        Int currentGen; // CW: counter to get the nummber of the current generator
-        
+        Int currentGen; // counter to get the nummber of the current generator        
          
         public:
 
         Seek(ConfigSeek<Int, Real>& conf) :     conf(conf), 
-                                                red(conf.maxdim), 
-                                                weights(1.0),
-                                                fomPrimal(conf.configFOM.t, weights, *conf.configFOM.norma, &red, true),
-                                                fomDual(conf.configFOM.t, weights, *conf.configFOM.norma, &red, true) { };
+                                                fomPrimal(conf.configFOM.t, *conf.configFOM.weights, *conf.configFOM.norma, conf.configFOM.red, conf.configFOM.includeFirst),
+                                                fomDual(conf.configFOM.t, *conf.configFOM.weights, *conf.configFOM.norma, conf.configFOM.red, conf.configFOM.includeFirst) { };
 
         int PerformSeek();  
         
@@ -51,49 +45,31 @@ namespace LatMRG {
 
   template<typename Lat> template<typename Int, typename Real> MRGLattice<Int, Real>*Seek<Lat>::nextGenerator(ConfigSeek<Int, Real>& conf)
   {
-     auto* comp = asMRG(conf.genComponents[0]);
+    auto* comp = asMRG(conf.genComponents[0]);
 
-      int k = comp->order;
-      NTL::Vec<NTL::ZZ> a;
-      a.SetLength(k + 1);
+    Int range, val;
+    Int tmp = currentGen;
 
-      Int tmp = currentGen;
-
-      // decode currentGen into multi-index
-      for (int i = 1; i <= k; i++) {
-        Int lo = comp->lowBoundaries[i];
-        Int hi = comp->highBoundaries[i];
-        Int range = hi - lo + 1;
-        Int val = tmp % range;
-        tmp /= range;
-        a[i] = lo + val;
-      }
-      std::cout << "a: " << a << "\n";
-      // compute total number of combinations
-      Int total;
-      total = 1;
-      for (int i = 1; i <= k; i++) {
-          total *= (comp->highBoundaries[i] - comp->lowBoundaries[i] + 1);
-      }
-
-      if (currentGen < conf.configFOM.max_gen && currentGen < total)
-      {
-        currentGen++;
-        return new MRGLattice<Int, Real>(comp->modulus, a, conf.maxdim);
-      }
-
-      return nullptr;
-    /*
+    int k = comp->order;
     NTL::Vec<NTL::ZZ> a;
-    a.SetLength(asMRG(conf.genComponents[0])->order+1);
-    if (currentGen < this->conf.configFOM.max_gen && asMRG(conf.genComponents[0])->lowBoundaries[1] + currentGen <= asMRG(conf.genComponents[0])->highBoundaries[1] )
-      {
-        a[1] = asMRG(conf.genComponents[0])->lowBoundaries[1] + currentGen;
-        currentGen++;
-        return new MRGLattice<Int, Real>(asMRG(conf.genComponents[0])->modulus, a, conf.maxdim);
-      }
-    else return nullptr;
-    */
+    a.SetLength(k + 1);
+
+
+    // decode currentGen into multi-index
+    for (int i = 1; i <= k; i++) {
+      range = comp->highBoundaries[i] - comp->lowBoundaries[i] + 1;
+      Int val = tmp % range;
+      tmp /= range;
+      a[i] = comp->lowBoundaries[i] + val;
+    }
+    
+    if (currentGen < conf.configFOM.max_gen && currentGen < comp->getNoMultipliers())
+    {
+      currentGen++;
+      return new MRGLattice<Int, Real>(comp->modulus, a, conf.maxdim);
+    }
+
+    return nullptr;
   }
 
   template<typename Lat> int Seek<Lat>:: print_progress(int old) {
@@ -120,13 +96,10 @@ template<typename Lat> int Seek<Lat>::PerformSeek()  {
     }
     MeritList<Lat> bestLattice(this->conf.configFOM.max_gen, this->conf.configFOM.best);
     timer.init();
-
-    Int modulus; // CW: interim: to be replaced later on by a variable stored in conf
     
-    IntLattice<Int, Real> proj(modulus, this->conf.configFOM.t.length(), this->conf.configFOM.norm);
+    IntLattice<Int, Real> proj(conf.genComponents[0]->getModulus(), this->conf.configFOM.t.length(), this->conf.configFOM.norm);
+    IntLattice<Int, Real> m_lattice(conf.genComponents[0]->getModulus(), this->conf.configFOM.t.length(), this->conf.configFOM.norm);
     
-    MRGLattice<Int, Real> m_lattice(modulus, 1, this->conf.maxdim);
-
     FigureOfMeritData<Lat> fomData;
     
     do {      
@@ -135,14 +108,12 @@ template<typename Lat> int Seek<Lat>::PerformSeek()  {
       if (lat == NULL) continue;           
       if (conf.configFOM.dualLattice) {        
         fomData.setMerit(this->fomDual.computeMerit(*lat, proj));
-        std::cout << old << ": " << fomData.getMerit() << "\n";
         fomData.setLattice(lat);
         fomData.setMeritProj(this->fomDual.getMinMeritProj());
         fomData.setMeritSqlen(this->fomDual.getMinMeritSqlen());;
       } 
       else {
         fomData.setMerit(this->fomPrimal.computeMerit(*lat, proj));
-        std::cout << old << ": " << fomData.getMerit() << "\n";
         fomData.setLattice(lat);
         fomData.setMeritProj(this->fomPrimal.getMinMeritProj());
         fomData.setMeritSqlen(this->fomPrimal.getMinMeritSqlen());
