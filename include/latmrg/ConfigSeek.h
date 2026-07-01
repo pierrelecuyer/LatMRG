@@ -36,16 +36,6 @@ template<typename Int, typename Real> struct ConfigSeekComponent
 {
     virtual ~ConfigSeekComponent() = default;
 
-    std::int64_t nodesBB = 100000000000;
-
-    bool use_dual = true;
-
-    // MRGComponent stores the stuff we might want to know, such as the modulo
-    // the order and even the coefficients
-    std::vector<std::string> search_mode;
-    bool period;
-    std::vector<MRGComponent<Int>*> fact;
-
     /**
      * Factory function.
      * Creates the correct subclass automatically.
@@ -159,7 +149,7 @@ template<typename Int, typename Real> ConfigSeekGenFile<Int, Real>* asGEN(Config
 
 
 /**
- * This stores the information on the FOM that is used and how it is computed.
+ * ConfigMerit stores the information on the FOM that is used and how it is computed.
  */
 template<typename Int, typename Real> struct ConfigMerit
 {
@@ -175,7 +165,6 @@ template<typename Int, typename Real> struct ConfigMerit
         bool best = true;
         int num_gen = 0;
         double currentMerit = double(0);
-        std::string construction = "RANDOM";
     #endif
     
     int max_gen = 10; // Maximal number of generators to be tested
@@ -184,7 +173,7 @@ template<typename Int, typename Real> struct ConfigMerit
 
 
 /**
- * This struct stores all the information required for a seek operation.
+ * This struct stores all the information required for a general seek operation.
  */
 template<typename Int, typename Real> struct ConfigSeek
 {
@@ -242,37 +231,16 @@ template<typename Int, typename Real> struct ConfigSeek
     // Each entry is a configuration for one component.
     vector<ConfigSeekComponent<Int, Real>*> genComponents; 
 
-    bool leapBlocks;  // True iff we use lacunary indices with blocks at large leaps.
-    Int leapSize;     // The leap size d when leapBlocks = true.
-    Int blockSize;    // The block size s when leapBlocks = true.
-
     LatticeType latticeType; // The type of lattice that is constructed (see EnumTypes).
-    // IntVect initState;  // The initial state, in case `latticeType = orbit`.
-                           // The `orbit` case is currently not implemented. ***
-
+    
     ConfigMerit<Int, Real> configFOM;  // The configuration for the FOM and its computation.
 
     SearchMethod searchMethod; // The method of search for the seek (exhaustive or random).
-    long numRegions = 1;      // Number of regions for the search.
-    vector<long> sizeRegions; // The sizes of the regions to be examined.
-    long rngSeed = 123456;    // A seed for the RNG used in the search.
-    long numRetained = 1;     // Number of generators that we want to retain.
     double timeLimit = 600;         // CPU time limit in seconds.
 
-    OutputType outType;       // Type of output. 
-    long verboseLevel = 1;    // Level of verbosity in the output.  Integer from 0 to 3.
-    string resFile;           // If present, the results will be printed in file `resFile.res`.
-    // string texFile;           // If present, the results will be printed in Latex in file `texFile.tex`.
-    string genFile;           // If present, the results will be printed .gen format in file `genFile.gen`.
-    bool showTimes = true;    // If true, prints CPU times for various operations.
-       
     #ifdef LATMRG_SEEK
         bool progress = true; // Prints the program progress between generators
     #endif
-
-   // This is used to store the coefficients of a MRG and the information on how to
-   // search for coefficients of a generator. This can have multiple different formats.
-   std::vector<IntVec> coeff;
 
     /**
      * Automatically creates the correct component
