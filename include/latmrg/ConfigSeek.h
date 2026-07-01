@@ -73,7 +73,7 @@ template<typename Int, typename Real> struct ConfigSeekMRG : ConfigSeekComponent
     vector<long> numPowerTwo;  // Values of n_i (max number of powers of 2)
     vector<long> maxPowerTwo;  // Values of p_i (max power of 2)
     vector<vector<pair<long,long>>> equalCoeffs;  // List of pairs of coefficients that must be equal
-    bool permaxPrime;  // When true, m must be prime and we retain only max-period MRGs (default = false)
+    bool permaxPrime = false;  // When true, m must be prime and we retain only max-period MRGs (default = false)
     DecompType howFactorh; // Indicates how to factorize h=(m-1)/2
     IntVec factorsh;      // The factors of h, repeated according to multiplicity, when known
     DecompType howFactor;  // Indicates how to factorize r=(m^k-1)/(m-1)
@@ -107,7 +107,7 @@ template<typename Int, typename Real> struct ConfigSeekMWC : ConfigSeekComponent
     vector<long> numPowerTwo;  // Values of n_i (max number of powers of 2)
     vector<long> maxPowerTwo;  // Values of p_i (max power of 2)
     vector<vector<pair<long,long>>> equalCoeffs;  // List of pairs of coefficients that must be equal
-    bool permax;   // When true, we retain only max-period generators. Default is false.
+    bool permax = false;   // When true, we retain only max-period generators. Default is false.
 };
 
 
@@ -197,8 +197,8 @@ template<typename Int, typename Real> struct ConfigSeek
     * Type (MRG) => really necessary?
     * modulus m => Variable?
     * order k => Variable?
-    * Rectangular region b=(b_1,...,b_k), c = (c_1,...,c_k) for multipliers 
-    * Method: exhaustive or random
+    * Rectangular region b=(b_1,...,b_k), c = (c_1,...,c_k) for multipliers (*)
+    * Method: exhaustive or random (only exhaustive so far)
     * additional constraints: To be added later on
     * either search only for MRG components having maximal period, or ignore the period
     * 

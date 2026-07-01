@@ -56,8 +56,11 @@ int main() {
   asMRG(conf.genComponents[0])->lowBoundaries = b;
   asMRG(conf.genComponents[0])->highBoundaries = c;
   asMRG(conf.genComponents[0])->order = b.length() - 1;
+  asMRG(conf.genComponents[0])->permaxPrime = false;
   conf.configFOM.max_gen = 20;
-  Seek<MRGLattice<Int, double>> seeker(conf);
-  seeker.PerformSeek();
+
+  // Perform the actual seek
+  Seek<MRGLattice<Int, Real>> seeker(conf);
+  seeker.PerformSeek(&Seek<MRGLattice<Int, Real>>::template nextGenerator<Int, Real>);
   return(0);
 }

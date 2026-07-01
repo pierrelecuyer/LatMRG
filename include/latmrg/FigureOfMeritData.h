@@ -18,29 +18,29 @@ template<typename Lat>
 class FigureOfMeritData {
 
    private:
-      /**
-       * The lattice that is being tested.
-       * */
+      /*
+      * The lattice that is being tested.
+      */
       Lat* m_lattice = nullptr;
 
       /*
-       * Used to store the merit of the lattice
-      */
-     Real m_merit = 0;
+      * Used to store the merit of the lattice
+      **/
+      Real m_merit = 0;
 
-     /*
+      /*
       * Used to store the minimal squared vector length
-     */
-     double m_minMeritSqlen = 0.0;
+      */
+      double m_minMeritSqlen = 0.0;
 
       /* 
        * Projection for which the worst FoM is achieved
       */
-     Coordinates m_minMeritProj;
+      Coordinates m_minMeritProj;
 
-      /**
-       * Index of the best or worst value in `m_merits`.
-       * */
+      /*
+      * Index of the best or worst value in `m_merits`.
+      */
       long m_best_worst = 0;
 
       // Some variables are missing.  For example, we need beta_1, we need a normalizer, etc.   *********
@@ -48,7 +48,7 @@ class FigureOfMeritData {
    public:
 
       /**
-       * get and set functions for the relevant variables.
+       * get and set functions the relevant variables.
        * */
       Real getMerit() const { return m_merit; }
 
