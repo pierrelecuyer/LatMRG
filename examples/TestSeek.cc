@@ -61,6 +61,6 @@ int main() {
 
   // Perform the actual seek
   Seek<MRGLattice<Int, Real>> seeker(conf);
-  seeker.PerformSeek(&Seek<MRGLattice<Int, Real>>::nextGenerator);
+  seeker.performSeek(&Seek<MRGLattice<Int, Real>>::nextGenerator);
   return(0);
 }

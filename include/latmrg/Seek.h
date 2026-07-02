@@ -49,7 +49,7 @@ namespace LatMRG {
     /**
     * Initializition of objects is based on the ConfigSeek parameter.
     */
-    Seek(ConfigSeek<Int, Real>& config) : conf(config), 
+    Seek(const ConfigSeek<Int, Real>& config) : conf(config), 
                                           fomPrimal(config.configFOM.t, *config.configFOM.weights, *config.configFOM.norma, config.configFOM.red, config.configFOM.includeFirst),
                                           fomDual(config.configFOM.t, *config.configFOM.weights, *config.configFOM.norma, config.configFOM.red, config.configFOM.includeFirst) { };
     
@@ -73,7 +73,7 @@ namespace LatMRG {
     * The parameter *generator defines the method of the seek, e.g.,
     * a random or an exhaustive search.
     */
-    int PerformSeek(MRGLattice<Int, Real>* (Seek::*generator)());  
+    int performSeek(MRGLattice<Int, Real>* (Seek::*generator)());  
     
     /**
     * This method is supposed to report the progress of the current  
@@ -81,6 +81,14 @@ namespace LatMRG {
     * not working.
     */
     int print_progress(int old);
+
+    /**
+     * Desctructor
+    */
+    ~Seek()
+    {
+      delete lat;
+    }
 
   };
 
@@ -107,7 +115,7 @@ namespace LatMRG {
     // decode currentGen into multi-index
     for (int i = 1; i <= k; i++) {
       range = comp->highBoundaries[i] - comp->lowBoundaries[i] + 1;
-      Int val = tmp % range;
+      val = tmp % range;
       tmp /= range;
       a[i] = comp->lowBoundaries[i] + val;
     }
@@ -140,7 +148,6 @@ namespace LatMRG {
     if (currentGen < conf.configFOM.max_gen)
     {
       currentGen++;
-      std::cout << currentGen << "\n";
       return new MRGLattice<Int, Real>(comp->modulus, a, conf.maxdim);
     }
 
@@ -171,7 +178,7 @@ namespace LatMRG {
   * The parameter *generator defines the method of the seek, e.g.,
   * a random or an exhaustive search.
   */
-  template<typename Lat> int Seek<Lat>::PerformSeek(MRGLattice<Int, Real>* (Seek::*generator)())  {    
+  template<typename Lat> int Seek<Lat>::performSeek(MRGLattice<Int, Real>* (Seek::*generator)())  {    
     int old = 0;
     // Launching the tests
     if (conf.progress) {
@@ -181,7 +188,6 @@ namespace LatMRG {
     timer.init();
     
     IntLattice<Int, Real> proj(conf.genComponents[0]->getModulus(), conf.configFOM.t.length(), conf.configFOM.norm);
-    IntLattice<Int, Real> m_lattice(conf.genComponents[0]->getModulus(), conf.configFOM.t.length(), conf.configFOM.norm);
     
     FigureOfMeritData<Lat> fomData;
 
@@ -201,19 +207,16 @@ namespace LatMRG {
         if (!mrg.maxPeriod(lat->getaa()))
             continue;
       }
-      // Calculate the FOM for the primal / dual
-      if (conf.configFOM.dualLattice) {        
-        fomData.setMerit(fomDual.computeMerit(*lat, proj));
-        fomData.setLattice(lat);
-        fomData.setMeritProj(fomDual.getMinMeritProj());
-        fomData.setMeritSqlen(fomDual.getMinMeritSqlen());;
-      } 
-      else {
-        fomData.setMerit(fomPrimal.computeMerit(*lat, proj));
-        fomData.setLattice(lat);
-        fomData.setMeritProj(fomPrimal.getMinMeritProj());
-        fomData.setMeritSqlen(fomPrimal.getMinMeritSqlen());
-      }
+      
+      // Variable which dependes on whether the FoM is calculated for the primal / dual lattice.
+      // Avoids duplicate code.
+      auto& fom = conf.configFOM.dualLattice ? fomDual : fomPrimal;
+     
+      fomData.setMerit(fom.computeMerit(*lat, proj));
+      fomData.setLattice(lat);
+      fomData.setMeritProj(fom.getMinMeritProj());
+      fomData.setMeritSqlen(fom.getMinMeritSqlen());;
+
       bestLattice.add(fomData); 
       conf.configFOM.num_gen++;
       conf.configFOM.currentMerit = bestLattice.getMerit(); 
