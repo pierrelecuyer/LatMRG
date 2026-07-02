@@ -21,15 +21,15 @@ namespace LatMRG {
     /**
     * The current lattice which is analyzed.
     */
-    Lat* lat = 0;
+    Lat* lat = nullptr;
 
     /**
-    * The configuration of the seek
+    * The configuration for the seek.
     */
     ConfigSeek<Int, Real> conf;
 
     /**
-    * Firgure of merit object for the primal and dual lattice.
+    * Firgure of merit objects for the primal and dual lattice.
     */        
     FigureOfMeritM<Int, Real> fomPrimal;
     FigureOfMeritDualM<Int, Real> fomDual;
@@ -40,14 +40,14 @@ namespace LatMRG {
     Chrono timer; 
 
     /**
-    * Counter for the current RNG
+    * Counter for the current RNG.
     */
     Int currentGen;       
          
     public:
 
     /**
-    * Initializition of objects is based on the ConfigSeek parameter 
+    * Initializition of objects is based on the ConfigSeek parameter.
     */
     Seek(ConfigSeek<Int, Real>& config) : conf(config), 
                                           fomPrimal(config.configFOM.t, *config.configFOM.weights, *config.configFOM.norma, config.configFOM.red, config.configFOM.includeFirst),
@@ -60,18 +60,18 @@ namespace LatMRG {
     * nextGenerator() is performing an exhaustive search. This method needs to
     * be implemented separately for the different types of lattices.
     */
-    template<typename Int, typename Real> MRGLattice<Int, Real>* nextGenerator();
+    MRGLattice<Int, Real>* nextGenerator();
 
     /**
     * As nextGenerator() but it chooses a random next generator which is within
-    * the range defned by the configuration
+    * the range defned by the configuration.
     */
-    template<typename Int, typename Real> MRGLattice<Int, Real>* nextGeneratorRandom();
+    MRGLattice<Int, Real>* nextGeneratorRandom();
 
     /**
     * This method performs the seek based on the current configuration.
     * The parameter *generator defines the method of the seek, e.g.,
-    * a random or an exhaustive search
+    * a random or an exhaustive search.
     */
     int PerformSeek(MRGLattice<Int, Real>* (Seek::*generator)());  
     
@@ -93,9 +93,9 @@ namespace LatMRG {
   * This method yields the next generator of an MRG lattice based on the chosen 
   * configuration.
   */
-  template<typename Lat> template<typename Int, typename Real> MRGLattice<Int, Real>*Seek<Lat>::nextGenerator()
+  template<typename Lat> MRGLattice<Int, Real>* Seek<Lat>::nextGenerator()
   {
-    auto* comp = asMRG(this->conf.genComponents[0]);
+    auto* comp = asMRG(conf.genComponents[0]);
 
     Int range, val;
     Int tmp = currentGen;
@@ -112,10 +112,10 @@ namespace LatMRG {
       a[i] = comp->lowBoundaries[i] + val;
     }
     
-    if (currentGen < this->conf.configFOM.max_gen && currentGen < comp->getNoMultipliers())
+    if (currentGen < conf.configFOM.max_gen && currentGen < comp->getNoMultipliers())
     {
       currentGen++;
-      return new MRGLattice<Int, Real>(comp->modulus, a, this->conf.maxdim);
+      return new MRGLattice<Int, Real>(comp->modulus, a, conf.maxdim);
     }
     // Otherwise return null pointer
     return nullptr;
@@ -125,9 +125,9 @@ namespace LatMRG {
   * This method yields a random generator of an MRG lattice within the range
   * defined by the chosen configuration.
   */  
-  template<typename Lat> template<typename Int, typename Real> MRGLattice<Int, Real>*Seek<Lat>::nextGeneratorRandom()
+  template<typename Lat> MRGLattice<Int, Real>* Seek<Lat>::nextGeneratorRandom()
   {
-    auto* comp = asMRG(this->conf.genComponents[0]);
+    auto* comp = asMRG(conf.genComponents[0]);
     int k = comp->order;
     NTL::Vec<NTL::ZZ> a;
     a.SetLength(k + 1);
@@ -137,11 +137,11 @@ namespace LatMRG {
       a[i] = randInt(comp->lowBoundaries[i], comp->highBoundaries[i]);
     }
 
-    if (currentGen < this->conf.configFOM.max_gen)
+    if (currentGen < conf.configFOM.max_gen)
     {
       currentGen++;
       std::cout << currentGen << "\n";
-      return new MRGLattice<Int, Real>(comp->modulus, a, this->conf.maxdim);
+      return new MRGLattice<Int, Real>(comp->modulus, a, conf.maxdim);
     }
 
     return nullptr;
@@ -153,7 +153,7 @@ namespace LatMRG {
   * not working.
   */
   template<typename Lat> int Seek<Lat>:: print_progress(int old) {    
-    int per_80 = timer.val(Chrono::SEC)/this->conf.timeLimit * 80;
+    int per_80 = timer.val(Chrono::SEC)/conf.timeLimit * 80;
     if (per_80 > 80) per_80 = 80;
     if (per_80 < 0) per_80 = 0;
     // We do not print for no reason as this slows the program a lot.
@@ -169,56 +169,56 @@ namespace LatMRG {
   /**
   * This method performs the seek based on the current configuration.
   * The parameter *generator defines the method of the seek, e.g.,
-  * a random or an exhaustive search
+  * a random or an exhaustive search.
   */
   template<typename Lat> int Seek<Lat>::PerformSeek(MRGLattice<Int, Real>* (Seek::*generator)())  {    
     int old = 0;
     // Launching the tests
-    if (this->conf.progress) {
+    if (conf.progress) {
       old = print_progress(-1);
     }
-    MeritList<Lat> bestLattice(this->conf.configFOM.max_gen, this->conf.configFOM.best);
+    MeritList<Lat> bestLattice(conf.configFOM.max_gen, conf.configFOM.best);
     timer.init();
     
-    IntLattice<Int, Real> proj(this->conf.genComponents[0]->getModulus(), this->conf.configFOM.t.length(), this->conf.configFOM.norm);
-    IntLattice<Int, Real> m_lattice(this->conf.genComponents[0]->getModulus(), this->conf.configFOM.t.length(), this->conf.configFOM.norm);
+    IntLattice<Int, Real> proj(conf.genComponents[0]->getModulus(), conf.configFOM.t.length(), conf.configFOM.norm);
+    IntLattice<Int, Real> m_lattice(conf.genComponents[0]->getModulus(), conf.configFOM.t.length(), conf.configFOM.norm);
     
     FigureOfMeritData<Lat> fomData;
 
     // Preparation for being able to check primitivity
-    setModulusIntP<Int>(this->conf.genComponents[0]->getModulus());
-    MRGComponent<Int> mrg(this->conf.genComponents[0]->getModulus(), asMRG(this->conf.genComponents[0])->order);
+    setModulusIntP<Int>(conf.genComponents[0]->getModulus());
+    MRGComponent<Int> mrg(conf.genComponents[0]->getModulus(), asMRG(conf.genComponents[0])->order);
     
     // Loop through all MRGs
     do {      
-      if (lat != NULL) delete lat;
+      if (lat != nullptr) delete lat;
       lat = (this->*generator)();
-      if (lat == NULL) continue;   
+      if (lat == nullptr) continue;   
       // If the period must be maximal, test if the specific component has max period.
       // Otherwise continue.
-      if (asMRG(this->conf.genComponents[0])->permaxPrime)
+      if (asMRG(conf.genComponents[0])->permaxPrime)
       {
         if (!mrg.maxPeriod(lat->getaa()))
             continue;
       }
       // Calculate the FOM for the primal / dual
-      if (this->conf.configFOM.dualLattice) {        
-        fomData.setMerit(this->fomDual.computeMerit(*lat, proj));
+      if (conf.configFOM.dualLattice) {        
+        fomData.setMerit(fomDual.computeMerit(*lat, proj));
         fomData.setLattice(lat);
-        fomData.setMeritProj(this->fomDual.getMinMeritProj());
-        fomData.setMeritSqlen(this->fomDual.getMinMeritSqlen());;
+        fomData.setMeritProj(fomDual.getMinMeritProj());
+        fomData.setMeritSqlen(fomDual.getMinMeritSqlen());;
       } 
       else {
-        fomData.setMerit(this->fomPrimal.computeMerit(*lat, proj));
+        fomData.setMerit(fomPrimal.computeMerit(*lat, proj));
         fomData.setLattice(lat);
-        fomData.setMeritProj(this->fomPrimal.getMinMeritProj());
-        fomData.setMeritSqlen(this->fomPrimal.getMinMeritSqlen());
+        fomData.setMeritProj(fomPrimal.getMinMeritProj());
+        fomData.setMeritSqlen(fomPrimal.getMinMeritSqlen());
       }
       bestLattice.add(fomData); 
-      this->conf.configFOM.num_gen++;
-      this->conf.configFOM.currentMerit = bestLattice.getMerit(); 
-      if (this->conf.progress) old = print_progress(old);
-    } while (!timer.timeOver(this->conf.timeLimit) && this->lat);
+      conf.configFOM.num_gen++;
+      conf.configFOM.currentMerit = bestLattice.getMerit(); 
+      if (conf.progress) old = print_progress(old);
+    } while (!timer.timeOver(conf.timeLimit) && this->lat);
      
     return 0;
   }
