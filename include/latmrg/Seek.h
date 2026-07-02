@@ -2,6 +2,9 @@
 #define LATMRG_SEEK_H
 
 #include <cassert>
+#include <iostream>
+#include <iomanip>
+#include <memory>
 
 #include "latmrg/PrimesFinder.h"
 #include "latmrg/ConfigSeek.h"
@@ -21,7 +24,7 @@ namespace LatMRG {
     /**
     * The current lattice which is analyzed.
     */
-    Lat* lat = nullptr;
+    std::unique_ptr<Lat> lat;
 
     /**
     * The configuration for the seek.
@@ -29,7 +32,7 @@ namespace LatMRG {
     ConfigSeek<Int, Real> conf;
 
     /**
-    * Firgure of merit objects for the primal and dual lattice.
+    * Figure of merit objects for the primal and dual lattice.
     */        
     FigureOfMeritM<Int, Real> fomPrimal;
     FigureOfMeritDualM<Int, Real> fomDual;
@@ -42,16 +45,16 @@ namespace LatMRG {
     /**
     * Counter for the current RNG.
     */
-    Int currentGen;       
+    int currentGen = 0;       
          
     public:
 
     /**
     * Initializition of objects is based on the ConfigSeek parameter.
     */
-    Seek(const ConfigSeek<Int, Real>& config) : conf(config), 
-                                          fomPrimal(config.configFOM.t, *config.configFOM.weights, *config.configFOM.norma, config.configFOM.red, config.configFOM.includeFirst),
-                                          fomDual(config.configFOM.t, *config.configFOM.weights, *config.configFOM.norma, config.configFOM.red, config.configFOM.includeFirst) { };
+    Seek(const ConfigSeek<Int, Real>& config) : conf(config) 
+                                          , fomPrimal(config.configFOM.t, *config.configFOM.weights, *config.configFOM.norma, config.configFOM.red, config.configFOM.includeFirst)
+                                          , fomDual(config.configFOM.t, *config.configFOM.weights, *config.configFOM.norma, config.configFOM.red, config.configFOM.includeFirst) { };
     
                                           
     /**
@@ -64,7 +67,7 @@ namespace LatMRG {
 
     /**
     * As nextGenerator() but it chooses a random next generator which is within
-    * the range defned by the configuration.
+    * the range defined by the configuration.
     */
     MRGLattice<Int, Real>* nextGeneratorRandom();
 
@@ -83,11 +86,11 @@ namespace LatMRG {
     int print_progress(int old);
 
     /**
-     * Desctructor
+     * Destructor
     */
     ~Seek()
     {
-      delete lat;
+      // delete lat;
     }
 
   };
@@ -106,7 +109,7 @@ namespace LatMRG {
     auto* comp = asMRG(conf.genComponents[0]);
 
     Int range, val;
-    Int tmp = currentGen;
+    Int tmp = NTL::to_ZZ(currentGen);
 
     int k = comp->order;
     NTL::Vec<NTL::ZZ> a;
@@ -122,7 +125,7 @@ namespace LatMRG {
     
     if (currentGen < conf.configFOM.max_gen && currentGen < comp->getNoMultipliers())
     {
-      currentGen++;
+      ++currentGen;
       return new MRGLattice<Int, Real>(comp->modulus, a, conf.maxdim);
     }
     // Otherwise return null pointer
@@ -135,8 +138,8 @@ namespace LatMRG {
   */  
   template<typename Lat> MRGLattice<Int, Real>* Seek<Lat>::nextGeneratorRandom()
   {
-    auto* comp = asMRG(conf.genComponents[0]);
-    int k = comp->order;
+    const auto* comp = asMRG(conf.genComponents[0]);
+    const int k = comp->order;
     NTL::Vec<NTL::ZZ> a;
     a.SetLength(k + 1);
 
@@ -160,7 +163,7 @@ namespace LatMRG {
   * not working.
   */
   template<typename Lat> int Seek<Lat>:: print_progress(int old) {    
-    int per_80 = timer.val(Chrono::SEC)/conf.timeLimit * 80;
+    int per_80 = 80 * timer.val(Chrono::SEC) / conf.timeLimit;
     if (per_80 > 80) per_80 = 80;
     if (per_80 < 0) per_80 = 0;
     // We do not print for no reason as this slows the program a lot.
@@ -178,7 +181,9 @@ namespace LatMRG {
   * The parameter *generator defines the method of the seek, e.g.,
   * a random or an exhaustive search.
   */
-  template<typename Lat> int Seek<Lat>::performSeek(MRGLattice<Int, Real>* (Seek::*generator)())  {    
+  template<typename Lat> int Seek<Lat>::performSeek(MRGLattice<Int, Real>* (Seek::*generator)())  {  
+    assert(!conf.genComponents.empty());  
+    const auto* comp = asMRG(conf.genComponents[0]);
     int old = 0;
     // Launching the tests
     if (conf.progress) {
@@ -187,39 +192,37 @@ namespace LatMRG {
     MeritList<Lat> bestLattice(conf.configFOM.max_gen, conf.configFOM.best);
     timer.init();
     
-    IntLattice<Int, Real> proj(conf.genComponents[0]->getModulus(), conf.configFOM.t.length(), conf.configFOM.norm);
+    IntLattice<Int, Real> proj(comp->getModulus(), conf.configFOM.t.length(), conf.configFOM.norm);
     
     FigureOfMeritData<Lat> fomData;
 
     // Preparation for being able to check primitivity
-    setModulusIntP<Int>(conf.genComponents[0]->getModulus());
-    MRGComponent<Int> mrg(conf.genComponents[0]->getModulus(), asMRG(conf.genComponents[0])->order);
+    setModulusIntP<Int>(comp->getModulus());
+    MRGComponent<Int> mrg(comp->getModulus(), comp->order);
     
     // Loop through all MRGs
     do {      
-      if (lat != nullptr) delete lat;
-      lat = (this->*generator)();
-      if (lat == nullptr) continue;   
+      lat.reset((this->*generator)());
+      if (!lat) continue;   
       // If the period must be maximal, test if the specific component has max period.
       // Otherwise continue.
-      if (asMRG(conf.genComponents[0])->permaxPrime)
+      if (comp->permaxPrime)
       {
         if (!mrg.maxPeriod(lat->getaa()))
             continue;
       }
       
-      // Variable which dependes on whether the FoM is calculated for the primal / dual lattice.
+      // Variable which depends on whether the FoM is calculated for the primal / dual lattice.
       // Avoids duplicate code.
-      auto& fom = conf.configFOM.dualLattice ? fomDual : fomPrimal;
-     
+      auto& fom = conf.configFOM.dualLattice ? fomDual : fomPrimal;     
       fomData.setMerit(fom.computeMerit(*lat, proj));
-      fomData.setLattice(lat);
+      fomData.setLattice(lat.get());
       fomData.setMeritProj(fom.getMinMeritProj());
-      fomData.setMeritSqlen(fom.getMinMeritSqlen());;
+      fomData.setMeritSqlen(fom.getMinMeritSqlen());
 
       bestLattice.add(fomData); 
       conf.configFOM.num_gen++;
-      conf.configFOM.currentMerit = bestLattice.getMerit(); 
+      conf.configFOM.currentMerit = bestLattice.getMerit();
       if (conf.progress) old = print_progress(old);
     } while (!timer.timeOver(conf.timeLimit) && this->lat);
      
