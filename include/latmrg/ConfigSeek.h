@@ -73,10 +73,9 @@ template<typename Int, typename Real> struct ConfigSeekMRG : ConfigSeekComponent
 
     Int getModulus() const override { return modulus; }
 
-    Int getNoMultipliers() {
-      Int total;
-      total = 1;
-      for (int i = 1; i <= order; i++) {
+    Int getNoMultipliers() const {
+      Int total(1);
+      for (long i = 1; i <= order; i++) {
           total *= (highBoundaries[i] - lowBoundaries[i] + 1);
       }
       return total;
@@ -246,13 +245,12 @@ template<typename Int, typename Real> struct ConfigSeek
      * Automatically creates the correct component
      * from conf.genType.
      */
-    ConfigSeekComponent<Int, Real>* createComponent()
+    void createComponent()
     {
         genComponents.resize(numComp);
-        for (int i = 0; i < numComp; i++) {
+        for (long i = 0; i < numComp; i++) {
             genComponents[i] = ConfigSeekComponent<Int, Real>::create(genType);
         }
-        return genComponents[0];
     }
 
     ~ConfigSeek()
