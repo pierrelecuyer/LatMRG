@@ -50,11 +50,13 @@ namespace LatMRG {
     public:
 
     /**
-    * Initializition of objects is based on the ConfigSeek parameter.
+    * Initialization of objects is based on the ConfigSeek parameter.
     */
     Seek(const ConfigSeek<Int, Real>& config) : conf(config) 
                                           , fomPrimal(config.configFOM.t, *config.configFOM.weights, *config.configFOM.norma, config.configFOM.red, config.configFOM.includeFirst)
-                                          , fomDual(config.configFOM.t, *config.configFOM.weights, *config.configFOM.norma, config.configFOM.red, config.configFOM.includeFirst) { };
+                                          , fomDual(config.configFOM.t, *config.configFOM.weights, *config.configFOM.norma, config.configFOM.red, config.configFOM.includeFirst) 
+                                          {                                             
+                                          }
     
                                           
     /**
@@ -84,14 +86,6 @@ namespace LatMRG {
     * not working.
     */
     int print_progress(int old);
-
-    /**
-     * Destructor
-    */
-    ~Seek()
-    {
-      // delete lat;
-    }
 
   };
 
@@ -224,7 +218,7 @@ namespace LatMRG {
       conf.configFOM.num_gen++;
       conf.configFOM.currentMerit = bestLattice.getMerit();
       if (conf.progress) old = print_progress(old);
-    } while (!timer.timeOver(conf.timeLimit) && this->lat);
+    } while (!timer.timeOver(conf.timeLimit) && lat);
      
     return 0;
   }
