@@ -177,7 +177,7 @@ namespace LatMRG {
   */
   template<typename Lat> int Seek<Lat>::performSeek(MRGLattice<Int, Real>* (Seek::*generator)())  {  
     assert(!conf.genComponents.empty());  
-    const auto* comp = asMRG(conf.genComponents[0]);
+    const auto* comp = conf.genComponents[0];
     int old = 0;
     // Launching the tests
     if (conf.progress) {
@@ -192,7 +192,7 @@ namespace LatMRG {
 
     // Preparation for being able to check primitivity
     setModulusIntP<Int>(comp->getModulus());
-    MRGComponent<Int> mrg(comp->getModulus(), comp->order);
+    MRGComponent<Int> mrg(comp->getModulus(), comp->getOrder());
     
     // Loop through all MRGs
     do {      
@@ -200,7 +200,7 @@ namespace LatMRG {
       if (!lat) continue;   
       // If the period must be maximal, test if the specific component has max period.
       // Otherwise continue.
-      if (comp->permaxPrime)
+      if (comp->onlyMaxPeriod())
       {
         if (!mrg.maxPeriod(lat->getaa()))
             continue;

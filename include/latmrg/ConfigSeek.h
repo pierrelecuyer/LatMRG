@@ -55,6 +55,8 @@ template<typename Int, typename Real> struct ConfigSeekComponent
 
     virtual Int getHighBoundary(int i) const { return Int(0); }
 
+    virtual bool onlyMaxPeriod() const { return false;} 
+
 };
 
 
@@ -94,9 +96,11 @@ template<typename Int, typename Real> struct ConfigSeekMRG : ConfigSeekComponent
       return total;
     }
     
-    virtual Int getLowBoundary(int i) const { return lowBoundaries(i); }
+    Int getLowBoundary(int i) const { return lowBoundaries(i); }
     
-    virtual Int getHighBoundary(int i) const { return highBoundaries(i); }
+    Int getHighBoundary(int i) const { return highBoundaries(i); }
+
+    bool onlyMaxPeriod() const { return permaxPrime;} 
 };
 
 
