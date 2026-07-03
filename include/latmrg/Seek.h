@@ -100,27 +100,27 @@ namespace LatMRG {
   */
   template<typename Lat> MRGLattice<Int, Real>* Seek<Lat>::nextGenerator()
   {
-    auto* comp = asMRG(conf.genComponents[0]);
+    auto* comp = conf.genComponents[0];
 
     Int range, val;
     Int tmp = NTL::to_ZZ(currentGen);
 
-    int k = comp->order;
+    int k = comp->getOrder();
     NTL::Vec<NTL::ZZ> a;
     a.SetLength(k + 1);
 
     // decode currentGen into multi-index
     for (int i = 1; i <= k; i++) {
-      range = comp->highBoundaries[i] - comp->lowBoundaries[i] + 1;
+      range = comp->getHighBoundary(i) - comp->getLowBoundary(i) + 1;
       val = tmp % range;
       tmp /= range;
-      a[i] = comp->lowBoundaries[i] + val;
+      a[i] = comp->getLowBoundary(i) + val;
     }
     
     if (currentGen < conf.configFOM.max_gen && currentGen < comp->getNoMultipliers())
     {
       ++currentGen;
-      return new MRGLattice<Int, Real>(comp->modulus, a, conf.maxdim);
+      return new MRGLattice<Int, Real>(comp->getModulus(), a, conf.maxdim);
     }
     // Otherwise return null pointer
     return nullptr;
@@ -132,20 +132,20 @@ namespace LatMRG {
   */  
   template<typename Lat> MRGLattice<Int, Real>* Seek<Lat>::nextGeneratorRandom()
   {
-    const auto* comp = asMRG(conf.genComponents[0]);
-    const int k = comp->order;
+    const auto* comp = conf.genComponents[0];
+    const int k = comp->getOrder();
     NTL::Vec<NTL::ZZ> a;
     a.SetLength(k + 1);
 
     for (int i = 1; i <= k; i++) {
       // CW: There seems to be some problem with RandInt after a few calls. Need to check this at a later point.
-      a[i] = randInt(comp->lowBoundaries[i], comp->highBoundaries[i]);
+      a[i] = randInt(comp->getLowBoundary(i), comp->getHighBoundary(i));
     }
 
     if (currentGen < conf.configFOM.max_gen)
     {
       currentGen++;
-      return new MRGLattice<Int, Real>(comp->modulus, a, conf.maxdim);
+      return new MRGLattice<Int, Real>(comp->getModulus(), a, conf.maxdim);
     }
 
     return nullptr;

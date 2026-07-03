@@ -42,7 +42,18 @@ template<typename Int, typename Real> struct ConfigSeekComponent
      */
     static ConfigSeekComponent<Int, Real>* create(GenType type);
 
+    /**
+     * Several virtual methods to get important information of the RNG.
+     */
     virtual Int getModulus() const { return Int(0); }
+    
+    virtual long getOrder() const { return 0; }
+
+    virtual Int getNoMultipliers() const { return Int(0); }
+    
+    virtual Int getLowBoundary(int i) const { return Int(0); }
+
+    virtual Int getHighBoundary(int i) const { return Int(0); }
 
 };
 
@@ -72,6 +83,8 @@ template<typename Int, typename Real> struct ConfigSeekMRG : ConfigSeekComponent
                        // Default is false
 
     Int getModulus() const override { return modulus; }
+    
+    long getOrder() const override { return order; }
 
     Int getNoMultipliers() const {
       Int total(1);
@@ -80,6 +93,10 @@ template<typename Int, typename Real> struct ConfigSeekMRG : ConfigSeekComponent
       }
       return total;
     }
+    
+    virtual Int getLowBoundary(int i) const { return lowBoundaries(i); }
+    
+    virtual Int getHighBoundary(int i) const { return highBoundaries(i); }
 };
 
 
