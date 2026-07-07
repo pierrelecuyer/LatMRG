@@ -73,7 +73,7 @@ public:
     */
    IntVec getaa() const {
       return m_aa;
-   }
+   } 
 
    /**
     * Returns `true` if the coefficients in `aa` give an MRG with maximal
