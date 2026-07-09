@@ -65,13 +65,14 @@ namespace LatMRG {
     * nextGenerator() is performing an exhaustive search. This method needs to
     * be implemented separately for the different types of lattices.
     */
-    MRGLattice<Int, Real>* nextGenerator();
+    Lat* nextGenerator();
 
     /**
     * As nextGenerator() but it chooses a random next generator which is within
     * the range defined by the configuration.
     */
-    MRGLattice<Int, Real>* nextGeneratorRandom();
+    Lat* nextGeneratorRandom();
+
 
     /**
     * This method performs the seek based on the current configuration.
@@ -98,7 +99,7 @@ namespace LatMRG {
   * This method yields the next generator of an MRG lattice based on the chosen 
   * configuration.
   */
-  template<typename Lat> MRGLattice<Int, Real>* Seek<Lat>::nextGenerator()
+  template<> MRGLattice<Int, Real>* Seek<MRGLattice<Int, Real>>::nextGenerator()
   {
     auto* comp = conf.genComponents[0];
 
@@ -130,7 +131,7 @@ namespace LatMRG {
   * This method yields a random generator of an MRG lattice within the range
   * defined by the chosen configuration.
   */  
-  template<typename Lat> MRGLattice<Int, Real>* Seek<Lat>::nextGeneratorRandom()
+  template<> MRGLattice<Int, Real>* Seek<MRGLattice<Int, Real>>::nextGeneratorRandom()
   {
     const auto* comp = conf.genComponents[0];
     const int k = comp->getOrder();
