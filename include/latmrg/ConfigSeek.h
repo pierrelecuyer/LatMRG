@@ -54,6 +54,8 @@ template<typename Int, typename Real> struct ConfigSeekComponent
     virtual Int getLowBoundary(int i) const { return Int(0); }
 
     virtual Int getHighBoundary(int i) const { return Int(0); }
+    
+    virtual long getPowMod() const { return long(0); }
 
     virtual bool onlyMaxPeriod() const { return false;} 
 
@@ -118,6 +120,23 @@ template<typename Int, typename Real> struct ConfigSeekMWC : ConfigSeekComponent
     vector<long> maxPowerTwo;  // Values of p_i (max power of 2)
     vector<vector<pair<long,long>>> equalCoeffs;  // List of pairs of coefficients that must be equal
     bool permax = false;   // When true, we retain only max-period generators. Default is false.
+
+    
+    long getOrder() const override { return order; }
+
+    Int getNoMultipliers() const {
+      Int total(1);
+      for (long i = 1; i <= order; i++) {
+          total *= (highBoundaries[i] - lowBoundaries[i] + 1);
+      }
+      return total;
+    }
+    
+    Int getLowBoundary(int i) const { return lowBoundaries(i); }
+    
+    Int getHighBoundary(int i) const { return highBoundaries(i); }
+
+    long getPowMod() const { return powMod; }
 };
 
 

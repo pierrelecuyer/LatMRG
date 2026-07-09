@@ -15,6 +15,11 @@
 #include "latticetester/Weights.h"
 #include "latticetester/WeightsUniform.h"
 
+#include "latmrg/LCGLattice.h"
+#include "latmrg/LCGComponent.h"
+#include "latmrg/MWCComponent.h"
+#include "latmrg/MWCLattice.h"
+
 namespace LatMRG {
 
   template<typename Lat> class Seek {
@@ -128,6 +133,41 @@ namespace LatMRG {
   }
 
   /**
+   * Same for MWC Lattices
+   */
+  template<> MWCLattice<Int, Real>* Seek<MWCLattice<Int, Real>>::nextGenerator()
+  {
+    auto* comp = conf.genComponents[0];
+    
+    Int range, val;
+    Int tmp = NTL::to_ZZ(currentGen);
+    
+    int k = comp->getOrder();
+    NTL::Vec<NTL::ZZ> a;
+    a.SetLength(k + 1);
+
+    
+    // decode currentGen into multi-index
+    for (int i = 1; i <= k; i++) {
+      range = comp->getHighBoundary(i) - comp->getLowBoundary(i) + 1;
+      val = tmp % range;
+      tmp /= range;
+      a[i] = comp->getLowBoundary(i) + val;
+    }
+
+    Int b = NTL::power(Int(2), comp->getPowMod());
+    Int m = computeLCGModulusMWC(b, a);
+
+    if (currentGen < conf.configFOM.max_gen && currentGen < comp->getNoMultipliers())
+    {
+      ++currentGen;
+      return new MWCLattice<Int, Real>(b, a, conf.maxdim, conf.maxdim, conf.maxdim);
+    }
+
+    return nullptr;
+  }
+
+  /**
   * This method yields a random generator of an MRG lattice within the range
   * defined by the chosen configuration.
   */  
@@ -149,6 +189,14 @@ namespace LatMRG {
       return new MRGLattice<Int, Real>(comp->getModulus(), a, conf.maxdim);
     }
 
+    return nullptr;
+  }
+  
+  /**
+   * Same for MWC Lattices
+   */
+  template<> MWCLattice<Int, Real>* Seek<MWCLattice<Int, Real>>::nextGeneratorRandom()
+  {
     return nullptr;
   }
   
