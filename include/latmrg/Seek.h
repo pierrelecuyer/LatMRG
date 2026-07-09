@@ -43,6 +43,11 @@ namespace LatMRG {
     FigureOfMeritDualM<Int, Real> fomDual;
 
     /**
+     * Object for creating an MRG lattice
+    */
+    MRGComponent<Int> mrg;
+
+    /**
     * Program time
     */
     Chrono timer; 
@@ -60,6 +65,7 @@ namespace LatMRG {
     Seek(const ConfigSeek<Int, Real>& config) : conf(config) 
                                           , fomPrimal(config.configFOM.t, *config.configFOM.weights, *config.configFOM.norma, config.configFOM.red, config.configFOM.includeFirst)
                                           , fomDual(config.configFOM.t, *config.configFOM.weights, *config.configFOM.norma, config.configFOM.red, config.configFOM.includeFirst) 
+                                          , mrg(config.genComponents[0]->getModulus(), config.genComponents[0]->getOrder())
                                           {                                             
                                           }
     
@@ -227,6 +233,7 @@ namespace LatMRG {
   template<typename Lat> int Seek<Lat>::performSeek(MRGLattice<Int, Real>* (Seek::*generator)())  {  
     assert(!conf.genComponents.empty());  
     const auto* comp = conf.genComponents[0];
+    bool maxper = true;
     int old = 0;
     // Launching the tests
     if (conf.progress) {
@@ -241,9 +248,8 @@ namespace LatMRG {
 
     // Preparation for being able to check primitivity
     setModulusIntP<Int>(comp->getModulus());
-    MRGComponent<Int> mrg(comp->getModulus(), comp->getOrder());
     
-    // Loop through all MRGs
+    // Loop through all lattices
     do {      
       lat.reset((this->*generator)());
       if (!lat) continue;   
@@ -251,7 +257,14 @@ namespace LatMRG {
       // Otherwise continue.
       if (comp->onlyMaxPeriod())
       {
-        if (!mrg.maxPeriod(lat->getaa()))
+        // Check the different cri
+        if (conf.genType == MRG) {
+          maxper = mrg.maxPeriod(lat->getaa());
+        }
+        else if (conf.genType == MWC) {
+            maxper = mIsSafePrime(lat->getModulus(), 100) && maxPeriodHalfMWC (lat->getModulus(), comp->getPowMod());
+        }
+        if (!maxper)
             continue;
       }
       
