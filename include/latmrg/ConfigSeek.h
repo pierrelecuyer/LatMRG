@@ -45,17 +45,19 @@ template<typename Int, typename Real> struct ConfigSeekComponent
     /**
      * Several virtual methods to get important information of the RNG.
      */
-    virtual Int getModulus() const { return Int(0); }
+    virtual Int getModulus() const { return Int(0);}
     
-    virtual long getOrder() const { return 0; }
+    virtual long getOrder() const { return 0;}
 
-    virtual Int getNoMultipliers() const { return Int(0); }
+    virtual Int getNoMultipliers() const { return Int(0);}
     
-    virtual Int getLowBoundary(int i) const { return Int(0); }
+    virtual Int getLowBoundary(int i) const { return Int(0);}
 
-    virtual Int getHighBoundary(int i) const { return Int(0); }
+    virtual Int getHighBoundary(int i) const { return Int(0);}
     
-    virtual long getPowMod() const { return long(0); }
+    virtual int64_t getRandomBits(int i) const { return 0;}
+    
+    virtual long getPowMod() const { return long(0);}
 
     virtual bool onlyMaxPeriod() const { return false;} 
 
@@ -98,9 +100,9 @@ template<typename Int, typename Real> struct ConfigSeekMRG : ConfigSeekComponent
       return total;
     }
     
-    Int getLowBoundary(int i) const { return lowBoundaries(i); }
+    Int getLowBoundary(int i) const { return lowBoundaries(i);}
     
-    Int getHighBoundary(int i) const { return highBoundaries(i); }
+    Int getHighBoundary(int i) const { return highBoundaries(i);}
 
     bool onlyMaxPeriod() const { return permaxPrime;} 
 };
@@ -118,6 +120,8 @@ template<typename Int, typename Real> struct ConfigSeekMWC : ConfigSeekComponent
     IntVec highBoundaries; // Default values are 1 and b-1
     vector<long> numPowerTwo;  // Values of n_i (max number of powers of 2)
     vector<long> maxPowerTwo;  // Values of p_i (max power of 2)
+    vector<int64_t> randomBits; // For random searches, the nonzero coefficients `a_j` are generated randomly with `e_j` random bits
+    int64_t numaj; // number of positive coefficients 
     vector<vector<pair<long,long>>> equalCoeffs;  // List of pairs of coefficients that must be equal
     bool permax = false;   // When true, we retain only max-period generators. Default is false.
 
@@ -132,9 +136,11 @@ template<typename Int, typename Real> struct ConfigSeekMWC : ConfigSeekComponent
       return total;
     }
     
-    Int getLowBoundary(int i) const { return lowBoundaries(i); }
+    Int getLowBoundary(int i) const { return lowBoundaries(i);}
     
-    Int getHighBoundary(int i) const { return highBoundaries(i); }
+    Int getHighBoundary(int i) const { return highBoundaries(i);}
+    
+    int64_t getRandomBits(int i) const { return randomBits[i];}
 
     long getPowMod() const { return powMod; }
 };

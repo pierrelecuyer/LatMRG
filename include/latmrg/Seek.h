@@ -118,21 +118,21 @@ namespace LatMRG {
     Int tmp = NTL::to_ZZ(currentGen);
 
     int k = comp->getOrder();
-    NTL::Vec<NTL::ZZ> a;
-    a.SetLength(k + 1);
+    NTL::Vec<NTL::ZZ> aa;
+    aa.SetLength(k + 1);
 
     // decode currentGen into multi-index
     for (int i = 1; i <= k; i++) {
       range = comp->getHighBoundary(i) - comp->getLowBoundary(i) + 1;
       val = tmp % range;
       tmp /= range;
-      a[i] = comp->getLowBoundary(i) + val;
+      aa[i] = comp->getLowBoundary(i) + val;
     }
     
     if (currentGen < conf.configFOM.max_gen && currentGen < comp->getNoMultipliers())
     {
       ++currentGen;
-      return new MRGLattice<Int, Real>(comp->getModulus(), a, conf.maxdim);
+      return new MRGLattice<Int, Real>(comp->getModulus(), aa, conf.maxdim);
     }
     // Otherwise return null pointer
     return nullptr;
@@ -149,8 +149,8 @@ namespace LatMRG {
     Int tmp = NTL::to_ZZ(currentGen);
     
     int k = comp->getOrder();
-    NTL::Vec<NTL::ZZ> a;
-    a.SetLength(k + 1);
+    NTL::Vec<NTL::ZZ> aa;
+    aa.SetLength(k + 1);
 
     
     // decode currentGen into multi-index
@@ -158,16 +158,15 @@ namespace LatMRG {
       range = comp->getHighBoundary(i) - comp->getLowBoundary(i) + 1;
       val = tmp % range;
       tmp /= range;
-      a[i] = comp->getLowBoundary(i) + val;
+      aa[i] = comp->getLowBoundary(i) + val;
     }
 
     Int b = NTL::power(Int(2), comp->getPowMod());
-    Int m = computeLCGModulusMWC(b, a);
 
     if (currentGen < conf.configFOM.max_gen && currentGen < comp->getNoMultipliers())
     {
       ++currentGen;
-      return new MWCLattice<Int, Real>(b, a, conf.maxdim, conf.maxdim, conf.maxdim);
+      return new MWCLattice<Int, Real>(b, aa, conf.maxdim, conf.maxdim, conf.maxdim);
     }
 
     return nullptr;
@@ -181,28 +180,57 @@ namespace LatMRG {
   {
     const auto* comp = conf.genComponents[0];
     const int k = comp->getOrder();
-    NTL::Vec<NTL::ZZ> a;
-    a.SetLength(k + 1);
+    NTL::Vec<NTL::ZZ> aa;
+    aa.SetLength(k + 1);
 
     for (int i = 1; i <= k; i++) {
       // CW: There seems to be some problem with RandInt after a few calls. Need to check this at a later point.
-      a[i] = randInt(comp->getLowBoundary(i), comp->getHighBoundary(i));
+      aa[i] = randInt(comp->getLowBoundary(i), comp->getHighBoundary(i));
     }
 
     if (currentGen < conf.configFOM.max_gen)
     {
-      currentGen++;
-      return new MRGLattice<Int, Real>(comp->getModulus(), a, conf.maxdim);
+      ++currentGen;
+      return new MRGLattice<Int, Real>(comp->getModulus(), aa, conf.maxdim);
     }
 
     return nullptr;
   }
   
   /**
-   * Same for MWC Lattices
+   * This method yields a random MWC Lattice currently, it is restricting the number of bits used
+   * per component of the multiplier. However, there are no restrictions on the range of the 
+   * coefficients.
    */
   template<> MWCLattice<Int, Real>* Seek<MWCLattice<Int, Real>>::nextGeneratorRandom()
   {
+    auto* comp = conf.genComponents[0];
+    int k = comp->getOrder();
+    NTL::Vec<NTL::ZZ> aa;
+    aa.SetLength(k + 1);
+    // Initialized
+    aa[0] = -1;
+    for (int64_t j = 1; j < k; j++)
+      aa[j] = 0;
+    Int b = NTL::power(Int(2), comp->getPowMod());
+
+    // Get random MWC generator
+    if (comp->getRandomBits(0) > 0) {
+         aa[0] = conv<Int>(LatticeTester::RandBits(comp->getRandomBits(0)));
+         if ((aa[0] % 2) == 0) aa[0] += 1;  // a_0 must be odd.
+      }
+    aa[k] = conv<Int>(LatticeTester::RandBits(comp->getRandomBits(k)));  // `ek` random bits for a_k.
+    for (int64_t j = 1; j < min(asMWC(comp)->numaj, k); j++)
+        aa[k-j] = conv<Int>(LatticeTester::RandBits(comp->getRandomBits(j)));  // `ej` random bits for a_{k-j}.
+    for (int64_t j = 1; j < -asMWC(comp)->numaj; j++)  // To impose equal coefficients, for testing.
+        aa[k-j] = aa[k];
+    
+    if (currentGen < conf.configFOM.max_gen)
+    {
+      ++currentGen;
+      return new MWCLattice<Int, Real>(b, aa, conf.maxdim, conf.maxdim, conf.maxdim);
+    }
+
     return nullptr;
   }
   
