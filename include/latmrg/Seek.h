@@ -129,7 +129,7 @@ namespace LatMRG {
       aa[i] = comp->getLowBoundary(i) + val;
     }
     
-    if (currentGen < conf.configFOM.max_gen && currentGen < comp->getNoMultipliers())
+    if (currentGen < conf.max_gen && currentGen < comp->getNoMultipliers())
     {
       ++currentGen;
       return new MRGLattice<Int, Real>(comp->getModulus(), aa, conf.maxdim);
@@ -163,7 +163,7 @@ namespace LatMRG {
 
     Int b = NTL::power(Int(2), comp->getPowMod());
 
-    if (currentGen < conf.configFOM.max_gen && currentGen < comp->getNoMultipliers())
+    if (currentGen < conf.max_gen && currentGen < comp->getNoMultipliers())
     {
       ++currentGen;
       return new MWCLattice<Int, Real>(b, aa, conf.maxdim, conf.maxdim, conf.maxdim);
@@ -188,7 +188,7 @@ namespace LatMRG {
       aa[i] = randInt(comp->getLowBoundary(i), comp->getHighBoundary(i));
     }
 
-    if (currentGen < conf.configFOM.max_gen)
+    if (currentGen < conf.max_gen)
     {
       ++currentGen;
       return new MRGLattice<Int, Real>(comp->getModulus(), aa, conf.maxdim);
@@ -225,7 +225,7 @@ namespace LatMRG {
     for (int64_t j = 1; j < -asMWC(comp)->numaj; j++)  // To impose equal coefficients, for testing.
         aa[k-j] = aa[k];
     
-    if (currentGen < conf.configFOM.max_gen)
+    if (currentGen < conf.max_gen)
     {
       ++currentGen;
       return new MWCLattice<Int, Real>(b, aa, conf.maxdim, conf.maxdim, conf.maxdim);
@@ -267,7 +267,7 @@ namespace LatMRG {
     if (conf.progress) {
       old = print_progress(-1);
     }
-    MeritList<Lat> bestLattice(conf.configFOM.max_gen, conf.configFOM.best);
+    MeritList<Lat> bestLattice(conf.configFOM.no_bestGen, conf.configFOM.best);
     timer.init();
     
     IntLattice<Int, Real> proj(comp->getModulus(), conf.configFOM.t.length(), conf.configFOM.norm);
@@ -305,6 +305,10 @@ namespace LatMRG {
       fomData.setMeritSqlen(fom.getMinMeritSqlen());
 
       bestLattice.add(fomData); 
+      // Update the lower bound for the FoM to equal the smallest stored FoM
+      if (conf.configFOM.best)
+        fom.setLowBound(bestLattice.getSmallestMerit());
+
       conf.configFOM.num_gen++;
       conf.configFOM.currentMerit = bestLattice.getMerit();
       if (conf.progress) old = print_progress(old);

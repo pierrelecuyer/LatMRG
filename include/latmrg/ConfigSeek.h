@@ -212,7 +212,7 @@ template<typename Int, typename Real> struct ConfigMerit
         double currentMerit = double(0);
     #endif
     
-    int max_gen = 10; // Maximal number of generators to be tested
+    int no_bestGen = 5; // Number of best generators to be kept 
 
 };
 
@@ -270,6 +270,8 @@ template<typename Int, typename Real> struct ConfigSeek
     GenType genType;   // Type of generator, currently MRG or MWC.
     long numComp;      // Number of components.  If > 1, we have a combined generator.
     int64_t maxdim;    // Maximal dimension of the lattice
+    
+    int max_gen = 10; // Maximal number of generators to be tested
 
     // List of configurations for the `numComp` components. They can be MRG or MWC.
     // The size of this list must be equal to numComp.
