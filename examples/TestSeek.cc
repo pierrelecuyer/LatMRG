@@ -59,7 +59,7 @@ int main() {
   comp->highBoundaries = c;
   comp->order = b.length() - 1;
   comp->permaxPrime = false;
-  conf.configFOM.max_gen = 20;
+  conf.max_gen = 20;
 
   // Perform the actual seek
   Seek<MRGLattice<Int, Real>> seeker(conf);

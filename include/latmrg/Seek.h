@@ -15,6 +15,11 @@
 #include "latticetester/Weights.h"
 #include "latticetester/WeightsUniform.h"
 
+#include "latmrg/LCGLattice.h"
+#include "latmrg/LCGComponent.h"
+#include "latmrg/MWCComponent.h"
+#include "latmrg/MWCLattice.h"
+
 namespace LatMRG {
 
   template<typename Lat> class Seek {
@@ -38,6 +43,11 @@ namespace LatMRG {
     FigureOfMeritDualM<Int, Real> fomDual;
 
     /**
+     * Object for creating an MRG lattice
+    */
+    MRGComponent<Int> mrg;
+
+    /**
     * Program time
     */
     Chrono timer; 
@@ -55,6 +65,7 @@ namespace LatMRG {
     Seek(const ConfigSeek<Int, Real>& config) : conf(config) 
                                           , fomPrimal(config.configFOM.t, *config.configFOM.weights, *config.configFOM.norma, config.configFOM.red, config.configFOM.includeFirst)
                                           , fomDual(config.configFOM.t, *config.configFOM.weights, *config.configFOM.norma, config.configFOM.red, config.configFOM.includeFirst) 
+                                          , mrg(config.genComponents[0]->getModulus(), config.genComponents[0]->getOrder())
                                           {                                             
                                           }
     
@@ -65,13 +76,14 @@ namespace LatMRG {
     * nextGenerator() is performing an exhaustive search. This method needs to
     * be implemented separately for the different types of lattices.
     */
-    MRGLattice<Int, Real>* nextGenerator();
+    Lat* nextGenerator();
 
     /**
     * As nextGenerator() but it chooses a random next generator which is within
     * the range defined by the configuration.
     */
-    MRGLattice<Int, Real>* nextGeneratorRandom();
+    Lat* nextGeneratorRandom();
+
 
     /**
     * This method performs the seek based on the current configuration.
@@ -98,7 +110,7 @@ namespace LatMRG {
   * This method yields the next generator of an MRG lattice based on the chosen 
   * configuration.
   */
-  template<typename Lat> MRGLattice<Int, Real>* Seek<Lat>::nextGenerator()
+  template<> MRGLattice<Int, Real>* Seek<MRGLattice<Int, Real>>::nextGenerator()
   {
     auto* comp = conf.genComponents[0];
 
@@ -106,23 +118,57 @@ namespace LatMRG {
     Int tmp = NTL::to_ZZ(currentGen);
 
     int k = comp->getOrder();
-    NTL::Vec<NTL::ZZ> a;
-    a.SetLength(k + 1);
+    NTL::Vec<NTL::ZZ> aa;
+    aa.SetLength(k + 1);
 
     // decode currentGen into multi-index
     for (int i = 1; i <= k; i++) {
       range = comp->getHighBoundary(i) - comp->getLowBoundary(i) + 1;
       val = tmp % range;
       tmp /= range;
-      a[i] = comp->getLowBoundary(i) + val;
+      aa[i] = comp->getLowBoundary(i) + val;
     }
     
-    if (currentGen < conf.configFOM.max_gen && currentGen < comp->getNoMultipliers())
+    if (currentGen < conf.max_gen && currentGen < comp->getNoMultipliers())
     {
       ++currentGen;
-      return new MRGLattice<Int, Real>(comp->getModulus(), a, conf.maxdim);
+      return new MRGLattice<Int, Real>(comp->getModulus(), aa, conf.maxdim);
     }
     // Otherwise return null pointer
+    return nullptr;
+  }
+
+  /**
+   * Same for MWC Lattices
+   */
+  template<> MWCLattice<Int, Real>* Seek<MWCLattice<Int, Real>>::nextGenerator()
+  {
+    auto* comp = conf.genComponents[0];
+    
+    Int range, val;
+    Int tmp = NTL::to_ZZ(currentGen);
+    
+    int k = comp->getOrder();
+    NTL::Vec<NTL::ZZ> aa;
+    aa.SetLength(k + 1);
+
+    
+    // decode currentGen into multi-index
+    for (int i = 1; i <= k; i++) {
+      range = comp->getHighBoundary(i) - comp->getLowBoundary(i) + 1;
+      val = tmp % range;
+      tmp /= range;
+      aa[i] = comp->getLowBoundary(i) + val;
+    }
+
+    Int b = NTL::power(Int(2), comp->getPowMod());
+
+    if (currentGen < conf.max_gen && currentGen < comp->getNoMultipliers())
+    {
+      ++currentGen;
+      return new MWCLattice<Int, Real>(b, aa, conf.maxdim, conf.maxdim, conf.maxdim);
+    }
+
     return nullptr;
   }
 
@@ -130,22 +176,59 @@ namespace LatMRG {
   * This method yields a random generator of an MRG lattice within the range
   * defined by the chosen configuration.
   */  
-  template<typename Lat> MRGLattice<Int, Real>* Seek<Lat>::nextGeneratorRandom()
+  template<> MRGLattice<Int, Real>* Seek<MRGLattice<Int, Real>>::nextGeneratorRandom()
   {
     const auto* comp = conf.genComponents[0];
     const int k = comp->getOrder();
-    NTL::Vec<NTL::ZZ> a;
-    a.SetLength(k + 1);
+    NTL::Vec<NTL::ZZ> aa;
+    aa.SetLength(k + 1);
 
     for (int i = 1; i <= k; i++) {
       // CW: There seems to be some problem with RandInt after a few calls. Need to check this at a later point.
-      a[i] = randInt(comp->getLowBoundary(i), comp->getHighBoundary(i));
+      aa[i] = randInt(comp->getLowBoundary(i), comp->getHighBoundary(i));
     }
 
-    if (currentGen < conf.configFOM.max_gen)
+    if (currentGen < conf.max_gen)
     {
-      currentGen++;
-      return new MRGLattice<Int, Real>(comp->getModulus(), a, conf.maxdim);
+      ++currentGen;
+      return new MRGLattice<Int, Real>(comp->getModulus(), aa, conf.maxdim);
+    }
+
+    return nullptr;
+  }
+  
+  /**
+   * This method yields a random MWC Lattice currently, it is restricting the number of bits used
+   * per component of the multiplier. However, there are no restrictions on the range of the 
+   * coefficients.
+   */
+  template<> MWCLattice<Int, Real>* Seek<MWCLattice<Int, Real>>::nextGeneratorRandom()
+  {
+    auto* comp = conf.genComponents[0];
+    int k = comp->getOrder();
+    NTL::Vec<NTL::ZZ> aa;
+    aa.SetLength(k + 1);
+    // Initialized
+    aa[0] = -1;
+    for (int64_t j = 1; j < k; j++)
+      aa[j] = 0;
+    Int b = NTL::power(Int(2), comp->getPowMod());
+
+    // Get random MWC generator
+    if (comp->getRandomBits(0) > 0) {
+         aa[0] = conv<Int>(LatticeTester::RandBits(comp->getRandomBits(0)));
+         if ((aa[0] % 2) == 0) aa[0] += 1;  // a_0 must be odd.
+      }
+    aa[k] = conv<Int>(LatticeTester::RandBits(comp->getRandomBits(k)));  // `ek` random bits for a_k.
+    for (int64_t j = 1; j < min(asMWC(comp)->numaj, k); j++)
+        aa[k-j] = conv<Int>(LatticeTester::RandBits(comp->getRandomBits(j)));  // `ej` random bits for a_{k-j}.
+    for (int64_t j = 1; j < -asMWC(comp)->numaj; j++)  // To impose equal coefficients, for testing.
+        aa[k-j] = aa[k];
+    
+    if (currentGen < conf.max_gen)
+    {
+      ++currentGen;
+      return new MWCLattice<Int, Real>(b, aa, conf.maxdim, conf.maxdim, conf.maxdim);
     }
 
     return nullptr;
@@ -178,12 +261,13 @@ namespace LatMRG {
   template<typename Lat> int Seek<Lat>::performSeek(MRGLattice<Int, Real>* (Seek::*generator)())  {  
     assert(!conf.genComponents.empty());  
     const auto* comp = conf.genComponents[0];
+    bool maxper = true;
     int old = 0;
     // Launching the tests
     if (conf.progress) {
       old = print_progress(-1);
     }
-    MeritList<Lat> bestLattice(conf.configFOM.max_gen, conf.configFOM.best);
+    MeritList<Lat> bestLattice(conf.configFOM.no_bestGen, conf.configFOM.best);
     timer.init();
     
     IntLattice<Int, Real> proj(comp->getModulus(), conf.configFOM.t.length(), conf.configFOM.norm);
@@ -192,9 +276,8 @@ namespace LatMRG {
 
     // Preparation for being able to check primitivity
     setModulusIntP<Int>(comp->getModulus());
-    MRGComponent<Int> mrg(comp->getModulus(), comp->getOrder());
     
-    // Loop through all MRGs
+    // Loop through all lattices
     do {      
       lat.reset((this->*generator)());
       if (!lat) continue;   
@@ -202,7 +285,14 @@ namespace LatMRG {
       // Otherwise continue.
       if (comp->onlyMaxPeriod())
       {
-        if (!mrg.maxPeriod(lat->getaa()))
+        // Check the different cri
+        if (conf.genType == MRG) {
+          maxper = mrg.maxPeriod(lat->getaa());
+        }
+        else if (conf.genType == MWC) {
+            maxper = mIsSafePrime(lat->getModulus(), 100) && maxPeriodHalfMWC (lat->getModulus(), comp->getPowMod());
+        }
+        if (!maxper)
             continue;
       }
       
@@ -215,6 +305,10 @@ namespace LatMRG {
       fomData.setMeritSqlen(fom.getMinMeritSqlen());
 
       bestLattice.add(fomData); 
+      // Update the lower bound for the FoM to equal the smallest stored FoM
+      if (conf.configFOM.best)
+        fom.setLowBound(bestLattice.getSmallestMerit());
+
       conf.configFOM.num_gen++;
       conf.configFOM.currentMerit = bestLattice.getMerit();
       if (conf.progress) old = print_progress(old);

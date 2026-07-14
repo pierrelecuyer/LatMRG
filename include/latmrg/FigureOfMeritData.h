@@ -120,6 +120,19 @@ class MeritList{
       Real getMerit(){
         return m_merit;
       }
+      
+      
+      /**
+      * Get the smallest merit in the list. 
+      */
+      Real getSmallestMerit() const {
+         if (m_tests.empty()) {
+          throw std::runtime_error("MeritList is empty");
+         }
+        return m_best ? m_tests.front().getMerit()
+                      : m_tests.back().getMerit();
+      }
+
 
       private:
 
