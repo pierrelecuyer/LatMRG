@@ -56,7 +56,7 @@ namespace LatMRG {
   * randomly selecting the recurrence coefficients within the ranges specified
   * in the configuration. 
   *
-  * The constructor is inherited from Seek. It initializes the search using a
+  * The constructor is mainly inherited from Seek. It initializes the search using a
   * ConfigSeek object, which specifies the modulus, recurrence order,
   * admissible coefficient ranges, search limits, and the figure-of-merit
   * configuration. The initialization of the figure-of-merit objects and
