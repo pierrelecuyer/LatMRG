@@ -1,3 +1,20 @@
+// This file is part of LatMRG.
+//
+// Copyright (C) 2012-2022  The LatMRG authors, under the occasional supervision
+// of Pierre L'Ecuyer at Universit? de Montr?al.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #ifndef LATMRG_SEEK_H
 #define LATMRG_SEEK_H
 
@@ -21,6 +38,42 @@
 #include "latmrg/MWCLattice.h"
 
 namespace LatMRG {
+
+  /**
+ * \class Seek
+ *
+ * This class performs an exhaustive or random search for linear
+ * recurrence generators satisfying prescribed constraints and ranks
+ * the resulting generators according to a chosen figure of merit.
+ *
+ * A search consists of generating candidate lattices one by one,
+ * optionally verifying that the corresponding generator has maximal
+ * period, and computing a figure of merit for each admissible lattice.
+ * Depending on the configuration, the figure of merit is evaluated
+ * either for the primal or the dual lattice. The best generators
+ * encountered during the search are retained throughout the execution.
+ *
+ * The constructor initializes the search from a ConfigSeek object.
+ * In particular, it stores the search configuration, constructs the
+ * required figure of merit objects, and initializes the auxiliary
+ * objects needed during the search.
+ *
+ * The method performSeek() is the main facility of the
+ * class. It repeatedly generates candidate lattices, evaluates their
+ * figure of merit, and keeps the best generators found during the
+ * search. Note that the candidate lattice depend on the configuration
+ * as well as on the lattice type under consideration. The search terminates 
+ * when no further admissible generators are available or when the 
+ * prescribed CPU time limit is reached
+ *
+ * Candidate generators are produced by the member functions
+ * \nextGenerator() and nextGeneratorRandom(). These functions
+ * generate the next admissible generator according to the search
+ * configuration, either by exhaustive enumeration of the prescribed
+ * search space or by random sampling from the admissible parameter
+ * ranges. The implementation of these functions is specialized for the
+ * supported lattice types [CW: In the subclasses].
+ */
 
   template<typename Lat> class Seek {
         
@@ -90,7 +143,7 @@ namespace LatMRG {
     * The parameter *generator defines the method of the seek, e.g.,
     * a random or an exhaustive search.
     */
-    int performSeek(MRGLattice<Int, Real>* (Seek::*generator)());  
+    int performSeek(Lat* (Seek::*generator)());
     
     /**
     * This method is supposed to report the progress of the current  
@@ -258,7 +311,7 @@ namespace LatMRG {
   * The parameter *generator defines the method of the seek, e.g.,
   * a random or an exhaustive search.
   */
-  template<typename Lat> int Seek<Lat>::performSeek(MRGLattice<Int, Real>* (Seek::*generator)())  {  
+  template<typename Lat> int Seek<Lat>::performSeek(Lat* (Seek::*generator)())  {  
     assert(!conf.genComponents.empty());  
     const auto* comp = conf.genComponents[0];
     bool maxper = true;
@@ -283,6 +336,7 @@ namespace LatMRG {
       if (!lat) continue;   
       // If the period must be maximal, test if the specific component has max period.
       // Otherwise continue.
+      // This needs to be amended if we want to organize the code by subclasses for the specific RNGs.
       if (comp->onlyMaxPeriod())
       {
         // Check the different cri
