@@ -172,7 +172,7 @@ namespace LatMRG {
   
   /**
   * This method is supposed to report the progress of the current  
-  * search. It is still the version of the old LatMRG and currently
+  * search. It is still the version of the old LatMRG and is currently
   * not working.
   */
   template<typename Lat> int Seek<Lat>:: print_progress(int old) {    
@@ -188,6 +188,8 @@ namespace LatMRG {
     std::cout << std::setw(3) << int(per_80/80.0*100) << " %\r" << std::flush;
     return per_80;
   }
+
+  //===========================================================================
 
   /**
   * This method performs the seek based on the current configuration.
@@ -238,8 +240,7 @@ namespace LatMRG {
         fom.setLowBound(bestLattice.getSmallestMerit());
 
       conf.configFOM.num_gen++;
-      conf.configFOM.currentMerit = bestLattice.getMerit();
-      std::cout << fom.computeMerit(*lat, proj) << "\n";
+      conf.configFOM.currentMerit = bestLattice.getMerit(); 
       if (conf.progress) old = print_progress(old);
     } while (!timer.timeOver(conf.timeLimit) && lat);
      

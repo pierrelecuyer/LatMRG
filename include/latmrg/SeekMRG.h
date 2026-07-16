@@ -129,6 +129,8 @@ namespace LatMRG {
     return nullptr;
   }
 
+  //===========================================================================
+
   /**
   * nextGeneratorRandom() generates admissible MRG generators by randomly selecting 
   * the recurrence coefficients within the ranges specified in the configuration. 
@@ -156,13 +158,16 @@ namespace LatMRG {
     return nullptr;
   }
 
+  //===========================================================================
+
   /**
   * This method checks whether the generated lattice satisfies the
   * maximal-period requirement for an MRG.
   */
- template<typename Int, typename Real> bool SeekMRG<Int, Real>::checkMaxPeriod(MRGLattice<Int, Real>& lat)
- {
-    return mrg.maxPeriod(lat.getaa());
- }
+  template<typename Int, typename Real> bool SeekMRG<Int, Real>::checkMaxPeriod(MRGLattice<Int, Real>& lat)
+  {
+     return mrg.maxPeriod(lat.getaa());
+  }
+
 }// End namespace LatMRG
 #endif

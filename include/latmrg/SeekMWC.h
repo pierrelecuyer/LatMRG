@@ -116,6 +116,8 @@ namespace LatMRG {
     return nullptr;
   }
 
+  //===========================================================================
+
   /**
   * nextGeneratorRandom() generates admissible MWC generators by randomly 
   * selecting the multiplier coefficients according to the bit-size restrictions
@@ -152,6 +154,8 @@ namespace LatMRG {
 
     return nullptr;
   }
+
+  //===========================================================================
   
   /**
   * This method checks whether the generated lattice satisfies the
