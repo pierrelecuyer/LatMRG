@@ -11,10 +11,14 @@
 #include "latmrg/EnumTypes.h"
 #include "latmrg/ConfigSeek.h"
 #include "latmrg/Seek.h"
+#include "latmrg/SeekMRG.h"
+#include "latmrg/SeekMWC.h"
 
 /**
  * This example implements a Seek for MRGs. It is far from being
- * the final version but should only be seen as a starting point
+ * the final version but should only be seen as a starting point.
+ * The most important lines are the last lines of the code where the
+ * actual seek is performed.
  */
 
 using namespace LatMRG;
@@ -62,7 +66,7 @@ int main() {
   conf.max_gen = 20;
 
   // Perform the actual seek
-  Seek<MRGLattice<Int, Real>> seeker(conf);
-  seeker.performSeek(&Seek<MRGLattice<Int, Real>>::nextGenerator);
+  SeekMRG<Int, Real> seeker(conf);
+  seeker.performSeek(&SeekMRG<Int, Real>::nextGenerator);
   return 0;
 }

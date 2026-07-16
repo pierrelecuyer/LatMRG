@@ -31,6 +31,7 @@
 #include "latticetester/ReducerBB.h"
 #include "latticetester/Weights.h"
 #include "latticetester/WeightsUniform.h"
+#include "latmrg/Seek.h"
 
 #include "latmrg/LCGLattice.h"
 #include "latmrg/LCGComponent.h"
@@ -39,36 +40,73 @@
 
 namespace LatMRG {
 
+  /**
+  * \class SeekMRG
+  *
+  * This class implements the search procedure for multiple recursive
+  * generator (MRG) lattices. It derives from the abstract class Seek and
+  * provides the lattice-specific implementation of the next generator
+  * construction methods required during the search.
+  * This class only defines how MRG candidate generators are created. 
+  *
+  * The method nextGenerator() performs an exhaustive enumeration of the
+  * admissible MRG generators defined by the configuration. 
+  *
+  * The method nextGeneratorRandom() generates admissible MRG generators by
+  * randomly selecting the recurrence coefficients within the ranges specified
+  * in the configuration. 
+  *
+  * The constructor is inherited from Seek. It initializes the search using a
+  * ConfigSeek object, which specifies the modulus, recurrence order,
+  * admissible coefficient ranges, search limits, and the figure-of-merit
+  * configuration. The initialization of the figure-of-merit objects and
+  * auxiliary search data is therefore handled by the base class.
+  */
+
     template<typename Int, typename Real>
     class SeekMRG: public Seek<MRGLattice<Int, Real>> {
 
         public:
 
-        using Seek<MRGLattice<Int, Real>>::Seek;
+        SeekMRG(const ConfigSeek<Int, Real>& config)
+        : Seek<MRGLattice<Int, Real>>(config),
+          mrg(config.genComponents[0]->getModulus(), config.genComponents[0]->getOrder())
+        {
+        }
 
         MRGLattice<Int, Real>* nextGenerator() override;
 
         MRGLattice<Int, Real>* nextGeneratorRandom() override;
 
+        bool checkMaxPeriod(MRGLattice<Int, Real>& lat) override;
+
         private:
+         
+        /**
+        * Object for creating an MRG lattice
+        */
+        MRGComponent<Int> mrg;
 
-    }
-  }
+    };
 
-    //============================================================================
+//============================================================================
 // Implementation
 
 
-  /**
-  * This method yields the next generator of an MRG lattice based on the chosen 
-  * configuration.
+ /**
+  * nextGenerator() performs an exhaustive enumeration of the admissible MRG 
+  * generators defined by the configuration. The coefficients of the recurrence 
+  * are obtained by decoding the current generator index into the corresponding 
+  * multiplier values within the prescribed ranges. Each admissible set of 
+  * coefficients is used to construct an MRG lattice that is subsequently analyzed 
+  * by the search procedure defined in the base class.
   */
-  MRGLattice<Int, Real>* SeekMRG::nextGenerator()
+  template<typename Int, typename Real> MRGLattice<Int, Real>* SeekMRG<Int, Real>::nextGenerator()
   {
-    auto* comp = conf.genComponents[0];
+    auto* comp = this->conf.genComponents[0];
 
     Int range, val;
-    Int tmp = NTL::to_ZZ(currentGen);
+    Int tmp = NTL::to_ZZ(this->currentGen);
 
     int k = comp->getOrder();
     NTL::Vec<NTL::ZZ> aa;
@@ -82,22 +120,24 @@ namespace LatMRG {
       aa[i] = comp->getLowBoundary(i) + val;
     }
     
-    if (currentGen < conf.max_gen && currentGen < comp->getNoMultipliers())
+    if (this->currentGen < this->conf.max_gen && this->currentGen < comp->getNoMultipliers())
     {
-      ++currentGen;
-      return new MRGLattice<Int, Real>(comp->getModulus(), aa, conf.maxdim);
+      ++this->currentGen;
+      return new MRGLattice<Int, Real>(comp->getModulus(), aa, this->conf.maxdim);
     }
     // Otherwise return null pointer
     return nullptr;
   }
 
-   /**
-  * This method yields a random generator of an MRG lattice within the range
-  * defined by the chosen configuration.
-  */  
-  MRGLattice<Int, Real>* SeekMRG::nextGeneratorRandom()
+  /**
+  * nextGeneratorRandom() generates admissible MRG generators by randomly selecting 
+  * the recurrence coefficients within the ranges specified in the configuration. 
+  * It provides the random search analagoue of nextGenerator() and can be used by 
+  * performSeek() when a stochastic search.
+  */
+  template<typename Int, typename Real> MRGLattice<Int, Real>* SeekMRG<Int, Real>::nextGeneratorRandom()
   {
-    const auto* comp = conf.genComponents[0];
+    const auto* comp = this->conf.genComponents[0];
     const int k = comp->getOrder();
     NTL::Vec<NTL::ZZ> aa;
     aa.SetLength(k + 1);
@@ -107,9 +147,22 @@ namespace LatMRG {
       aa[i] = randInt(comp->getLowBoundary(i), comp->getHighBoundary(i));
     }
 
-    if (currentGen < conf.max_gen)
+    if (this->currentGen < this->conf.max_gen)
     {
-      ++currentGen;
-      return new MRGLattice<Int, Real>(comp->getModulus(), aa, conf.maxdim);  
+      ++this->currentGen;
+      return new MRGLattice<Int, Real>(comp->getModulus(), aa, this->conf.maxdim);
     }
+
+    return nullptr;
   }
+
+  /**
+  * This method checks whether the generated lattice satisfies the
+  * maximal-period requirement for an MRG.
+  */
+ template<typename Int, typename Real> bool SeekMRG<Int, Real>::checkMaxPeriod(MRGLattice<Int, Real>& lat)
+ {
+    return mrg.maxPeriod(lat.getaa());
+ }
+}// End namespace LatMRG
+#endif
