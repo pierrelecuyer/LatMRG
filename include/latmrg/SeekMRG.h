@@ -43,11 +43,11 @@ namespace LatMRG {
   /**
   * \class SeekMRG
   *
-  * This class implements the search procedure for multiple recursive
-  * generator (MRG) lattices. It derives from the abstract class Seek and
-  * provides the lattice-specific implementation of the next generator
-  * construction methods required during the search.
-  * This class only defines how MRG candidate generators are created. 
+  * This class implements the search procedure for MRG lattices. 
+  * It derives from the abstract class Seek and provides the 
+  * lattice-specific implementation of the next generator methods 
+  * required during the search. This class only defines how MRG 
+  * candidate generators are created. 
   *
   * The method nextGenerator() performs an exhaustive enumeration of the
   * admissible MRG generators defined by the configuration. 

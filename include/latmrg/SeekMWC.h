@@ -42,11 +42,11 @@ namespace LatMRG {
   /**
   * \class SeekMWC
   * 
-  * This class implements the search procedure for multiply-with-carry
-  * (MWC) lattices. It derives from the abstract class Seek and provides
-  * the lattice-specific implementation of the next generator
-  * construction methods required during the search.
-  * This class only defines how MWC candidate generators are created.
+  * This class implements the search procedure for MWC lattices. 
+  * It derives from the abstract class Seek and provides the 
+  * lattice-specific implementation of the next generator methods 
+  * required during the search. This class only defines how MRG 
+  * candidate generators are created. 
   *
   * The method nextGenerator() performs an exhaustive enumeration of the
   * admissible MWC generators defined by the configuration. 
