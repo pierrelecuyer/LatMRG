@@ -56,13 +56,13 @@ int main() {
   conf.configFOM.t = t;
   conf.genType = MRG;
   conf.numComp = 1;
-  conf.createComponent();
+  conf.permax = false;
+  conf.createComponents();
   auto* comp = asMRG(conf.genComponents[0]);
   comp->modulus = m;
   comp->lowBoundaries = b;
   comp->highBoundaries = c;
   comp->order = b.length() - 1;
-  comp->permaxPrime = false;
   conf.max_gen = 20;
 
   // Perform the actual seek

@@ -198,7 +198,6 @@ namespace LatMRG {
   */
   template<typename Lat> template<typename Generator> int Seek<Lat>::performSeek(Lat* (Generator::*generator)())  {  
     assert(!conf.genComponents.empty());  
-    const auto* comp = conf.genComponents[0];
     int old = 0;
     // Launching the tests
     if (conf.progress) {
@@ -207,12 +206,12 @@ namespace LatMRG {
     MeritList<Lat> bestLattice(conf.configFOM.no_bestGen, conf.configFOM.best);
     timer.init();
     
-    IntLattice<Int, Real> proj(comp->getModulus(), conf.configFOM.t.length(), conf.configFOM.norm);
+    IntLattice<Int, Real> proj(conf.getModulus(), conf.configFOM.t.length(), conf.configFOM.norm);
     
     FigureOfMeritData<Lat> fomData;
 
     // Preparation for being able to check primitivity
-    setModulusIntP<Int>(comp->getModulus());
+    setModulusIntP<Int>(conf.getModulus());
     
     // Loop through all lattices
     do {      
@@ -220,7 +219,7 @@ namespace LatMRG {
       if (!lat) continue;   
       // If the period must be maximal, test if the specific component has max period.
       // Otherwise continue.
-      if (comp->onlyMaxPeriod())
+      if (conf.onlyMaxPeriod())
       { 
         if (!checkMaxPeriod(*lat))
           continue;
@@ -241,6 +240,7 @@ namespace LatMRG {
 
       conf.configFOM.num_gen++;
       conf.configFOM.currentMerit = bestLattice.getMerit(); 
+      std::cout << fom.computeMerit(*lat, proj) << "\n";
       if (conf.progress) old = print_progress(old);
     } while (!timer.timeOver(conf.timeLimit) && lat);
      

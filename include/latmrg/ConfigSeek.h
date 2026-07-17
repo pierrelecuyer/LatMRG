@@ -59,8 +59,6 @@ template<typename Int, typename Real> struct ConfigSeekComponent
     
     virtual long getPowMod() const { return long(0);}
 
-    virtual bool onlyMaxPeriod() const { return false;} 
-
 };
 
 
@@ -80,7 +78,6 @@ template<typename Int, typename Real> struct ConfigSeekMRG : ConfigSeekComponent
     vector<long> numPowerTwo;  // Values of n_i (max number of powers of 2)
     vector<long> maxPowerTwo;  // Values of p_i (max power of 2)
     vector<vector<pair<long,long>>> equalCoeffs;  // List of pairs of coefficients that must be equal
-    bool permaxPrime = false;  // When true, m must be prime and we retain only max-period MRGs (default = false)
     DecompType howFactorh; // Indicates how to factorize h=(m-1)/2
     IntVec factorsh;      // The factors of h, repeated according to multiplicity, when known
     DecompType howFactor;  // Indicates how to factorize r=(m^k-1)/(m-1)
@@ -104,7 +101,6 @@ template<typename Int, typename Real> struct ConfigSeekMRG : ConfigSeekComponent
     
     Int getHighBoundary(int i) const { return highBoundaries(i);}
 
-    bool onlyMaxPeriod() const { return permaxPrime;} 
 };
 
 
@@ -123,7 +119,6 @@ template<typename Int, typename Real> struct ConfigSeekMWC : ConfigSeekComponent
     vector<int64_t> randomBits; // For random searches, the nonzero coefficients `a_j` are generated randomly with `e_j` random bits
     int64_t numaj; // number of positive coefficients 
     vector<vector<pair<long,long>>> equalCoeffs;  // List of pairs of coefficients that must be equal
-    bool permax = false;   // When true, we retain only max-period generators. Default is false.
 
     
     long getOrder() const override { return order; }
@@ -271,6 +266,8 @@ template<typename Int, typename Real> struct ConfigSeek
     long numComp;      // Number of components.  If > 1, we have a combined generator.
     int64_t maxdim;    // Maximal dimension of the lattice
     
+    bool permax = false;   // When true, we retain only max-period generators. Default is false.
+    
     int max_gen = 10; // Maximal number of generators to be tested
 
     // List of configurations for the `numComp` components. They can be MRG or MWC.
@@ -293,13 +290,30 @@ template<typename Int, typename Real> struct ConfigSeek
      * Automatically creates the correct component
      * from conf.genType.
      */
-    void createComponent()
+    void createComponents()
     {
         genComponents.resize(numComp);
         for (long i = 0; i < numComp; i++) {
             genComponents[i] = ConfigSeekComponent<Int, Real>::create(genType);
         }
     }
+
+    /**
+     * Yields the modulus of a possibly combined RNG.
+     */
+    Int getModulus() const { 
+        Int mod = Int(1);
+        for (long i = 0; i < numComp; i++) {
+            mod *= genComponents[i]->getModulus();
+        }
+        return mod;
+    }
+
+    /**
+     *  When true, we retain only max-period generators.
+     */    
+    bool onlyMaxPeriod() const { return permax;} 
+
 
     ~ConfigSeek()
     {
