@@ -300,6 +300,8 @@ template<typename Int, typename Real> struct ConfigSeek
 
     /**
      * Yields the modulus of a possibly combined RNG.
+     * The method currently assumes that the moduli of the components
+     * are relatively prime. This needs to be generalized.
      */
     Int getModulus() const { 
         Int mod = Int(1);
