@@ -58,7 +58,7 @@ namespace LatMRG {
  * objects needed during the search.
  *
  * The method performSeek() is the main facility of the class. It
- * repeatedly calls a generator function supplied by the user, evaluates
+ * repeatedly calls a next generator function supplied by the user, evaluates
  * the figure of merit of the resulting lattices, and keeps the best
  * generators found during the search. The generator function is passed
  * as a pointer to a member function, see below, allowing the search procedure to

@@ -59,8 +59,7 @@ namespace LatMRG {
   * The constructor is mainly inherited from Seek. It initializes the search using a
   * ConfigSeek object, which specifies the modulus, recurrence order,
   * admissible coefficient ranges, search limits, and the figure-of-merit
-  * configuration. The initialization of the figure-of-merit objects and
-  * auxiliary search data is therefore handled by the base class.
+  * configuration.
   */
 
     template<typename Int, typename Real>
