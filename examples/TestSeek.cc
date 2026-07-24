@@ -11,10 +11,14 @@
 #include "latmrg/EnumTypes.h"
 #include "latmrg/ConfigSeek.h"
 #include "latmrg/Seek.h"
+#include "latmrg/SeekMRG.h"
+#include "latmrg/SeekMWC.h"
 
 /**
  * This example implements a Seek for MRGs. It is far from being
- * the final version but should only be seen as a starting point
+ * the final version but should only be seen as a starting point.
+ * The most important lines are the last lines of the code where the
+ * actual seek is performed.
  */
 
 using namespace LatMRG;
@@ -44,25 +48,27 @@ int main() {
   const int64_t maxdim(16);
   
   // Define all the necessary details of the configuration
-  ConfigSeek<Int, Real> conf;
-  conf.maxdim = maxdim;
-  conf.configFOM.norma =  new NormaBestLat(log(m), 1, 16);
-  conf.configFOM.red =  new ReducerBB<Int, Real>(maxdim);
-  conf.configFOM.weights =  new WeightsUniform(1.0);
-  conf.configFOM.t = t;
-  conf.genType = MRG;
-  conf.numComp = 1;
-  conf.createComponent();
-  auto* comp = asMRG(conf.genComponents[0]);
+  ConfigSeek<Int, Real>* conf = new ConfigSeek<Int, Real>;
+  conf->maxdim = maxdim;
+  conf->configFOM.norma =  new NormaBestLat(log(m), 1, 16);
+  conf->configFOM.red =  new ReducerBB<Int, Real>(maxdim);
+  conf->configFOM.weights =  new WeightsUniform(1.0);
+  conf->configFOM.t = t;
+  conf->genType = MRG;
+  conf->numComp = 1;
+  conf->permax = false;
+  conf->createComponents();
+  conf->outputToGenFile = false;
+  conf->filename = "test.gen";
+  auto* comp = asMRG(conf->genComponents[0]);
   comp->modulus = m;
   comp->lowBoundaries = b;
   comp->highBoundaries = c;
   comp->order = b.length() - 1;
-  comp->permaxPrime = false;
-  conf.max_gen = 20;
+  conf->max_gen = 20;
 
   // Perform the actual seek
-  Seek<MRGLattice<Int, Real>> seeker(conf);
-  seeker.performSeek(&Seek<MRGLattice<Int, Real>>::nextGenerator);
+  SeekMRG<Int, Real> seeker(*conf);
+  seeker.performSeek(&SeekMRG<Int, Real>::nextGenerator);
   return 0;
 }

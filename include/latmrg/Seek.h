@@ -1,10 +1,29 @@
+// This file is part of LatMRG.
+//
+// Copyright (C) 2012-2022  The LatMRG authors, under the occasional supervision
+// of Pierre L'Ecuyer at Universit? de Montr?al.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #ifndef LATMRG_SEEK_H
 #define LATMRG_SEEK_H
 
 #include <cassert>
+#include <fstream>
 #include <iostream>
 #include <iomanip>
 #include <memory>
+#include <functional>
 
 #include "latmrg/PrimesFinder.h"
 #include "latmrg/ConfigSeek.h"
@@ -22,75 +41,102 @@
 
 namespace LatMRG {
 
+ /**
+ * \class Seek
+ *
+ * This abstract class performs an exhaustive or random search for RNGs.
+ *
+ * A search consists of generating candidate lattices one by one,
+ * optionally verifying that the corresponding generator has maximal
+ * period, and computing a figure of merit for each admissible lattice.
+ * Depending on the configuration, the figure of merit is evaluated
+ * either for the primal or the dual lattice. The best generators
+ * encountered during the search are retained throughout the execution.
+ *
+ * The constructor initializes the search from a ConfigSeek object.
+ * In particular, it stores the search configuration, constructs the
+ * required figure of merit objects, and initializes the auxiliary
+ * objects needed during the search.
+ *
+ * The method performSeek() is the main facility of the class. It
+ * repeatedly calls a next generator function supplied by the user, evaluates
+ * the figure of merit of the resulting lattices, and keeps the best
+ * generators found during the search. The generator function is passed
+ * as a pointer to a member function, see below, allowing the search procedure to
+ * use either exhaustive enumeration or random generation while keeping
+ * the search algorithm independent of the lattice type.
+ *
+ * The methods nextGenerator() and nextGeneratorRandom() define how
+ * candidate generators are produced. The former performs an exhaustive
+ * enumeration of the admissible generator space defined by the
+ * configuration, whereas the latter generates candidates randomly within
+ * the prescribed ranges. These methods are pure virtual and must be
+ * implemented in the subclasses corresponding to the different lattice
+ * types (e.g., MRG or MWC lattices).
+ *
+ * Thus, the subclasses are responsible only for the construction of
+ * admissible candidate lattices, while the common search logic, including
+ * merit computation, period checking, ranking, and progress reporting,
+ * is implemented in this class.
+ */
+
   template<typename Lat> class Seek {
-        
-    private:
-        
-    /**
-    * The current lattice which is analyzed.
-    */
-    std::unique_ptr<Lat> lat;
-
-    /**
-    * The configuration for the seek.
-    */
-    ConfigSeek<Int, Real> conf;
-
-    /**
-    * Figure of merit objects for the primal and dual lattice.
-    */        
-    FigureOfMeritM<Int, Real> fomPrimal;
-    FigureOfMeritDualM<Int, Real> fomDual;
-
-    /**
-     * Object for creating an MRG lattice
-    */
-    MRGComponent<Int> mrg;
-
-    /**
-    * Program time
-    */
-    Chrono timer; 
-
-    /**
-    * Counter for the current RNG.
-    */
-    int currentGen = 0;       
+  
          
     public:
 
-    /**
-    * Initialization of objects is based on the ConfigSeek parameter.
-    */
-    Seek(const ConfigSeek<Int, Real>& config) : conf(config) 
-                                          , fomPrimal(config.configFOM.t, *config.configFOM.weights, *config.configFOM.norma, config.configFOM.red, config.configFOM.includeFirst)
-                                          , fomDual(config.configFOM.t, *config.configFOM.weights, *config.configFOM.norma, config.configFOM.red, config.configFOM.includeFirst) 
-                                          , mrg(config.genComponents[0]->getModulus(), config.genComponents[0]->getOrder())
-                                          {                                             
-                                          }
     
+   /**
+   * Initialization of objects is based on the ConfigSeek parameter.
+   */
+   Seek(const ConfigSeek<Int, Real>& config) : conf(config) 
+                                        , fomPrimal(config.configFOM.t, *config.configFOM.weights, *config.configFOM.norma, config.configFOM.red, config.configFOM.includeFirst)
+                                        , fomDual(config.configFOM.t, *config.configFOM.weights, *config.configFOM.norma, config.configFOM.red, config.configFOM.includeFirst) 
+                                        {            
+                                          fomPrimal.setLowBound(config.configFOM.minMerit);  
+                                          fomDual.setLowBound(config.configFOM.minMerit);     
+                                          // Set if the output is written to a file (or the terminal) 
+                                          if (config.outputToGenFile) {
+                                             file.open(config.filename, std::ios::out | std::ios::trunc);
+                                            if (!file) {
+                                              std::cerr << "Failed to open " << config.filename << "\n";
+                                            }
+                                           out = &file;
+                                          }                            
+                                        }
+    
+   /**
+    * Destructor
+    */
+   virtual ~Seek() = default;
                                           
-    /**
-    * This method looks for the next generator based on the chosen configuration.
-    * It uses the variable currentGen to calculate the next generator in the list.
-    * nextGenerator() is performing an exhaustive search. This method needs to
-    * be implemented separately for the different types of lattices.
-    */
-    Lat* nextGenerator();
+   /**
+   * This abstract method looks for the next generator based on the chosen configuration.
+   * It uses the variable currentGen to calculate the next generator in the list.
+   * nextGenerator() is performing an exhaustive search. This method needs to
+   * be implemented separately for the different types of lattices.
+   */
+   virtual Lat* nextGenerator() = 0;
 
-    /**
-    * As nextGenerator() but it chooses a random next generator which is within
-    * the range defined by the configuration.
-    */
-    Lat* nextGeneratorRandom();
+   /**
+   * As nextGenerator() but it chooses a random next generator which is within
+   * the range defined by the configuration.
+   */
+   virtual Lat* nextGeneratorRandom() = 0;   
 
-
-    /**
-    * This method performs the seek based on the current configuration.
-    * The parameter *generator defines the method of the seek, e.g.,
-    * a random or an exhaustive search.
-    */
-    int performSeek(MRGLattice<Int, Real>* (Seek::*generator)());  
+   /**
+   * This method performs the seek based on the current configuration.
+   * The parameter *generator defines the method of the seek, e.g.,
+   * a random or an exhaustive search.
+   */
+   template<typename Generator> int performSeek(Lat* (Generator::*generator)());
+   
+   /**
+   * This method checks whether the generated lattice satisfies the
+   * maximal-period requirement (if applicable). The implementation
+   * defers per lattice type and is provided in the subclasses.
+   */
+   virtual bool checkMaxPeriod(Lat& lat) = 0;
     
     /**
     * This method is supposed to report the progress of the current  
@@ -99,144 +145,50 @@ namespace LatMRG {
     */
     int print_progress(int old);
 
+    /**
+    * The configuration for the seek.
+    */
+    ConfigSeek<Int, Real> conf;
+    
+    /**
+    * Counter for the current RNG.
+    */
+    int currentGen = 0;      
+    
+    private:
+        
+    /**
+    * The current lattice which is analyzed.
+    */
+    std::unique_ptr<Lat> lat;
+
+    /**
+    * Figure of merit objects for the primal and dual lattice.
+    */        
+    FigureOfMeritM<Int, Real> fomPrimal;
+    FigureOfMeritDualM<Int, Real> fomDual;
+
+    /**
+    * Program time
+    */
+    Chrono timer; 
+
+    /**
+     * Output streams for terminal and file
+     */
+    std::ostream* out = &std::cout;
+    std::ofstream file;
+
   };
 
     
 //============================================================================
 // Implementation
 
-
-  /**
-  * This method yields the next generator of an MRG lattice based on the chosen 
-  * configuration.
-  */
-  template<> MRGLattice<Int, Real>* Seek<MRGLattice<Int, Real>>::nextGenerator()
-  {
-    auto* comp = conf.genComponents[0];
-
-    Int range, val;
-    Int tmp = NTL::to_ZZ(currentGen);
-
-    int k = comp->getOrder();
-    NTL::Vec<NTL::ZZ> aa;
-    aa.SetLength(k + 1);
-
-    // decode currentGen into multi-index
-    for (int i = 1; i <= k; i++) {
-      range = comp->getHighBoundary(i) - comp->getLowBoundary(i) + 1;
-      val = tmp % range;
-      tmp /= range;
-      aa[i] = comp->getLowBoundary(i) + val;
-    }
-    
-    if (currentGen < conf.max_gen && currentGen < comp->getNoMultipliers())
-    {
-      ++currentGen;
-      return new MRGLattice<Int, Real>(comp->getModulus(), aa, conf.maxdim);
-    }
-    // Otherwise return null pointer
-    return nullptr;
-  }
-
-  /**
-   * Same for MWC Lattices
-   */
-  template<> MWCLattice<Int, Real>* Seek<MWCLattice<Int, Real>>::nextGenerator()
-  {
-    auto* comp = conf.genComponents[0];
-    
-    Int range, val;
-    Int tmp = NTL::to_ZZ(currentGen);
-    
-    int k = comp->getOrder();
-    NTL::Vec<NTL::ZZ> aa;
-    aa.SetLength(k + 1);
-
-    
-    // decode currentGen into multi-index
-    for (int i = 1; i <= k; i++) {
-      range = comp->getHighBoundary(i) - comp->getLowBoundary(i) + 1;
-      val = tmp % range;
-      tmp /= range;
-      aa[i] = comp->getLowBoundary(i) + val;
-    }
-
-    Int b = NTL::power(Int(2), comp->getPowMod());
-
-    if (currentGen < conf.max_gen && currentGen < comp->getNoMultipliers())
-    {
-      ++currentGen;
-      return new MWCLattice<Int, Real>(b, aa, conf.maxdim, conf.maxdim, conf.maxdim);
-    }
-
-    return nullptr;
-  }
-
-  /**
-  * This method yields a random generator of an MRG lattice within the range
-  * defined by the chosen configuration.
-  */  
-  template<> MRGLattice<Int, Real>* Seek<MRGLattice<Int, Real>>::nextGeneratorRandom()
-  {
-    const auto* comp = conf.genComponents[0];
-    const int k = comp->getOrder();
-    NTL::Vec<NTL::ZZ> aa;
-    aa.SetLength(k + 1);
-
-    for (int i = 1; i <= k; i++) {
-      // CW: There seems to be some problem with RandInt after a few calls. Need to check this at a later point.
-      aa[i] = randInt(comp->getLowBoundary(i), comp->getHighBoundary(i));
-    }
-
-    if (currentGen < conf.max_gen)
-    {
-      ++currentGen;
-      return new MRGLattice<Int, Real>(comp->getModulus(), aa, conf.maxdim);
-    }
-
-    return nullptr;
-  }
-  
-  /**
-   * This method yields a random MWC Lattice currently, it is restricting the number of bits used
-   * per component of the multiplier. However, there are no restrictions on the range of the 
-   * coefficients.
-   */
-  template<> MWCLattice<Int, Real>* Seek<MWCLattice<Int, Real>>::nextGeneratorRandom()
-  {
-    auto* comp = conf.genComponents[0];
-    int k = comp->getOrder();
-    NTL::Vec<NTL::ZZ> aa;
-    aa.SetLength(k + 1);
-    // Initialized
-    aa[0] = -1;
-    for (int64_t j = 1; j < k; j++)
-      aa[j] = 0;
-    Int b = NTL::power(Int(2), comp->getPowMod());
-
-    // Get random MWC generator
-    if (comp->getRandomBits(0) > 0) {
-         aa[0] = conv<Int>(LatticeTester::RandBits(comp->getRandomBits(0)));
-         if ((aa[0] % 2) == 0) aa[0] += 1;  // a_0 must be odd.
-      }
-    aa[k] = conv<Int>(LatticeTester::RandBits(comp->getRandomBits(k)));  // `ek` random bits for a_k.
-    for (int64_t j = 1; j < min(asMWC(comp)->numaj, k); j++)
-        aa[k-j] = conv<Int>(LatticeTester::RandBits(comp->getRandomBits(j)));  // `ej` random bits for a_{k-j}.
-    for (int64_t j = 1; j < -asMWC(comp)->numaj; j++)  // To impose equal coefficients, for testing.
-        aa[k-j] = aa[k];
-    
-    if (currentGen < conf.max_gen)
-    {
-      ++currentGen;
-      return new MWCLattice<Int, Real>(b, aa, conf.maxdim, conf.maxdim, conf.maxdim);
-    }
-
-    return nullptr;
-  }
   
   /**
   * This method is supposed to report the progress of the current  
-  * search. It is still the version of the old LatMRG and currently
+  * search. It is still the version of the old LatMRG and is currently
   * not working.
   */
   template<typename Lat> int Seek<Lat>:: print_progress(int old) {    
@@ -253,15 +205,15 @@ namespace LatMRG {
     return per_80;
   }
 
+  //===========================================================================
+
   /**
   * This method performs the seek based on the current configuration.
   * The parameter *generator defines the method of the seek, e.g.,
   * a random or an exhaustive search.
   */
-  template<typename Lat> int Seek<Lat>::performSeek(MRGLattice<Int, Real>* (Seek::*generator)())  {  
+  template<typename Lat> template<typename Generator> int Seek<Lat>::performSeek(Lat* (Generator::*generator)())  {  
     assert(!conf.genComponents.empty());  
-    const auto* comp = conf.genComponents[0];
-    bool maxper = true;
     int old = 0;
     // Launching the tests
     if (conf.progress) {
@@ -270,30 +222,23 @@ namespace LatMRG {
     MeritList<Lat> bestLattice(conf.configFOM.no_bestGen, conf.configFOM.best);
     timer.init();
     
-    IntLattice<Int, Real> proj(comp->getModulus(), conf.configFOM.t.length(), conf.configFOM.norm);
+    IntLattice<Int, Real> proj(conf.getModulus(), conf.configFOM.t.length(), conf.configFOM.norm);
     
     FigureOfMeritData<Lat> fomData;
 
     // Preparation for being able to check primitivity
-    setModulusIntP<Int>(comp->getModulus());
+    setModulusIntP<Int>(conf.getModulus());
     
     // Loop through all lattices
     do {      
-      lat.reset((this->*generator)());
+      lat.reset((static_cast<Generator*>(this)->*generator)());
       if (!lat) continue;   
       // If the period must be maximal, test if the specific component has max period.
       // Otherwise continue.
-      if (comp->onlyMaxPeriod())
-      {
-        // Check the different cri
-        if (conf.genType == MRG) {
-          maxper = mrg.maxPeriod(lat->getaa());
-        }
-        else if (conf.genType == MWC) {
-            maxper = mIsSafePrime(lat->getModulus(), 100) && maxPeriodHalfMWC (lat->getModulus(), comp->getPowMod());
-        }
-        if (!maxper)
-            continue;
+      if (conf.onlyMaxPeriod())
+      { 
+        if (!checkMaxPeriod(*lat))
+          continue;
       }
       
       // Variable which depends on whether the FoM is calculated for the primal / dual lattice.
@@ -310,7 +255,9 @@ namespace LatMRG {
         fom.setLowBound(bestLattice.getSmallestMerit());
 
       conf.configFOM.num_gen++;
-      conf.configFOM.currentMerit = bestLattice.getMerit();
+      conf.configFOM.currentMerit = bestLattice.getMerit(); 
+      // The output is currently only for test purposes
+      *out << fom.computeMerit(*lat, proj) << "\n";
       if (conf.progress) old = print_progress(old);
     } while (!timer.timeOver(conf.timeLimit) && lat);
      
