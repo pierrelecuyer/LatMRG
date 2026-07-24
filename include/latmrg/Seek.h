@@ -19,6 +19,7 @@
 #define LATMRG_SEEK_H
 
 #include <cassert>
+#include <fstream>
 #include <iostream>
 #include <iomanip>
 #include <memory>
@@ -91,7 +92,17 @@ namespace LatMRG {
    Seek(const ConfigSeek<Int, Real>& config) : conf(config) 
                                         , fomPrimal(config.configFOM.t, *config.configFOM.weights, *config.configFOM.norma, config.configFOM.red, config.configFOM.includeFirst)
                                         , fomDual(config.configFOM.t, *config.configFOM.weights, *config.configFOM.norma, config.configFOM.red, config.configFOM.includeFirst) 
-                                        {                                             
+                                        {            
+                                          fomPrimal.setLowBound(config.configFOM.minMerit);  
+                                          fomDual.setLowBound(config.configFOM.minMerit);     
+                                          // Set if the output is written to a file (or the terminal) 
+                                          if (config.outputToGenFile) {
+                                             file.open(config.filename, std::ios::out | std::ios::trunc);
+                                            if (!file) {
+                                              std::cerr << "Failed to open " << config.filename << "\n";
+                                            }
+                                           out = &file;
+                                          }                            
                                         }
     
    /**
@@ -161,7 +172,12 @@ namespace LatMRG {
     * Program time
     */
     Chrono timer; 
-    
+
+    /**
+     * Output streams for terminal and file
+     */
+    std::ostream* out = &std::cout;
+    std::ofstream file;
 
   };
 
@@ -240,7 +256,8 @@ namespace LatMRG {
 
       conf.configFOM.num_gen++;
       conf.configFOM.currentMerit = bestLattice.getMerit(); 
-      std::cout << fom.computeMerit(*lat, proj) << "\n";
+      // The output is currently only for test purposes
+      *out << fom.computeMerit(*lat, proj) << "\n";
       if (conf.progress) old = print_progress(old);
     } while (!timer.timeOver(conf.timeLimit) && lat);
      

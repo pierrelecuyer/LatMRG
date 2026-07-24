@@ -200,6 +200,9 @@ template<typename Int, typename Real> struct ConfigMerit
     bool includeFirst = true;
     bool dualLattice = false; 
     LatticeTester::NormType norm = LatticeTester::L2NORM;
+
+    double minMerit = 0;
+    double maxMerit = 1;
     
     #ifdef LATMRG_SEEK
         bool best = true;
@@ -217,56 +220,15 @@ template<typename Int, typename Real> struct ConfigMerit
  */
 template<typename Int, typename Real> struct ConfigSeek
 {
-    /* From the guide:
-    * A) Types of generators to be searched:
-    * Type => Variable genType
-    * generators with C ≥ 1 components => Variable numComp
-    * 
-    * B) MRG component:
-    * Type (MRG) => really necessary?
-    * modulus m => Variable?
-    * order k => Variable?
-    * Rectangular region b=(b_1,...,b_k), c = (c_1,...,c_k) for multipliers (*)
-    * Method: exhaustive or random (only exhaustive so far)
-    * additional constraints: To be added later on
-    * either search only for MRG components having maximal period, or ignore the period
-    * 
-    * C) MWC component
-    * Type (MWC)
-    * b
-    * Rectangular region b=(b_1,...,b_k), c = (c_1,...,c_k) for a_0
-    * maximal period
-    * 
-    * D) Matrix LCG component:
-    * Not yet implemented
-    * 
-    * E) Reading generators from a file:
-    * To be done later
-    * 
-    * F) Definition of output vectors and of the lattice Ls.    
-    * analyze the lattice structure for vectors formed by groups of s successive values starting d values apart
-    * 
-    * G) Figures of merit
-    * Set values necessary to define figure of Merit (currently only M is implemented)
-    * 
-    * H) Method of search
-    * When examining a vector a, the program first checks if the maximal period conditions are satisfied, if this is required.
-    * If a is not rejected by the maximal period test, then we move forward to the next MRG component and try all the vectors for that next 
-    * component (by exhaustive or random search) and examine their combination with the currently examined multipliers for the previous components.
-    * For each combined generator, we compute the FOM, but we interrupt the computation as soon as we find that this generator is not worth considering.
-    * For this, the program always keeps lower and upper bounds on the FOM. These bounds are initialized at MinMerit and MaxMerit, and are updated whenever we can.
-    * The current total execution (CPU) time is also checked before testing each new generator. When it exceeds the CPU time limit given in the data file, 
-    * the search is aborted and the partial results are printed. 
-    * One can provide a seed for the RNG that is used when the search is random. There is a default seed for when no seed is provided.
-    * 
-    * I) Output choices
-    */
 
     GenType genType;   // Type of generator, currently MRG or MWC.
     long numComp;      // Number of components.  If > 1, we have a combined generator.
     int64_t maxdim;    // Maximal dimension of the lattice
     
     bool permax = false;   // When true, we retain only max-period generators. Default is false.
+
+    bool outputToGenFile = false; // When true, the output is written to a .gen file instead of the terminal
+    string filename; // Name of the .gen file
     
     int max_gen = 10; // Maximal number of generators to be tested
 
@@ -285,6 +247,15 @@ template<typename Int, typename Real> struct ConfigSeek
     #ifdef LATMRG_SEEK
         bool progress = true; // Prints the program progress between generators
     #endif
+
+    /**
+     * Destructor
+     */
+    ~ConfigSeek()
+    {
+        for(auto* ptr : genComponents)
+            delete ptr;
+    }
 
     /**
      * Automatically creates the correct component
@@ -316,12 +287,47 @@ template<typename Int, typename Real> struct ConfigSeek
      */    
     bool onlyMaxPeriod() const { return permax;} 
 
-
-    ~ConfigSeek()
-    {
-        //for(auto* ptr : genComponents)
-        //    delete ptr;
-    }
 };
 
 #endif
+
+
+    /* From the guide:
+    * A) Types of generators to be searched:
+    * Type => Variable genType (Status: done)
+    * generators with C ≥ 1 components => Variable numComp (Status: works only for C=1 so far)
+    * 
+    * B) MRG component:
+    * modulus m (Status: done)
+    * order k (Status: done)
+    * Rectangular region b=(b_1,...,b_k), c = (c_1,...,c_k) for multipliers (Status: done)
+    * Method: exhaustive or random (Status: done)
+    * additional constraints (equal, powertwo, appfact): If I am not mistaken none of them was implemdented in the old version. 
+    * (Status:  Need to decided if we really need this.)
+    * either search only for MRG components having maximal period, or ignore the period (Status: done)
+    * 
+    * C) MWC component
+    * b (Status: done)
+    * Rectangular region b=(b_1,...,b_k), c = (c_1,...,c_k) for a_i (Status: done)
+    * maximal period (Status: done)
+    * 
+    * D) Matrix LCG component:
+    * (Status: Not yet implemented)
+    * 
+    * E) Reading generators from a file:
+    * (Status: Not yet implemented)
+    * 
+    * F) Definition of output vectors and of the lattice Ls.    
+    * analyze the lattice structure for vectors formed by groups of s successive values starting d values apart
+    * (Status: Not yet implemented)
+    * 
+    * G) Figures of merit
+    * (Status: everything done for figuere of merit M. Need to decide if we also want to implement Q)
+    * 
+    * H) Method of search
+    * Algortihm for the search for combined MRGs (Status: not yet implemented).
+    * 
+    * I) Output choices
+    * Options: Output to termninal / file (Status: not yet implemented)
+    * List retained in generators in a .gen file (Status: not yet implemented)
+    */

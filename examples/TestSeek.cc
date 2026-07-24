@@ -48,25 +48,27 @@ int main() {
   const int64_t maxdim(16);
   
   // Define all the necessary details of the configuration
-  ConfigSeek<Int, Real> conf;
-  conf.maxdim = maxdim;
-  conf.configFOM.norma =  new NormaBestLat(log(m), 1, 16);
-  conf.configFOM.red =  new ReducerBB<Int, Real>(maxdim);
-  conf.configFOM.weights =  new WeightsUniform(1.0);
-  conf.configFOM.t = t;
-  conf.genType = MRG;
-  conf.numComp = 1;
-  conf.permax = false;
-  conf.createComponents();
-  auto* comp = asMRG(conf.genComponents[0]);
+  ConfigSeek<Int, Real>* conf = new ConfigSeek<Int, Real>;
+  conf->maxdim = maxdim;
+  conf->configFOM.norma =  new NormaBestLat(log(m), 1, 16);
+  conf->configFOM.red =  new ReducerBB<Int, Real>(maxdim);
+  conf->configFOM.weights =  new WeightsUniform(1.0);
+  conf->configFOM.t = t;
+  conf->genType = MRG;
+  conf->numComp = 1;
+  conf->permax = false;
+  conf->createComponents();
+  conf->outputToGenFile = false;
+  conf->filename = "test.gen";
+  auto* comp = asMRG(conf->genComponents[0]);
   comp->modulus = m;
   comp->lowBoundaries = b;
   comp->highBoundaries = c;
   comp->order = b.length() - 1;
-  conf.max_gen = 20;
+  conf->max_gen = 20;
 
   // Perform the actual seek
-  SeekMRG<Int, Real> seeker(conf);
+  SeekMRG<Int, Real> seeker(*conf);
   seeker.performSeek(&SeekMRG<Int, Real>::nextGenerator);
   return 0;
 }
