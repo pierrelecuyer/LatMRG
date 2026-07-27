@@ -21,7 +21,7 @@ class FigureOfMeritData {
       /*
       * The lattice that is being tested.
       */
-      Lat* m_lattice = nullptr;
+      const Lat* m_lattice = nullptr;
 
       /*
       * Used to store the merit of the lattice
@@ -43,6 +43,8 @@ class FigureOfMeritData {
       */
       long m_best_worst = 0;
 
+      std::string m_latticeString;
+
       // Some variables are missing.  For example, we need beta_1, we need a normalizer, etc.   *********
 
    public:
@@ -60,13 +62,13 @@ class FigureOfMeritData {
 
       Coordinates getMeritProj() const { return m_minMeritProj;}
 
-      void setMeritProj(Coordinates coord) {m_minMeritProj = coord;}
+      void setMeritProj(const Coordinates coord) {m_minMeritProj = coord;}
 
       /**
        * Returns a string containing the merit of the generator,  the projection
        * for which this is obtained and the shortest vector for this projection.
        * */
-      std::string toStringMerit() {
+      std::string toStringMerit() const{
         std::ostringstream stream;
         stream << "Merit: " << getMerit() << "\n" << "Worst Projection: "
           << getMeritProj() << "\n" << "Shortest Vector for this projection: "
@@ -75,10 +77,11 @@ class FigureOfMeritData {
       }
 
       /// Returns the string associated with this test.
-      std::string getLattice() {
-        return m_lattice->toString();}
+      std::string getLattice() const { return m_latticeString;}
 
-      void setLattice(Lat* lattice) { m_lattice = lattice;}      
+      void setLattice(Lat* lattice) { m_lattice = lattice;}    
+      
+      void storeLatticeAsString() { m_latticeString = m_lattice->toString(); }
 
     };
 
@@ -167,18 +170,21 @@ class MeritList{
         for (auto rit = m_tests.crbegin(); rit != m_tests.crend(); rit++) {
           if (m_best) {
             if (test.getMerit() < rit->getMerit()) {
+              test.storeLatticeAsString();
               m_tests.insert(rit.base(), test);
               if (rit == m_tests.crbegin() && m_tests.size() == m_max) m_merit = test.getMerit();
               return;
             }
           } else {
             if (test.getMerit() > rit->getMerit()) {
+              test.storeLatticeAsString();
               m_tests.insert(rit.base(), test);
               if (rit == m_tests.crbegin() && m_tests.size() == m_max) m_merit = test.getMerit();
               return;
             }
           }
         }
+        test.storeLatticeAsString();
         m_tests.insert(m_tests.cbegin(), test);
       }
     };

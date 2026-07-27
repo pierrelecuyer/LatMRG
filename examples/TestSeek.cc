@@ -23,7 +23,18 @@
 
 using namespace LatMRG;
 
+template<typename Lat>
+void printOutput(Seek<Lat>& seeker)
+{
+    std::ostream* out = &std::cout;
 
+    *out << "\n=== Stored Figure of Merit Data ===\n";
+
+    for (const auto& entry : seeker.bestLattices.getList()) {
+        *out << entry.toStringMerit() << '\n';
+        *out << entry.getLattice() << "\n";
+    }
+}
 
 // Everything which is needed for the configuration is set first
 // Only the last two lines are really performing the seek.
@@ -70,5 +81,8 @@ int main() {
   // Perform the actual seek
   SeekMRG<Int, Real> seeker(*conf);
   seeker.performSeek(&SeekMRG<Int, Real>::nextGenerator);
+  
+  // printOutput<MRGLattice<Int, Real>>(seeker);
+  
   return 0;
 }

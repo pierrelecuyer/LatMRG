@@ -90,8 +90,9 @@ namespace LatMRG {
    * Initialization of objects is based on the ConfigSeek parameter.
    */
    Seek(const ConfigSeek<Int, Real>& config) : conf(config) 
+                                        , bestLattices(conf.configFOM.no_bestGen, conf.configFOM.best) 
                                         , fomPrimal(config.configFOM.t, *config.configFOM.weights, *config.configFOM.norma, config.configFOM.red, config.configFOM.includeFirst)
-                                        , fomDual(config.configFOM.t, *config.configFOM.weights, *config.configFOM.norma, config.configFOM.red, config.configFOM.includeFirst) 
+                                        , fomDual(config.configFOM.t, *config.configFOM.weights, *config.configFOM.norma, config.configFOM.red, config.configFOM.includeFirst)
                                         {            
                                           fomPrimal.setLowBound(config.configFOM.minMerit);  
                                           fomDual.setLowBound(config.configFOM.minMerit);     
@@ -153,7 +154,12 @@ namespace LatMRG {
     /**
     * Counter for the current RNG.
     */
-    int currentGen = 0;      
+    int currentGen = 0;         
+    
+    /**
+     * Object to store the best figures of merit
+     */    
+    MeritList<Lat> bestLattices;
     
     private:
         
@@ -219,7 +225,6 @@ namespace LatMRG {
     if (conf.progress) {
       old = print_progress(-1);
     }
-    MeritList<Lat> bestLattice(conf.configFOM.no_bestGen, conf.configFOM.best);
     timer.init();
     
     IntLattice<Int, Real> proj(conf.getModulus(), conf.configFOM.t.length(), conf.configFOM.norm);
@@ -249,18 +254,17 @@ namespace LatMRG {
       fomData.setMeritProj(fom.getMinMeritProj());
       fomData.setMeritSqlen(fom.getMinMeritSqlen());
 
-      bestLattice.add(fomData); 
+      bestLattices.add(fomData); 
       // Update the lower bound for the FoM to equal the smallest stored FoM
       if (conf.configFOM.best)
-        fom.setLowBound(bestLattice.getSmallestMerit());
+        fom.setLowBound(bestLattices.getSmallestMerit());
 
       conf.configFOM.num_gen++;
-      conf.configFOM.currentMerit = bestLattice.getMerit(); 
+      conf.configFOM.currentMerit = bestLattices.getMerit(); 
       // The output is currently only for test purposes
-      *out << fom.computeMerit(*lat, proj) << "\n";
+      // *out << fom.computeMerit(*lat, proj) << "\n";
       if (conf.progress) old = print_progress(old);
     } while (!timer.timeOver(conf.timeLimit) && lat);
-     
     return 0;
   }
 
