@@ -195,8 +195,7 @@ namespace LatMRG {
   
   /**
   * This method is supposed to report the progress of the current  
-  * search. It is still the version of the old LatMRG and is currently
-  * not working.
+  * search. 
   */
   template<typename Lat> int Seek<Lat>:: print_progress(int old) {  
     // Progress is measured with respect to both stopping criteria. Since the
