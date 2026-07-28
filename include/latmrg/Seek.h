@@ -198,17 +198,29 @@ namespace LatMRG {
   * search. It is still the version of the old LatMRG and is currently
   * not working.
   */
-  template<typename Lat> int Seek<Lat>:: print_progress(int old) {    
-    int per_80 = 80 * timer.val(Chrono::SEC) / conf.timeLimit;
+  template<typename Lat> int Seek<Lat>:: print_progress(int old) {  
+    // Progress is measured with respect to both stopping criteria. Since the
+    // search terminates as soon as either the time limit or the generator limit
+    // is reached, we display the larger of the two relative progresses.
+    double time_progress = double(timer.val(Chrono::SEC)) / conf.timeLimit;
+    double gen_progress  = double(currentGen) / conf.max_gen;
+
+    int per_80 = static_cast<int>(80 * std::max(time_progress, gen_progress));
     if (per_80 > 80) per_80 = 80;
-    if (per_80 < 0) per_80 = 0;
+    if (per_80 < 0) per_80 = 0;  
     // We do not print for no reason as this slows the program a lot.
     if (per_80 <= old) return old;
     std::cout << "Program progress: [";
     for (int i = 0; i < per_80; i++) std::cout << "#";
     for (int i = per_80; i < 80; i++) std::cout << " ";
-    std::cout << "] ";
-    std::cout << std::setw(3) << int(per_80/80.0*100) << " %\r" << std::flush;
+    std::cout << "] ";std::cout << std::setw(3) << int(per_80/80.0*100) << " %";
+
+    if (per_80 == 80)
+        std::cout << '\n';
+    else
+        std::cout << '\r';
+
+    std::cout << std::flush;
     return per_80;
   }
 
@@ -267,6 +279,7 @@ namespace LatMRG {
       // *out << fom.computeMerit(*lat, proj) << "\n";
       if (conf.progress) old = print_progress(old);
     } while (!timer.timeOver(conf.timeLimit) && lat);
+    old = print_progress(old);
     return 0;
   }
 

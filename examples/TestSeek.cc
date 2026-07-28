@@ -54,8 +54,8 @@ int main() {
   b[2] = 5189485190151516; 
   NTL::Vec<NTL::ZZ> c;
   c.SetLength(3); // upper boundaries for the multipliers
-  c[1] = 1145902849652725;
-  c[2] = 5189485190151518;
+  c[1] = 1145902849652755;
+  c[2] = 5189485190151558;
   const int64_t maxdim(16);
   
   // Define all the necessary details of the configuration
