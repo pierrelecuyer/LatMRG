@@ -13,15 +13,24 @@ namespace LatMRG {
    * This class implements the basic structures for computing and storing a general
    * figure of merit defined as a minimum or maximum over a set of projections.
    * It is intended as a return type for functions that actually perform the computations.
+   * 
+   * In the class, the figure of merit, the worst projection and the shortest vector
+   * length for this projection are stored.
    */
 template<typename Lat>
 class FigureOfMeritData {
 
+
    private:
       /*
-      * The lattice that is being tested.
+      * Pointer to the lattice that is being tested.
       */
       const Lat* m_lattice = nullptr;
+
+      /*
+      * A copy of the basis of the lattice.
+      */
+      IntMat m_basis;
 
       /*
       * Used to store the merit of the lattice
@@ -55,6 +64,10 @@ class FigureOfMeritData {
       Real getMerit() const { return m_merit; }
 
       void setMerit(Real m) { m_merit = m; }
+
+      IntMat getBasis() const { return m_basis; }
+
+      void setBasis(IntMat basis) { m_basis = basis; }
 
       double getMeritSqlen() const { return m_minMeritSqlen;}
 

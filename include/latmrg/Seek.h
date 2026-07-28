@@ -157,7 +157,8 @@ namespace LatMRG {
     int currentGen = 0;         
     
     /**
-     * Object to store the best figures of merit
+     * Object to store the information of the lattices with the
+     * best figures of merit.
      */    
     MeritList<Lat> bestLattices;
     
@@ -248,9 +249,10 @@ namespace LatMRG {
       
       // Variable which depends on whether the FoM is calculated for the primal / dual lattice.
       // Avoids duplicate code.
-      auto& fom = conf.configFOM.dualLattice ? fomDual : fomPrimal;     
+      auto& fom = conf.configFOM.dualLattice ? fomDual : fomPrimal;       
       fomData.setMerit(fom.computeMerit(*lat, proj));
       fomData.setLattice(lat.get());
+      fomData.setBasis(conf.configFOM.dualLattice ? lat->getDualBasis() : lat->getBasis());
       fomData.setMeritProj(fom.getMinMeritProj());
       fomData.setMeritSqlen(fom.getMinMeritSqlen());
 

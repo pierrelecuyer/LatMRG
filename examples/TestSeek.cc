@@ -32,7 +32,7 @@ void printOutput(Seek<Lat>& seeker)
 
     for (const auto& entry : seeker.bestLattices.getList()) {
         *out << entry.toStringMerit() << '\n';
-        *out << entry.getLattice() << "\n";
+        *out << "Basis: " << entry.getBasis() << "\n";
     }
 }
 
