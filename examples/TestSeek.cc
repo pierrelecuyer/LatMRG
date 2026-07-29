@@ -80,7 +80,7 @@ int main() {
 
   // Perform the actual seek
   SeekMRG<Int, Real> seeker(*conf);
-  seeker.performSeek(&SeekMRG<Int, Real>::nextGenerator);
+  seeker.performSeek(&SeekMRG<Int, Real>::nextGeneratorRandom);
   
   // printOutput<MRGLattice<Int, Real>>(seeker);
   

@@ -51,7 +51,7 @@ template<typename Int, typename Real> struct ConfigSeekComponent
 
     virtual Int getNoMultipliers() const { return Int(0);}
     
-    virtual Int getLowBoundary(int i) const { return Int(0);}
+    virtual Int getLowBoundary(int i) const { return Int(1);}
 
     virtual Int getHighBoundary(int i) const { return Int(0);}
     
@@ -97,9 +97,9 @@ template<typename Int, typename Real> struct ConfigSeekMRG : ConfigSeekComponent
       return total;
     }
     
-    Int getLowBoundary(int i) const { return lowBoundaries(i);}
+    Int getLowBoundary(int i) const { return lowBoundaries[i];}
     
-    Int getHighBoundary(int i) const { return highBoundaries(i);}
+    Int getHighBoundary(int i) const { return highBoundaries[i];}
 
 };
 
@@ -131,9 +131,9 @@ template<typename Int, typename Real> struct ConfigSeekMWC : ConfigSeekComponent
       return total;
     }
     
-    Int getLowBoundary(int i) const { return lowBoundaries(i);}
+    Int getLowBoundary(int i) const { return lowBoundaries[i];}
     
-    Int getHighBoundary(int i) const { return highBoundaries(i);}
+    Int getHighBoundary(int i) const { return highBoundaries[i];}
     
     int64_t getRandomBits(int i) const { return randomBits[i];}
 
