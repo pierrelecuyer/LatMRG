@@ -144,7 +144,6 @@ namespace LatMRG {
     aa.SetLength(k + 1);
 
     for (int i = 1; i <= k; i++) {
-      // CW: There seems to be some problem with RandInt after a few calls. Need to check this at a later point.
       aa[i] = randInt(comp->getLowBoundary(i), comp->getHighBoundary(i));
     }
 
