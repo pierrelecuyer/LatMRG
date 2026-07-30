@@ -328,6 +328,6 @@ template<typename Int, typename Real> struct ConfigSeek
     * Algortihm for the search for combined MRGs (Status: not yet implemented).
     * 
     * I) Output choices
-    * Options: Output to termninal / file (Status: not yet implemented)
+    * Options: Output to termninal / file (Status: done)
     * List retained in generators in a .gen file (Status: not yet implemented)
     */
