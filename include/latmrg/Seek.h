@@ -140,11 +140,15 @@ namespace LatMRG {
    virtual bool checkMaxPeriod(Lat& lat) = 0;
     
     /**
-    * This method is supposed to report the progress of the current  
-    * search. It is still the version of the old LatMRG and currently
-    * not working.
+    * This method reports the progress of the current search. 
     */
-    int print_progress(int old);
+    int printProgress(int old);
+
+    /**
+    * This method prints the results of the random search. It
+    * should only be called after PerformSeek() has been executed. 
+    */
+    void printResults();
 
     /**
     * The configuration for the seek.
@@ -176,9 +180,14 @@ namespace LatMRG {
     FigureOfMeritDualM<Int, Real> fomDual;
 
     /**
-    * Program time
+    * Program time.
     */
     Chrono timer; 
+
+    /**
+     * Decides if runnning time is printed in printResults().
+     */
+    bool print_time = true;
 
     /**
      * Output streams for terminal and file
@@ -197,7 +206,7 @@ namespace LatMRG {
   * This method is supposed to report the progress of the current  
   * search. 
   */
-  template<typename Lat> int Seek<Lat>:: print_progress(int old) {  
+  template<typename Lat> int Seek<Lat>::printProgress(int old) {  
     // Progress is measured with respect to both stopping criteria. Since the
     // search terminates as soon as either the time limit or the generator limit
     // is reached, we display the larger of the two relative progresses.
@@ -224,6 +233,54 @@ namespace LatMRG {
   }
 
   //===========================================================================
+  
+  /** 
+   * This method prints the results of the search.
+   * The function is not yet complete but rather a prototype
+   * to which additional information can be added later.
+  */
+  template<typename Lat> void Seek<Lat>::printResults() {
+    *out << "\nSeek: A search program for Random Number Generators\n";
+    *out << ((conf.numComp>1)?"Combined generators":"Simple generator")
+      << " configuration" << ((conf.numComp>1)?"s":"") << "\n\n";
+    for (int k = 0; k < conf.numComp; k++) {
+      if (k > 0) *out << "\n";
+      if (conf.numComp >1) *out << "Component " << k+1 << ":\n";
+      *out << "Generator type: " << toStringGenType(conf.genType) << "\n";
+      if (conf.genType == MRG) {
+        *out << "Modulo:         m = " << conf.genComponents[k]->getModulus(); //" = " << conf.genComponents[k]->getB() << "^"
+          //<< conf.fact[k]->getE();
+        // if (conf.fact[k]->getR() > 0) *out << "+" << conf.genComponents[k]->getR();
+        // if (conf.fact[k]->getR() < 0) *out << conf.genComponents[k]->getR();
+
+        *out << "\n";
+        *out << "Order:          k = " << conf.genComponents[k]->getOrder() << "\n";
+      } else if (conf.genType == MWC) {
+      } else if (conf.genType == MMRG) {
+      }
+      *out << (conf.onlyMaxPeriod()?"Full":"Any") << " period length\n";
+      }
+
+    
+    *out << "\nTest:\n" << (conf.configFOM.best?"Best":"Worst") << " generators \n";
+    *out << "Figure of Merit M with vector t=" << conf.configFOM.t << "\n";
+    *out << "for the " << (conf.configFOM.dualLattice?"dual":"primal") << " lattice \n";
+    *out << "Number of generators kept: " << conf.configFOM.no_bestGen << "\n";
+    *out << "Number of generators tested: " << conf.max_gen << "\n\n"; 
+    if (print_time) {
+      *out << "Allowed running time: " << conf.timeLimit << "s.\n";
+      *out << "Actual CPU time: " << timer.toString() << "\n\n";
+    }
+    
+
+    *out << "Retained generators (from best to worst):\n";
+    for (auto it = bestLattices.getList().begin(); it!= bestLattices.getList().end(); it++) {
+      *out << (*it).getBasis() << "\n";
+      *out << (*it).toStringMerit() << "\n";
+    }
+  }
+
+  //===========================================================================
 
   /**
   * This method performs the seek based on the current configuration.
@@ -235,7 +292,7 @@ namespace LatMRG {
     int old = 0;
     // Launching the tests
     if (conf.progress) {
-      old = print_progress(-1);
+      old = printProgress(-1);
     }
     timer.init();
     
@@ -276,9 +333,9 @@ namespace LatMRG {
       conf.configFOM.currentMerit = bestLattices.getMerit(); 
       // The output is currently only for test purposes
       // *out << fom.computeMerit(*lat, proj) << "\n";
-      if (conf.progress) old = print_progress(old);
+      if (conf.progress) old = printProgress(old);
     } while (!timer.timeOver(conf.timeLimit) && lat);
-    old = print_progress(old);
+    old = printProgress(old);
     return 0;
   }
 
